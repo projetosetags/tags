@@ -293,3 +293,15 @@ function logoutMonitoramento(){
 localStorage.removeItem('user_monitoramento')
 location.reload()
 }
+/*=========================================================
+099 MONITORAMENTO-CORE.JS TOPO COLAPSAVEL
+=========================================================*/
+function toggleTopoMonitoramento(){
+let topo=document.getElementById(
+'topoMonitoramento'
+)
+if(!topo){
+return
+}
+topo.classList.toggle('recolhido')
+}
