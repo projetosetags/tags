@@ -88,7 +88,32 @@ origem:perfil.origem||'TCERO'
 }
 let box=document.getElementById('usuarioLogado')
 if(box){
-box.innerHTML=`${USER_MONITORAMENTO.nome} • N${USER_MONITORAMENTO.nivel}`
+
+let nome=
+USER_MONITORAMENTO.nome||
+USER_MONITORAMENTO.username||
+'USUÁRIO'
+
+nome=String(nome).trim()
+
+let partes=nome.split(' ')
+
+if(partes.length>=3){
+
+nome=
+partes[0]+
+' '+
+partes[1]+
+' '+
+partes[2].charAt(0)+'.'
+
+}
+
+box.innerHTML=
+nome+
+' • N'+
+USER_MONITORAMENTO.nivel
+
 }
 await aplicarPermissoesMonitoramento()
 }catch(e){
