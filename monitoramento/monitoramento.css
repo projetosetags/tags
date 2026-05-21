@@ -1224,3 +1224,12 @@ outline:none;
 background:rgba(59,130,246,.18);
 box-shadow:0 0 0 2px rgba(59,130,246,.30);
 }
+/*=========================================================
+099 MONITORAMENTO.CSS HEADER COLAPSAVEL
+=========================================================*/
+.topo-monitoramento-colapsavel{max-height:340px;overflow:hidden;transition:max-height .35s ease;}
+.topo-monitoramento-colapsavel.recolhido{max-height:88px;}
+.btn-colapsar-monitoramento{position:fixed;top:10px;right:14px;z-index:9999;border:none;background:#2563eb;color:#fff;width:42px;height:42px;border-radius:12px;font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,.35);}
+.nav-monitoramento{display:flex;flex-wrap:wrap!important;gap:10px;padding:12px 18px;}
+.nav-btn{padding:10px 16px!important;font-size:15px!important;border-radius:14px!important;min-width:auto!important;}
+.select-monitoramento option{color:#000!important;background:#fff!important;}
