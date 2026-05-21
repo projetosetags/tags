@@ -67,6 +67,7 @@ if(nome==='beneficios'){
 carregarPainelBeneficios()
 }
 }
+
 async function carregarUsuarioMonitoramento(){
 let userLocal=localStorage.getItem('user_monitoramento')
 if(!userLocal){
@@ -224,6 +225,7 @@ alert('Sem permissão para o Monitoramento Técnico')
 return
 }
 window.USER_MONITORAMENTO=perfil
+atualizarUsuarioTopo()
 localStorage.setItem('user_monitoramento',JSON.stringify(perfil))
 let boxUsuario=document.getElementById('usuarioLogado')
 if(boxUsuario){
@@ -304,4 +306,48 @@ if(!topo){
 return
 }
 topo.classList.toggle('recolhido')
+}
+/*=========================================================
+007 MONITORAMENTO-CORE.JS USUÁRIO LGPD TOPO
+=========================================================*/
+function formatarNomeLGPD(nome){
+
+if(!nome){
+return'USUÁRIO'
+}
+
+let partes=String(nome).trim().split(' ')
+
+if(partes.length<=2){
+return nome
+}
+
+let primeiro=partes[0]
+
+let ultimo=partes[partes.length-1]
+
+let meio=partes
+.slice(1,-1)
+.map(p=>p.charAt(0).toUpperCase()+'.')
+.join(' ')
+
+return `${primeiro} ${meio} ${ultimo}`
+
+}
+
+function atualizarUsuarioTopo(){
+
+let el=document.getElementById('usuarioCabecalho')
+
+if(!el){
+return
+}
+
+let nome=
+USER_MONITORAMENTO?.nome_completo||
+USER_MONITORAMENTO?.username||
+'USUÁRIO'
+
+el.innerHTML=formatarNomeLGPD(nome)
+
 }
