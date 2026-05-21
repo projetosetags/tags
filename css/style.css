@@ -1,202 +1,282 @@
 /*=========================================================
-001 SEDAM BODY E LOGIN
+001 BASE GERAL
 =========================================================*/
-body{background:#f5f0e6;color:#000000;font-family:'Inter',sans-serif;margin:0;overflow-x:hidden;}
-body:not(.login-bg){background:#f5f0e6!important;}
-body.login-bg{background:url('../assets/portovelho.png') center center/cover no-repeat fixed!important;filter:contrast(1.15) saturate(1.18) brightness(1.02);}
-body.login-bg::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom,rgba(255,255,255,.08),rgba(255,255,255,.14));z-index:0;}
-#login-screen.hidden,#login-screen[style*="display: none"]{display:none!important;height:0!important;min-height:0!important;padding:0!important;margin:0!important;overflow:hidden!important;}
-#dashboard{margin-top:0!important;padding:10px!important;position:relative!important;z-index:2!important;width:100%!important;}
-.bg-slate-900\/70{background:rgba(255,255,255,.82)!important;border:1px solid rgba(0,0,0,.08)!important;backdrop-filter:blur(10px);box-shadow:0 10px 40px rgba(0,0,0,.18);}
-.bg-slate-800{background:#efe5d8!important;color:#4b4038!important;}
-.text-white,.text-slate-300,.text-blue-400,.text-yellow-400,.text-emerald-400{color:#000000!important;}
-.border-white\/10{border-color:rgba(120,102,84,.08)!important;}
-.border-white\/5{border-color:rgba(120,102,84,.05)!important;}
-
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;overflow-x:hidden;font-family:'Inter',sans-serif;background:#f5f0e6;color:#000}
+body:not(.login-bg){background:#f5f0e6!important}
+.hidden{display:none!important}
+button,input,select,textarea{font-family:inherit}
+canvas{display:block!important;visibility:visible!important;opacity:1!important;max-width:100%!important}
 /*=========================================================
-002 BANDEIRA FLUTUANTE
+002 LOGIN SEDAM
 =========================================================*/
-#bandeiraFlutuante{position:fixed;top:145px;left:50%;transform:translateX(-50%);width:320px;z-index:0;pointer-events:none;display:block!important;opacity:.28;filter:drop-shadow(0 10px 18px rgba(0,0,0,.16)) drop-shadow(0 2px 4px rgba(255,255,255,.08));transform-origin:left center;animation:bandeiraRealista 8s ease-in-out infinite;will-change:transform;}
-body.login-bg #bandeiraFlutuante{display:block!important;}
+body.login-bg{background:url('../assets/portovelho.png') center center/cover no-repeat fixed!important;filter:contrast(1.12) saturate(1.15) brightness(1.02)}
+body.login-bg::before{content:"";position:fixed;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,.08),rgba(255,255,255,.14));z-index:0}
+#login-screen.hidden,#login-screen[style*="display: none"]{display:none!important;height:0!important;min-height:0!important;padding:0!important;margin:0!important;overflow:hidden!important}
+.bg-slate-900\/70{background:rgba(255,255,255,.84)!important;border:1px solid rgba(0,0,0,.08)!important;backdrop-filter:blur(10px)!important;box-shadow:0 10px 40px rgba(0,0,0,.18)!important}
+.bg-slate-800{background:#efe5d8!important;color:#4b4038!important}
+.text-white,.text-slate-300,.text-blue-400,.text-yellow-400,.text-emerald-400{color:#000!important}
+.border-white\/10{border-color:rgba(120,102,84,.08)!important}
+.border-white\/5{border-color:rgba(120,102,84,.05)!important}
+/*=========================================================
+003 DASHBOARD BASE
+=========================================================*/
+#dashboard{position:relative!important;z-index:1!important;width:100%!important;padding:10px!important;overflow:visible!important}
+/*=========================================================
+004 BANDEIRA FLUTUANTE
+=========================================================*/
+#bandeiraFlutuante{position:fixed;top:145px;left:50%;width:320px;opacity:.28;z-index:0;pointer-events:none;transform:translateX(-50%);transform-origin:left center;animation:bandeiraRealista 8s ease-in-out infinite;filter:drop-shadow(0 10px 18px rgba(0,0,0,.16))}
+body.login-bg #bandeiraFlutuante{display:block!important}
 @keyframes bandeiraRealista{
-0%{transform:translateX(-50%) perspective(1800px) rotateY(0deg) skewY(0deg) translateY(0px);}
-10%{transform:translateX(-50%) perspective(1800px) rotateY(-2deg) skewY(-.2deg) translateY(-1px);}
-20%{transform:translateX(-50%) perspective(1800px) rotateY(1.5deg) skewY(.2deg) translateY(.5px);}
-30%{transform:translateX(-50%) perspective(1800px) rotateY(-3deg) skewY(-.3deg) translateY(-1px);}
-40%{transform:translateX(-50%) perspective(1800px) rotateY(2deg) skewY(.2deg) translateY(1px);}
-50%{transform:translateX(-50%) perspective(1800px) rotateY(-2.5deg) skewY(-.3deg) translateY(-1px);}
-60%{transform:translateX(-50%) perspective(1800px) rotateY(1.5deg) skewY(.2deg) translateY(.5px);}
-70%{transform:translateX(-50%) perspective(1800px) rotateY(-2deg) skewY(-.2deg) translateY(-1px);}
-80%{transform:translateX(-50%) perspective(1800px) rotateY(1deg) skewY(.1deg) translateY(.5px);}
-90%{transform:translateX(-50%) perspective(1800px) rotateY(-1.5deg) skewY(-.1deg) translateY(-.5px);}
-100%{transform:translateX(-50%) perspective(1800px) rotateY(0deg) skewY(0deg) translateY(0px);}
+0%{transform:translateX(-50%) perspective(1800px) rotateY(0deg)}
+10%{transform:translateX(-50%) perspective(1800px) rotateY(-2deg)}
+20%{transform:translateX(-50%) perspective(1800px) rotateY(1.5deg)}
+30%{transform:translateX(-50%) perspective(1800px) rotateY(-3deg)}
+40%{transform:translateX(-50%) perspective(1800px) rotateY(2deg)}
+50%{transform:translateX(-50%) perspective(1800px) rotateY(-2.5deg)}
+60%{transform:translateX(-50%) perspective(1800px) rotateY(1.5deg)}
+70%{transform:translateX(-50%) perspective(1800px) rotateY(-2deg)}
+80%{transform:translateX(-50%) perspective(1800px) rotateY(1deg)}
+90%{transform:translateX(-50%) perspective(1800px) rotateY(-1.5deg)}
+100%{transform:translateX(-50%) perspective(1800px) rotateY(0deg)}
+}
+/*=========================================================
+005 TOPO SEDAM
+=========================================================*/
+.topo-sedam-modern{position:sticky;top:0;z-index:50;min-height:84px;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#15803d,#22c55e);border-bottom:1px solid rgba(255,255,255,.18);box-shadow:0 12px 30px rgba(22,163,74,.22);color:#fff}
+.topo-esquerda-sedam{display:flex;flex-direction:column;justify-content:center}
+.titulo-sedam-modern{margin:0;font-size:22px;font-weight:1000;letter-spacing:1px;line-height:1.1;color:#fff}
+.usuario-sedam-modern{margin-top:4px;font-size:11px;font-weight:800;color:#fff;opacity:.94;text-transform:uppercase}
+.topo-direita-sedam{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:nowrap;margin-left:auto}
+/*=========================================================
+006 MINI KPIS TOPO
+=========================================================*/
+.mini-kpis-sedam{display:flex;align-items:center;gap:8px;margin-right:12px}
+.mini-kpi-sedam{min-width:84px;height:48px;padding:4px 10px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:1000;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+.mini-kpi-sedam span{font-size:18px;line-height:1;font-weight:1000}
+.mini-kpi-sedam small{margin-top:2px;font-size:9px;font-weight:1000;letter-spacing:.5px}
+.mini-kpi-sedam.azul{background:linear-gradient(135deg,#2563eb,#38bdf8)}
+.mini-kpi-sedam.verde{background:linear-gradient(135deg,#16a34a,#4ade80)}
+
+.media-topo-sedam{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 10px}
+.media-topo-sedam div{font-size:9px;font-weight:1000;line-height:1;color:#fff}
+.media-topo-sedam strong{margin-top:2px;font-size:28px;font-weight:1000;line-height:1;color:#fff}
+/*=========================================================
+007 BOTÕES TOPO
+=========================================================*/
+.btn-topo-sedam{height:40px;padding:8px 13px;border-radius:12px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);color:#fff;font-size:11px;font-weight:1000;cursor:pointer;transition:.2s ease;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
+.btn-topo-sedam:hover{background:rgba(255,255,255,.24);transform:translateY(-1px)}
+.btn-topo-sedam.sair{background:rgba(127,29,29,.35)}
+/*=========================================================
+008 TABS NAVEGAÇÃO
+=========================================================*/
+nav{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;overflow-x:auto!important;padding:4px 0!important}
+.tab-btn{flex:1 1 0!important;max-width:180px!important;min-width:120px!important;min-height:68px!important;padding:.65rem!important;border-radius:18px!important;border:1px solid rgba(255,255,255,.55)!important;background:rgba(255,255,255,.88)!important;color:#6e563d!important;font-size:.68rem!important;font-weight:900!important;text-transform:uppercase!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;position:relative!important;overflow:hidden!important;backdrop-filter:blur(18px)!important;box-shadow:0 4px 12px rgba(0,0,0,.06)!important;transition:.22s ease!important}
+.tab-btn:hover{transform:translateY(-2px)!important;box-shadow:0 10px 20px rgba(15,23,42,.10)!important}
+.tab-btn::before{content:"";position:absolute;top:0;left:0;width:100%;height:48%;background:linear-gradient(to bottom,rgba(255,255,255,.42),transparent)}
+.tab-btn div:first-child{font-size:18px!important;line-height:1!important}
+.tab-btn div:last-child{font-size:9px!important;font-weight:900!important;line-height:1!important;color:#6b5338!important;text-align:center!important}
+.tab-active{background:linear-gradient(180deg,rgba(255,248,238,.98),rgba(239,223,198,.94))!important;color:#8a6230!important;border:1px solid rgba(205,164,104,.42)!important;box-shadow:0 12px 24px rgba(176,128,64,.14)!important;transform:translateY(-1px)!important}
+/*=========================================================
+009 DASHBOARD KPIS
+=========================================================*/
+#view-dashboard{width:100%;max-width:100%;padding:10px 14px 20px 14px;overflow-x:hidden}
+#view-dashboard .grid{gap:14px!important}
+#view-dashboard .bg-white\/80,#view-dashboard .bg-white{background:rgba(255,255,255,.82)!important;border:1px solid rgba(0,0,0,.05)!important;border-radius:22px!important;box-shadow:0 4px 18px rgba(0,0,0,.06)!important;backdrop-filter:blur(10px)!important}
+#view-dashboard h2{font-size:28px!important;font-weight:900!important;color:#0f172a!important;line-height:1!important}
+#view-dashboard h3{margin-bottom:10px!important;font-size:14px!important;font-weight:900!important;text-transform:uppercase!important;color:#111827!important;line-height:1.1!important}
+
+.card-kpi{display:flex!important;align-items:center!important;justify-content:space-between!important;min-height:110px!important;padding:18px!important;background:#fff!important;border-radius:22px!important;border:1px solid rgba(0,0,0,.05)!important;box-shadow:0 4px 18px rgba(0,0,0,.05)!important}
+.card-kpi .icone{width:54px!important;height:54px!important;border-radius:16px!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:24px!important;font-weight:900!important}
+.card-kpi .valor{font-size:38px!important;font-weight:900!important;line-height:1!important}
+.card-kpi .titulo{margin-bottom:6px!important;font-size:13px!important;font-weight:900!important;text-transform:uppercase!important;color:#0f172a!important}
+.card-kpi .sub{font-size:11px!important;font-weight:700!important;color:#475569!important}
+/*=========================================================
+010 GRÁFICOS
+=========================================================*/
+.tab-content{display:none!important;width:100%!important}
+.tab-content.active{display:block!important;width:100%!important;animation:fadePainel .25s ease}
+
+@keyframes fadePainel{
+from{opacity:.4;transform:translateY(6px)}
+to{opacity:1;transform:translateY(0)}
 }
 
-/*=========================================================
-003 TABS E NAVEGAÇÃO
-=========================================================*/
-nav{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;overflow-x:auto!important;padding:4px 0!important;}
-.tab-btn{align-self:start!important;flex:1 1 0!important;max-width:180px!important;min-width:120px!important;min-height:68px!important;padding:.65rem!important;font-size:.68rem!important;font-weight:900!important;text-transform:uppercase!important;color:#6e563d!important;border:none!important;border-radius:18px!important;background:rgba(255,255,255,.88)!important;border:1px solid rgba(255,255,255,.55)!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;box-shadow:0 4px 12px rgba(0,0,0,.06)!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;position:relative!important;overflow:hidden!important;transition:all .22s ease!important;}
-.tab-btn:hover{transform:translateY(-2px)!important;box-shadow:0 10px 20px rgba(15,23,42,.10)!important;filter:brightness(1.03);}
-.tab-btn::before{content:"";position:absolute;top:0;left:0;width:100%;height:48%;background:linear-gradient(to bottom,rgba(255,255,255,.42),transparent);pointer-events:none;}
-.tab-btn div:first-child{font-size:18px!important;line-height:1!important;margin:0!important;}
-.tab-btn div:last-child{font-size:9px!important;font-weight:900!important;letter-spacing:.2px!important;line-height:1!important;color:#6b5338!important;text-align:center!important;}
-.tab-active{color:#8a6230!important;background:linear-gradient(180deg,rgba(255,248,238,.98),rgba(239,223,198,.94))!important;border:1px solid rgba(205,164,104,.42)!important;box-shadow:0 12px 24px rgba(176,128,64,.14)!important;transform:translateY(-1px)!important;}
-
-/*=========================================================
-004 DASHBOARD E KPIS
-=========================================================*/
-#view-dashboard{width:100%;max-width:100%;padding:10px 14px 20px 14px;overflow-x:hidden;}
-#view-dashboard .grid{gap:14px!important;}
-#view-dashboard .bg-white\/80,#view-dashboard .bg-white{background:rgba(255,255,255,.82)!important;border:1px solid rgba(0,0,0,.05)!important;border-radius:22px!important;box-shadow:0 4px 18px rgba(0,0,0,.06)!important;backdrop-filter:blur(10px)!important;}
-#view-dashboard h2{font-size:28px!important;font-weight:900!important;color:#0f172a!important;line-height:1!important;}
-#view-dashboard h3{font-size:14px!important;font-weight:900!important;text-transform:uppercase!important;color:#111827!important;margin-bottom:10px!important;line-height:1.1!important;}
-.card-kpi{display:flex!important;align-items:center!important;justify-content:space-between!important;padding:18px!important;background:#ffffff!important;border-radius:22px!important;border:1px solid rgba(0,0,0,.05)!important;box-shadow:0 4px 18px rgba(0,0,0,.05)!important;min-height:110px!important;}
-.card-kpi .icone{width:54px!important;height:54px!important;border-radius:16px!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:24px!important;font-weight:900!important;}
-.card-kpi .valor{font-size:38px!important;font-weight:900!important;line-height:1!important;}
-.card-kpi .titulo{font-size:13px!important;font-weight:900!important;text-transform:uppercase!important;color:#0f172a!important;margin-bottom:6px!important;}
-.card-kpi .sub{font-size:11px!important;font-weight:700!important;color:#475569!important;}
-
-/*=========================================================
-005 GRÁFICOS
-=========================================================*/
-.tab-content{display:none!important;width:100%!important;}
-.tab-content.active{display:block!important;width:100%!important;animation:fadePainel .25s ease;}
 .graficos-grid,.chart-container,.grafico-card,.box-chart{
 display:grid!important;
 visibility:visible!important;
 opacity:1!important;
 width:100%!important;
 height:260px!important;
-max-height:260px!important;
 min-height:260px!important;
+max-height:260px!important;
 overflow:visible!important;
-position:relative;
-z-index:1;
+position:relative!important;
+z-index:1!important;
 }
-.grafico-card canvas,.box-chart canvas,.chart-container canvas,#graficoResumo,#graficoMonitoramento,#graficoGeral,#graficoLinha,#graficoPizza,#graficoBarras{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;height:220px!important;max-height:220px!important;min-height:220px!important;}
-#analise,#graficos,#graficoResumo,#graficoGeral,#graficoMonitoramento,canvas{display:block!important;visibility:visible!important;opacity:1!important;}
-@keyframes fadePainel{from{opacity:.4;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
-/*=========================================================
-006 TABELAS E INPUTS
-=========================================================*/
-table,td,#concluidos-list,#listaPerfis,#listaUsuarios,#listaTCERO{color:#000000!important;}
-table{width:100%!important;border-collapse:collapse!important;background:#ffffff!important;border-radius:16px!important;overflow:hidden!important;}
-th{background:#f8fafc!important;color:#0f172a!important;font-size:11px!important;font-weight:900!important;padding:10px 8px!important;border-bottom:1px solid rgba(0,0,0,.05)!important;text-transform:uppercase!important;}
-td{font-size:11px!important;font-weight:700!important;padding:9px 8px!important;border-bottom:1px solid rgba(0,0,0,.04)!important;color:#1e293b!important;}
-.input-mes{width:60px;font-size:16px;font-weight:900;text-align:center;background:#f3ece2;border:1px solid rgba(120,102,84,.15);border-radius:6px;color:#5c4d3d;}
-.input-table{background:transparent;border:none;color:#8b6b45;font-weight:800;width:45px;text-align:center;font-size:11px;}
-.td-mes{font-size:12px;font-weight:700;text-align:center;}
-.td-mes-strong{font-size:16px;font-weight:900;text-align:center;}
-.td-total{font-size:18px;font-weight:900;text-align:right;}
-.td-desc{font-size:11px;max-width:280px;white-space:normal;line-height:1.2;}
-.td-data{font-size:11px;font-weight:700;text-align:center;vertical-align:middle;white-space:nowrap;line-height:1;padding:4px;}
-.tr-hover:hover{background:rgba(160,140,120,.08);}
-
-/*=========================================================
-007 BOTÕES E CARDS
-=========================================================*/
-button{transition:.2s;}
-.card-micro{padding:10px;min-height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:.2s;border-radius:16px;border:1px solid rgba(120,102,84,.12);cursor:pointer;background:rgba(255,255,255,.55);backdrop-filter:blur(6px);text-align:center;overflow:hidden;word-break:break-word;line-height:1.1;box-shadow:0 4px 14px rgba(0,0,0,.06);}
-.percent-big{font-size:2rem;font-weight:900;color:#4a4038;line-height:1;margin-top:4px;}
-.legend-box{background:rgba(255,255,255,.55);border:1px solid rgba(120,102,84,.12);padding:1rem;border-radius:10px;margin-top:1rem;font-size:.7rem;color:#5f564d;white-space:pre-wrap;}
-.btn-pdf{background:linear-gradient(135deg,#b08968,#d2b48c);color:#000;padding:8px 14px;border-radius:14px;font-size:10px;font-weight:900;text-transform:uppercase;transition:.25s;border:2px solid rgba(0,0,0,.08);box-shadow:0 4px 12px rgba(0,0,0,.12);}
-.btn-pdf:hover{transform:translateY(-1px) scale(1.02);filter:brightness(1.03);}
-.btn-dashboard{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;background:linear-gradient(180deg,#ffffff 0%,#edf2f7 100%)!important;color:#0f172a!important;border:1px solid #cbd5e1!important;border-radius:16px!important;padding:10px 20px!important;font-size:12px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.2px!important;box-shadow:0 3px 12px rgba(15,23,42,.08)!important;transition:all .18s ease!important;}
-.btn-dashboard:hover{transform:translateY(-1px)!important;background:linear-gradient(180deg,#ffffff 0%,#dbeafe 100%)!important;border-color:#93c5fd!important;color:#1d4ed8!important;box-shadow:0 8px 20px rgba(59,130,246,.16)!important;}
-
-/*=========================================================
-008 RESPONSIVO
-=========================================================*/
-@media(max-width:900px){
-nav{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;}
-#view-dashboard{padding:8px!important;}
-#view-dashboard .grid{gap:8px!important;}
-#view-dashboard .text-\[46px\]{font-size:28px!important;}
-#view-dashboard h3{font-size:12px!important;}
-#view-dashboard canvas{height:220px!important;max-height:220px!important;}
-.tab-btn{max-width:100%!important;min-width:unset!important;min-height:58px!important;border-radius:16px!important;padding:.45rem!important;}
-.tab-btn div:first-child{font-size:15px!important;}
-.tab-btn div:last-child{font-size:8px!important;}
-.card-kpi{min-height:88px!important;padding:12px!important;}
-.card-kpi .valor{font-size:28px!important;}
-.card-kpi .icone{width:42px!important;height:42px!important;font-size:18px!important;}
-table{display:block!important;overflow-x:auto!important;white-space:nowrap!important;}
+.grafico-card canvas,
+.box-chart canvas,
+.chart-container canvas,
+#graficoResumo,
+#graficoMonitoramento,
+#graficoGeral,
+#graficoLinha,
+#graficoPizza,
+#graficoBarras{
+display:block!important;
+visibility:visible!important;
+opacity:1!important;
+width:100%!important;
+height:220px!important;
+min-height:220px!important;
+max-height:220px!important;
+object-fit:contain!important;
 }
-@media(max-width:768px){
-body{overflow-x:hidden!important;}
-nav{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:0 4px!important;}
-#dashboard{padding:6px!important;}
-#view-dashboard{padding:2px!important;}
-#view-dashboard .grid{gap:6px!important;}
-#view-dashboard canvas{height:170px!important;max-height:170px!important;}
-#view-dashboard .text-\[46px\]{font-size:22px!important;}
-#view-dashboard .bg-white\/80{padding:8px!important;border-radius:14px!important;}
-.bg-slate-900\/70{width:100%!important;max-width:94%!important;padding:18px!important;border-radius:22px!important;}
-.card-micro{min-height:34px!important;font-size:10px!important;}
-.percent-big{font-size:.92rem!important;}
-.btn-pdf{padding:6px 10px!important;font-size:8px!important;border-radius:10px!important;}
-.legend-box{font-size:.58rem!important;padding:.7rem!important;}
-.td-mes{font-size:9px!important;}
-.td-mes-strong{font-size:11px!important;}
-.td-total{font-size:12px!important;}
-.td-desc{font-size:9px!important;max-width:130px!important;}
-.td-data{font-size:8px!important;padding:2px!important;}
-.input-mes{width:44px!important;font-size:11px!important;}
-.input-table{width:30px!important;font-size:9px!important;}
-th,td{padding:3px!important;word-break:break-word!important;}
-.grid{gap:6px!important;}
-canvas{max-width:100%!important;height:auto!important;}
+
+#analise,
+#graficos,
+#graficoResumo,
+#graficoGeral,
+#graficoMonitoramento,
+canvas{
+display:block!important;
+visibility:visible!important;
+opacity:1!important;
+}
+
+/*=========================================================
+011 TABELAS
+=========================================================*/
+table{
+width:100%!important;
+border-collapse:collapse!important;
+background:#ffffff!important;
+border-radius:16px!important;
+overflow:hidden!important;
+}
+
+th{
+background:#f8fafc!important;
+color:#0f172a!important;
+font-size:11px!important;
+font-weight:900!important;
+padding:10px 8px!important;
+border-bottom:1px solid rgba(0,0,0,.05)!important;
+text-transform:uppercase!important;
+}
+
+td{
+padding:9px 8px!important;
+font-size:11px!important;
+font-weight:700!important;
+color:#1e293b!important;
+border-bottom:1px solid rgba(0,0,0,.04)!important;
+}
+
+tr{
+position:relative!important;
+z-index:1!important;
+}
+
+.tr-hover:hover{
+background:rgba(160,140,120,.08)!important;
+}
+
+.row-100{
+background:rgba(150,180,140,.15)!important;
+color:#4b6b4b!important;
+font-weight:700!important;
+}
+
+/*=========================================================
+012 TDs ESPECÍFICOS
+=========================================================*/
+.td-mes{
+font-size:12px!important;
+font-weight:700!important;
+text-align:center!important;
+}
+
+.td-mes-strong{
+font-size:16px!important;
+font-weight:900!important;
+text-align:center!important;
+}
+
+.td-total{
+font-size:18px!important;
+font-weight:900!important;
+text-align:right!important;
+}
+
+.td-desc{
+font-size:11px!important;
+max-width:280px!important;
+white-space:normal!important;
+line-height:1.2!important;
+word-break:break-word!important;
+}
+
+.td-data{
+padding:4px!important;
+font-size:11px!important;
+font-weight:700!important;
+text-align:center!important;
+vertical-align:middle!important;
+white-space:nowrap!important;
+line-height:1!important;
+}
+
+/*=========================================================
+013 INPUTS
+=========================================================*/
+input,
+select,
+textarea{
+background:#ffffff!important;
+color:#000000!important;
+font-weight:800!important;
+}
+
+select{
+position:relative!important;
+z-index:10!important;
+cursor:pointer!important;
+background:#f3ece2!important;
+color:#4f463e!important;
+border:1px solid rgba(120,102,84,.12)!important;
+}
+
+option{
+background:#ffffff!important;
+color:#000000!important;
+}
+
+.input-mes{
+width:60px!important;
+font-size:16px!important;
+font-weight:900!important;
+text-align:center!important;
+background:#f3ece2!important;
+border:1px solid rgba(120,102,84,.15)!important;
+border-radius:6px!important;
+color:#5c4d3d!important;
+}
+.input-table{
+width:45px!important;
+border:none!important;
+background:transparent!important;
+color:#8b6b45!important;
+font-size:11px!important;
+font-weight:800!important;
+text-align:center!important;
 }
 /*=========================================================
-009 PAINEL GERAL DE ACESSO
+014 FILTROS
 =========================================================*/
-.painel-geral-acesso{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:url('../assets/portovelho.png') center center/cover no-repeat;overflow:hidden;font-family:Inter,Arial,sans-serif}
-.painel-geral-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,80,150,.10),rgba(0,0,0,.25));backdrop-filter:saturate(1.2)}
-.painel-geral-conteudo{position:relative;z-index:2;width:min(1500px,94vw);display:flex;flex-direction:column;align-items:center;justify-content:center}
-.painel-geral-titulo{font-size:clamp(34px,5vw,72px);font-weight:1000;color:#ffffff;letter-spacing:8px;text-align:center;text-shadow:0 8px 20px rgba(0,0,0,.45)}
-.painel-geral-subtitulo{font-size:clamp(18px,2vw,30px);font-weight:700;color:#ffffff;margin-top:12px;margin-bottom:42px;text-shadow:0 5px 14px rgba(0,0,0,.45)}
-.painel-geral-grid{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:28px;align-items:stretch}
-.painel-card{height:470px;border-radius:28px;overflow:hidden;background:rgba(255,255,255,.62);box-shadow:0 24px 70px rgba(0,0,0,.28);border:2px solid rgba(255,255,255,.72);backdrop-filter:blur(12px);cursor:pointer;transition:.25s ease;display:flex;flex-direction:column}
-.painel-card:hover{transform:translateY(-8px) scale(1.015);box-shadow:0 30px 90px rgba(0,0,0,.38)}
-.painel-card-topo{height:92px;display:flex;align-items:center;justify-content:center;gap:20px;color:#fff}
-.painel-topo-sedam{background:linear-gradient(135deg,#123b17,#0f2f13)}
-.painel-topo-sepat{background:linear-gradient(135deg,#0877d8,#0050aa);flex-direction:column;gap:2px}
-.painel-topo-queimadas{height:0;background:transparent;position:relative}
-.painel-logo-texto{font-size:28px;font-weight:1000;letter-spacing:2px}
-.painel-logo-ro{font-size:44px;font-weight:1000;line-height:.72;border-left:2px solid rgba(255,255,255,.7);padding-left:18px}
-.painel-logo-ro span{font-size:28px;font-weight:900}
-.painel-logo-sepat{font-size:44px;font-weight:1000;letter-spacing:3px;line-height:1}
-.painel-logo-sub{font-size:15px;font-weight:700;text-align:center;line-height:1.15}
-.painel-logo-fogo{position:absolute;right:28px;top:26px;width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#c2410c,#7c2d12);border:3px solid rgba(255,255,255,.82);font-size:38px;box-shadow:0 14px 35px rgba(0,0,0,.35);z-index:5}
-.painel-card-img{height:205px;background-size:cover;background-position:center}
-.painel-img-sedam{background-image:url('../assets/portovelho.png')}
-.painel-img-sepat{background-image:linear-gradient(rgba(0,80,170,.08),rgba(0,80,170,.08)),url('../assets/sepat-card.png')}
-.painel-img-queimadas{background-image:linear-gradient(rgba(120,40,10,.10),rgba(120,40,10,.10)),url('../assets/queimadas-card.png');height:297px}
-.painel-card-base{flex:1;background:rgba(255,255,255,.78);padding:24px 30px 28px;display:flex;flex-direction:column;justify-content:space-between}
-.painel-card-titulo{font-size:clamp(25px,2.2vw,38px);font-weight:1000;line-height:1.16;text-shadow:0 2px 0 rgba(255,255,255,.6)}
-.sedam-cor{color:#17451d}
-.sepat-cor{color:#073f91}
-.queimadas-cor{color:#7c2d12}
-.painel-card-btn{height:56px;border:none;border-radius:14px;font-size:18px;font-weight:1000;display:flex;align-items:center;justify-content:space-between;padding:0 22px;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.18)}
-.btn-sedam{background:#17451d;color:#fff}
-.btn-sepat{background:#f8fbff;color:#0759c9;border:1px solid rgba(0,90,200,.35)}
-.btn-queimadas{background:#fffaf5;color:#c2410c;border:1px solid rgba(194,65,12,.35)}
-
-/*=========================================================
-010 STATUS E CORES
-=========================================================*/
-.bg-status-red{background-color:#d6b7a7!important}
-.bg-status-yellow{background-color:#dcc9a3!important}
-.bg-status-green{background-color:#b9c9b1!important}
-.row-100{background:rgba(150,180,140,.15)!important;color:#4b6b4b;font-weight:700}
-#tab-perfis{background:#e7dccd;color:#7b5c3d;font-weight:600}
-
-/*=========================================================
-011 SELECTS E FILTROS GRÁFICOS
-=========================================================*/
-#filtroItem,#filtroSubitem{
+#filtroItem,
+#filtroSubitem{
 width:100%!important;
 max-width:100%!important;
 min-width:0!important;
@@ -206,394 +286,24 @@ white-space:nowrap!important;
 overflow:hidden!important;
 text-overflow:ellipsis!important;
 }
-#filtroItem option,#filtroSubitem option{
+
+#filtroItem option,
+#filtroSubitem option{
 font-size:11px!important;
-max-width:100%!important;
 white-space:nowrap!important;
 overflow:hidden!important;
 text-overflow:ellipsis!important;
 }
-select{
-position:relative;
-z-index:10;
-pointer-events:auto;
-cursor:pointer;
-background:#f3ece2;
-color:#4f463e;
-border:1px solid rgba(120,102,84,.12);
-}
-input,select,textarea{
-color:#000000!important;
-font-weight:800!important;
-background:#ffffff!important;
-}
-option{
-color:#000000!important;
-background:#ffffff!important;
-}
-
 /*=========================================================
-012 AJUSTES COMPLEMENTARES
+015 CARDS RESUMO
 =========================================================*/
-#descSubitem{
-background:#dbeafe!important;
-border:2px solid #1e3a8a!important;
-color:#000000!important;
-font-size:18px!important;
-font-weight:800!important;
-padding:18px!important;
-border-radius:14px!important;
-line-height:1.8!important;
-}
-tr{
-position:relative;
-z-index:1;
-}
-#view-dashboard .rounded-3xl{
-border-radius:22px!important;
-}
-#view-dashboard .shadow,
-#view-dashboard .shadow-lg{
-box-shadow:0 4px 18px rgba(0,0,0,.06)!important;
-}
-#view-dashboard tr:hover{
-background:#f8fafc!important;
-}
-.kpi-card,.card-dashboard,.mini-card{
-background:#ffffff!important;
-border:1px solid rgba(0,0,0,.05)!important;
-border-radius:22px!important;
-box-shadow:0 4px 18px rgba(0,0,0,.05)!important;
-backdrop-filter:blur(10px)!important;
-transition:.2s!important;
-}
-.kpi-card:hover,.card-dashboard:hover,.mini-card:hover{
-transform:translateY(-2px)!important;
-box-shadow:0 8px 24px rgba(0,0,0,.08)!important;
-}
-#view-dashboard .chart-container,
-#view-dashboard .grafico-container,
-#view-dashboard .box-chart{
-min-height:220px!important;
-max-height:240px!important;
-padding:10px!important;
-overflow:visible!important;
-position:relative;
-z-index:1;
-}
-#view-dashboard canvas{
-height:180px!important;
-max-height:180px!important;
-min-height:180px!important;
-width:100%!important;
-max-width:100%!important;
-}
-
-/*=========================================================
-013 CHANGELOG FINAL
-=========================================================*/
-/*
-✔ LOGIN SEDAM REFINADO
-✔ PAINEL GERAL AJUSTADO
-✔ DASHBOARD COMPACTO
-✔ GRÁFICOS SEM TELA BRANCA
-✔ KPIS MELHORADOS
-✔ MOBILE OTIMIZADO
-✔ TABS REFINADAS
-✔ GLASSMORPHISM
-✔ CANVAS AJUSTADO
-✔ FILTROS MELHORADOS
-✔ RESPONSIVIDADE UNIFICADA
-✔ CSS ORGANIZADO EM BLOCOS
-✔ SEM LINHAS VAZIAS EXTRAS
-✔ PADRÃO VISUAL PROFISSIONAL
-*/
-/*=========================================================014 LOGIN CARDS SOBREPOSIÇÃO=========================================================*/
-.login-card-sepat-img,.login-card-sedam-img{
-position:relative;
-z-index:20;
-width:100%;
-max-width:520px;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-gap:18px;
-}
-.login-img-unificada{
-position:relative;
-z-index:1;
-width:100%;
-max-width:500px;
-border-radius:34px;
-box-shadow:0 20px 45px rgba(0,0,0,.25);
-pointer-events:none;
-}
-.login-actions-sepat,.login-actions-sedam{
-position:relative;
-z-index:30;
-width:100%;
-max-width:360px;
-display:flex;
-flex-direction:column;
-gap:12px;
-margin-top:-30px;
-padding:22px;
-background:rgba(255,255,255,.92);
-border-radius:24px;
-box-shadow:0 10px 30px rgba(0,0,0,.18);
-backdrop-filter:blur(10px);
-}
-.login-actions-sepat button,.login-actions-sedam button,.login-actions-sepat input,.login-actions-sedam input{
-position:relative;
-z-index:10;
-pointer-events:auto;
-}
-/*=========================================================015 MICRO AJUSTES DASHBOARD=========================================================*/
-#view-dashboard .p-5{padding:18px!important;}
-#view-dashboard .p-4{padding:14px!important;}
-#view-dashboard .mb-5{margin-bottom:14px!important;}
-#view-dashboard .gap-5{gap:14px!important;}
-#view-dashboard .gap-4{gap:12px!important;}
-#view-dashboard .text-\[18px\]{font-size:16px!important;font-weight:800!important;}
-#view-dashboard .text-\[12px\]{font-size:11px!important;line-height:1.2!important;}
-#view-dashboard .text-\[11px\]{font-size:10px!important;line-height:1.1!important;}
-
-/*=========================================================016 CORREÇÕES FINAIS CANVAS=========================================================*/
-canvas{display:block!important;visibility:visible!important;opacity:1!important;max-width:100%!important;}
-.chart-container canvas,.box-chart canvas,.grafico-card canvas{object-fit:contain!important;}
-
-/*=========================================================017 FINAL=========================================================*/
-/*ARQUIVO FINAL CONSOLIDADO SEDAM + PAINEL GERAL ESTRUTURA COMPLETA 001 AO 017*/
-/*=========================================================
-SEDAM TOPO MODELO SEPAT
-=========================================================*/
-.topo-sedam-modern{
-position:sticky;
-top:0;
-z-index:50;
-min-height:84px;
-padding:14px 22px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-background:linear-gradient(135deg,#15803d,#22c55e);
-border-bottom:1px solid rgba(255,255,255,.18);
-box-shadow:0 12px 30px rgba(22,163,74,.22);
-color:#ffffff;
-}
-
-.topo-esquerda-sedam{
-display:flex;
-flex-direction:column;
-justify-content:center;
-}
-
-.titulo-sedam-modern{
-font-size:22px;
-font-weight:1000;
-letter-spacing:1px;
-line-height:1.1;
-margin:0;
-color:#ffffff;
-}
-
-.usuario-sedam-modern{
-font-size:11px;
-font-weight:800;
-opacity:.94;
-margin-top:4px;
-color:#ffffff;
-text-transform:uppercase;
-font-style:normal;
-}
-
-.topo-direita-sedam{
-display:flex;
-align-items:center;
-justify-content:flex-end;
-gap:12px;
-flex-wrap:nowrap;
-margin-left:auto;
-}wrap:wrap;
-}
-
-.mini-kpis-sedam{
-display:flex;
-align-items:center;
-gap:8px;
-margin-right:12px;
-}
-
-.mini-kpi-sedam{
-min-width:84px;
-height:48px;
-padding:4px 10px;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-border-radius:14px;
-color:#ffffff;
-font-weight:1000;
-box-shadow:0 6px 18px rgba(0,0,0,.12);
-border:none;
-}
-
-.mini-kpi-sedam span{
-font-size:18px;
-line-height:1;
-font-weight:1000;
-}
-
-.mini-kpi-sedam small{
-font-size:9px;
-letter-spacing:.5px;
-font-weight:1000;
-margin-top:2px;
-}
-
-.mini-kpi-sedam.azul{
-background:linear-gradient(135deg,#2563eb,#38bdf8);
-}
-
-.mini-kpi-sedam.verde{
-background:linear-gradient(135deg,#16a34a,#4ade80);
-}
-
-.media-topo-sedam{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-padding:0 10px;
-margin-right:6px;
-}
-
-.media-topo-sedam div{
-font-size:9px;
-font-weight:1000;
-letter-spacing:.5px;
-line-height:1;
-color:#ffffff;
-}
-
-.media-topo-sedam strong{
-font-size:28px;
-font-weight:1000;
-line-height:1;
-margin-top:2px;
-color:#ffffff;
-}
-
-.btn-topo-sedam{
-padding:8px 13px;
-border-radius:12px;
-border:1px solid rgba(255,255,255,.45);
-background:rgba(255,255,255,.14);
-color:#ffffff;
-font-size:11px;
-font-weight:1000;
-cursor:pointer;
-transition:.2s ease;
-display:flex;
-align-items:center;
-justify-content:center;
-gap:6px;
-text-decoration:none;
-height:40px;
-}
-
-.btn-topo-sedam:hover{
-background:rgba(255,255,255,.24);
-transform:translateY(-1px);
-}
-
-.btn-topo-sedam.sair{
-background:rgba(127,29,29,.35);
-}
-
-@media(max-width:768px){
-
-.topo-sedam-modern{
-flex-direction:column;
-align-items:flex-start;
-gap:12px;
-}
-
-.topo-direita-sedam{
-width:100%;
-}
-
-.btn-topo-sedam{
-flex:1;
-}
-
-.titulo-sedam-modern{
-font-size:18px;
-}
-
-}
-#btn-ocultar{
-display:inline-flex!important;
-align-items:center!important;
-justify-content:center!important;
-visibility:visible!important;
-opacity:1!important;
-white-space:nowrap;
-}
-/*=========================================================
-018 MODAL ITEM SUBITEM
-=========================================================*/
-.modal,
-.modal-overlay,
-.modal-card,
-.popup-item,
-.popup-subitem{
-position:fixed!important;
-z-index:999999!important;
-}
-
-.modal-card,
-.popup-item,
-.popup-subitem{
-overflow:auto!important;
-max-height:92vh!important;
-}
-.card-micro{
-position:relative!important;
-z-index:9999!important;
-overflow:visible!important;
-}
-
-#cards-container{
-position:relative!important;
-z-index:9999!important;
-overflow:visible!important;
-}
-
-.modal-resumo,
-.modal-detalhes,
-.popup-resumo{
-position:fixed!important;
-z-index:999999!important;
-}
-#dashboard{
-position:relative!important;
-z-index:1!important;
-overflow:visible!important;
-}
-
-#view-resumo{
-position:relative!important;
-z-index:9999!important;
-overflow:visible!important;
-}
-
 #cards-container{
 position:relative!important;
 z-index:999999!important;
 overflow:visible!important;
+display:grid!important;
+grid-template-columns:repeat(auto-fill,minmax(220px,1fr))!important;
+gap:14px!important;
 }
 
 #cards-container .flex{
@@ -606,15 +316,196 @@ overflow:visible!important;
 position:relative!important;
 z-index:999999!important;
 overflow:visible!important;
+display:flex!important;
+flex-direction:column!important;
+justify-content:center!important;
+align-items:center!important;
+min-height:135px!important;
+padding:14px!important;
+border-radius:24px!important;
+box-shadow:0 10px 28px rgba(0,0,0,.10)!important;
+border:1px solid rgba(255,255,255,.5)!important;
+transition:.22s ease!important;
+cursor:pointer!important;
+backdrop-filter:blur(8px)!important;
 transform:none!important;
 filter:none!important;
 }
 
-.tab-view{
-overflow:visible!important;
+.card-micro:hover{
+transform:translateY(-4px)!important;
+box-shadow:0 16px 34px rgba(0,0,0,.14)!important;
 }
 
-main{
+.bg-status-green{
+background:linear-gradient(135deg,#bbf7d0,#86efac,#dcfce7)!important;
+}
+
+.bg-status-yellow{
+background:linear-gradient(135deg,#fef3c7,#fde68a,#fff7cc)!important;
+}
+
+.bg-status-red{
+background:linear-gradient(135deg,#fecaca,#fca5a5,#ffe2e2)!important;
+}
+
+.percent-big{
+font-size:34px!important;
+font-weight:1000!important;
+line-height:1!important;
+color:#0f172a!important;
+margin-top:10px!important;
+}
+
+/*=========================================================
+016 RESUMO TEXTO
+=========================================================*/
+.card-micro .titulo-item{
+font-size:18px!important;
+font-weight:1000!important;
+line-height:1!important;
+color:#0f172a!important;
+text-align:center!important;
+}
+
+.card-micro .subtitulo-item{
+margin-top:4px!important;
+font-size:11px!important;
+font-weight:1000!important;
+line-height:1!important;
+color:#1e293b!important;
+text-align:center!important;
+}
+
+.card-micro .descricao-item{
+margin-top:8px!important;
+font-size:11px!important;
+font-weight:700!important;
+line-height:1.3!important;
+color:#111827!important;
+text-align:center!important;
+word-break:break-word!important;
+}
+
+/*=========================================================
+017 CONCLUÍDOS
+=========================================================*/
+#concluidos-container{
+display:grid!important;
+grid-template-columns:repeat(auto-fill,minmax(220px,1fr))!important;
+gap:14px!important;
+}
+
+#concluidos-list{
+margin-top:18px!important;
+padding:18px!important;
+border-radius:22px!important;
+background:#ffffff!important;
+box-shadow:0 10px 28px rgba(0,0,0,.06)!important;
+}
+
+#concluidos-list .border-b{
+padding-bottom:10px!important;
+margin-bottom:10px!important;
+border-bottom:1px solid rgba(0,0,0,.06)!important;
+}
+
+/*=========================================================
+018 MODAIS
+=========================================================*/
+.modal,
+.modal-resumo,
+.modal-detalhes,
+.popup-resumo,
+.popup-item,
+.popup-subitem{
+position:fixed!important;
+inset:0!important;
+z-index:999999999!important;
+display:flex!important;
+align-items:center!important;
+justify-content:center!important;
+padding:20px!important;
+background:rgba(15,23,42,.55)!important;
+backdrop-filter:blur(4px)!important;
+}
+
+.modal-card,
+.modal-content,
+.popup-card{
+position:relative!important;
+z-index:999999999!important;
+width:min(1100px,96vw)!important;
+max-height:92vh!important;
+overflow:auto!important;
+padding:22px!important;
+border-radius:28px!important;
+background:#ffffff!important;
+box-shadow:0 30px 80px rgba(0,0,0,.35)!important;
+}
+
+.modal-close{
+position:absolute!important;
+top:14px!important;
+right:14px!important;
+width:36px!important;
+height:36px!important;
+border:none!important;
+border-radius:50%!important;
+background:#dc2626!important;
+color:#ffffff!important;
+font-size:22px!important;
+font-weight:1000!important;
+cursor:pointer!important;
+display:flex!important;
+align-items:center!important;
+justify-content:center!important;
+}
+
+.modal-title{
+font-size:20px!important;
+font-weight:1000!important;
+line-height:1.1!important;
+color:#0f172a!important;
+margin-bottom:14px!important;
+}
+
+.modal-grid{
+display:grid!important;
+grid-template-columns:repeat(auto-fill,minmax(110px,1fr))!important;
+gap:10px!important;
+margin-top:16px!important;
+}
+
+.modal-box{
+padding:10px!important;
+border-radius:14px!important;
+background:#f8fafc!important;
+text-align:center!important;
+}
+
+.modal-box div:first-child{
+font-size:10px!important;
+font-weight:1000!important;
+color:#475569!important;
+}
+
+.modal-box div:last-child{
+margin-top:4px!important;
+font-size:18px!important;
+font-weight:1000!important;
+color:#0f172a!important;
+}
+
+/*=========================================================
+019 OVERFLOW FINAL
+=========================================================*/
+.tab-view,
+.tab-content,
+main,
+section,
+.container,
+.dashboard-grid{
 overflow:visible!important;
 }
 
@@ -622,3 +513,53 @@ body{
 overflow-x:hidden!important;
 overflow-y:auto!important;
 }
+/*=========================================================
+020 PERFIS
+=========================================================*/
+.lista-perfis-sepat,.lista-perfis{background:#fff;border-radius:22px;padding:16px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+.perfil-row-sepat,.perfil-row{display:grid;grid-template-columns:2fr 1fr 1fr 120px 70px;gap:10px;padding:10px;border-bottom:1px solid rgba(0,0,0,.06);align-items:center;font-size:11px;font-weight:800}
+.inputPerfilSepat,.inputPerfilTCEROSepat,.inputPerfil{width:100%;height:34px;border:1px solid #cbd5e1;border-radius:10px;padding:0 10px;font-size:12px;font-weight:800;background:#fff;color:#0f172a}
+.btn-excluir-perfil{width:28px;height:28px;border:none;border-radius:8px;background:#dc2626;color:#fff;font-size:12px;font-weight:1000;cursor:pointer;display:flex;align-items:center;justify-content:center}
+/*=========================================================
+021 BOTÕES PDF E BACKUP
+=========================================================*/
+.btn-pdf,.btn-backup,.btn-filtro{height:38px;padding:0 14px;border:none;border-radius:12px;font-size:11px;font-weight:1000;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:.2s ease}
+.btn-pdf{background:#dc2626;color:#fff}
+.btn-backup{background:#2563eb;color:#fff}
+.btn-filtro{background:#f3ece2;color:#5c4d3d}
+.btn-pdf:hover,.btn-backup:hover,.btn-filtro:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,0,0,.12)}
+/*=========================================================
+022 PAINEL GERAL
+=========================================================*/
+.painel-geral-acesso{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;overflow:auto;background:url('../assets/portovelho.png') center center/cover no-repeat}
+.painel-geral-overlay{position:absolute;inset:0;background:rgba(255,255,255,.18);backdrop-filter:blur(4px)}
+.painel-geral-conteudo{position:relative;z-index:2;width:min(1400px,96vw);padding:20px}
+.painel-geral-titulo{text-align:center;font-size:34px;font-weight:1000;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.25)}
+.painel-geral-subtitulo{text-align:center;font-size:14px;font-weight:800;color:#fff;margin-top:6px}
+.painel-geral-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;margin-top:28px}
+.painel-card{overflow:hidden;border-radius:32px;background:rgba(255,255,255,.92);box-shadow:0 20px 50px rgba(0,0,0,.18);cursor:pointer;transition:.22s ease}
+.painel-card:hover{transform:translateY(-6px)}
+.painel-card-topo{display:flex;align-items:center;justify-content:space-between;padding:18px}
+.painel-card-img{height:240px;background-size:cover;background-position:center}
+.painel-card-base{padding:18px}
+.painel-card-titulo{font-size:24px;font-weight:1000;line-height:1.1}
+.painel-card-btn{width:100%;height:48px;margin-top:14px;border:none;border-radius:16px;font-size:13px;font-weight:1000;display:flex;align-items:center;justify-content:space-between;padding:0 16px;cursor:pointer}
+.btn-sedam{background:#16a34a;color:#fff}
+.btn-sepat{background:#2563eb;color:#fff}
+.btn-queimadas{background:#ea580c;color:#fff}
+.painel-img-sedam{background-image:url('../assets/sedam-card.png')}
+.painel-img-sepat{background-image:url('../assets/sepat-card.png')}
+.painel-img-queimadas{background-image:url('../assets/queimadas-card.png')}
+/*=========================================================
+023 LOGIN UNIFICADO
+=========================================================*/
+.login-card-sedam-img,.login-card-sepat-img{position:relative;z-index:20;width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+.login-img-unificada{width:100%;max-width:500px;border-radius:34px;box-shadow:0 20px 45px rgba(0,0,0,.25);display:block;pointer-events:none}
+.login-actions-sedam,.login-actions-sepat{position:relative;z-index:30;width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px;margin-top:-30px;padding:22px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.login-actions-sedam *,.login-actions-sepat *{pointer-events:auto}
+/*=========================================================
+024 RESPONSIVO
+=========================================================*/
+@media(max-width:1200px){.kpis-sepat{grid-template-columns:repeat(2,1fr)}.grid-dashboard-sepat{grid-template-columns:1fr}.card-grafico-sepat.full{grid-column:auto}.painel-geral-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){nav{gap:8px!important}.tab-btn{min-width:110px!important}.topo-sedam-modern{flex-direction:column;align-items:flex-start;gap:10px}.topo-direita-sedam{width:100%;justify-content:flex-start;flex-wrap:wrap}.mini-kpis-sedam{flex-wrap:wrap}}
+@media(max-width:680px){.main-sepat,#dashboard{padding:10px!important}.kpis-sepat{grid-template-columns:1fr}.grid-dashboard-sepat{grid-template-columns:1fr}.card-grafico-sepat canvas{height:230px!important}.cards-resumo-sepat,#cards-container,#concluidos-container{grid-template-columns:1fr!important}.barra-filtros-sepat{align-items:stretch}.btn-filtro-sepat,.btn-pdf-sepat,.input-busca-sepat,.select-sepat,.btn-pdf,.btn-backup,.btn-filtro{width:100%!important;min-width:100%!important}.painel-geral-grid{grid-template-columns:1fr}.painel-card-img{height:200px}.tab-btn{min-width:96px!important;min-height:62px!important;font-size:.6rem!important}.perfil-row-sepat,.perfil-row{grid-template-columns:1fr!important}}
