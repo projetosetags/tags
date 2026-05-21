@@ -351,3 +351,21 @@ USER_MONITORAMENTO?.username||
 el.innerHTML=formatarNomeLGPD(nome)
 
 }
+/*=========================================================
+100 MONITORAMENTO-CORE.JS COLAPSAR GRAFICOS
+=========================================================*/
+function toggleGraficosDashboard(){
+
+let painel=document.getElementById(
+'painelGraficosDashboard'
+)
+
+if(!painel){
+return
+}
+
+painel.classList.toggle(
+'graficos-recolhidos'
+)
+
+}
