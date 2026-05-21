@@ -62,7 +62,18 @@ nav{display:flex!important;flex-wrap:nowrap!important;align-items:center!importa
 =========================================================*/
 .tab-content{display:none!important;width:100%!important;}
 .tab-content.active{display:block!important;width:100%!important;animation:fadePainel .25s ease;}
-.graficos-grid,.chart-container,.grafico-card,.box-chart{display:grid!important;visibility:visible!important;opacity:1!important;width:100%!important;height:260px!important;max-height:260px!important;min-height:260px!important;overflow:hidden!important;}
+.graficos-grid,.chart-container,.grafico-card,.box-chart{
+display:grid!important;
+visibility:visible!important;
+opacity:1!important;
+width:100%!important;
+height:260px!important;
+max-height:260px!important;
+min-height:260px!important;
+overflow:visible!important;
+position:relative;
+z-index:1;
+}
 .grafico-card canvas,.box-chart canvas,.chart-container canvas,#graficoResumo,#graficoMonitoramento,#graficoGeral,#graficoLinha,#graficoPizza,#graficoBarras{display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;height:220px!important;max-height:220px!important;min-height:220px!important;}
 #analise,#graficos,#graficoResumo,#graficoGeral,#graficoMonitoramento,canvas{display:block!important;visibility:visible!important;opacity:1!important;}
 @keyframes fadePainel{from{opacity:.4;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
@@ -266,7 +277,9 @@ box-shadow:0 8px 24px rgba(0,0,0,.08)!important;
 min-height:220px!important;
 max-height:240px!important;
 padding:10px!important;
-overflow:hidden!important;
+overflow:visible!important;
+position:relative;
+z-index:1;
 }
 #view-dashboard canvas{
 height:180px!important;
@@ -528,4 +541,22 @@ justify-content:center!important;
 visibility:visible!important;
 opacity:1!important;
 white-space:nowrap;
+}
+/*=========================================================
+018 MODAL ITEM SUBITEM
+=========================================================*/
+.modal,
+.modal-overlay,
+.modal-card,
+.popup-item,
+.popup-subitem{
+position:fixed!important;
+z-index:999999!important;
+}
+
+.modal-card,
+.popup-item,
+.popup-subitem{
+overflow:auto!important;
+max-height:92vh!important;
 }
