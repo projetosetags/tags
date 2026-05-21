@@ -47,11 +47,18 @@ ENTRAR
 <div id="appMonitoramento" style="display:none;">
 
 <!--=========================================================
-003 CABEÇALHO SUPERIOR
+003 MONITORAMENTO.HTML TOPO COLAPSÁVEL
 =========================================================-->
-<header class="topbar">
-<div class="topbar-left">
-<div class="logo-box">📊</div>
+<div class="topo-wrapper">
+<div class="topo-header">
+<div class="topo-titulo-box">
+<button class="btn-colapsar" onclick="toggleTopoMonitoramento()">
+☰
+</button>
+<div style="display:flex;align-items:center;gap:14px;">
+<div class="logo-box">
+📊
+</div>
 <div>
 <h1 class="titulo-sistema">
 MONITORAMENTO TÉCNICO
@@ -61,9 +68,10 @@ Tribunal de Contas • Painel de Auditoria
 </div>
 </div>
 </div>
-<div class="topbar-right">
+</div>
+<div class="topo-direita">
 <select id="filtroOrigem" class="select-monitoramento" onchange="filtrarOrigemMonitoramento()">
-<option value="">Todas Origens</option>
+<option value="TODAS">Todas Origens</option>
 <option value="SEDAM">SEDAM</option>
 <option value="SEPAT">SEPAT</option>
 <option value="QUEIMADAS">QUEIMADAS</option>
@@ -71,75 +79,61 @@ Tribunal de Contas • Painel de Auditoria
 <div id="usuarioLogado" class="usuario-logado">
 SESSÃO ATIVA
 </div>
-<button class="btn-padrao vermelho" onclick="logoutMonitoramento()">
+<button class="btn-sair" onclick="logoutMonitoramento()">
 Sair
 </button>
 </div>
-</header>
-
+</div>
+<div id="topoExpandido" class="topo-expandido">
 <!--=========================================================
 004 MENU PRINCIPAL
 =========================================================-->
 <nav class="nav-monitoramento" id="navMonitoramento">
-
 <button class="nav-btn nav-active" onclick="abrirTela('dashboard')">
 📈 Dashboard
 </button>
-
 <button class="nav-btn" onclick="abrirTela('monitoramentos')">
 📂 Monitoramentos
 </button>
-
 <button class="nav-btn" onclick="abrirTela('matriz')">
 🧩 Matriz
 </button>
-
 <button class="nav-btn" onclick="abrirTela('evidencias')">
 📎 Evidências
 </button>
-
 <button class="nav-btn" onclick="abrirTela('analises')">
 🧠 Análises
 </button>
-
 <button class="nav-btn" onclick="abrirTela('relatorios')">
 📄 Relatórios
 </button>
-
 <button class="nav-btn" onclick="abrirTela('resultados')">
 📑 Resultados
 </button>
-
 <button class="nav-btn" onclick="abrirTela('auditoria')">
 🕓 Auditoria
 </button>
-
 <button class="nav-btn" onclick="abrirTela('historico')">
 📈 Histórico
 </button>
-
 <button class="nav-btn" onclick="abrirTela('riscos')">
 🔥 Riscos
 </button>
-
 <button class="nav-btn" onclick="abrirTela('workflow')">
 ✔ Workflow
 </button>
-
 <button class="nav-btn" onclick="abrirTela('executivo')">
 🏛 Executivo
 </button>
-
 <button class="nav-btn" onclick="abrirTela('central')">
 📂 Central
 </button>
-
 <button class="nav-btn" onclick="abrirTela('beneficios')">
 💎 Benefícios
 </button>
-
 </nav>
-
+</div>
+</div>
 <!--=========================================================
 005 DASHBOARD KPIS E GRÁFICOS
 =========================================================-->
