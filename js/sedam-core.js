@@ -1554,7 +1554,7 @@ criticos
 999 SEDAM CORE FUNCTION ABRIRDETALHESRESUMO
 =========================================================*/
 function abrirDetalhesResumo(chave){
-
+document.body.style.overflow='hidden'
 let modal=document.getElementById('modalResumo')
 let conteudo=document.getElementById('conteudoResumo')
 
@@ -1666,7 +1666,7 @@ modal.style.display='flex'
 998 SEDAM CORE FUNCTION FECHARMODALRESUMO
 =========================================================*/
 function fecharModalResumo(){
-
+document.body.style.overflow='auto'
 let modal=document.getElementById('modalResumo')
 
 if(modal){
