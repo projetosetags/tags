@@ -1233,3 +1233,18 @@ box-shadow:0 0 0 2px rgba(59,130,246,.30);
 .nav-monitoramento{display:flex;flex-wrap:wrap!important;gap:10px;padding:12px 18px;}
 .nav-btn{padding:10px 16px!important;font-size:15px!important;border-radius:14px!important;min-width:auto!important;}
 .select-monitoramento option{color:#000!important;background:#fff!important;}
+/*=========================================================
+004 MONITORAMENTO.CSS TOPO LGPD
+=========================================================*/
+.subtitulo-linha{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:8px}
+.subtitulo-sistema{font-size:16px;font-weight:600;color:#cbd5e1}
+.usuario-cabecalho{font-size:15px;font-weight:700;color:#fff;background:rgba(255,255,255,.06);padding:8px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.08)}
+.topo-acoes-direita{display:flex;align-items:center;gap:12px;margin-left:auto;flex-wrap:wrap}
+.select-monitoramento{height:42px;min-width:180px;border-radius:12px;padding:0 14px;font-size:14px;font-weight:700;background:#fff;color:#000;border:none;outline:none}
+.select-monitoramento option{background:#fff;color:#000}
+.btn-sair{height:42px;padding:0 18px;border:none;border-radius:12px;background:#ef4444;color:#fff;font-weight:800;cursor:pointer;transition:.2s}
+.btn-sair:hover{background:#dc2626}
+@media(max-width:1100px){
+.subtitulo-linha{flex-direction:column;align-items:flex-start}
+.topo-acoes-direita{width:100%;justify-content:flex-start}
+}
