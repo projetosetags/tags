@@ -93,7 +93,7 @@ sincronizado_em:new Date().toISOString()
 let{data:existe,error:erroExiste}=await client
 .from('monitoramento_itens')
 .select('id')
-.eq('monitoramento_id',MONITORAMENTO_ATUAL)
+.eq('origem',origem)
 .eq('subitem',d.subitem)
 .limit(1)
 
@@ -264,7 +264,7 @@ sincronizado_em:new Date().toISOString()
 let{data:existe,error:erroExiste}=await client
 .from('monitoramento_itens')
 .select('id')
-.eq('monitoramento_id',MONITORAMENTO_ATUAL)
+.eq('origem',origem)
 .eq('subitem',d.subitem)
 .limit(1)
 
