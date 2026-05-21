@@ -46,7 +46,15 @@ mapaDuplicados[chave]=true
 return true
 })
 data=aplicarFiltroOrigem(data||[])
-let total=data.length
+let subitensUnicos=[
+...new Set(
+(data||[])
+.map(i=>String(i.subitem||'').trim())
+.filter(s=>s!=='')
+)
+]
+
+let total=subitensUnicos.length
 let executadas=0
 let parciais=0
 let naoExecutadas=0
@@ -54,17 +62,33 @@ let andamento=0
 let riscoAlto=0
 let riscoMedio=0
 let riscoBaixo=0
+let mapaStatus={}
 ;(data||[]).forEach(i=>{
 let percentual=Number(i.percentual||0)
+let chave=String(i.subitem||'').trim()
+
+if(!chave){
+return
+}
+
+if(mapaStatus[chave]){
+return
+}
+
+mapaStatus[chave]=true
+
 if(i.status==='EXECUTADA'){
 executadas++
 }
+
 if(i.status==='PARCIALMENTE EXECUTADA'){
 parciais++
 }
+
 if(i.status==='NÃO EXECUTADA'){
 naoExecutadas++
 }
+
 if(i.status==='EM ANDAMENTO'){
 andamento++
 }
