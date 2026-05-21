@@ -60,8 +60,8 @@ let itemClick=k
 let itemNumero=String(itemBase.item||'-')
 let subitemNumero=String(itemBase.subitem||'-')
 html+=`
-<div class="flex flex-col">
-<div class="card-micro ${cor}" onclick="abrirDetalhesResumo('${itemClick}')" style="padding:12px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+<div class="flex flex-col" style="position:relative;z-index:50;">
+<div class="card-micro ${cor}" onclick="abrirDetalhesResumo('${itemClick}')" style="position:relative;z-index:9999;padding:12px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
 <div style="font-size:18px;font-weight:900;color:#000000;line-height:1;">
 ITEM ${itemNumero}
 </div>
