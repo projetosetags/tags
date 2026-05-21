@@ -413,90 +413,20 @@ border-bottom:1px solid rgba(0,0,0,.06)!important;
 /*=========================================================
 018 MODAIS
 =========================================================*/
-.modal,
-.modal-resumo,
-.modal-detalhes,
-.popup-resumo,
-.popup-item,
-.popup-subitem{
-position:fixed!important;
-inset:0!important;
-z-index:999999999!important;
-display:flex!important;
-align-items:center!important;
-justify-content:center!important;
-padding:20px!important;
-background:rgba(15,23,42,.55)!important;
-backdrop-filter:blur(4px)!important;
-}
-
-.modal-card,
-.modal-content,
-.popup-card{
-position:relative!important;
-z-index:999999999!important;
-width:min(1100px,96vw)!important;
-max-height:92vh!important;
-overflow:auto!important;
-padding:22px!important;
-border-radius:28px!important;
-background:#ffffff!important;
-box-shadow:0 30px 80px rgba(0,0,0,.35)!important;
-}
-
-.modal-close{
-position:absolute!important;
-top:14px!important;
-right:14px!important;
-width:36px!important;
-height:36px!important;
-border:none!important;
-border-radius:50%!important;
-background:#dc2626!important;
-color:#ffffff!important;
-font-size:22px!important;
-font-weight:1000!important;
-cursor:pointer!important;
-display:flex!important;
-align-items:center!important;
-justify-content:center!important;
-}
-
-.modal-title{
-font-size:20px!important;
-font-weight:1000!important;
-line-height:1.1!important;
-color:#0f172a!important;
-margin-bottom:14px!important;
-}
-
-.modal-grid{
-display:grid!important;
-grid-template-columns:repeat(auto-fill,minmax(110px,1fr))!important;
-gap:10px!important;
-margin-top:16px!important;
-}
-
-.modal-box{
-padding:10px!important;
-border-radius:14px!important;
-background:#f8fafc!important;
-text-align:center!important;
-}
-
-.modal-box div:first-child{
-font-size:10px!important;
-font-weight:1000!important;
-color:#475569!important;
-}
-
-.modal-box div:last-child{
-margin-top:4px!important;
-font-size:18px!important;
-font-weight:1000!important;
-color:#0f172a!important;
-}
-
+.modal,.modal-resumo,.modal-detalhes,.popup-resumo,.popup-item,.popup-subitem{position:fixed!important;inset:0!important;z-index:999999999!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:20px!important;background:rgba(15,23,42,.55)!important;backdrop-filter:blur(4px)!important}
+.modal-card,.modal-content,.popup-card{position:relative!important;z-index:999999999!important;width:min(1100px,96vw)!important;max-height:92vh!important;overflow:auto!important;padding:22px!important;border-radius:28px!important;background:#ffffff!important;box-shadow:0 30px 80px rgba(0,0,0,.35)!important}
+.modal-close{position:absolute!important;top:14px!important;right:14px!important;width:36px!important;height:36px!important;border:none!important;border-radius:50%!important;background:#dc2626!important;color:#ffffff!important;font-size:22px!important;font-weight:1000!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.modal-title{font-size:20px!important;font-weight:1000!important;line-height:1.1!important;color:#0f172a!important;margin-bottom:14px!important}
+.modal-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(110px,1fr))!important;gap:10px!important;margin-top:16px!important}
+.modal-box{padding:10px!important;border-radius:14px!important;background:#f8fafc!important;text-align:center!important}
+.modal-box div:first-child{font-size:10px!important;font-weight:1000!important;color:#475569!important}
+.modal-box div:last-child{margin-top:4px!important;font-size:18px!important;font-weight:1000!important;color:#0f172a!important}
+/*=========================================================
+019A MODAIS SOBREPOSIÇÃO
+=========================================================*/
+.modal-overlay,.modal-detalhes,#modalResumo,#modalDetalhes,#modalResumoSedam{position:fixed!important;inset:0!important;z-index:999999!important}
+.modal-card,.modal-conteudo,.modal-card-sedam{position:relative!important;z-index:9999999!important}
+#cards-container,.cards-resumo,.card-micro{position:relative;z-index:1!important;overflow:visible!important}
 /*=========================================================
 019 OVERFLOW FINAL
 =========================================================*/
