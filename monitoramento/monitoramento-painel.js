@@ -21,11 +21,22 @@ let query=client
 .from('monitoramento_itens')
 .select('*')
 
+if(MONITORAMENTO_ATUAL){
+
+query=query.eq(
+'monitoramento_id',
+Number(MONITORAMENTO_ATUAL)
+)
+
+}
+
 if(origem&&origem!=='TODAS'){
+
 query=query.eq(
 'origem',
 origem.toUpperCase()
 )
+
 }
 let{data,error}=await query
 if(error){
