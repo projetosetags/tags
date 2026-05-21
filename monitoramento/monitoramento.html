@@ -50,40 +50,62 @@ ENTRAR
 003 MONITORAMENTO.HTML TOPO COLAPSÁVEL
 =========================================================-->
 <div class="topo-wrapper">
+
 <div class="topo-header">
+
 <div class="topo-titulo-box">
+
 <button class="btn-colapsar" onclick="toggleTopoMonitoramento()">
 ☰
 </button>
+
 <div style="display:flex;align-items:center;gap:14px;">
+
 <div class="logo-box">
 📊
 </div>
+
 <div>
+
 <h1 class="titulo-sistema">
 MONITORAMENTO TÉCNICO
 </h1>
+
+<div class="subtitulo-linha">
+
 <div class="subtitulo-sistema">
 Tribunal de Contas • Painel de Auditoria
 </div>
+
+<div id="usuarioCabecalho" class="usuario-cabecalho">
+USUÁRIO
 </div>
-</div>
-</div>
-<div class="topo-direita">
+
+<div class="topo-acoes-direita">
+
 <select id="filtroOrigem" class="select-monitoramento" onchange="filtrarOrigemMonitoramento()">
 <option value="TODAS">Todas Origens</option>
 <option value="SEDAM">SEDAM</option>
 <option value="SEPAT">SEPAT</option>
 <option value="QUEIMADAS">QUEIMADAS</option>
 </select>
-<div id="usuarioLogado" class="usuario-logado">
-SESSÃO ATIVA
-</div>
+
 <button class="btn-sair" onclick="logoutMonitoramento()">
 Sair
 </button>
+
 </div>
+
 </div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 <div id="topoExpandido" class="topo-expandido">
 <!--=========================================================
 004 MENU PRINCIPAL
