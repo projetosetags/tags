@@ -592,16 +592,13 @@ overflow:visible!important;
 
 #cards-container{
 position:relative!important;
-z-index:99999!important;
+z-index:999999!important;
 overflow:visible!important;
-display:flex!important;
-flex-wrap:wrap!important;
-gap:14px!important;
 }
 
 #cards-container .flex{
 position:relative!important;
-z-index:99999!important;
+z-index:999999!important;
 overflow:visible!important;
 }
 
