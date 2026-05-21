@@ -589,15 +589,34 @@ return dt.toLocaleDateString('pt-BR')+' '+dt.toLocaleTimeString('pt-BR')
 016 MONITORAMENTO-PAINEL.JS ALERTAS TÉCNICOS
 =========================================================*/
 async function carregarAlertasTecnicos(){
-let{data,error}=await client
+
+let origem=''
+
+let filtro=document.getElementById('filtroOrigem')
+
+if(filtro){
+origem=(filtro.value||'').toUpperCase()
+}
+
+let query=client
 .from('monitoramento_itens')
 .select('*')
+
+if(origem&&origem!=='TODAS'){
+query=query.eq(
+'origem',
+origem
+)
+}
+
+let{data,error}=await query
+
 if(error){
 console.log(error)
 return
 }
+
 data=ordenarDataGlobal(data||[])
-data=aplicarFiltroOrigem(data||[])
 let html='<div class="alertas-grid">'
 let hoje=new Date()
 ;(data||[]).forEach(i=>{
