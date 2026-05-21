@@ -558,11 +558,13 @@ function filtrarOrigemMonitoramento(){
 
 let filtro=document.getElementById('filtroOrigem')
 
-ORIGEM_ATUAL=filtro?filtro.value:''
+ORIGEM_ATUAL=filtro
+?String(filtro.value||'').toUpperCase()
+:'TODAS'
 
-if(typeof carregarDashboard==='function'){
 carregarDashboard()
-}
+
+carregarAlertasTecnicos()
 
 if(typeof carregarListaMonitoramentos==='function'){
 carregarListaMonitoramentos()
@@ -590,23 +592,36 @@ return dt.toLocaleDateString('pt-BR')+' '+dt.toLocaleTimeString('pt-BR')
 =========================================================*/
 async function carregarAlertasTecnicos(){
 
-let origem=''
+let origem='TODAS'
 
 let filtro=document.getElementById('filtroOrigem')
 
 if(filtro){
-origem=(filtro.value||'').toUpperCase()
+origem=String(filtro.value||'TODAS')
+.toUpperCase()
+.trim()
 }
 
 let query=client
 .from('monitoramento_itens')
 .select('*')
 
+if(MONITORAMENTO_ATUAL){
+
+query=query.eq(
+'monitoramento_id',
+Number(MONITORAMENTO_ATUAL)
+)
+
+}
+
 if(origem&&origem!=='TODAS'){
+
 query=query.eq(
 'origem',
 origem
 )
+
 }
 
 let{data,error}=await query
@@ -617,56 +632,86 @@ return
 }
 
 data=ordenarDataGlobal(data||[])
-let html='<div class="alertas-grid">'
+
+let html=''
+
 let hoje=new Date()
+
 ;(data||[]).forEach(i=>{
+
 let alertas=[]
+
 let percentual=Number(i.percentual||0)
+
 if(percentual<40){
 alertas.push('Percentual inferior a 40%')
 }
-if(i.criticidade==='ALTA'){
+
+if(String(i.criticidade||'').toUpperCase()==='ALTA'){
 alertas.push('Criticidade alta identificada')
 }
-if(i.status==='NÃO EXECUTADA'){
+
+if(String(i.status||'').toUpperCase()==='NÃO EXECUTADA'){
 alertas.push('Item não executado')
 }
+
 if(i.prazo){
+
 let prazo=new Date(i.prazo)
-if(prazo<hoje&&i.status!=='EXECUTADA'){
+
+if(
+prazo<hoje&&
+String(i.status||'').toUpperCase()!=='EXECUTADA'
+){
 alertas.push('Prazo expirado')
 }
+
 }
+
 if(alertas.length>0){
+
 html+=`
-<div class="alerta-box">
-<div class="alerta-titulo">
-⚠ ITEM ${i.item||'-'}
+<div class="card-alerta-mini">
+
+<div class="card-alerta-titulo">
+⚠ ITEM ${i.item||'-'} — ${i.deliberacao||i.descricao||'-'}
 </div>
-<div class="alerta-texto">
+
+<div class="card-alerta-info">
 ${alertas.map(a=>`• ${a}`).join('<br>')}
 </div>
+
 </div>
 `
+
 }
+
 })
-html+='</div>'
-if(html==='<div class="alertas-grid"></div>'){
+
+if(html===''){
+
 html=`
 <div class="alerta-box" style="background:#064e3b;border-color:#10b981;">
+
 <div class="alerta-titulo">
 ✔ Nenhum alerta crítico identificado
 </div>
+
 <div class="alerta-texto" style="color:#d1fae5;">
 Os itens monitorados encontram-se dentro dos parâmetros técnicos esperados.
 </div>
+
 </div>
 `
+
 }
-let painel=document.getElementById('painelAlertas')
+
+let painel=document.getElementById('cardsDashboard')
+
 if(painel){
 painel.innerHTML=html
 }
+
 }
 
 /*=========================================================
