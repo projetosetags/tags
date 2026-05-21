@@ -1255,3 +1255,11 @@ box-shadow:0 0 0 2px rgba(59,130,246,.30);
 #topoMonitoramento.recolhido{max-height:0;opacity:0;padding-top:0!important;padding-bottom:0!important;margin:0!important;overflow:hidden;}
 .btn-colapsar{width:42px;height:42px;border:none;border-radius:12px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-size:22px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0;}
 .btn-colapsar:hover{transform:scale(1.05);}
+/*=========================================================
+022 MONITORAMENTO.CSS GRAFICOS COLAPSAVEIS
+=========================================================*/
+.barra-graficos-topo{display:flex;justify-content:flex-end;margin-bottom:14px;}
+.btn-colapsar-graficos{background:linear-gradient(135deg,#2563eb,#1d4ed8);border:none;color:#fff;padding:10px 18px;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;transition:.25s;box-shadow:0 8px 24px rgba(37,99,235,.25);}
+.btn-colapsar-graficos:hover{transform:translateY(-2px);}
+#painelGraficosDashboard{max-height:4000px;overflow:hidden;transition:all .35s ease;opacity:1;}
+#painelGraficosDashboard.graficos-recolhidos{max-height:0;opacity:0;overflow:hidden;margin:0!important;padding:0!important;}
