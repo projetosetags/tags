@@ -613,24 +613,23 @@ let query=client
 .from('monitoramento_itens')
 .select('*')
 
+if(
+ORIGEM_ATUAL&&
+ORIGEM_ATUAL!=='TODAS'
+){
+query=query.eq(
+'origem',
+ORIGEM_ATUAL
+)
+}
+
 if(MONITORAMENTO_ATUAL){
 
 query=query.eq(
 'monitoramento_id',
 Number(MONITORAMENTO_ATUAL)
 )
-
 }
-
-if(origem&&origem!=='TODAS'){
-
-query=query.eq(
-'origem',
-origem
-)
-
-}
-
 let{data,error}=await query
 
 if(error){
