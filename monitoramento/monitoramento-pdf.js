@@ -429,29 +429,33 @@ yCards
 yCards+=8
 
 let xCard=12
-let larguraCard=86
-let alturaCard=30
+let larguraCard=128
+let alturaCard=48
 let gap=6
 let coluna=0
 
 cards.forEach((card,index)=>{
 
 let titulo=
-card.querySelector(
-'.card-alerta-titulo'
+(
+card.querySelector('.card-alerta-titulo')
+?.textContent||'-'
 )
-?.innerText||'-'
+.replace(/\s+/g,' ')
+.trim()
 
 let info=
-card.querySelector(
-'.card-alerta-info'
+(
+card.querySelector('.card-alerta-info')
+?.textContent||'-'
 )
-?.innerText||'-'
+.replace(/\s+/g,' ')
+.trim()
 
-if(coluna===3){
+if(coluna===2){
 coluna=0
 xCard=12
-yCards+=36
+yCards+=56
 }
 
 if(yCards>180){
@@ -520,7 +524,7 @@ pdf.setFont(
 'bold'
 )
 
-pdf.setFontSize(7)
+pdf.setFontSize(9)
 
 let tituloLinhas=
 pdf.splitTextToSize(
@@ -539,7 +543,7 @@ pdf.setFont(
 'normal'
 )
 
-pdf.setFontSize(5)
+pdf.setFontSize(7)
 
 let infoLinhas=
 pdf.splitTextToSize(
@@ -548,7 +552,7 @@ larguraCard-6
 )
 
 pdf.text(
-infoLinhas.slice(0,5),
+infoLinhas.slice(0,8),
 xCard+3,
 yCards+18
 )
@@ -590,8 +594,17 @@ pdf.text(
 196
 )
 
+let nomeArquivo='dashboard_monitoramento'
+if(origem==='SEDAM'){
+nomeArquivo='dashboard_sedam'
+}
+if(origem==='SEPAT'){
+nomeArquivo='dashboard_sepat'
+}
+if(origem==='QUEIMADAS'){
+nomeArquivo='dashboard_queimadas'
+}
 pdf.save(
-'dashboard-monitoramento.pdf'
+nomeArquivo+'.pdf'
 )
-
 }
