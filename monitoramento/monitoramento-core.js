@@ -5,6 +5,10 @@ let ORIGEM_ATUAL='TODAS'
 001 MONITORAMENTO CORE FUNCTION ABRIRTELA
 =========================================================*/
 function abrirTela(nome){
+localStorage.setItem(
+'tela_monitoramento',
+nome
+)
 if(typeof USER_MONITORAMENTO==='undefined'||!USER_MONITORAMENTO){
 return
 }
@@ -186,6 +190,17 @@ MONITORAMENTO_ATUAL=Number(monitoramentoSalvo)
 }
 if(USER_MONITORAMENTO){
 await carregarDashboard()
+let telaSalva=
+localStorage.getItem(
+'tela_monitoramento'
+)
+
+if(
+telaSalva&&
+typeof abrirTela==='function'
+){
+abrirTela(telaSalva)
+}
 }
 if(typeof atualizarMonitoramentoAutomatico==='function'){
 await atualizarMonitoramentoAutomatico()
