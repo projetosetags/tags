@@ -426,21 +426,25 @@ pdf.text(
 yCards
 )
 
-yCards+=8
+yCards+=10
 
-let xCard=12
-let larguraCard=128
-let alturaCard=48
-let gap=6
-let coluna=0
+pdf.setFont(
+'helvetica',
+'normal'
+)
 
-cards.forEach((card,index)=>{
+pdf.setFontSize(8)
+
+let contador=1
+
+cards.forEach(card=>{
 
 let titulo=
 (
 card.querySelector('.card-alerta-titulo')
 ?.textContent||'-'
 )
+.replace(/[^\x20-\x7EÀ-ÿ]/g,' ')
 .replace(/\s+/g,' ')
 .trim()
 
@@ -449,16 +453,27 @@ let info=
 card.querySelector('.card-alerta-info')
 ?.textContent||'-'
 )
+.replace(/[^\x20-\x7EÀ-ÿ]/g,' ')
 .replace(/\s+/g,' ')
 .trim()
 
-if(coluna===2){
-coluna=0
-xCard=12
-yCards+=56
-}
+let texto=
+contador+
+'. '+
+titulo+
+'\n'+
+info
 
-if(yCards>180){
+let linhas=
+pdf.splitTextToSize(
+texto,
+260
+)
+
+let alturaBloco=
+(linhas.length*4)+10
+
+if(yCards+alturaBloco>180){
 
 pdf.addPage()
 
@@ -476,9 +491,13 @@ altura,
 'F'
 )
 
+pdf.setTextColor(
+255,
+255,
+255
+)
+
 yCards=20
-xCard=12
-coluna=0
 
 }
 
@@ -489,10 +508,10 @@ pdf.setFillColor(
 )
 
 pdf.roundedRect(
-xCard,
-yCards,
-larguraCard,
-alturaCard,
+10,
+yCards-4,
+275,
+alturaBloco,
 3,
 3,
 'F'
@@ -505,63 +524,26 @@ pdf.setDrawColor(
 )
 
 pdf.roundedRect(
-xCard,
-yCards,
-larguraCard,
-alturaCard,
+10,
+yCards-4,
+275,
+alturaBloco,
 3,
 3
 )
 
-pdf.setTextColor(
-255,
-255,
-255
-)
-
-pdf.setFont(
-'helvetica',
-'bold'
-)
-
-pdf.setFontSize(9)
-
-let tituloLinhas=
-pdf.splitTextToSize(
-titulo,
-larguraCard-6
-)
-
 pdf.text(
-tituloLinhas,
-xCard+3,
-yCards+6
+linhas,
+14,
+yCards+2
 )
 
-pdf.setFont(
-'helvetica',
-'normal'
-)
+yCards+=alturaBloco+6
 
-pdf.setFontSize(7)
-
-let infoLinhas=
-pdf.splitTextToSize(
-info,
-larguraCard-6
-)
-
-pdf.text(
-infoLinhas.slice(0,8),
-xCard+3,
-yCards+18
-)
-
-xCard+=larguraCard+gap
-
-coluna++
+contador++
 
 })
+
 pdf.setFontSize(9)
 
 pdf.setTextColor(220,220,220)
@@ -588,22 +570,35 @@ disclaimerDashboard,
 
 pdf.setFontSize(8)
 
+let paginas=
+pdf.internal.getNumberOfPages()
+
+for(let i=1;i<=paginas;i++){
+
+pdf.setPage(i)
+
 pdf.text(
-'Página 1 de 1',
+`Página ${i} de ${paginas}`,
 258,
 196
 )
 
+}
+
 let nomeArquivo='dashboard_monitoramento'
+
 if(origem==='SEDAM'){
 nomeArquivo='dashboard_sedam'
 }
+
 if(origem==='SEPAT'){
 nomeArquivo='dashboard_sepat'
 }
+
 if(origem==='QUEIMADAS'){
 nomeArquivo='dashboard_queimadas'
 }
+
 pdf.save(
 nomeArquivo+'.pdf'
 )
