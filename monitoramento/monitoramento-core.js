@@ -302,6 +302,12 @@ if(app){
 app.style.display='block'
 }
 await carregarDashboard()
+await carregarUsuarioMonitoramento()
+setTimeout(()=>{
+if(typeof carregarGraficoStatus==='function'){
+carregarDashboard()
+}
+},120)
 }
 /*=========================================================002 MONITORAMENTO CORE AUTOLOGIN=========================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
