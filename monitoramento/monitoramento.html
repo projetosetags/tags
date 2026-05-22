@@ -433,32 +433,65 @@ Benefícios Esperados
 <div id="listaAnalises"></div>
 </section>
 <section id="tela-relatorios" class="tela-monitoramento hidden">
+
 <div class="relatorio-actions">
-<button class="btn-padrao verde" onclick="gerarPDFMonitoramento()">
-📄 Gerar PDF
+
+<button class="btn-padrao roxo" onclick="gerarResumoExecutivo()">
+🧠 Resumo Executivo
 </button>
-<button class="btn-padrao azul" onclick="exportarWordMonitoramento()">
-📝 Exportar Word
-</button>
-<button class="btn-padrao azul" onclick="abrirModoImpressao()">
-🖨 Modo Impressão
-</button>
+
 <button class="btn-padrao azul" onclick="gerarResumoIA()">
 🧠 Gerar Resumo IA
 </button>
-</div>
-<div class="relatorio-actions">
+
 <button class="btn-padrao verde" onclick="gerarRelatorioCompleto()">
 📑 Relatório Completo
 </button>
-<button class="btn-padrao azul" onclick="gerarResumoIA()">
-🧠 Resumo Executivo
+
+<button class="btn-padrao vermelho" onclick="gerarPDFMonitoramento()">
+📄 Gerar PDF
 </button>
-<button class="btn-padrao" onclick="gerarPDFMonitoramento()">
-📄 Exportar PDF
+
+<button class="btn-padrao vermelho" onclick="exportarPDFMonitoramento()">
+📕 Exportar PDF
 </button>
+
+<button class="btn-padrao azul" onclick="exportarWordMonitoramento()">
+📝 Gerar e Exportar Word
+</button>
+
 </div>
+
+<div class="relatorio-actions">
+
+<button class="btn-padrao azul" onclick="gerarPlanoMonitoramento()">
+📋 Plano_de_monitoramento
+</button>
+
+<button class="btn-padrao azul" onclick="gerarMatrizPlanejamento()">
+🧩 Matriz_de_planejamento_do_monitoramento
+</button>
+
+<button class="btn-padrao azul" onclick="gerarAnaliseSeparada()">
+🧠 Análise_em_separado
+</button>
+
+<button class="btn-padrao azul" onclick="gerarMatrizResultados()">
+📊 Matriz_resultados
+</button>
+
+<button class="btn-padrao azul" onclick="gerarPrimeiroMonitoramento()">
+📌 Matriz_Primeiro_Monitoramento
+</button>
+
+<button class="btn-padrao verde" onclick="gerarRelatorioCompleto()">
+📑 Relatorio_monitoramento
+</button>
+
+</div>
+
 <div id="previewRelatorio" class="preview-relatorio"></div>
+
 </section>
 <section id="tela-resultados" class="tela-monitoramento hidden">
 <div class="top-actions">
