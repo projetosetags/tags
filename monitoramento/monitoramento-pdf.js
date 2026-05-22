@@ -365,7 +365,18 @@ card(66,42,'EXECUTADAS',exec,[16,185,129])
 card(118,42,'PARCIAIS',parcial,[245,158,11])
 card(170,42,'NÃO EXECUTADAS',nao,[239,68,68])
 card(222,42,'EM ANDAMENTO',andamento,[59,130,246])
+if(window.graficoStatus){
 
+window.graficoStatus.options.plugins.datalabels.color='#000000'
+
+window.graficoStatus.options.plugins.datalabels.font={
+size:24,
+weight:'bold'
+}
+
+window.graficoStatus.update()
+
+}
 let graficoStatus=document.getElementById('graficoStatus')
 
 if(graficoStatus){
@@ -598,7 +609,18 @@ nomeArquivo='dashboard_sepat'
 if(origem==='QUEIMADAS'){
 nomeArquivo='dashboard_queimadas'
 }
+if(window.graficoStatus){
 
+window.graficoStatus.options.plugins.datalabels.color='#ffffff'
+
+window.graficoStatus.options.plugins.datalabels.font={
+size:22,
+weight:'bold'
+}
+
+window.graficoStatus.update()
+
+}
 pdf.save(
 nomeArquivo+'.pdf'
 )
