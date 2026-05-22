@@ -47,8 +47,9 @@ data=ordenarDataGlobal(data||[])
 
 data=aplicarFiltroOrigem(data||[])
 
+let cardsFiltrados=[...(data||[])]
 
-let total=data.length
+let total=cardsFiltrados.length
 let executadas=0
 let parciais=0
 let naoExecutadas=0
@@ -56,6 +57,7 @@ let andamento=0
 let riscoAlto=0
 let riscoMedio=0
 let riscoBaixo=0
+
 ;(cardsFiltrados||[]).forEach(i=>{
 let percentual=Number(i.percentual||0)
 
@@ -110,17 +112,75 @@ naoExecutadas,
 andamento
 )
 },50)
-await carregarGraficoCriticidade(riscoAlto,riscoMedio,riscoBaixo)
-await carregarGraficoBeneficios()
-await carregarGraficoEvolucao()
+setTimeout(()=>{
+
+carregarGraficoCriticidade(
+riscoAlto,
+riscoMedio,
+riscoBaixo
+)
+
+carregarGraficoBeneficios()
+
+carregarGraficoEvolucao()
+
+},120)
 if(typeof carregarAlertasTecnicos==='function'){
 await carregarAlertasTecnicos()
 }
+await carregarCardsDashboard(cardsFiltrados)
 }catch(e){
 console.log(e)
 }
 }
 
+
+async function carregarCardsDashboard(data){
+
+let painel=document.getElementById('cardsDashboard')
+
+if(!painel){
+return
+}
+
+let html=''
+
+;(data||[]).forEach(i=>{
+
+let percentual=Number(i.percentual||0)
+
+let alertas=[]
+
+if(percentual<40){
+alertas.push('Percentual inferior a 40%')
+}
+
+if(
+String(i.criticidade||'')
+.toUpperCase()==='ALTA'
+){
+alertas.push('Criticidade alta identificada')
+}
+
+html+=`
+<div class="card-alerta-mini">
+
+<div class="card-alerta-titulo">
+⚠ ITEM ${i.item||'-'} — ${i.deliberacao||i.descricao||'-'}
+</div>
+
+<div class="card-alerta-info">
+${alertas.map(a=>`• ${a}`).join('<br>')}
+</div>
+
+</div>
+`
+
+})
+
+painel.innerHTML=html
+
+}
 /*=========================================================
 003 MONITORAMENTO-PAINEL.JS GRÁFICO STATUS
 =========================================================*/
