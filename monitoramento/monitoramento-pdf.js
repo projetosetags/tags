@@ -2,7 +2,7 @@
 000 MONITORAMENTO-PDF.JS TEXTO PADRÃO DISCLAIMER
 =========================================================*/
 const TEXTO_DISCLAIMER_MONITORAMENTO=
-'Painel gerado automaticamente pelo Monitoramento Técnico - As informações constantes neste painel, gráficos, indicadores e relatórios possuem caráter preliminar e meramente informativo, sendo baseadas nos dados declarados e apresentados até o presente momento pelos jurisdicionados envolvidos. Ressalta-se que tais informações ainda não passaram pela análise técnica de consistência documental, verificação de evidências, validação metodológica e conferência conclusiva pela equipe técnica de auditores designados.'
+'As informações constantes neste painel, gráficos, indicadores e relatórios possuem caráter preliminar e meramente informativo, sendo baseadas nos dados declarados e apresentados até o presente momento pelos jurisdicionados envolvidos. Ressalta-se que tais informações ainda não passaram pela análise técnica de consistência documental, verificação de evidências, validação metodológica e conferência conclusiva pela equipe técnica de auditores designados.'
   
 async function gerarPDFMonitoramento(){
 const{jsPDF}=window.jspdf
