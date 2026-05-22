@@ -56,7 +56,7 @@ let andamento=0
 let riscoAlto=0
 let riscoMedio=0
 let riscoBaixo=0
-;(data||[]).forEach(i=>{
+;(cardsFiltrados||[]).forEach(i=>{
 let percentual=Number(i.percentual||0)
 
 if(i.status==='EXECUTADA'){
@@ -739,7 +739,38 @@ Os itens monitorados encontram-se dentro dos parâmetros técnicos esperados.
 `
 
 }
+let cardsFiltrados=[]
 
+;(data||[]).forEach(i=>{
+
+let origemAtual='TODAS'
+
+let filtro=document.getElementById('filtroOrigem')
+
+if(filtro){
+origemAtual=String(
+filtro.value||'TODAS'
+)
+.toUpperCase()
+.trim()
+}
+
+let origemItem=String(
+i.origem||''
+)
+.toUpperCase()
+.trim()
+
+if(
+origemAtual==='TODAS'||
+origemAtual===origemItem
+){
+cardsFiltrados.push(i)
+}
+
+})
+
+data=cardsFiltrados
 let painel=document.getElementById('cardsDashboard')
 
 if(painel){
