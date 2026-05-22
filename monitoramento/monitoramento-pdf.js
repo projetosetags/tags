@@ -219,3 +219,174 @@ pdf.text('Relatório Técnico de Monitoramento',14,290)
 }
 pdf.save(`RELATORIO_MONITORAMENTO_${Date.now()}.pdf`)
 }
+
+/*=========================================================
+999 MONITORAMENTO-PDF.JS PDF DASHBOARD COMPLETO
+=========================================================*/
+async function gerarPDFDashboardCompleto(){
+
+let{jsPDF}=window.jspdf
+
+let pdf=new jsPDF(
+'landscape',
+'mm',
+'a4'
+)
+
+let largura=pdf.internal.pageSize.getWidth()
+let altura=pdf.internal.pageSize.getHeight()
+
+pdf.setFillColor(5,10,30)
+pdf.rect(0,0,largura,altura,'F')
+
+pdf.setTextColor(255,255,255)
+
+pdf.setFontSize(24)
+pdf.text(
+'MONITORAMENTO TÉCNICO',
+14,
+18
+)
+
+pdf.setFontSize(11)
+pdf.text(
+'Tribunal de Contas • Dashboard Executivo',
+14,
+26
+)
+
+let origem='TODAS'
+
+let filtro=document.getElementById('filtroOrigem')
+
+if(filtro){
+origem=filtro.value||'TODAS'
+}
+
+pdf.setFontSize(10)
+pdf.text(
+'Origem: '+origem,
+14,
+34
+)
+
+let usuario=
+USER_MONITORAMENTO?.nome_completo||
+USER_MONITORAMENTO?.username||
+'USUÁRIO'
+
+pdf.text(
+'Usuário: '+usuario,
+90,
+34
+)
+
+let total=document.getElementById('kpiTotal')?.innerText||'0'
+let exec=document.getElementById('kpiExecutadas')?.innerText||'0'
+let parcial=document.getElementById('kpiParciais')?.innerText||'0'
+let nao=document.getElementById('kpiNaoExecutadas')?.innerText||'0'
+let andamento=document.getElementById('kpiAndamento')?.innerText||'0'
+
+function card(x,y,titulo,valor,cor){
+
+pdf.setFillColor(cor[0],cor[1],cor[2])
+
+pdf.roundedRect(
+x,
+y,
+48,
+26,
+4,
+4,
+'F'
+)
+
+pdf.setTextColor(255,255,255)
+
+pdf.setFontSize(9)
+
+pdf.text(
+titulo,
+x+4,
+y+8
+)
+
+pdf.setFontSize(20)
+
+pdf.text(
+String(valor),
+x+4,
+y+19
+)
+
+}
+
+card(14,42,'TOTAL',total,[30,41,59])
+card(66,42,'EXECUTADAS',exec,[16,185,129])
+card(118,42,'PARCIAIS',parcial,[245,158,11])
+card(170,42,'NÃO EXECUTADAS',nao,[239,68,68])
+card(222,42,'EM ANDAMENTO',andamento,[59,130,246])
+
+let graficoStatus=document.getElementById('graficoStatus')
+
+if(graficoStatus){
+
+let img=graficoStatus.toDataURL(
+'image/png',
+1.0
+)
+
+pdf.addImage(
+img,
+'PNG',
+12,
+78,
+120,
+72
+)
+
+}
+
+let graficoEvolucao=document.getElementById('graficoEvolucao')
+
+if(graficoEvolucao){
+
+let img=graficoEvolucao.toDataURL(
+'image/png',
+1.0
+)
+
+pdf.addImage(
+img,
+'PNG',
+145,
+78,
+120,
+72
+)
+
+}
+
+pdf.setFontSize(9)
+
+pdf.setTextColor(220,220,220)
+
+pdf.text(
+'Painel gerado automaticamente pelo Monitoramento Técnico - As informações constantes neste painel, gráficos, indicadores e relatórios possuem caráter preliminar e meramente informativo, sendo baseadas nos dados declarados e apresentados até o presente momento pelos
+jurisdicionados envolvidos. Ressalta-se que tais informações ainda não passaram pela análise técnica de consistência documental, verificação de evidências, validação metodológica e conferência conclusiva pela equipe
+técnica de auditores designados.',
+14,
+196
+)
+
+pdf.text(
+'Página 1 de 1',
+258,
+196
+)
+
+pdf.save(
+'dashboard-monitoramento.pdf'
+)
+
+}
