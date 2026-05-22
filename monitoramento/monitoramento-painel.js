@@ -102,7 +102,14 @@ kpiNaoExecutadas.innerHTML=naoExecutadas
 if(kpiAndamento){
 kpiAndamento.innerHTML=andamento
 }
-await carregarGraficoStatus(executadas,parciais,naoExecutadas,andamento)
+setTimeout(()=>{
+carregarGraficoStatus(
+executadas,
+parciais,
+naoExecutadas,
+andamento
+)
+},50)
 await carregarGraficoCriticidade(riscoAlto,riscoMedio,riscoBaixo)
 await carregarGraficoBeneficios()
 await carregarGraficoEvolucao()
@@ -669,7 +676,34 @@ alertas.push('Prazo expirado')
 }
 
 if(alertas.length>0){
+let origemAtual='TODAS'
 
+let filtroOrigem=document.getElementById(
+'filtroOrigem'
+)
+
+if(filtroOrigem){
+
+origemAtual=String(
+filtroOrigem.value||'TODAS'
+)
+.toUpperCase()
+.trim()
+
+}
+
+let origemItem=String(
+i.origem||''
+)
+.toUpperCase()
+.trim()
+
+if(
+origemAtual!=='TODAS'&&
+origemItem!==origemAtual
+){
+return
+}
 html+=`
 <div class="card-alerta-mini">
 
