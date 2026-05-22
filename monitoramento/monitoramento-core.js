@@ -432,7 +432,10 @@ USER_MONITORAMENTO?.nome_completo||
 USER_MONITORAMENTO?.nome||
 USER_MONITORAMENTO?.username||
 'USUÁRIO'
-el.innerHTML=formatarNomeLGPD(nome)
+nome=formatarNomeLGPD(nome)
+el.innerText=nome
+el.textContent=nome
+el.innerHTML=nome
 }
 /*=========================================================
 100 MONITORAMENTO-CORE.JS COLAPSAR GRAFICOS
