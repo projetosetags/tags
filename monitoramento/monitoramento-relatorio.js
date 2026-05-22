@@ -414,3 +414,300 @@ document.body.removeChild(a)
 URL.revokeObjectURL(url)
 
 }
+
+/*=========================================================
+018 MONITORAMENTO-RELATORIO.JS RESUMO EXECUTIVO
+=========================================================*/
+async function gerarResumoExecutivo(){
+
+let box=document.getElementById('previewRelatorio')
+
+if(!box){
+return
+}
+
+box.innerHTML=`
+<div style="padding:28px;color:#fff;font-size:15px;line-height:1.8;">
+<h2 style="font-size:24px;font-weight:800;margin-bottom:20px;color:#fff;">
+RESUMO EXECUTIVO
+</h2>
+
+<p>
+O presente monitoramento teve por objetivo avaliar o cumprimento das deliberações constantes dos processos acompanhados pela equipe técnica.
+</p>
+
+<p>
+Foram analisados <b>${document.getElementById('kpiTotal')?.innerText||0}</b> itens monitorados.
+</p>
+
+<p>
+<b>RESULTADOS:</b>
+</p>
+
+<ul style="margin-left:24px;">
+<li>EXECUTADAS: ${document.getElementById('kpiExecutadas')?.innerText||0}</li>
+<li>PARCIALMENTE EXECUTADAS: ${document.getElementById('kpiParciais')?.innerText||0}</li>
+<li>NÃO EXECUTADAS: ${document.getElementById('kpiNaoExecutadas')?.innerText||0}</li>
+<li>EM ANDAMENTO: ${document.getElementById('kpiAndamento')?.innerText||0}</li>
+</ul>
+
+<p>
+Persistem fragilidades relevantes na implementação das medidas monitoradas, exigindo continuidade das ações de controle e acompanhamento técnico.
+</p>
+
+<p>
+Recomenda-se a continuidade do monitoramento dos itens pendentes, especialmente aqueles classificados como parcialmente executados ou não executados.
+</p>
+
+</div>
+`
+
+}
+
+
+/*=========================================================
+019 MONITORAMENTO-RELATORIO.JS PLANO MONITORAMENTO
+=========================================================*/
+async function gerarPlanoMonitoramento(){
+
+let box=document.getElementById('previewRelatorio')
+
+if(!box){
+return
+}
+
+box.innerHTML=`
+<div style="padding:28px;color:#fff;line-height:1.8;">
+
+<h2 style="font-size:24px;font-weight:800;margin-bottom:18px;">
+PLANO DE MONITORAMENTO
+</h2>
+
+<p>
+• Objetivo Geral do Monitoramento
+</p>
+
+<p>
+• Escopo da Fiscalização
+</p>
+
+<p>
+• Metodologia Aplicada
+</p>
+
+<p>
+• Critérios de Avaliação
+</p>
+
+<p>
+• Cronograma de Execução
+</p>
+
+<p>
+• Equipe Técnica Responsável
+</p>
+
+<p>
+• Matriz de Riscos
+</p>
+
+<p>
+• Benefícios Esperados
+</p>
+
+</div>
+`
+
+}
+
+
+/*=========================================================
+020 MONITORAMENTO-RELATORIO.JS MATRIZ PLANEJAMENTO
+=========================================================*/
+async function gerarMatrizPlanejamento(){
+
+let box=document.getElementById('previewRelatorio')
+
+if(!box){
+return
+}
+
+box.innerHTML=`
+<div style="padding:28px;color:#fff;line-height:1.8;">
+
+<h2 style="font-size:24px;font-weight:800;margin-bottom:18px;">
+MATRIZ DE PLANEJAMENTO DO MONITORAMENTO
+</h2>
+
+<table style="width:100%;border-collapse:collapse;">
+
+<tr style="background:#2563eb;">
+<th style="padding:10px;border:1px solid #334155;">Questão</th>
+<th style="padding:10px;border:1px solid #334155;">Critério</th>
+<th style="padding:10px;border:1px solid #334155;">Fonte</th>
+<th style="padding:10px;border:1px solid #334155;">Procedimento</th>
+</tr>
+
+<tr>
+<td style="padding:10px;border:1px solid #334155;">Cumprimento das deliberações</td>
+<td style="padding:10px;border:1px solid #334155;">Normativos</td>
+<td style="padding:10px;border:1px solid #334155;">Processos</td>
+<td style="padding:10px;border:1px solid #334155;">Análise documental</td>
+</tr>
+
+</table>
+
+</div>
+`
+
+}
+
+/*=========================================================
+021 MONITORAMENTO-RELATORIO.JS ANALISE SEPARADA
+=========================================================*/
+async function gerarAnaliseSeparada(){
+
+let box=document.getElementById('previewRelatorio')
+
+if(!box){
+return
+}
+
+let html=''
+
+html+=`
+<div style="padding:28px;color:#fff;">
+<h2 style="font-size:24px;font-weight:800;margin-bottom:20px;">
+ANÁLISE TÉCNICA SEPARADA
+</h2>
+`
+
+let cards=document.querySelectorAll('#cardsDashboard .card-alerta-mini')
+
+cards.forEach(card=>{
+
+let titulo=card.querySelector('.card-alerta-titulo')?.innerText||'-'
+
+let info=card.querySelector('.card-alerta-info')?.innerText||'-'
+
+html+=`
+<div style="background:#0f172a;border:1px solid #3b82f6;border-radius:14px;padding:18px;margin-bottom:18px;">
+<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:10px;">
+${titulo}
+</div>
+<div style="font-size:14px;color:#e2e8f0;line-height:1.8;">
+${info}
+</div>
+</div>
+`
+
+})
+
+html+=`</div>`
+
+box.innerHTML=html
+
+}
+
+/*=========================================================
+022 MONITORAMENTO-RELATORIO.JS MATRIZ RESULTADOS
+=========================================================*/
+async function gerarMatrizResultados(){
+
+let box=document.getElementById('previewRelatorio')
+
+if(!box){
+return
+}
+
+box.innerHTML=`
+<div style="padding:28px;color:#fff;">
+
+<h2 style="font-size:24px;font-weight:800;margin-bottom:20px;">
+MATRIZ DE RESULTADOS
+</h2>
+
+<table style="width:100%;border-collapse:collapse;">
+
+<tr style="background:#1d4ed8;">
+<th style="padding:10px;border:1px solid #334155;">Indicador</th>
+<th style="padding:10px;border:1px solid #334155;">Resultado</th>
+<th style="padding:10px;border:1px solid #334155;">Situação</th>
+</tr>
+
+<tr>
+<td style="padding:10px;border:1px solid #334155;">Itens Executados</td>
+<td style="padding:10px;border:1px solid #334155;">${document.getElementById('kpiExecutadas')?.innerText||0}</td>
+<td style="padding:10px;border:1px solid #334155;">Adequado</td>
+</tr>
+
+<tr>
+<td style="padding:10px;border:1px solid #334155;">Itens Parciais</td>
+<td style="padding:10px;border:1px solid #334155;">${document.getElementById('kpiParciais')?.innerText||0}</td>
+<td style="padding:10px;border:1px solid #334155;">Atenção</td>
+</tr>
+
+<tr>
+<td style="padding:10px;border:1px solid #334155;">Itens Não Executados</td>
+<td style="padding:10px;border:1px solid #334155;">${document.getElementById('kpiNaoExecutadas')?.innerText||0}</td>
+<td style="padding:10px;border:1px solid #334155;">Crítico</td>
+</tr>
+
+</table>
+
+</div>
+`
+
+}
+
+/*=========================================================
+023 MONITORAMENTO-RELATORIO.JS PRIMEIRO MONITORAMENTO
+=========================================================*/
+async function gerarPrimeiroMonitoramento(){
+
+let box=document.getElementById('previewRelatorio')
+
+if(!box){
+return
+}
+
+box.innerHTML=`
+<div style="padding:28px;color:#fff;line-height:1.9;">
+
+<h2 style="font-size:24px;font-weight:800;margin-bottom:20px;">
+MATRIZ PRIMEIRO MONITORAMENTO
+</h2>
+
+<p>
+1. Identificação do objeto monitorado
+</p>
+
+<p>
+2. Deliberações selecionadas
+</p>
+
+<p>
+3. Situação atual encontrada
+</p>
+
+<p>
+4. Evidências apresentadas
+</p>
+
+<p>
+5. Avaliação técnica preliminar
+</p>
+
+<p>
+6. Benefícios esperados
+</p>
+
+<p>
+7. Encaminhamentos propostos
+</p>
+
+</div>
+`
+
+}
+
