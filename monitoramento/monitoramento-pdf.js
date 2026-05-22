@@ -1,3 +1,9 @@
+/*=========================================================
+000 MONITORAMENTO-PDF.JS TEXTO PADRÃO DISCLAIMER
+=========================================================*/
+const TEXTO_DISCLAIMER_MONITORAMENTO=
+'Painel gerado automaticamente pelo Monitoramento Técnico - As informações constantes neste painel, gráficos, indicadores e relatórios possuem caráter preliminar e meramente informativo, sendo baseadas nos dados declarados e apresentados até o presente momento pelos jurisdicionados envolvidos. Ressalta-se que tais informações ainda não passaram pela análise técnica de consistência documental, verificação de evidências, validação metodológica e conferência conclusiva pela equipe técnica de auditores designados.'
+  
 async function gerarPDFMonitoramento(){
 const{jsPDF}=window.jspdf
 let pdf=new jsPDF('p','mm','a4')
@@ -204,6 +210,20 @@ pdf.setTextColor(255,255,255)
 pdf.setFontSize(12)
 pdf.setFont('helvetica','bold')
 pdf.text('CONCLUSÃO GERAL',14,y+8)
+pdf.setFont('helvetica','italic')
+pdf.setFontSize(7)
+let disclaimerConclusao=pdf.splitTextToSize(
+TEXTO_DISCLAIMER_MONITORAMENTO,
+176
+)
+pdf.text(
+disclaimerConclusao,
+14,
+y+14
+)
+y+=18
+pdf.setFont('helvetica','normal')
+pdf.setFontSize(9)
 pdf.setFont('helvetica','normal')
 pdf.setFontSize(9)
 let conclusao='O presente relatório consolida as análises técnicas realizadas pela equipe de auditoria, considerando as evidências apresentadas, os resultados alcançados e os benefícios decorrentes das ações implementadas pelos gestores monitorados.'
@@ -216,6 +236,17 @@ pdf.setPage(i)
 pdf.setTextColor(120)
 pdf.text(`Página ${i} de ${paginas}`,105,290,{align:'center'})
 pdf.text('Relatório Técnico de Monitoramento',14,290)
+pdf.setFontSize(6)
+pdf.setTextColor(110)
+let disclaimerLinhas=pdf.splitTextToSize(
+TEXTO_DISCLAIMER_MONITORAMENTO,
+180
+)
+pdf.text(
+disclaimerLinhas,
+14,
+282
+)
 }
 pdf.save(`RELATORIO_MONITORAMENTO_${Date.now()}.pdf`)
 }
@@ -254,7 +285,15 @@ pdf.text(
 14,
 26
 )
-
+pdf.setFontSize(7)
+pdf.setTextColor(180,180,180)
+pdf.text(
+TEXTO_DISCLAIMER_MONITORAMENTO,
+14,
+32,
+{maxWidth:250}
+)
+pdf.setTextColor(255,255,255)
 let origem='TODAS'
 
 let filtro=document.getElementById('filtroOrigem')
@@ -372,12 +411,26 @@ pdf.setFontSize(9)
 pdf.setTextColor(220,220,220)
 
 pdf.text(
-'Painel gerado automaticamente pelo Monitoramento Técnico - As informações constantes neste painel, gráficos, indicadores e relatórios possuem caráter preliminar e meramente informativo, sendo baseadas nos dados declarados e apresentados até o presente momento pelos
-jurisdicionados envolvidos. Ressalta-se que tais informações ainda não passaram pela análise técnica de consistência documental, verificação de evidências, validação metodológica e conferência conclusiva pela equipe
-técnica de auditores designados.',
+'Painel gerado automaticamente pelo Monitoramento Técnico.',
 14,
 196
 )
+
+pdf.setFontSize(6)
+
+let disclaimerDashboard=
+pdf.splitTextToSize(
+TEXTO_DISCLAIMER_MONITORAMENTO,
+230
+)
+
+pdf.text(
+disclaimerDashboard,
+14,
+186
+)
+
+pdf.setFontSize(8)
 
 pdf.text(
 'Página 1 de 1',
