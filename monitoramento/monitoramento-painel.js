@@ -228,46 +228,84 @@ plugins:[ChartDataLabels]
 004 MONITORAMENTO-PAINEL.JS GRÁFICO EVOLUÇÃO
 =========================================================*/
 async function carregarGraficoEvolucao(){
-let{data,error}=await client
-.from('evolucao_mensal')
+
+let origemAtual='TODAS'
+
+let filtro=document.getElementById('filtroOrigem')
+
+if(filtro){
+origemAtual=String(
+filtro.value||'TODAS'
+).toUpperCase().trim()
+}
+
+let query=client
+.from('monitoramento_itens')
 .select('*')
-.order('mes_referencia',{ascending:true})
+
+if(origemAtual!=='TODAS'){
+query=query.eq(
+'origem',
+origemAtual
+)
+}
+
+let{data,error}=await query
+
 if(error){
 console.log(error)
 return
 }
-let mapa={}
-;(data||[]).forEach(e=>{
-let mes=e.mes_referencia||'SEM MÊS'
-if(!mapa[mes]){
-mapa[mes]=[]
-}
-mapa[mes].push(Number(e.percentual_lancado||0))
-})
-let labels=[]
+
+let meses=[
+'JAN','FEV','MAR','ABR',
+'MAI','JUN','JUL','AGO',
+'SET','OUT','NOV','DEZ'
+]
+
 let valores=[]
-Object.keys(mapa).forEach(m=>{
-labels.push(m)
-let arr=mapa[m]
-let media=arr.reduce((a,b)=>a+b,0)/arr.length
-valores.push(Number(media.toFixed(1)))
+
+meses.forEach(m=>{
+
+let arr=(data||[])
+.map(i=>Number(i.percentual||0))
+.filter(v=>!isNaN(v))
+
+let media=0
+
+if(arr.length>0){
+media=
+arr.reduce((a,b)=>a+b,0)
+/arr.length
+}
+
+valores.push(
+Number(media.toFixed(1))
+)
+
 })
-let ctx=document.getElementById('graficoEvolucao')
+
+let ctx=document.getElementById(
+'graficoEvolucao'
+)
+
 if(!ctx){
 return
 }
+
 if(graficoEvolucao){
 graficoEvolucao.destroy()
 }
+
 graficoEvolucao=new Chart(ctx,{
 type:'line',
 data:{
-labels:labels,
+labels:meses,
 datasets:[{
 label:'Evolução Real TAGS',
 data:valores,
 borderColor:'#3b82f6',
-backgroundColor:'rgba(59,130,246,.2)',
+backgroundColor:'rgba(59,130,246,.20)',
 fill:true,
 tension:.35
 }]
@@ -302,14 +340,16 @@ color:'#fff'
 },
 grid:{
 color:'rgba(255,255,255,.05)'
-}
+},
+beginAtZero:true,
+max:100
 }
 }
 },
 plugins:[ChartDataLabels]
 })
-}
 
+}
 /*=========================================================
 005 MONITORAMENTO-PAINEL.JS LISTA MONITORAMENTOS
 =========================================================*/
@@ -1135,4 +1175,158 @@ console.log('Dashboard não encontrado')
 return false
 }
 return true
+}
+
+
+async function carregarGraficoCriticidade(alto,medio,baixo){
+let ctx=document.getElementById('graficoCriticidade')
+if(!ctx){
+return
+}
+if(window.graficoCriticidade){
+window.graficoCriticidade.destroy()
+}
+window.graficoCriticidade=new Chart(ctx,{
+type:'bar',
+data:{
+labels:['ALTA','MÉDIA','BAIXA'],
+datasets:[{
+data:[alto,medio,baixo],
+backgroundColor:[
+'#ef4444',
+'#f59e0b',
+'#10b981'
+]
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+plugins:{
+legend:{
+display:false
+},
+datalabels:{
+color:'#fff',
+font:{
+weight:'bold'
+}
+}
+},
+scales:{
+x:{
+ticks:{
+color:'#fff'
+},
+grid:{
+color:'rgba(255,255,255,.05)'
+}
+},
+y:{
+ticks:{
+color:'#fff'
+},
+grid:{
+color:'rgba(255,255,255,.05)'
+},
+beginAtZero:true
+}
+}
+},
+plugins:[ChartDataLabels]
+})
+
+}
+
+
+async function carregarGraficoBeneficios(){
+
+let origemAtual='TODAS'
+
+let filtro=document.getElementById('filtroOrigem')
+
+if(filtro){
+origemAtual=String(filtro.value||'TODAS')
+.toUpperCase()
+.trim()
+}
+
+let query=client
+.from('monitoramento_itens')
+.select('*')
+
+if(origemAtual!=='TODAS'){
+query=query.eq('origem',origemAtual)
+}
+
+let{data,error}=await query
+
+if(error){
+console.log(error)
+return
+}
+
+let executadas=(data||[]).filter(i=>
+String(i.status||'').toUpperCase()==='EXECUTADA'
+).length
+
+let andamento=(data||[]).filter(i=>
+String(i.status||'').toUpperCase()==='EM ANDAMENTO'
+).length
+
+let parciais=(data||[]).filter(i=>
+String(i.status||'').toUpperCase()==='PARCIALMENTE EXECUTADA'
+).length
+
+let ctx=document.getElementById('graficoBeneficios')
+
+if(!ctx){
+return
+}
+
+if(window.graficoBeneficios){
+window.graficoBeneficios.destroy()
+}
+
+window.graficoBeneficios=new Chart(ctx,{
+type:'polarArea',
+data:{
+labels:[
+'Executadas',
+'Em Andamento',
+'Parciais'
+],
+datasets:[{
+data:[
+executadas,
+andamento,
+parciais
+],
+backgroundColor:[
+'#10b981',
+'#3b82f6',
+'#f59e0b'
+]
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+plugins:{
+legend:{
+labels:{
+color:'#fff'
+}
+},
+datalabels:{
+color:'#fff',
+font:{
+weight:'bold'
+}
+}
+}
+},
+plugins:[ChartDataLabels]
+})
+
 }
