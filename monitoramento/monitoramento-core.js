@@ -108,7 +108,7 @@ console.log(e)
 async function carregarUsuarioMonitoramento(){
 let userLocal=localStorage.getItem('user_monitoramento')
 if(!userLocal){
-let box=document.getElementById('usuarioLogado')
+let box=document.getElementById('usuarioCabecalho')
 if(box){
 box.innerHTML='NÃO IDENTIFICADO'
 }
@@ -123,7 +123,7 @@ username:perfil.username||'',
 nivel:Number(perfil.nivel_acesso||4),
 origem:perfil.origem||'TCERO'
 }
-let box=document.getElementById('usuarioLogado')
+let box=document.getElementById('usuarioCabecalho')
 if(box){
 
 let nome=
@@ -155,7 +155,7 @@ USER_MONITORAMENTO.nivel
 await aplicarPermissoesMonitoramento()
 }catch(e){
 console.log(e)
-let box=document.getElementById('usuarioLogado')
+let box=document.getElementById('usuarioCabecalho')
 if(box){
 box.innerHTML='NÃO IDENTIFICADO'
 }
@@ -289,7 +289,7 @@ return
 window.USER_MONITORAMENTO=perfil
 atualizarUsuarioTopo()
 localStorage.setItem('user_monitoramento',JSON.stringify(perfil))
-let boxUsuario=document.getElementById('usuarioLogado')
+let boxUsuario=document.getElementById('usuarioCabecalho')
 if(boxUsuario){
 atualizarUsuarioTopo()
 }
@@ -346,7 +346,7 @@ app.style.display='none'
 }
 return
 }
-let boxUsuario=document.getElementById('usuarioLogado')
+let boxUsuario=document.getElementById('usuarioCabecalho')
 if(boxUsuario){
 atualizarUsuarioTopo()
 }
@@ -423,7 +423,7 @@ let ultimo=partes[partes.length-1]
 return primeiro+' '+meio+' '+ultimo
 }
 function atualizarUsuarioTopo(){
-let el=document.getElementById('usuarioLogado')
+let el=document.getElementById('usuarioCabecalho')
 if(!el){
 return
 }
@@ -433,9 +433,9 @@ USER_MONITORAMENTO?.nome||
 USER_MONITORAMENTO?.username||
 'USUÁRIO'
 nome=formatarNomeLGPD(nome)
+el.innerHTML=nome
 el.innerText=nome
 el.textContent=nome
-el.innerHTML=nome
 }
 /*=========================================================
 100 MONITORAMENTO-CORE.JS COLAPSAR GRAFICOS
