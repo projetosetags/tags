@@ -195,28 +195,57 @@ graficoStatus.destroy()
 graficoStatus=new Chart(ctx,{
 type:'doughnut',
 data:{
-labels:['Executadas','Parciais','Não Executadas','Em Andamento'],
+labels:[
+'Executadas',
+'Parciais',
+'Não Executadas',
+'Em Andamento'
+],
 datasets:[{
-data:[executadas,parciais,naoExecutadas,andamento],
-backgroundColor:['#10b981','#f59e0b','#ef4444','#3b82f6'],
+data:[
+executadas,
+parciais,
+naoExecutadas,
+andamento
+],
+backgroundColor:[
+'#10b981',
+'#f59e0b',
+'#ef4444',
+'#3b82f6'
+],
 borderWidth:0
 }]
 },
 options:{
 responsive:true,
 maintainAspectRatio:false,
+cutout:'52%',
 plugins:{
 legend:{
+position:'top',
 labels:{
-color:'#fff'
+color:'#ffffff',
+font:{
+size:15,
+weight:'bold'
+},
+padding:18
 }
 },
 datalabels:{
-color:'#fff',
+color:'#ffffff',
 font:{
+size:24,
 weight:'bold'
 },
-formatter:(v)=>v
+formatter:(value)=>{
+return value>0?value:''
+},
+anchor:'center',
+align:'center',
+textStrokeColor:'#000000',
+textStrokeWidth:1
 }
 }
 },
