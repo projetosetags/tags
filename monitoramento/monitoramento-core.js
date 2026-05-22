@@ -291,7 +291,7 @@ atualizarUsuarioTopo()
 localStorage.setItem('user_monitoramento',JSON.stringify(perfil))
 let boxUsuario=document.getElementById('usuarioLogado')
 if(boxUsuario){
-boxUsuario.innerHTML=perfil.nome_completo||perfil.username||'USUÁRIO'
+atualizarUsuarioTopo()
 }
 let login=document.getElementById('loginMonitoramento')
 if(login){
@@ -348,7 +348,7 @@ return
 }
 let boxUsuario=document.getElementById('usuarioLogado')
 if(boxUsuario){
-boxUsuario.innerHTML=USER_MONITORAMENTO.nome_completo||USER_MONITORAMENTO.username||'USUÁRIO'
+atualizarUsuarioTopo()
 }
 if(login){
 login.style.display='none'
@@ -403,21 +403,36 @@ return `${primeiro} ${meio} ${ultimo}`
 
 }
 
+/*=========================================================
+007 MONITORAMENTO-CORE.JS USUÁRIO LGPD TOPO
+=========================================================*/
+function formatarNomeLGPD(nome){
+if(!nome){
+return'USUÁRIO'
+}
+let partes=String(nome).trim().split(' ')
+if(partes.length===1){
+return partes[0]
+}
+if(partes.length===2){
+return partes[0]+' '+partes[1].charAt(0)+'.'
+}
+let primeiro=partes[0]
+let meio=partes[1].charAt(0)+'.'
+let ultimo=partes[partes.length-1]
+return primeiro+' '+meio+' '+ultimo
+}
 function atualizarUsuarioTopo(){
-
-let el=document.getElementById('usuarioCabecalho')
-
+let el=document.getElementById('usuarioLogado')
 if(!el){
 return
 }
-
 let nome=
 USER_MONITORAMENTO?.nome_completo||
+USER_MONITORAMENTO?.nome||
 USER_MONITORAMENTO?.username||
 'USUÁRIO'
-
 el.innerHTML=formatarNomeLGPD(nome)
-
 }
 /*=========================================================
 100 MONITORAMENTO-CORE.JS COLAPSAR GRAFICOS
