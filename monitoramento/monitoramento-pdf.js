@@ -428,27 +428,13 @@ yCards
 
 yCards+=8
 
-let contadorCards=0
+let xCard=12
+let larguraCard=86
+let alturaCard=30
+let gap=6
+let coluna=0
 
-cards.forEach(card=>{
-
-if(contadorCards>0){
-
-pdf.addPage()
-
-pdf.setFillColor(5,10,30)
-
-pdf.rect(
-0,
-0,
-largura,
-altura,
-'F'
-)
-
-yCards=20
-
-}
+cards.forEach((card,index)=>{
 
 let titulo=
 card.querySelector(
@@ -462,6 +448,36 @@ card.querySelector(
 )
 ?.innerText||'-'
 
+if(coluna===3){
+coluna=0
+xCard=12
+yCards+=36
+}
+
+if(yCards>180){
+
+pdf.addPage()
+
+pdf.setFillColor(
+5,
+10,
+30
+)
+
+pdf.rect(
+0,
+0,
+largura,
+altura,
+'F'
+)
+
+yCards=20
+xCard=12
+coluna=0
+
+}
+
 pdf.setFillColor(
 15,
 23,
@@ -469,12 +485,12 @@ pdf.setFillColor(
 )
 
 pdf.roundedRect(
-10,
+xCard,
 yCards,
-277,
-36,
-4,
-4,
+larguraCard,
+alturaCard,
+3,
+3,
 'F'
 )
 
@@ -485,12 +501,12 @@ pdf.setDrawColor(
 )
 
 pdf.roundedRect(
-10,
+xCard,
 yCards,
-277,
-36,
-4,
-4
+larguraCard,
+alturaCard,
+3,
+3
 )
 
 pdf.setTextColor(
@@ -504,18 +520,18 @@ pdf.setFont(
 'bold'
 )
 
-pdf.setFontSize(11)
+pdf.setFontSize(7)
 
 let tituloLinhas=
 pdf.splitTextToSize(
 titulo,
-260
+larguraCard-6
 )
 
 pdf.text(
 tituloLinhas,
-16,
-yCards+8
+xCard+3,
+yCards+6
 )
 
 pdf.setFont(
@@ -523,23 +539,23 @@ pdf.setFont(
 'normal'
 )
 
-pdf.setFontSize(9)
+pdf.setFontSize(5)
 
 let infoLinhas=
 pdf.splitTextToSize(
 info,
-258
+larguraCard-6
 )
 
 pdf.text(
-infoLinhas,
-16,
+infoLinhas.slice(0,5),
+xCard+3,
 yCards+18
 )
 
-yCards+=44
+xCard+=larguraCard+gap
 
-contadorCards++
+coluna++
 
 })
 pdf.setFontSize(9)
