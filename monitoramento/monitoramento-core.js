@@ -8,12 +8,18 @@ function abrirTela(nome){
 if(typeof USER_MONITORAMENTO==='undefined'||!USER_MONITORAMENTO){
 return
 }
-document.querySelectorAll('.tela-monitoramento').forEach(t=>t.classList.add('hidden'))
+document.querySelectorAll('.tela-monitoramento').forEach(t=>{
+t.classList.add('hidden')
+t.style.display='none'
+})
 let tela=document.getElementById('tela-'+nome)
 if(tela){
 tela.classList.remove('hidden')
+tela.style.display='block'
 }
-document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('nav-active'))
+document.querySelectorAll('.nav-btn').forEach(b=>{
+b.classList.remove('nav-active')
+})
 document.querySelectorAll('.nav-btn').forEach(b=>{
 if(b.getAttribute('onclick')===`abrirTela('${nome}')`){
 b.classList.add('nav-active')
@@ -21,51 +27,82 @@ b.classList.add('nav-active')
 })
 let painelDashboard=document.getElementById('painelDashboardTopo')
 if(painelDashboard){
-if(nome==='dashboard'){
-painelDashboard.style.display='block'
-}else{
-painelDashboard.style.display='none'
+painelDashboard.style.display=(nome==='dashboard')?'block':'none'
 }
-}
+requestAnimationFrame(async()=>{
+try{
 if(nome==='dashboard'){
+if(typeof carregarDashboard==='function'){
 carregarDashboard()
 }
+if(typeof carregarAlertasTecnicos==='function'){
+carregarAlertasTecnicos()
+}
+}
 if(nome==='monitoramentos'){
+if(typeof carregarListaMonitoramentos==='function'){
 carregarListaMonitoramentos()
 }
+}
 if(nome==='matriz'){
+if(typeof carregarItensMatriz==='function'){
 carregarItensMatriz()
 }
+}
 if(nome==='evidencias'){
+if(typeof carregarEvidencias==='function'){
 carregarEvidencias()
 }
+}
 if(nome==='analises'){
+if(typeof carregarAnalises==='function'){
 carregarAnalises()
 }
+}
 if(nome==='resultados'){
+if(typeof carregarResultados==='function'){
 carregarResultados()
 }
+}
 if(nome==='auditoria'){
+if(typeof carregarAuditoriaCompleta==='function'){
 carregarAuditoriaCompleta()
 }
+}
 if(nome==='historico'){
+if(typeof carregarHistorico==='function'){
 carregarHistorico()
 }
+}
 if(nome==='riscos'){
+if(typeof carregarPainelRiscos==='function'){
 carregarPainelRiscos()
 }
+}
 if(nome==='workflow'){
+if(typeof carregarWorkflow==='function'){
 carregarWorkflow()
 }
+}
 if(nome==='executivo'){
+if(typeof carregarPainelExecutivo==='function'){
 carregarPainelExecutivo()
 }
+}
 if(nome==='central'){
+if(typeof carregarCentralEvidencias==='function'){
 carregarCentralEvidencias()
 }
+}
 if(nome==='beneficios'){
+if(typeof carregarPainelBeneficios==='function'){
 carregarPainelBeneficios()
 }
+}
+}catch(e){
+console.log(e)
+}
+})
 }
 
 async function carregarUsuarioMonitoramento(){
