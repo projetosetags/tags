@@ -189,7 +189,10 @@ let ctx=document.getElementById('graficoStatus')
 if(!ctx){
 return
 }
-if(graficoStatus){
+if(
+graficoStatus&&
+typeof graficoStatus.destroy==='function'
+){
 graficoStatus.destroy()
 }
 graficoStatus=new Chart(ctx,{
@@ -322,7 +325,10 @@ if(!ctx){
 return
 }
 
-if(graficoEvolucao){
+if(
+graficoEvolucao&&
+typeof graficoEvolucao.destroy==='function'
+){
 graficoEvolucao.destroy()
 }
 
@@ -1212,7 +1218,10 @@ let ctx=document.getElementById('graficoCriticidade')
 if(!ctx){
 return
 }
-if(window.graficoCriticidade){
+if(
+window.graficoCriticidade&&
+typeof window.graficoCriticidade.destroy==='function'
+){
 window.graficoCriticidade.destroy()
 }
 window.graficoCriticidade=new Chart(ctx,{
@@ -1313,7 +1322,10 @@ if(!ctx){
 return
 }
 
-if(window.graficoBeneficios){
+if(
+window.graficoBeneficios&&
+typeof window.graficoBeneficios.destroy==='function'
+){
 window.graficoBeneficios.destroy()
 }
 
