@@ -107,6 +107,14 @@ carregarPainelBeneficios()
 console.log(e)
 }
 })
+/*=========================================================
+047 MONITORAMENTO-CORE.JS FUNCTION ABRIRTELA
+=========================================================*/
+if(tela==='evidencias'){
+if(typeof renderPainelEvidencias==='function'){
+renderPainelEvidencias()
+}
+}
 }
 
 async function carregarUsuarioMonitoramento(){
