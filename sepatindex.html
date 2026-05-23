@@ -127,9 +127,8 @@ Sair
 </div>
 
 <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
-<button onclick="gerarPDFDashboardSepat()" class="btn-pdf-sepat">
-PDF Dashboard
-</button>
+<button onclick="gerarPDFDashboardSepat()" class="btn-pdf-sepat">PDF Dashboard</button>
+<button onclick="gerarWordDashboardSepat()" class="btn-pdf-sepat btn-word-sepat">WORD Dashboard</button>
 </div>
 
 <div class="grid-dashboard-sepat">
@@ -165,6 +164,7 @@ PDF Dashboard
 <button onclick="modoResumoSepat='item';renderResumoSepat()" class="btn-filtro-sepat">Itens</button>
 <button onclick="modoResumoSepat='subitem';renderResumoSepat()" class="btn-filtro-sepat">Subitens</button>
 <button onclick="gerarPDFResumoSepat()" class="btn-pdf-sepat">PDF Resumo</button>
+<button onclick="gerarWordResumoSepat()" class="btn-pdf-sepat btn-word-sepat">WORD Resumo</button>
 <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:1000;white-space:nowrap">
 <input type="checkbox" id="ocultar100ResumoSepat" onchange="renderResumoSepat()">
 OCULTAR 100%
@@ -179,6 +179,7 @@ OCULTAR 100%
 <div class="barra-filtros-sepat">
 <input id="buscaMonitoramentoSepat" oninput="renderTabelaSepat()" placeholder="Pesquisar..." class="input-busca-sepat">
 <button onclick="gerarPDFMonitoramentoSepat()" class="btn-pdf-sepat">PDF Monitoramento</button>
+<button onclick="gerarWordMonitoramentoSepat()" class="btn-pdf-sepat btn-word-sepat">WORD Monitoramento</button>
 <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:1000;white-space:nowrap">
 <input type="checkbox" id="ocultar100Sepat" onchange="renderTabelaSepat()">
 OCULTAR 100%
@@ -222,6 +223,7 @@ OCULTAR 100%
 <select id="filtroItemSepat" onchange="popularSubitensSepat();renderGraficoMasterSepat()" class="select-sepat"></select>
 <select id="filtroSubitemSepat" onchange="renderGraficoMasterSepat()" class="select-sepat"></select>
 <button onclick="gerarPDFGraficosSepat()" class="btn-pdf-sepat">PDF Gráficos</button>
+<button onclick="gerarWordGraficosSepat()" class="btn-pdf-sepat btn-word-sepat">WORD Gráficos</button>
 </div>
 <div class="card-grafico-sepat grande">
 <div class="card-title-sepat">Análise Gráfica SEPAT</div>
@@ -235,6 +237,7 @@ OCULTAR 100%
 <section id="view-concluidos" class="view-sepat hidden">
 <div class="barra-filtros-sepat">
 <button onclick="gerarPDFConcluidosSepat()" class="btn-pdf-sepat">PDF 100%</button>
+<button onclick="gerarWordConcluidosSepat()" class="btn-pdf-sepat btn-word-sepat">WORD 100%</button>
 </div>
 <div id="cardsConcluidosSepat" class="cards-resumo-sepat"></div>
 </section>
