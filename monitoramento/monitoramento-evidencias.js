@@ -444,24 +444,39 @@ async function salvarEvidenciaLancada(itemId,btn){
 
 try{
 
+btn.disabled=true
+
 let linha=btn.closest('.linha-evidencia-item')
 
-let checks=[...linha.querySelectorAll('input[type="checkbox"]:checked')]
+let checks=[
+...linha.querySelectorAll('input[type="checkbox"]:checked')
+]
+
+let evidencias=checks
 .map(c=>c.value)
 .join('; ')
 
-let observacoes=linha.querySelector('.evidencia-textarea')?.value||''
+let observacoes=
+linha.querySelector('.evidencia-textarea')
+?.value
+?.trim()||''
 
-let{data:item,error:itemError}=await client
+let {data:item,error:itemError}=await client
 .from('monitoramento_itens')
 .select('*')
 .eq('id',itemId)
 .single()
 
 if(itemError||!item){
+
 console.log(itemError)
+
 alert('Item não encontrado')
+
+btn.disabled=false
+
 return
+
 }
 
 let payload={
@@ -469,106 +484,39 @@ item_id:Number(item.id),
 origem:item.origem||'',
 item:String(item.item||''),
 subitem:String(item.subitem||''),
-produto:item.produto||item.produto_esperado||'',
-status:item.status||'',
+produto:item.produto||item.produto_esperado||'-',
+status:item.status||'-',
 percentual:Number(item.percentual||0),
-mes_100:item.mes_100||item.mes_referencia||'',
-evidencias:checks,
+mes_100:item.mes_100||item.mes_referencia||'-',
+evidencias:evidencias,
 descricao:observacoes,
-observacoes:observacoes
+observacoes:observacoes,
+updated_at:new Date().toISOString()
 }
 
-console.log(payload)
+console.log('SALVANDO:',payload)
 
-let{error}=await client
+let {data:existe}=await client
 .from('monitoramento_evidencias_lancadas')
-.upsert(payload)
-
-if(error){
-console.log(error)
-alert('Erro ao salvar evidência')
-return
-}
-
-btn.innerHTML='✅ SALVO'
-btn.style.background='#166534'
-
-setTimeout(()=>{
-btn.innerHTML='💾 SALVAR'
-btn.style.background='#16a34a'
-},2000)
-
-}catch(e){
-console.log(e)
-alert('Erro inesperado ao salvar')
-}
-
-}
-/*=========================================================
-070 MONITORAMENTO-EVIDENCIAS.JS FUNCTION SALVAREVIDENCIALINHA
-ARQUIVO: monitoramento-evidencias.js
-LOCAL: PROCURE function salvarEvidenciaLinha
-AÇÃO: SE NÃO EXISTIR, ADICIONAR NO FINAL DO ARQUIVO
-=========================================================*/
-async function salvarEvidenciaLinha(itemId){
-
-let checks=[
-...document.querySelectorAll(`.evcheck-${itemId}:checked`)
-]
-
-let evidenciasSelecionadas=
-checks.map(c=>c.value)
-
-let observacao=
-document.getElementById(`obsEv-${itemId}`)?.value||''
-
-let item=
-window.monitoramentoItens?.find(i=>String(i.id)===String(itemId))
-
-if(!item){
-alert('Item não localizado')
-return
-}
-
-let payload={
-item_id:itemId,
-tipo_evidencia:evidenciasSelecionadas.join('; '),
-descricao:observacao,
-numero_documento:'-',
-orgao:item.origem||'-',
-status_validacao:'VALIDADA',
-confiabilidade:'ALTA'
-}
-
-console.log('PAYLOAD:',payload)
-
-let {data:existente,error:erroBusca}=await client
-.from('monitoramento_evidencias')
 .select('id')
-.eq('item_id',itemId)
-.limit(1)
-
-if(erroBusca){
-console.log(erroBusca)
-alert('Erro ao consultar evidência')
-return
-}
+.eq('item_id',item.id)
+.maybeSingle()
 
 let erro=null
 
-if(existente&&existente.length>0){
+if(existe){
 
 let r=await client
-.from('monitoramento_evidencias')
+.from('monitoramento_evidencias_lancadas')
 .update(payload)
-.eq('item_id',itemId)
+.eq('item_id',item.id)
 
 erro=r.error
 
 }else{
 
 let r=await client
-.from('monitoramento_evidencias')
+.from('monitoramento_evidencias_lancadas')
 .insert(payload)
 
 erro=r.error
@@ -576,14 +524,41 @@ erro=r.error
 }
 
 if(erro){
+
 console.log('ERRO SUPABASE:',erro)
+
 alert('Erro ao salvar evidência')
+
+btn.disabled=false
+
 return
-}
-
-alert('Evidência salva com sucesso')
 
 }
+
+btn.innerHTML='✅ SALVO'
+btn.style.background='#166534'
+
+setTimeout(()=>{
+
+btn.innerHTML='💾 SALVAR'
+btn.style.background='#16a34a'
+
+},2000)
+
+btn.disabled=false
+
+}catch(e){
+
+console.log('ERRO GERAL:',e)
+
+alert('Erro inesperado ao salvar')
+
+btn.disabled=false
+
+}
+
+}
+
 
 /*=========================================================
 071 MONITORAMENTO-EVIDENCIAS.JS DEBUG GLOBAL
