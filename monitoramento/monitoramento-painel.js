@@ -150,7 +150,19 @@ let html=''
 let percentual=Number(i.percentual||0)
 
 let alertas=[]
+let origem=String(i.origem||'').toUpperCase().trim()
+let classeOrigem='card-origem-sepat'
+let badgeOrigem='badge-sepat'
 
+if(origem==='SEDAM'){
+classeOrigem='card-origem-sedam'
+badgeOrigem='badge-sedam'
+}
+
+if(origem==='QUEIMADAS'){
+classeOrigem='card-origem-queimadas'
+badgeOrigem='badge-queimadas'
+}
 if(percentual<40){
 alertas.push('Percentual inferior a 40%')
 }
@@ -163,16 +175,17 @@ alertas.push('Criticidade alta identificada')
 }
 
 html+=`
-<div class="card-alerta-mini">
-
+<div class="card-alerta-mini ${classeOrigem}">
 <div class="card-alerta-titulo">
-⚠ ITEM ${i.item||'-'} — ${i.deliberacao||i.descricao||'-'}
+ITEM ${i.item||'-'} — ${i.deliberacao||i.descricao||'-'}
 </div>
 
 <div class="card-alerta-info">
 ${alertas.map(a=>`• ${a}`).join('<br>')}
 </div>
-
+<div class="badge-origem ${badgeOrigem}">
+${origem}
+</div>
 </div>
 `
 
