@@ -1354,3 +1354,17 @@ font-size:11px;
 line-height:1.5;
 color:#dbeafe;
 }
+/*=========================================================
+045 MONITORAMENTO.CSS EVIDENCIAS EM LINHA
+=========================================================*/
+.tabela-evidencias-wrap{background:#0f172a;border:1px solid #334155;border-radius:18px;overflow:hidden}
+.linha-evidencia{display:grid;grid-template-columns:90px 120px 1.2fr 140px 180px 2fr;gap:10px;padding:14px;border-bottom:1px solid #1e293b;align-items:flex-start}
+.linha-evidencia-header{background:#1e3a8a;color:#fff;font-weight:900;font-size:13px}
+.linha-evidencia-item{background:rgba(15,23,42,.92);color:#fff;font-size:13px}
+.evidencia-select{width:100%;padding:8px;border-radius:8px;border:1px solid #334155;background:#fff;color:#000;font-size:12px;margin-bottom:6px}
+.evidencia-textarea{width:100%;min-height:70px;padding:10px;border-radius:8px;border:1px solid #334155;background:#fff;color:#000;font-size:12px;resize:vertical}
+.badge-status-evidencia{padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;display:inline-block}
+.badge-executada{background:#16a34a;color:#fff}
+.badge-parcial{background:#f59e0b;color:#fff}
+.badge-nao{background:#dc2626;color:#fff}
+.badge-andamento{background:#2563eb;color:#fff}
