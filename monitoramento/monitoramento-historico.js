@@ -74,27 +74,105 @@ alert(
 
 }
 
+/*=========================================================
+001 MONITORAMENTO-HISTORICO.JS FUNCTION CARREGARHISTORICO
+=========================================================*/
 async function carregarHistorico(){
 
 let ctx=document.getElementById('graficoHistorico')
 
-if(!ctx)return
+if(!ctx){
+console.log('Canvas histórico não encontrado')
+return
+}
+
+let monitoramentoId=MONITORAMENTO_ATUAL||null
+
+if(!monitoramentoId){
+alert('Selecione um monitoramento')
+return
+}
 
 let{data,error}=await client
 .from('monitoramento_historico')
 .select('*')
+.eq('monitoramento_id',monitoramentoId)
 .order('created_at',{ascending:true})
 
 if(error){
-console.log(error)
+console.log('ERRO HISTÓRICO:',error)
+alert('Erro ao carregar histórico')
 return
+}
+
+data=data||[]
+
+if(data.length===0){
+
+if(window.graficoHistoricoObj&&typeof window.graficoHistoricoObj.destroy==='function'){
+window.graficoHistoricoObj.destroy()
+}
+
+new Chart(ctx,{
+type:'line',
+data:{
+labels:['SEM DADOS'],
+datasets:[{
+label:'Evolução Média',
+data:[0],
+borderColor:'#10b981',
+backgroundColor:'rgba(16,185,129,.2)',
+fill:true,
+tension:.35
+}]
+},
+options:{
+responsive:true,
+plugins:{
+legend:{
+labels:{
+color:'#fff'
+}
+}
+},
+scales:{
+x:{
+ticks:{
+color:'#fff'
+},
+grid:{
+color:'rgba(255,255,255,.05)'
+}
+},
+y:{
+ticks:{
+color:'#fff'
+},
+grid:{
+color:'rgba(255,255,255,.05)'
+}
+}
+}
+}
+})
+
+return
+
 }
 
 let mapa={}
 
-;(data||[]).forEach(i=>{
+data.forEach(i=>{
 
-let d=new Date(i.created_at)
+let percentual=Number(i.percentual||0)
+
+let dataBase=i.created_at||new Date()
+
+let d=new Date(dataBase)
+
+if(isNaN(d.getTime())){
+return
+}
 
 let chave=
 String(d.getMonth()+1).padStart(2,'0')+
@@ -105,9 +183,7 @@ if(!mapa[chave]){
 mapa[chave]=[]
 }
 
-mapa[chave].push(
-Number(i.percentual||0)
-)
+mapa[chave].push(percentual)
 
 })
 
@@ -118,7 +194,7 @@ Object.keys(mapa).forEach(k=>{
 
 labels.push(k)
 
-let arr=mapa[k]
+let arr=mapa[k]||[]
 
 let media=
 arr.reduce((a,b)=>a+b,0)/arr.length
@@ -129,7 +205,7 @@ Number(media.toFixed(1))
 
 })
 
-if(window.graficoHistoricoObj){
+if(window.graficoHistoricoObj&&typeof window.graficoHistoricoObj.destroy==='function'){
 window.graficoHistoricoObj.destroy()
 }
 
@@ -171,7 +247,9 @@ color:'#fff'
 },
 grid:{
 color:'rgba(255,255,255,.05)'
-}
+},
+beginAtZero:true,
+max:100
 }
 }
 }
