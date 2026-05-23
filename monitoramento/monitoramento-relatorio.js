@@ -662,6 +662,7 @@ MATRIZ DE RESULTADOS
 
 /*=========================================================
 023 MONITORAMENTO-RELATORIO.JS PRIMEIRO MONITORAMENTO
+VERSÃO PROFISSIONAL FORMATADA
 =========================================================*/
 async function gerarPrimeiroMonitoramento(){
 
@@ -672,58 +673,12 @@ return
 }
 
 box.innerHTML=`
-<div style="padding:28px;color:#fff;line-height:1.9;">
-
-<h2 style="font-size:24px;font-weight:800;margin-bottom:20px;">
-MATRIZ PRIMEIRO MONITORAMENTO
-</h2>
-
-<p>
-1. Identificação do objeto monitorado
-</p>
-
-<p>
-2. Deliberações selecionadas
-</p>
-
-<p>
-3. Situação atual encontrada
-</p>
-
-<p>
-4. Evidências apresentadas
-</p>
-
-<p>
-5. Avaliação técnica preliminar
-</p>
-
-<p>
-6. Benefícios esperados
-</p>
-
-<p>
-7. Encaminhamentos propostos
-</p>
-
-</div>
-`
-
-}
-
-/*=========================================================
-023 MONITORAMENTO-RELATORIO.JS PRIMEIRO MONITORAMENTO
-=========================================================*/
-async function gerarPrimeiroMonitoramento(){
-
-let box=document.getElementById('previewRelatorio')
-
-if(!box){
-return
-}
-
-box.innerHTML=`
-<div style="padding:40px;color:#fff;font-size:22px;font-weight:800;">
+<div style="
+padding:40px;
+color:#fff;
+font-size:24px;
+font-weight:900;
+">
 GERANDO MATRIZ DE MONITORAMENTO...
 </div>
 `
@@ -751,7 +706,12 @@ if(error){
 console.log(error)
 
 box.innerHTML=`
-<div style="padding:40px;color:#fff;">
+<div style="
+padding:40px;
+color:#fff;
+font-size:22px;
+font-weight:700;
+">
 ERRO AO GERAR MATRIZ
 </div>
 `
@@ -764,48 +724,72 @@ data=data||[]
 let html=''
 
 html+=`
+
 <div style="
-background:#fff;
-color:#000;
+background:#f4f4f4;
 padding:40px;
 font-family:Arial,sans-serif;
+color:#000;
+line-height:1.5;
 ">
 
 <div style="
 text-align:center;
 font-size:34px;
 font-weight:900;
-margin-bottom:40px;
+margin-bottom:34px;
+color:#111827;
 ">
 MATRIZ - PRIMEIRO MONITORAMENTO
 </div>
 
-<div style="margin-bottom:12px;">
+<div style="
+background:#fff;
+border:1px solid #d1d5db;
+padding:24px;
+border-radius:14px;
+margin-bottom:34px;
+box-shadow:0 4px 10px rgba(0,0,0,.06);
+">
+
+<div style="margin-bottom:10px;">
 <b>TC:</b> TCE-RO
 </div>
 
-<div style="margin-bottom:12px;">
-<b>Órgão / Entidade:</b> ${origem}
+<div style="margin-bottom:10px;">
+<b>Órgão / Entidade:</b>
+${origem}
 </div>
 
-<div style="margin-bottom:12px;">
+<div style="margin-bottom:10px;">
 <b>Acórdão em Monitoramento:</b>
 Acórdão APL-TC n. 00170/25
 </div>
 
-<div style="margin-bottom:12px;">
+<div style="margin-bottom:10px;">
 <b>Processos:</b>
 PCe n. 01702/22 e PCe n. 04340/25
 </div>
 
-<div style="margin-bottom:20px;">
-<b>Relator:</b>
+<div style="
+display:flex;
+align-items:center;
+gap:12px;
+flex-wrap:wrap;
+margin-top:18px;
+">
+
+<div style="font-weight:700;">
+Relator:
+</div>
 
 <select style="
-padding:8px;
-border:1px solid #ccc;
-border-radius:8px;
-margin-left:10px;
+padding:10px 14px;
+border-radius:10px;
+border:1px solid #cbd5e1;
+background:#fff;
+font-size:14px;
+min-width:420px;
 ">
 
 <option>
@@ -843,68 +827,97 @@ Conselheiro-Substituto FRANCISCO JÚNIOR FERREIRA DA SILVA
 </select>
 
 </div>
+
+</div>
+
+<div style="
+font-size:22px;
+font-weight:900;
+margin-bottom:18px;
+color:#111827;
+">
+TAG – ${origem} – Subitens analisados ${data.length}
+</div>
 `
 
 data.forEach((i,index)=>{
 
 let numero=String(index+1).padStart(3,'0')
 
+let corStatus='#facc15'
+
+if((i.status||'').includes('EXECUTADA')){
+corStatus='#86efac'
+}
+
+if((i.status||'').includes('NÃO')){
+corStatus='#fca5a5'
+}
+
+if((i.status||'').includes('ANDAMENTO')){
+corStatus='#93c5fd'
+}
+
 html+=`
+
+<div style="
+background:#fff;
+border-radius:14px;
+overflow:hidden;
+margin-bottom:30px;
+box-shadow:0 8px 24px rgba(0,0,0,.08);
+border:1px solid #d1d5db;
+">
+
+<div style="
+background:#166534;
+color:#fff;
+padding:12px 18px;
+font-size:18px;
+font-weight:900;
+display:flex;
+justify-content:space-between;
+align-items:center;
+">
+
+<div>
+${numero} • ITEM ${i.item||'-'} • SUBITEM ${i.subitem||'-'}
+</div>
+
+<div style="
+background:#fff;
+color:#166534;
+padding:6px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:900;
+">
+${Number(i.percentual||0)}%
+</div>
+
+</div>
 
 <table style="
 width:100%;
 border-collapse:collapse;
-margin-top:30px;
-font-size:12px;
+font-size:13px;
 ">
 
 <tr>
 
 <td style="
-border:1px solid #000;
-background:#facc15;
-font-weight:900;
-padding:6px;
-width:60px;
-text-align:center;
-">
-${numero}
-</td>
-
-<td style="
-border:1px solid #000;
-background:#65a30d;
-font-weight:900;
-padding:6px;
-width:80px;
-color:#fff;
-">
-Item:
-</td>
-
-<td style="
-border:1px solid #000;
-padding:6px;
-width:80px;
-font-weight:700;
-">
-${i.item||'-'}
-</td>
-
-<td style="
-border:1px solid #000;
-background:#65a30d;
-font-weight:900;
-padding:6px;
-width:180px;
-color:#fff;
-">
-Descrição da Ação:
-</td>
-
-<td style="
-border:1px solid #000;
+background:#dcfce7;
+border:1px solid #d1d5db;
 padding:10px;
+font-weight:800;
+width:180px;
+">
+Descrição da Ação
+</td>
+
+<td style="
+border:1px solid #d1d5db;
+padding:12px;
 font-weight:700;
 ">
 ${i.descricao||i.deliberacao||'-'}
@@ -914,70 +927,78 @@ ${i.descricao||i.deliberacao||'-'}
 
 <tr>
 
-<td colspan="2" style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
+<td style="
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
 ">
-Deliberação:
+Deliberação
 </td>
 
 <td style="
-border:1px solid #000;
-padding:6px;
+border:1px solid #d1d5db;
+padding:12px;
 ">
 ${i.deliberacao||'-'}
-</td>
-
-<td style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
-">
-N. subitem
-</td>
-
-<td style="
-border:1px solid #000;
-padding:6px;
-">
-${i.subitem||'-'}
 </td>
 
 </tr>
 
 <tr>
 
-<td colspan="2" style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
+<td style="
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
 ">
-Plano de Ação/Ação Proposta
+Plano de Ação / Ação Proposta
 </td>
 
 <td style="
-border:1px solid #000;
-padding:6px;
+border:1px solid #d1d5db;
+padding:12px;
 ">
 ${i.acao_gestor||'-'}
 </td>
 
+</tr>
+
+<tr>
+
 <td style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
+">
+Produto a ser Entregue
+</td>
+
+<td style="
+border:1px solid #d1d5db;
+padding:12px;
+">
+${i.produto_esperado||i.produto||'-'}
+</td>
+
+</tr>
+
+<tr>
+
+<td style="
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
 ">
 Produto Entregue
 </td>
 
 <td style="
-border:1px solid #000;
-padding:6px;
+border:1px solid #d1d5db;
+padding:12px;
 ">
 ${i.produto||i.produto_esperado||'-'}
 </td>
@@ -986,37 +1007,22 @@ ${i.produto||i.produto_esperado||'-'}
 
 <tr>
 
-<td colspan="2" style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
+<td style="
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
 ">
 Status da Ação
 </td>
 
 <td style="
-border:1px solid #000;
-padding:6px;
-">
-${i.status||'-'}
-</td>
-
-<td style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
-">
-%
-</td>
-
-<td style="
-border:1px solid #000;
-padding:6px;
+border:1px solid #d1d5db;
+padding:12px;
+background:${corStatus};
 font-weight:900;
 ">
-${Number(i.percentual||0)}%
+${i.status||'-'}
 </td>
 
 </tr>
@@ -1024,41 +1030,39 @@ ${Number(i.percentual||0)}%
 <tr>
 
 <td style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
 ">
 Ação do Gestor
 </td>
 
 <td style="
-border:1px solid #000;
-padding:6px;
+border:1px solid #d1d5db;
+padding:12px;
 ">
 ${i.acao_gestor||'-'}
 </td>
 
+</tr>
+
+<tr>
+
 <td style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
 ">
 Causa
 </td>
 
 <td style="
-border:1px solid #000;
-padding:6px;
+border:1px solid #d1d5db;
+padding:12px;
 ">
 ${i.causa||'-'}
-</td>
-
-<td style="
-border:1px solid #000;
-padding:6px;
-">
 </td>
 
 </tr>
@@ -1066,41 +1070,39 @@ padding:6px;
 <tr>
 
 <td style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
 ">
 Efeito
 </td>
 
 <td style="
-border:1px solid #000;
-padding:6px;
+border:1px solid #d1d5db;
+padding:12px;
 ">
 ${i.efeito||'-'}
 </td>
 
+</tr>
+
+<tr>
+
 <td style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
 ">
 Benefício Esperado
 </td>
 
 <td style="
-border:1px solid #000;
-padding:6px;
+border:1px solid #d1d5db;
+padding:12px;
 ">
 ${i.beneficio_esperado||'-'}
-</td>
-
-<td style="
-border:1px solid #000;
-padding:6px;
-">
 </td>
 
 </tr>
@@ -1108,60 +1110,60 @@ padding:6px;
 <tr>
 
 <td style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
 ">
 Prazo
 </td>
 
 <td style="
-border:1px solid #000;
-padding:6px;
+border:1px solid #d1d5db;
+padding:12px;
+font-weight:700;
 ">
 ${i.prazo||'-'}
 </td>
 
+</tr>
+
+<tr>
+
 <td style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
 ">
 Criticidade
 </td>
 
 <td style="
-border:1px solid #000;
-padding:6px;
-font-weight:700;
+border:1px solid #d1d5db;
+padding:12px;
+font-weight:900;
 ">
 ${i.criticidade||'-'}
 </td>
 
-<td style="
-border:1px solid #000;
-padding:6px;
-">
-</td>
-
 </tr>
 
 <tr>
 
 <td style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
 ">
 Observações
 </td>
 
-<td colspan="4" style="
-border:1px solid #000;
-padding:16px;
+<td style="
+border:1px solid #d1d5db;
+padding:18px;
+min-height:80px;
 ">
 </td>
 
@@ -1170,23 +1172,27 @@ padding:16px;
 <tr>
 
 <td style="
-border:1px solid #000;
-background:#d9f99d;
-padding:6px;
-font-weight:700;
+background:#dcfce7;
+border:1px solid #d1d5db;
+padding:10px;
+font-weight:800;
 ">
 Evidências
 </td>
 
-<td colspan="4" style="
-border:1px solid #000;
-padding:22px;
+<td style="
+border:1px solid #d1d5db;
+padding:28px;
+min-height:120px;
+background:#f9fafb;
 ">
 </td>
 
 </tr>
 
 </table>
+
+</div>
 `
 
 })
@@ -1194,7 +1200,73 @@ padding:22px;
 html+=`
 
 <div style="
-margin-top:40px;
+background:#fff;
+border-radius:14px;
+padding:28px;
+margin-top:30px;
+border:1px solid #d1d5db;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+">
+
+<div style="
+font-size:22px;
+font-weight:900;
+margin-bottom:20px;
+">
+GLOSSÁRIO
+</div>
+
+<div style="
+font-size:13px;
+line-height:2;
+">
+
+<b>Deliberação:</b>
+Descrição das atividades / ações a serem desenvolvidas ao longo dos prazos descritos.<br>
+
+<b>N. Subitem:</b>
+Numeração dos subitens descritos no Plano de Ação.<br>
+
+<b>Plano de Ação/Ação Proposta:</b>
+Descrição da ação que o gestor irá implementar para resolver o problema.<br>
+
+<b>Produto a ser entregue:</b>
+Produto gerado a partir da ação do gestor para cumprimento da deliberação.<br>
+
+<b>Status da Ação:</b>
+Descrever se está EM ANDAMENTO, EXECUTADO ou PARCIALMENTE EXECUTADO.<br>
+
+<b>%:</b>
+Percentual de execução da atividade proposta.<br>
+
+<b>Causas:</b>
+Evolução das causas identificadas na auditoria monitorada.<br>
+
+<b>Efeitos:</b>
+Consequências identificadas na auditoria monitorada.<br>
+
+<b>Benefício esperado:</b>
+Mensuração qualitativa e quantitativa dos benefícios obtidos.<br>
+
+<b>Prazo:</b>
+Descrever em dia/mês/ano.<br>
+
+<b>Criticidade:</b>
+Descrever se Alta, Média ou Baixa.<br>
+
+<b>Evidências:</b>
+Documentos, fotos, extratos, inspeções ou qualquer outro elemento comprobatório.<br>
+
+</div>
+
+</div>
+
+<div style="
+margin-top:30px;
+padding:22px;
+background:#fff8dc;
+border-left:8px solid #ca8a04;
+border-radius:12px;
 font-size:13px;
 line-height:1.8;
 ">
