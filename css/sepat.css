@@ -173,3 +173,12 @@ padding-left:10px;
 .barra-filtros-sepat{align-items:stretch;}
 .btn-filtro-sepat,.btn-pdf-sepat,.input-busca-sepat,.select-sepat{width:100%;min-width:100%;}
 }
+.btn-word-sepat{
+background:linear-gradient(135deg,#1d4ed8,#2563eb)!important;
+color:#ffffff!important;
+border:1px solid rgba(255,255,255,.18)!important;
+}
+.btn-word-sepat:hover{
+transform:translateY(-1px);
+filter:brightness(1.05);
+}
