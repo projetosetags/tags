@@ -284,146 +284,78 @@ await registrarLog('EXCLUSÃO EVIDÊNCIA','monitoramento_evidencias',id)
 await carregarCentralEvidencias()
 alert('Evidência removida')
 }
+/*=========================================================
+046 MONITORAMENTO-EVIDENCIAS.JS FUNCTION RENDERPAINELEVIDENCIAS
+=========================================================*/
 async function renderPainelEvidencias(){
-
 let box=document.getElementById('painelEvidenciasItens')
-
-if(!box){
-return
-}
-
+if(!box)return
 box.innerHTML=''
-
-let busca=
-(
-document.getElementById('buscaEvidencia')
-?.value||''
-)
-.toLowerCase()
-
-let origem=
-document.getElementById('filtroOrigemEvidencia')
-?.value||'TODAS'
-
-let query=client
-.from('monitoramento_itens')
-.select('*')
-.order('item',{ascending:true})
-
+let busca=(document.getElementById('buscaEvidencia')?.value||'').toLowerCase()
+let origem=document.getElementById('filtroOrigemEvidencia')?.value||'TODAS'
+let query=client.from('monitoramento_itens').select('*').gte('percentual',100).order('item',{ascending:true})
 if(origem!=='TODAS'){
 query=query.eq('origem',origem)
 }
-
 let{data,error}=await query
-
 if(error){
 console.log(error)
 return
 }
-
 data=(data||[]).filter(i=>{
-
-let txt=`
-${i.item||''}
-${i.subitem||''}
-${i.descricao||''}
-`.toLowerCase()
-
+let txt=`${i.item||''} ${i.subitem||''} ${i.produto||''} ${i.descricao||''}`.toLowerCase()
 return txt.includes(busca)
-
 })
-
 let html=''
-
-for(let i of data){
-
-let{data:evidencias}=await client
-.from('monitoramento_evidencias')
-.select('*')
-.eq('item_id',i.id)
-
+data.forEach(i=>{
+let status=i.status||'-'
+let classe='badge-andamento'
+if(status.includes('EXECUTADA'))classe='badge-executada'
+if(status.includes('PARCIAL'))classe='badge-parcial'
+if(status.includes('NÃO'))classe='badge-nao'
+let mes100=i.mes_100||i.mes_referencia||'-'
 html+=`
-
-<div class="card-evidencia-monitoramento">
-
-<div class="card-evidencia-topo">
-
+<div class="linha-evidencia linha-evidencia-item">
+<div><b>${i.item||'-'}</b></div>
+<div>${i.subitem||'-'}</div>
+<div>${i.produto||i.produto_esperado||'-'}</div>
+<div>${mes100}</div>
 <div>
-<b>ITEM ${i.item||'-'}</b>
-•
-SUBITEM ${i.subitem||'-'}
+<span class="badge-status-evidencia ${classe}">
+${status}
+</span>
 </div>
-
-<div class="badge-status ${getClasseStatus(i.status)}">
-${i.status||'-'}
-</div>
-
-</div>
-
-<div class="card-evidencia-descricao">
-${i.descricao||'-'}
-</div>
-
-<button
-class="btn-padrao azul"
-onclick="novaEvidencia('${i.id}')"
->
-➕ Nova Evidência
-</button>
-
-<div class="lista-evidencias-card">
-`
-
-if(evidencias&&evidencias.length){
-
-evidencias.forEach(e=>{
-
-html+=`
-
-<div class="evidencia-item">
-
-<div class="evidencia-titulo">
-${e.tipo_evidencia||'-'}
-</div>
-
 <div>
-<b>Número:</b>
-${e.numero_documento||'-'}
+<select class="evidencia-select" multiple>
+<option>OFÍCIO</option>
+<option>RELATÓRIO</option>
+<option>ATA</option>
+<option>SEI</option>
+<option>DESPACHO</option>
+<option>PORTARIA</option>
+<option>PRINT</option>
+<option>FOTO</option>
+<option>VÍDEO</option>
+<option>CHECKLIST</option>
+<option>PLANILHA</option>
+<option>PARECER</option>
+<option>MEMORANDO</option>
+<option>INSPEÇÃO IN LOCO</option>
+<option>PAINEL SISTEMA</option>
+<option>DOCUMENTO PDF</option>
+<option>OUTRO</option>
+</select>
+<textarea class="evidencia-textarea" placeholder="Descreva as evidências, número documento, órgão/setor, observações e demais informações..."></textarea>
 </div>
-
-<div>
-<b>Setor:</b>
-${e.orgao_setor||'-'}
-</div>
-
-<div>
-<b>Descrição:</b>
-${e.descricao||'-'}
-</div>
-
 </div>
 `
-
 })
-
-}else{
-
-html+=`
-
-<div class="sem-evidencia">
-Nenhuma evidência cadastrada
+if(!html){
+html=`
+<div style="padding:30px;color:#fff;font-weight:700;">
+Nenhum subitem atingiu 100% até o momento.
 </div>
 `
-
 }
-
-html+=`
-</div>
-</div>
-`
-
-}
-
 box.innerHTML=html
-
 }
