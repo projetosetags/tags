@@ -591,6 +591,11 @@ QUEIMADAS
 </section>
 <section id="tela-historico" class="tela-monitoramento hidden">
 <div class="top-actions">
+<select id="historicoMonitoramentoSelect" class="select-monitoramento" onchange="carregarHistoricoMonitoramento()">
+<option value="">
+Selecione um monitoramento
+</option>
+</select>
 <button class="btn-padrao verde" onclick="sincronizarHistoricoTAG()">
 🔄 Sincronizar TAG
 </button>
