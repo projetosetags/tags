@@ -284,3 +284,146 @@ await registrarLog('EXCLUSÃO EVIDÊNCIA','monitoramento_evidencias',id)
 await carregarCentralEvidencias()
 alert('Evidência removida')
 }
+async function renderPainelEvidencias(){
+
+let box=document.getElementById('painelEvidenciasItens')
+
+if(!box){
+return
+}
+
+box.innerHTML=''
+
+let busca=
+(
+document.getElementById('buscaEvidencia')
+?.value||''
+)
+.toLowerCase()
+
+let origem=
+document.getElementById('filtroOrigemEvidencia')
+?.value||'TODAS'
+
+let query=client
+.from('monitoramento_itens')
+.select('*')
+.order('item',{ascending:true})
+
+if(origem!=='TODAS'){
+query=query.eq('origem',origem)
+}
+
+let{data,error}=await query
+
+if(error){
+console.log(error)
+return
+}
+
+data=(data||[]).filter(i=>{
+
+let txt=`
+${i.item||''}
+${i.subitem||''}
+${i.descricao||''}
+`.toLowerCase()
+
+return txt.includes(busca)
+
+})
+
+let html=''
+
+for(let i of data){
+
+let{data:evidencias}=await client
+.from('monitoramento_evidencias')
+.select('*')
+.eq('item_id',i.id)
+
+html+=`
+
+<div class="card-evidencia-monitoramento">
+
+<div class="card-evidencia-topo">
+
+<div>
+<b>ITEM ${i.item||'-'}</b>
+•
+SUBITEM ${i.subitem||'-'}
+</div>
+
+<div class="badge-status ${getClasseStatus(i.status)}">
+${i.status||'-'}
+</div>
+
+</div>
+
+<div class="card-evidencia-descricao">
+${i.descricao||'-'}
+</div>
+
+<button
+class="btn-padrao azul"
+onclick="novaEvidencia('${i.id}')"
+>
+➕ Nova Evidência
+</button>
+
+<div class="lista-evidencias-card">
+`
+
+if(evidencias&&evidencias.length){
+
+evidencias.forEach(e=>{
+
+html+=`
+
+<div class="evidencia-item">
+
+<div class="evidencia-titulo">
+${e.tipo_evidencia||'-'}
+</div>
+
+<div>
+<b>Número:</b>
+${e.numero_documento||'-'}
+</div>
+
+<div>
+<b>Setor:</b>
+${e.orgao_setor||'-'}
+</div>
+
+<div>
+<b>Descrição:</b>
+${e.descricao||'-'}
+</div>
+
+</div>
+`
+
+})
+
+}else{
+
+html+=`
+
+<div class="sem-evidencia">
+Nenhuma evidência cadastrada
+</div>
+`
+
+}
+
+html+=`
+</div>
+</div>
+`
+
+}
+
+box.innerHTML=html
+
+}
