@@ -288,38 +288,75 @@ alert('Evidência removida')
 046 MONITORAMENTO-EVIDENCIAS.JS FUNCTION RENDERPAINELEVIDENCIAS
 =========================================================*/
 async function renderPainelEvidencias(){
+
 let box=document.getElementById('painelEvidenciasItens')
+
 if(!box)return
+
 box.innerHTML=''
+
 let busca=(document.getElementById('buscaEvidencia')?.value||'').toLowerCase()
+
 let origem=document.getElementById('filtroOrigemEvidencia')?.value||'TODAS'
-let query=client.from('monitoramento_itens').select('*').gte('percentual',100).order('item',{ascending:true})
+
+let query=client
+.from('monitoramento_itens')
+.select('*')
+.gte('percentual',100)
+.order('item',{ascending:true})
+
 if(origem!=='TODAS'){
 query=query.eq('origem',origem)
 }
+
 let{data,error}=await query
+
 if(error){
 console.log(error)
 return
 }
+
 data=(data||[]).filter(i=>{
-let txt=`${i.item||''} ${i.subitem||''} ${i.produto||''} ${i.descricao||''}`.toLowerCase()
+
+let txt=`
+${i.item||''}
+${i.subitem||''}
+${i.produto||''}
+${i.descricao||''}
+`.toLowerCase()
+
 return txt.includes(busca)
+
 })
+
 let html=''
+
 data.forEach(i=>{
 
 let status=i.status||'-'
+
 let classe='badge-andamento'
 
-if(status.includes('EXECUTADA'))classe='badge-executada'
-if(status.includes('PARCIAL'))classe='badge-parcial'
-if(status.includes('NÃO'))classe='badge-nao'
+if(status.includes('EXECUTADA')){
+classe='badge-executada'
+}
+
+if(status.includes('PARCIAL')){
+classe='badge-parcial'
+}
+
+if(status.includes('NÃO')){
+classe='badge-nao'
+}
 
 let mes100=i.mes_100||i.mes_referencia||'-'
 
+let possuiEvidencia=
+i.evidencia&&
+String(i.evidencia).trim()!==''
+
 html+=`
-<div class="linha-evidencia linha-evidencia-item">
+<div class="linha-evidencia linha-evidencia-item" data-evidencia-item="${i.id}">
 
 <div>
 <b>${i.item||'-'}</b>
@@ -329,7 +366,12 @@ html+=`
 ${i.subitem||'-'}
 </div>
 
-<div>
+<div style="
+font-size:11px;
+line-height:1.35;
+white-space:normal;
+word-break:break-word;
+">
 ${i.produto||i.produto_esperado||'-'}
 </div>
 
@@ -413,29 +455,41 @@ FOTO
 id="obsEvidencia_${i.id}"
 class="evidencia-textarea"
 placeholder="Exemplo: Ofício n. 120/2026/GAB/SEDAM; Processo SEI 0000.123456/2026-10; Relatório técnico da Coordenadoria X; Ata reunião 15-05-2026..."
-></textarea>
+>${i.evidencia||''}</textarea>
 
 </div>
 
 <div>
+
 <button
-class="btn-salvar-evidencia"
+class="btn-salvar-evidencia ${possuiEvidencia?'btn-evidencia-ok':''}"
 onclick="salvarEvidenciaLancada(${i.id},this)">
-💾 SALVAR
+${possuiEvidencia?'✔ SALVO':'💾 SALVAR'}
 </button>
+
 </div>
 
 </div>
 `
+
 })
+
 if(!html){
+
 html=`
-<div style="padding:30px;color:#fff;font-weight:700;">
+<div style="
+padding:30px;
+color:#fff;
+font-weight:700;
+">
 Nenhum subitem atingiu 100% até o momento.
 </div>
 `
+
 }
+
 box.innerHTML=html
+
 }
 /*=========================================================
 052 MONITORAMENTO-EVIDENCIAS.JS FUNCTION SALVAREVIDENCIALANCADA
