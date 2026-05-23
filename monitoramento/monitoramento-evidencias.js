@@ -442,6 +442,8 @@ box.innerHTML=html
 =========================================================*/
 async function salvarEvidenciaLancada(itemId,btn){
 
+try{
+
 let linha=btn.closest('.linha-evidencia-item')
 
 let checks=[...linha.querySelectorAll('input[type="checkbox"]:checked')]
@@ -450,22 +452,23 @@ let checks=[...linha.querySelectorAll('input[type="checkbox"]:checked')]
 
 let observacoes=linha.querySelector('.evidencia-textarea')?.value||''
 
-let{data:item}=await client
+let{data:item,error:itemError}=await client
 .from('monitoramento_itens')
 .select('*')
 .eq('id',itemId)
 .single()
 
-if(!item){
+if(itemError||!item){
+console.log(itemError)
 alert('Item não encontrado')
 return
 }
 
 let payload={
-item_id:item.id,
+item_id:Number(item.id),
 origem:item.origem||'',
-item:item.item||'',
-subitem:item.subitem||'',
+item:String(item.item||''),
+subitem:String(item.subitem||''),
 produto:item.produto||item.produto_esperado||'',
 status:item.status||'',
 percentual:Number(item.percentual||0),
@@ -475,9 +478,11 @@ descricao:observacoes,
 observacoes:observacoes
 }
 
+console.log(payload)
+
 let{error}=await client
 .from('monitoramento_evidencias_lancadas')
-.upsert(payload,{onConflict:'item_id'})
+.upsert(payload)
 
 if(error){
 console.log(error)
@@ -492,5 +497,10 @@ setTimeout(()=>{
 btn.innerHTML='💾 SALVAR'
 btn.style.background='#16a34a'
 },2000)
+
+}catch(e){
+console.log(e)
+alert('Erro inesperado ao salvar')
+}
 
 }
