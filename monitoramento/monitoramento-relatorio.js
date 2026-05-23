@@ -416,7 +416,7 @@ URL.revokeObjectURL(url)
 }
 
 /*=========================================================
-018 MONITORAMENTO-RELATORIO.JS RESUMO EXECUTIVO
+024 MONITORAMENTO-RELATORIO.JS RESUMO EXECUTIVO
 =========================================================*/
 async function gerarResumoExecutivo(){
 
@@ -426,133 +426,194 @@ if(!box){
 return
 }
 
+let total=document.getElementById('kpiTotal')?.innerText||0
+let exec=document.getElementById('kpiExecutadas')?.innerText||0
+let parcial=document.getElementById('kpiParciais')?.innerText||0
+let nao=document.getElementById('kpiNaoExecutadas')?.innerText||0
+let andamento=document.getElementById('kpiAndamento')?.innerText||0
+
 box.innerHTML=`
-<div style="padding:28px;color:#fff;font-size:15px;line-height:1.8;">
-<h2 style="font-size:24px;font-weight:800;margin-bottom:20px;color:#fff;">
+<div style="
+background:#fff;
+padding:40px;
+border-radius:18px;
+color:#111827;
+font-family:Arial,sans-serif;
+line-height:1.8;
+">
+
+<div style="
+font-size:34px;
+font-weight:900;
+margin-bottom:30px;
+">
 RESUMO EXECUTIVO
-</h2>
+</div>
 
-<p>
-O presente monitoramento teve por objetivo avaliar o cumprimento das deliberações constantes dos processos acompanhados pela equipe técnica.
-</p>
+<div style="
+font-size:18px;
+margin-bottom:20px;
+">
+O presente monitoramento técnico avaliou o cumprimento das ações, deliberações e medidas constantes dos planos estratégicos monitorados.
+</div>
 
-<p>
-Foram analisados <b>${document.getElementById('kpiTotal')?.innerText||0}</b> itens monitorados.
-</p>
+<div style="
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:18px;
+margin-top:30px;
+">
 
-<p>
-<b>RESULTADOS:</b>
-</p>
+<div style="background:#ecfdf5;padding:20px;border-radius:14px;">
+<div style="font-size:14px;font-weight:700;">
+EXECUTADAS
+</div>
+<div style="font-size:42px;font-weight:900;color:#166534;">
+${exec}
+</div>
+</div>
 
-<ul style="margin-left:24px;">
-<li>EXECUTADAS: ${document.getElementById('kpiExecutadas')?.innerText||0}</li>
-<li>PARCIALMENTE EXECUTADAS: ${document.getElementById('kpiParciais')?.innerText||0}</li>
-<li>NÃO EXECUTADAS: ${document.getElementById('kpiNaoExecutadas')?.innerText||0}</li>
-<li>EM ANDAMENTO: ${document.getElementById('kpiAndamento')?.innerText||0}</li>
-</ul>
+<div style="background:#fef3c7;padding:20px;border-radius:14px;">
+<div style="font-size:14px;font-weight:700;">
+PARCIAIS
+</div>
+<div style="font-size:42px;font-weight:900;color:#92400e;">
+${parcial}
+</div>
+</div>
 
-<p>
-Persistem fragilidades relevantes na implementação das medidas monitoradas, exigindo continuidade das ações de controle e acompanhamento técnico.
-</p>
+<div style="background:#fee2e2;padding:20px;border-radius:14px;">
+<div style="font-size:14px;font-weight:700;">
+NÃO EXECUTADAS
+</div>
+<div style="font-size:42px;font-weight:900;color:#991b1b;">
+${nao}
+</div>
+</div>
 
-<p>
-Recomenda-se a continuidade do monitoramento dos itens pendentes, especialmente aqueles classificados como parcialmente executados ou não executados.
-</p>
+<div style="background:#dbeafe;padding:20px;border-radius:14px;">
+<div style="font-size:14px;font-weight:700;">
+EM ANDAMENTO
+</div>
+<div style="font-size:42px;font-weight:900;color:#1d4ed8;">
+${andamento}
+</div>
+</div>
+
+</div>
+
+<div style="
+margin-top:40px;
+font-size:17px;
+">
+Foram analisados <b>${total}</b> itens monitorados, considerando critérios de efetividade, criticidade, evidências, resultados institucionais e conformidade com os planos de ação apresentados pelos jurisdicionados.
+</div>
 
 </div>
 `
 
 }
 
-
 /*=========================================================
-019 MONITORAMENTO-RELATORIO.JS PLANO MONITORAMENTO
+025 MONITORAMENTO-RELATORIO.JS PLANO MONITORAMENTO
 =========================================================*/
 async function gerarPlanoMonitoramento(){
 
 let box=document.getElementById('previewRelatorio')
 
-if(!box){
-return
-}
-
 box.innerHTML=`
-<div style="padding:28px;color:#fff;line-height:1.8;">
+<div style="
+background:#fff;
+padding:40px;
+border-radius:18px;
+color:#111827;
+font-family:Arial;
+">
 
-<h2 style="font-size:24px;font-weight:800;margin-bottom:18px;">
+<div style="
+font-size:32px;
+font-weight:900;
+margin-bottom:30px;
+">
 PLANO DE MONITORAMENTO
-</h2>
+</div>
 
-<p>
-• Objetivo Geral do Monitoramento
-</p>
-
-<p>
-• Escopo da Fiscalização
-</p>
-
-<p>
-• Metodologia Aplicada
-</p>
-
-<p>
-• Critérios de Avaliação
-</p>
-
-<p>
-• Cronograma de Execução
-</p>
-
-<p>
-• Equipe Técnica Responsável
-</p>
-
-<p>
-• Matriz de Riscos
-</p>
-
-<p>
-• Benefícios Esperados
-</p>
+<div style="
+line-height:2;
+font-size:16px;
+">
+• Objetivo Geral do Monitoramento<br>
+• Metodologia Aplicada<br>
+• Critérios Utilizados<br>
+• Órgãos Monitorados<br>
+• Itens Prioritários<br>
+• Critérios de Risco e Criticidade<br>
+• Cronograma de Acompanhamento<br>
+• Equipe Técnica Responsável<br>
+• Evidências Necessárias<br>
+• Resultados Esperados
+</div>
 
 </div>
 `
 
 }
 
-
 /*=========================================================
-020 MONITORAMENTO-RELATORIO.JS MATRIZ PLANEJAMENTO
+026 MONITORAMENTO-RELATORIO.JS MATRIZ PLANEJAMENTO
 =========================================================*/
 async function gerarMatrizPlanejamento(){
 
 let box=document.getElementById('previewRelatorio')
 
-if(!box){
-return
-}
-
 box.innerHTML=`
-<div style="padding:28px;color:#fff;line-height:1.8;">
+<div style="
+background:#fff;
+padding:40px;
+border-radius:18px;
+color:#111827;
+font-family:Arial;
+">
 
-<h2 style="font-size:24px;font-weight:800;margin-bottom:18px;">
-MATRIZ DE PLANEJAMENTO DO MONITORAMENTO
-</h2>
+<div style="
+font-size:32px;
+font-weight:900;
+margin-bottom:30px;
+">
+MATRIZ DE PLANEJAMENTO
+</div>
 
-<table style="width:100%;border-collapse:collapse;">
+<table style="
+width:100%;
+border-collapse:collapse;
+font-size:14px;
+">
 
-<tr style="background:#2563eb;">
-<th style="padding:10px;border:1px solid #334155;">Questão</th>
-<th style="padding:10px;border:1px solid #334155;">Critério</th>
-<th style="padding:10px;border:1px solid #334155;">Fonte</th>
-<th style="padding:10px;border:1px solid #334155;">Procedimento</th>
+<tr style="background:#1e3a8a;color:#fff;">
+
+<th style="padding:12px;border:1px solid #d1d5db;">
+Questão
+</th>
+
+<th style="padding:12px;border:1px solid #d1d5db;">
+Critério
+</th>
+
+<th style="padding:12px;border:1px solid #d1d5db;">
+Procedimento
+</th>
+
+<th style="padding:12px;border:1px solid #d1d5db;">
+Fonte
+</th>
+
 </tr>
 
 <tr>
-<td style="padding:10px;border:1px solid #334155;">Cumprimento das deliberações</td>
-<td style="padding:10px;border:1px solid #334155;">Normativos</td>
-<td style="padding:10px;border:1px solid #334155;">Processos</td>
-<td style="padding:10px;border:1px solid #334155;">Análise documental</td>
+<td style="padding:12px;border:1px solid #d1d5db;">Cumprimento das deliberações</td>
+<td style="padding:12px;border:1px solid #d1d5db;">Plano de ação</td>
+<td style="padding:12px;border:1px solid #d1d5db;">Análise documental</td>
+<td style="padding:12px;border:1px solid #d1d5db;">Sistema TAG</td>
 </tr>
 
 </table>
@@ -561,7 +622,6 @@ MATRIZ DE PLANEJAMENTO DO MONITORAMENTO
 `
 
 }
-
 /*=========================================================
 021 MONITORAMENTO-RELATORIO.JS ANALISE SEPARADA
 =========================================================*/
@@ -756,19 +816,105 @@ box-shadow:0 4px 10px rgba(0,0,0,.06);
 <b>TC:</b> TCE-RO
 </div>
 
-<div style="margin-bottom:10px;">
-<b>Órgão / Entidade:</b>
-${origem}
+<div style="
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:18px;
+margin-bottom:18px;
+">
+
+<div>
+
+<div style="
+font-weight:800;
+margin-bottom:6px;
+">
+Órgão / Entidade
 </div>
 
-<div style="margin-bottom:10px;">
-<b>Acórdão em Monitoramento:</b>
-Acórdão APL-TC n. 00170/25
+<select id="relatorioOrgao" style="
+width:100%;
+padding:10px 14px;
+border-radius:10px;
+border:1px solid #cbd5e1;
+background:#fff;
+font-size:14px;
+">
+
+<option ${origem==='SEDAM'?'selected':''}>
+SEDAM
+</option>
+
+<option ${origem==='SEPAT'?'selected':''}>
+SEPAT
+</option>
+
+<option ${origem==='QUEIMADAS'?'selected':''}>
+QUEIMADAS
+</option>
+
+</select>
+
 </div>
 
-<div style="margin-bottom:10px;">
-<b>Processos:</b>
-PCe n. 01702/22 e PCe n. 04340/25
+<div>
+
+<div style="
+font-weight:800;
+margin-bottom:6px;
+">
+Acórdão em Monitoramento
+</div>
+
+<input
+id="relatorioAcordao"
+value="${
+origem==='SEDAM'
+?'APL-TC 00170/25'
+:origem==='SEPAT'
+?'APL-TC 00215/25'
+:'APL-TC 00089/26'
+}"
+style="
+width:100%;
+padding:10px 14px;
+border-radius:10px;
+border:1px solid #cbd5e1;
+background:#fff;
+font-size:14px;
+">
+
+</div>
+
+<div>
+
+<div style="
+font-weight:800;
+margin-bottom:6px;
+">
+Processo(s)
+</div>
+
+<input
+id="relatorioProcesso"
+value="${
+origem==='SEDAM'
+?'PCe 01702/22 e 04340/25'
+:origem==='SEPAT'
+?'PCe 01111/24'
+:'PCe 02020/26'
+}"
+style="
+width:100%;
+padding:10px 14px;
+border-radius:10px;
+border:1px solid #cbd5e1;
+background:#fff;
+font-size:14px;
+">
+
+</div>
+
 </div>
 
 <div style="
@@ -783,7 +929,7 @@ margin-top:18px;
 Relator:
 </div>
 
-<select style="
+<select id="relatorioRelator" style="
 padding:10px 14px;
 border-radius:10px;
 border:1px solid #cbd5e1;
@@ -831,12 +977,33 @@ Conselheiro-Substituto FRANCISCO JÚNIOR FERREIRA DA SILVA
 </div>
 
 <div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:14px;
+margin-bottom:24px;
+">
+
+<div style="
 font-size:22px;
 font-weight:900;
-margin-bottom:18px;
 color:#111827;
 ">
-TAG – ${origem} – Subitens analisados ${data.length}
+TAG – ${origem}
+</div>
+
+<div style="
+background:#fff;
+padding:12px 18px;
+border-radius:12px;
+border:1px solid #d1d5db;
+font-size:15px;
+font-weight:800;
+">
+Subitens analisados: ${data.length}
+</div>
+
 </div>
 `
 
@@ -1123,7 +1290,11 @@ border:1px solid #d1d5db;
 padding:12px;
 font-weight:700;
 ">
-${i.prazo||'-'}
+${
+i.prazo
+?new Date(i.prazo).toLocaleDateString('pt-BR').replace(/\//g,'-')
+:'-'
+}
 </td>
 
 </tr>
@@ -1249,7 +1420,7 @@ Consequências identificadas na auditoria monitorada.<br>
 Mensuração qualitativa e quantitativa dos benefícios obtidos.<br>
 
 <b>Prazo:</b>
-Descrever em dia/mês/ano.<br>
+Descrever no formato dd-mm-aaaa.<br>
 
 <b>Criticidade:</b>
 Descrever se Alta, Média ou Baixa.<br>
