@@ -566,7 +566,11 @@ class="btn-padrao roxo"
 onclick="gerarResumoIA(${i.id})">
 🧠 IA
 </button>
-
+<button
+class="btn-padrao verde"
+onclick="abrirModalUpload(${i.id})">
+📎 Upload
+</button>
 </div>
 
 </div>
