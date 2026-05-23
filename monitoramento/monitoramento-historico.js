@@ -267,7 +267,7 @@ if(!select){
 return
 }
 
-let {data,error}=await client
+let{data,error}=await client
 .from('monitoramentos')
 .select('*')
 .order('titulo',{ascending:true})
@@ -277,21 +277,25 @@ console.log(error)
 return
 }
 
-select.innerHTML=`
-<option value="">
-Selecione um monitoramento
-</option>
-`
+select.innerHTML=''
 
-;(data||[]).forEach(m=>{
+;(data||[]).forEach((m,index)=>{
 
 select.innerHTML+=`
-<option value="${m.id}">
+<option value="${m.id}" ${index===0?'selected':''}>
 ${m.titulo||'Monitoramento'}
 </option>
 `
 
 })
+
+if(data&&data.length>0){
+
+setTimeout(()=>{
+carregarHistoricoMonitoramento()
+},300)
+
+}
 
 }
 
@@ -319,3 +323,9 @@ if(typeof renderListaHistorico==='function'){
 renderListaHistorico(data||[])
 }
 }
+/*=========================================================
+099 MONITORAMENTO-HISTORICO.JS INIT
+=========================================================*/
+document.addEventListener('DOMContentLoaded',()=>{
+popularSelectHistorico()
+})
