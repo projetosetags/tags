@@ -46,6 +46,7 @@ continue
 let{error:insertError}=await client
 .from('monitoramento_historico')
 .insert([{
+monitoramento_id:MONITORAMENTO_ATUAL,
 item_id:item.id,
 mes_referencia:e.mes_referencia,
 percentual:Number(e.percentual_lancado||0),
@@ -77,7 +78,7 @@ alert(
 /*=========================================================
 001 MONITORAMENTO-HISTORICO.JS FUNCTION CARREGARHISTORICO
 =========================================================*/
-async function carregarHistorico(){
+async function carregarHistorico(monitoramentoId=null){
 
 let ctx=document.getElementById('graficoHistorico')
 
@@ -86,10 +87,16 @@ console.log('Canvas histórico não encontrado')
 return
 }
 
-let monitoramentoId=MONITORAMENTO_ATUAL||null
+if(!monitoramentoId){
+
+monitoramentoId=
+document.getElementById('historicoMonitoramentoSelect')
+?.value||null
+
+}
 
 if(!monitoramentoId){
-alert('Selecione um monitoramento')
+console.log('Nenhum monitoramento selecionado')
 return
 }
 
@@ -97,22 +104,25 @@ let{data,error}=await client
 .from('monitoramento_historico')
 .select('*')
 .eq('monitoramento_id',monitoramentoId)
-.order('created_at',{ascending:true})
+.order('mes_referencia',{ascending:true})
 
 if(error){
 console.log('ERRO HISTÓRICO:',error)
-alert('Erro ao carregar histórico')
 return
 }
 
 data=data||[]
 
-if(data.length===0){
-
-if(window.graficoHistoricoObj&&typeof window.graficoHistoricoObj.destroy==='function'){
+if(
+window.graficoHistoricoObj&&
+typeof window.graficoHistoricoObj.destroy==='function'
+){
 window.graficoHistoricoObj.destroy()
 }
 
+if(data.length===0){
+
+window.graficoHistoricoObj=
 new Chart(ctx,{
 type:'line',
 data:{
@@ -137,20 +147,14 @@ color:'#fff'
 },
 scales:{
 x:{
-ticks:{
-color:'#fff'
-},
-grid:{
-color:'rgba(255,255,255,.05)'
-}
+ticks:{color:'#fff'},
+grid:{color:'rgba(255,255,255,.05)'}
 },
 y:{
-ticks:{
-color:'#fff'
-},
-grid:{
-color:'rgba(255,255,255,.05)'
-}
+ticks:{color:'#fff'},
+grid:{color:'rgba(255,255,255,.05)'},
+beginAtZero:true,
+max:100
 }
 }
 }
@@ -166,18 +170,7 @@ data.forEach(i=>{
 
 let percentual=Number(i.percentual||0)
 
-let dataBase=i.created_at||new Date()
-
-let d=new Date(dataBase)
-
-if(isNaN(d.getTime())){
-return
-}
-
-let chave=
-String(d.getMonth()+1).padStart(2,'0')+
-'/'+
-d.getFullYear()
+let chave=i.mes_referencia||'SEM DATA'
 
 if(!mapa[chave]){
 mapa[chave]=[]
@@ -205,10 +198,6 @@ Number(media.toFixed(1))
 
 })
 
-if(window.graficoHistoricoObj&&typeof window.graficoHistoricoObj.destroy==='function'){
-window.graficoHistoricoObj.destroy()
-}
-
 window.graficoHistoricoObj=
 new Chart(ctx,{
 type:'line',
@@ -234,20 +223,12 @@ color:'#fff'
 },
 scales:{
 x:{
-ticks:{
-color:'#fff'
-},
-grid:{
-color:'rgba(255,255,255,.05)'
-}
+ticks:{color:'#fff'},
+grid:{color:'rgba(255,255,255,.05)'}
 },
 y:{
-ticks:{
-color:'#fff'
-},
-grid:{
-color:'rgba(255,255,255,.05)'
-},
+ticks:{color:'#fff'},
+grid:{color:'rgba(255,255,255,.05)'},
 beginAtZero:true,
 max:100
 }
@@ -307,25 +288,34 @@ await carregarHistoricoMonitoramento()
 021 MONITORAMENTO-HISTORICO.JS CARREGAR HISTORICO
 =========================================================*/
 async function carregarHistoricoMonitoramento(){
-let monitoramentoId=document.getElementById('historicoMonitoramentoSelect')?.value
+
+let monitoramentoId=
+document.getElementById('historicoMonitoramentoSelect')
+?.value
+
 if(!monitoramentoId){
-alert('Selecione um monitoramento')
 return
 }
+
+await carregarHistorico(monitoramentoId)
+
 let{data,error}=await client
 .from('monitoramento_historico')
 .select('*')
 .eq('monitoramento_id',monitoramentoId)
-.order('created_at',{ascending:true})
+.order('mes_referencia',{ascending:true})
+
 if(error){
 console.log(error)
 return
 }
+
 console.log('HISTÓRICO:',data)
-await carregarHistorico()
+
 if(typeof renderListaHistorico==='function'){
 renderListaHistorico(data||[])
 }
+
 }
 /*=========================================================
 099 MONITORAMENTO-HISTORICO.JS INIT
