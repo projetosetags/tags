@@ -554,6 +554,98 @@ renderGraficoBarrasSepat(lista)
 
 }
 /*=========================================================
+010A SEPAT PDF DASHBOARD
+=========================================================*/
+function gerarPDFDashboardSepat(){
+
+let doc=criarDocSepat('p')
+
+let totalItens=document.getElementById('kpiItensSepat')?.innerText||'0'
+let totalSubitens=document.getElementById('kpiSubitensSepat')?.innerText||'0'
+let totalProdutos=document.getElementById('kpiProdutosSepat')?.innerText||'0'
+let media=document.getElementById('kpiMediaSepat')?.innerText||'0%'
+
+doc.setFontSize(18)
+doc.setTextColor(15,23,42)
+
+doc.text('DASHBOARD EXECUTIVO - TAG SEPAT 2026',10,14)
+
+doc.setDrawColor(220,220,220)
+
+doc.line(10,18,200,18)
+
+doc.setFontSize(11)
+
+doc.setTextColor(30,41,59)
+
+doc.text('Itens Estratégicos: '+totalItens,12,30)
+doc.text('Subitens Monitorados: '+totalSubitens,12,38)
+doc.text('Produtos Estratégicos: '+totalProdutos,12,46)
+doc.text('Média Geral Consolidada: '+media,12,54)
+
+let linha=document.getElementById('graficoLinhaSepat')
+let pizza=document.getElementById('graficoPizzaSepat')
+let barras=document.getElementById('graficoBarrasSepat')
+
+if(linha){
+
+let imgLinha=linha.toDataURL('image/png',1.0)
+
+doc.setFontSize(12)
+
+doc.text('EVOLUÇÃO CONSOLIDADA',10,68)
+
+doc.addImage(imgLinha,'PNG',10,74,190,56)
+
+}
+
+if(pizza){
+
+doc.addPage()
+
+doc.setFontSize(16)
+
+doc.text('DISTRIBUIÇÃO PERCENTUAL',10,14)
+
+let imgPizza=pizza.toDataURL('image/png',1.0)
+
+doc.addImage(imgPizza,'PNG',20,28,165,92)
+
+}
+
+if(barras){
+
+doc.addPage()
+
+doc.setFontSize(16)
+
+doc.text('DESEMPENHO POR ITEM ESTRATÉGICO',10,14)
+
+let imgBarras=barras.toDataURL('image/png',1.0)
+
+doc.addImage(imgBarras,'PNG',10,28,190,92)
+
+}
+
+doc.setFontSize(8)
+
+doc.setTextColor(90)
+
+doc.text(
+'Relatório executivo consolidado do monitoramento técnico da TAG SEPAT 2026.',
+10,
+275,
+{
+maxWidth:190
+}
+)
+
+rodapeSepat(doc)
+
+doc.save('pdf_dashboard_tag_sepat.pdf')
+
+}
+/*=========================================================
 011 SEPAT CORE GRAFICO LINHA
 =========================================================*/
 function renderGraficoLinhaSepat(lista){
@@ -1331,7 +1423,7 @@ let doc=criarDocSepat('l')
 let lista=[...(sepatData||[])].sort(compareSepat)
 let rows=lista.map(i=>[
 String(i.siglaitem||'-'),
-String(i.subitem||'-'),
+String(i.descricaoitem||i.subitem||'-'),
 String(i.produto||'-'),
 String(i.cargo||'-'),
 Number(i.jan||0)+'%',
@@ -1360,7 +1452,7 @@ head:[['ITEM','SUBITEM / DESCRIÇÃO','PRODUTO','RESPONSÁVEL','JAN','FEV','MAR'
 body:rows,
 theme:'grid',
 styles:{
-fontSize:6.5,
+fontSize:6.2,
 overflow:'linebreak',
 cellPadding:1.6,
 valign:'middle',
@@ -1380,41 +1472,51 @@ alternateRowStyles:{
 fillColor:[248,250,252]
 },
 columnStyles:{
-0:{cellWidth:16,halign:'center'},
-1:{cellWidth:78},
-2:{cellWidth:52},
-3:{cellWidth:34},
-4:{cellWidth:10,halign:'center'},
-5:{cellWidth:10,halign:'center'},
-6:{cellWidth:10,halign:'center'},
-7:{cellWidth:10,halign:'center'},
-8:{cellWidth:10,halign:'center'},
-9:{cellWidth:10,halign:'center'},
-10:{cellWidth:10,halign:'center'},
-11:{cellWidth:10,halign:'center'},
-12:{cellWidth:10,halign:'center'},
-13:{cellWidth:10,halign:'center'},
-14:{cellWidth:10,halign:'center'},
-15:{cellWidth:10,halign:'center'},
-16:{cellWidth:14,halign:'center'}
+0:{cellWidth:14,halign:'center'},
+1:{cellWidth:104},
+2:{cellWidth:38},
+3:{cellWidth:24},
+4:{cellWidth:8,halign:'center'},
+5:{cellWidth:8,halign:'center'},
+6:{cellWidth:8,halign:'center'},
+7:{cellWidth:8,halign:'center'},
+8:{cellWidth:8,halign:'center'},
+9:{cellWidth:8,halign:'center'},
+10:{cellWidth:8,halign:'center'},
+11:{cellWidth:8,halign:'center'},
+12:{cellWidth:8,halign:'center'},
+13:{cellWidth:8,halign:'center'},
+14:{cellWidth:8,halign:'center'},
+15:{cellWidth:8,halign:'center'},
+16:{cellWidth:12,halign:'center'}
 },
 margin:{
 top:20,
-bottom:26,
-left:6,
-right:6
+bottom:42,
+left:5,
+right:5
 },
+pageBreak:'auto',
+rowPageBreak:'avoid',
 didParseCell:function(data){
 if(data.section==='body'&&data.column.index===16){
 data.cell.styles.fontStyle='bold'
 data.cell.styles.textColor=[4,120,87]
 }
+},
+didDrawPage:function(data){
+let pageHeight=doc.internal.pageSize.height
+let pageWidth=doc.internal.pageSize.width
+doc.setFillColor(255,255,255)
+doc.rect(0,pageHeight-36,pageWidth,36,'F')
 }
 })
-let finalY=doc.lastAutoTable.finalY||260
+let finalY=doc.lastAutoTable.finalY||240
+if(finalY<160){
 doc.setFontSize(7)
 doc.setTextColor(110)
-doc.text('As informações constantes neste painel possuem caráter preliminar e dependem de validação técnica documental.',14,finalY+8)
+doc.text('As informações constantes neste painel possuem caráter preliminar e dependem de validação técnica documental.',14,finalY+8,{maxWidth:250})
+}
 rodapeSepat(doc)
 doc.save('pdf_monitoramento_tag_sepat.pdf')
 }
@@ -1422,21 +1524,80 @@ doc.save('pdf_monitoramento_tag_sepat.pdf')
 027 SEPAT PDF GRAFICOS
 =========================================================*/
 function gerarPDFGraficosSepat(){
+
 let doc=criarDocSepat('p')
+
 let canvas=document.getElementById('graficoMasterSepat')
+
 if(!canvas){
 alert('Gráfico não encontrado')
 return
 }
+
 let img=canvas.toDataURL('image/png',1.0)
+
 doc.setFontSize(14)
+doc.setTextColor(0,0,0)
+
 doc.text('ANÁLISE GRÁFICA - TAG SEPAT 2026',10,12)
-doc.addImage(img,'PNG',10,28,190,95)
+
+doc.addImage(img,'PNG',10,26,190,92)
+
 let desc=document.getElementById('descGraficoSepat')?.innerText||'Análise gráfica do TAG SEPAT 2026.'
+
+let itemSelecionado=String(document.getElementById('filtroItemSepat')?.value||'todos')
+
+let subSelecionado=String(document.getElementById('filtroSubitemSepat')?.value||'TOTAL')
+
+let registro=(sepatData||[]).find(i=>
+String(i.id||i.subitem||'')===String(subSelecionado)
+)
+
+let texto=''
+
+if(registro){
+
+texto=
+'ITEM: '+(registro.siglaitem||'-')+
+'\n\nDESCRIÇÃO DO ITEM:\n'+
+(registro.item||'-')+
+'\n\nSUBITEM: '+(registro.subitem||'-')+
+'\n\nDESCRIÇÃO DO SUBITEM:\n'+
+(registro.descricaoitem||'-')+
+'\n\nPRODUTO ESTRATÉGICO:\n'+
+(registro.produto||'-')+
+'\n\nEVOLUÇÃO:\n'+
+desc
+
+}else{
+
+texto=
+'ANÁLISE CONSOLIDADA GERAL DO TAG SEPAT 2026.\n\n'+desc
+
+}
+
 doc.setFontSize(9)
-doc.text(desc,10,132,{maxWidth:190})
+
+doc.setTextColor(15,23,42)
+
+doc.text(
+texto,
+10,
+126,
+{
+maxWidth:190,
+align:'justify'
+}
+)
+
+doc.setDrawColor(220,220,220)
+
+doc.line(10,120,200,120)
+
 rodapeSepat(doc)
+
 doc.save('pdf_graficos_tag_sepat.pdf')
+
 }
 /*=========================================================
 028 SEPAT PDF CONCLUIDOS
