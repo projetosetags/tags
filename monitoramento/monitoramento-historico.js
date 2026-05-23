@@ -289,14 +289,6 @@ ${m.titulo||'Monitoramento'}
 
 })
 
-if(data&&data.length>0){
-
-setTimeout(()=>{
-carregarHistoricoMonitoramento()
-},300)
-
-}
-
 }
 
 /*=========================================================
@@ -326,6 +318,16 @@ renderListaHistorico(data||[])
 /*=========================================================
 099 MONITORAMENTO-HISTORICO.JS INIT
 =========================================================*/
-document.addEventListener('DOMContentLoaded',()=>{
-popularSelectHistorico()
+document.addEventListener('DOMContentLoaded',async()=>{
+
+await popularSelectHistorico()
+
+let select=document.getElementById('historicoMonitoramentoSelect')
+
+if(select&&select.value){
+
+await carregarHistoricoMonitoramento()
+
+}
+
 })
