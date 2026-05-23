@@ -57,7 +57,11 @@ let andamento=0
 let riscoAlto=0
 let riscoMedio=0
 let riscoBaixo=0
-
+/*=========================================================
+KPI EVIDÊNCIAS
+=========================================================*/
+let itensSemEvidencia=0
+let itensCompletos=0
 ;(cardsFiltrados||[]).forEach(i=>{
 let percentual=Number(i.percentual||0)
 
@@ -83,6 +87,29 @@ riscoMedio++
 }else{
 riscoBaixo++
 }
+let possuiTexto=
+i.evidencia&&
+String(i.evidencia).trim()!==''
+
+let possuiChecks=
+(i.evidencias_check||[]).length>0
+
+let possuiUpload=
+i.evidencia_upload===true
+
+if(
+!possuiTexto&&
+!possuiChecks&&
+!possuiUpload
+){
+itensSemEvidencia++
+}
+
+if(
+i.evidencia_status==='COMPLETA'
+){
+itensCompletos++
+}
 })
 let kpiTotal=document.getElementById('kpiTotal')
 let kpiExecutadas=document.getElementById('kpiExecutadas')
@@ -103,6 +130,58 @@ kpiNaoExecutadas.innerHTML=naoExecutadas
 }
 if(kpiAndamento){
 kpiAndamento.innerHTML=andamento
+}
+let percentualEvidencia=0
+
+if(total>0){
+
+percentualEvidencia=
+(itensCompletos/total)*100
+
+}
+
+let kpiSemEvidencia=
+document.getElementById('kpiSemEvidencia')
+
+if(kpiSemEvidencia){
+kpiSemEvidencia.innerHTML=itensSemEvidencia
+}
+
+let kpiPercentualEvidencia=
+document.getElementById('kpiPercentualEvidencia')
+
+if(kpiPercentualEvidencia){
+
+kpiPercentualEvidencia.innerHTML=
+percentualEvidencia.toFixed(1)+'%'
+
+let card=
+kpiPercentualEvidencia.closest('.card-kpi')
+
+if(card){
+
+card.classList.remove(
+'verde',
+'amarelo',
+'vermelho'
+)
+
+if(percentualEvidencia>=70){
+
+card.classList.add('verde')
+
+}else if(percentualEvidencia>=40){
+
+card.classList.add('amarelo')
+
+}else{
+
+card.classList.add('vermelho')
+
+}
+
+}
+
 }
 setTimeout(()=>{
 carregarGraficoStatus(
