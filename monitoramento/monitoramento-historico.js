@@ -299,37 +299,23 @@ ${m.titulo||'Monitoramento'}
 021 MONITORAMENTO-HISTORICO.JS CARREGAR HISTORICO
 =========================================================*/
 async function carregarHistoricoMonitoramento(){
-
-let monitoramentoId=document
-.getElementById('historicoMonitoramentoSelect')
-?.value
-
+let monitoramentoId=document.getElementById('historicoMonitoramentoSelect')?.value
 if(!monitoramentoId){
-
 alert('Selecione um monitoramento')
-
 return
-
 }
-
-let {data,error}=await client
+let{data,error}=await client
 .from('monitoramento_historico')
 .select('*')
 .eq('monitoramento_id',monitoramentoId)
 .order('created_at',{ascending:true})
-
 if(error){
-
 console.log(error)
-
 return
-
 }
-
 console.log('HISTÓRICO:',data)
-
-renderGraficoHistorico(data||[])
-
+await carregarHistorico()
+if(typeof renderListaHistorico==='function'){
 renderListaHistorico(data||[])
-
+}
 }
