@@ -825,3 +825,23 @@ await renderPainelEvidencias()
 alert('Resumo IA gerado')
 
 }
+
+function abrirModalUpload(itemId){
+
+ITEM_EVIDENCIA_ATUAL=itemId
+
+document
+.getElementById('modalUploadEvidencia')
+.classList.remove('hidden')
+
+carregarEvidencias()
+
+}
+
+function fecharModalUpload(){
+
+document
+.getElementById('modalUploadEvidencia')
+.classList.add('hidden')
+
+}
