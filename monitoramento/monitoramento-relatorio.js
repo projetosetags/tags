@@ -1006,11 +1006,24 @@ Subitens analisados: ${data.length}
 
 </div>
 `
+let evidenciasMap={}
+let {data:evidenciasTodas}=await client
+.from('monitoramento_evidencias')
+.select('*')
 
+;(evidenciasTodas||[]).forEach(e=>{
+
+if(!evidenciasMap[e.item_id]){
+evidenciasMap[e.item_id]=[]
+}
+
+evidenciasMap[e.item_id].push(e)
+
+})
 data.forEach((i,index)=>{
 
 let numero=String(index+1).padStart(3,'0')
-
+let evidencias=evidenciasMap[i.id]||[]
 let corStatus='#facc15'
 
 if((i.status||'').includes('EXECUTADA')){
@@ -1514,21 +1527,308 @@ min-height:80px;
 
 <tr>
 
+<tr>
+
 <td style="
 background:#dcfce7;
 border:1px solid #d1d5db;
 padding:10px;
 font-weight:800;
+vertical-align:top;
 ">
 Evidências
 </td>
 
 <td style="
 border:1px solid #d1d5db;
-padding:28px;
-min-height:120px;
+padding:18px;
 background:#f9fafb;
 ">
+
+<div style="
+display:flex;
+flex-direction:column;
+gap:18px;
+">
+
+${
+evidencias.length>0
+?evidencias.map((e,evIndex)=>`
+<div style="
+background:#fff;
+border:1px solid #d1d5db;
+border-radius:12px;
+padding:16px;
+">
+
+<div style="
+font-size:14px;
+font-weight:900;
+margin-bottom:12px;
+color:#111827;
+">
+EVIDÊNCIA ${String(evIndex+1).padStart(3,'0')}
+</div>
+
+<select style="
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:10px;
+font-weight:700;
+">
+
+<option selected>
+${e.tipo_evidencia||'OFÍCIO'}
+</option>
+
+</select>
+
+<input
+value="${e.numero_documento||''}"
+placeholder="Número do documento"
+style="
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:10px;
+">
+
+<input
+value="${e.orgao_setor||''}"
+placeholder="Órgão / setor"
+style="
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:10px;
+">
+
+<select style="
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:10px;
+font-weight:700;
+">
+
+<option selected>
+${e.status_validacao||'VALIDADA'}
+</option>
+
+</select>
+
+<select style="
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:10px;
+font-weight:700;
+">
+
+<option selected>
+${e.confiabilidade||'ALTA CONFIABILIDADE'}
+</option>
+
+</select>
+
+<textarea
+style="
+width:100%;
+min-height:120px;
+padding:12px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+resize:vertical;
+">${e.descricao||''}</textarea>
+
+</div>
+`).join('')
+:
+`
+<div style="
+padding:18px;
+border:2px dashed #cbd5e1;
+border-radius:12px;
+background:#fff;
+color:#64748b;
+font-weight:700;
+text-align:center;
+">
+NENHUMA EVIDÊNCIA CADASTRADA
+</div>
+`
+}
+
+<div style="
+background:#fff;
+border:1px solid #d1d5db;
+border-radius:12px;
+padding:16px;
+">
+
+<div style="
+font-size:14px;
+font-weight:900;
+margin-bottom:12px;
+color:#111827;
+">
+EVIDÊNCIA 001
+</div>
+
+<select style="
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:10px;
+font-weight:700;
+">
+
+<option>
+OFÍCIO
+</option>
+
+<option>
+RELATÓRIO
+</option>
+
+<option>
+ATA
+</option>
+
+<option>
+PARECER
+</option>
+
+<option>
+DESPACHO
+</option>
+
+<option>
+PORTARIA
+</option>
+
+<option>
+SEI
+</option>
+
+<option>
+FOTO
+</option>
+
+<option>
+PRINT
+</option>
+
+<option>
+PLANILHA
+</option>
+
+<option>
+VÍDEO
+</option>
+
+<option>
+INSPEÇÃO IN LOCO
+</option>
+
+<option>
+OUTRO
+</option>
+
+</select>
+
+<input
+placeholder="Número do documento / processo / ofício"
+style="
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:10px;
+">
+
+<input
+placeholder="Órgão / setor responsável"
+style="
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:10px;
+">
+
+<select style="
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:10px;
+font-weight:700;
+">
+
+<option>
+VALIDADA
+</option>
+
+<option>
+PENDENTE
+</option>
+
+<option>
+EM ANÁLISE
+</option>
+
+<option>
+REJEITADA
+</option>
+
+</select>
+
+<select style="
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:10px;
+font-weight:700;
+">
+
+<option>
+ALTA CONFIABILIDADE
+</option>
+
+<option>
+MÉDIA CONFIABILIDADE
+</option>
+
+<option>
+BAIXA CONFIABILIDADE
+</option>
+
+</select>
+
+<textarea
+placeholder="Descrição detalhada da evidência..."
+style="
+width:100%;
+min-height:120px;
+padding:12px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+resize:vertical;
+"></textarea>
+
+</div>
+
+</div>
+
 </td>
 
 </tr>
