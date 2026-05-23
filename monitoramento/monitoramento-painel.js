@@ -663,7 +663,24 @@ html+=`
 <b>Relator</b>
 <input class="input-inline-monitoramento" value="${m.relator||''}" oninput="alterarCampoMonitoramento(${m.id},'relator',this.value)">
 </div>
+<div style="grid-column:1/-1;">
+<b>Assunto(s)</b>
 
+<textarea
+class="input-inline-monitoramento"
+style="
+min-height:90px;
+resize:vertical;
+background:#fff;
+color:#000;
+font-size:12px;
+line-height:1.5;
+font-weight:600;
+"
+oninput="alterarCampoMonitoramento(${m.id},'assuntos',this.value)"
+>${m.assuntos||''}</textarea>
+
+</div>
 <div>
 <b>Auditor</b>
 <input class="input-inline-monitoramento" value="${m.auditor_responsavel||''}" oninput="alterarCampoMonitoramento(${m.id},'auditor_responsavel',this.value)">
