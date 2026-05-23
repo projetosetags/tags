@@ -1238,17 +1238,34 @@ let lista=[...(sepatData||[])].sort(compareSepat)
 let mapa={}
 lista.forEach(i=>{
 let chave=String(i.siglaitem||'')
-if(!mapa[chave])mapa[chave]=[]
+if(!mapa[chave]){
+mapa[chave]=[]
+}
 mapa[chave].push(i)
 })
 let rows=[]
-Object.keys(mapa).forEach(k=>{
-let arr=mapa[k]
+Object.keys(mapa).sort((a,b)=>{
+let aa=mapa[a]?.[0]||{}
+let bb=mapa[b]?.[0]||{}
+return compareSepat(aa,bb)
+}).forEach(k=>{
+let arr=mapa[k]||[]
+if(!arr.length)return
 let base=arr[0]
 let media=Math.round(arr.reduce((acc,c)=>acc+getTotalSepat(c),0)/(arr.length||1))
-rows.push(['ITEM '+base.siglaitem,base.item||'-','',media+'%'])
+rows.push([
+'ITEM '+(base.siglaitem||'-'),
+String(base.item||base.descricaoitem||'-'),
+'',
+media+'%'
+])
 arr.sort(compareSepat).forEach(i=>{
-rows.push([i.siglaitem||'-',i.subitem||'-',i.produto||'-',getTotalSepat(i)+'%'])
+rows.push([
+'SUBITEM '+(i.subitem||'-'),
+String(i.descricaoitem||i.subitem||'-'),
+String(i.produto||'-'),
+getTotalSepat(i)+'%'
+])
 })
 })
 doc.setFontSize(14)
@@ -1258,10 +1275,36 @@ doc.autoTable({
 startY:22,
 head:[['ITEM/SUBITEM','DESCRIÇÃO','PRODUTO','%']],
 body:rows,
-styles:{fontSize:6,overflow:'linebreak',cellPadding:1.5},
-headStyles:{fillColor:[7,89,201],textColor:[255,255,255]},
-columnStyles:{0:{cellWidth:28},1:{cellWidth:76},2:{cellWidth:72},3:{cellWidth:14,halign:'center'}},
-margin:{top:18,bottom:28,left:5,right:5},
+styles:{
+fontSize:6,
+overflow:'linebreak',
+cellPadding:1.5,
+lineColor:[220,220,220],
+lineWidth:.2,
+valign:'middle'
+},
+headStyles:{
+fillColor:[7,89,201],
+textColor:[255,255,255],
+fontStyle:'bold'
+},
+alternateRowStyles:{
+fillColor:[248,248,248]
+},
+columnStyles:{
+0:{cellWidth:30},
+1:{cellWidth:92},
+2:{cellWidth:58},
+3:{cellWidth:14,halign:'center'}
+},
+margin:{
+top:18,
+bottom:36,
+left:5,
+right:5
+},
+pageBreak:'auto',
+rowPageBreak:'avoid',
 didParseCell:function(data){
 let txt=String(data.cell.raw||'')
 if(txt.startsWith('ITEM ')){
@@ -1269,6 +1312,12 @@ data.cell.styles.fillColor=[3,105,161]
 data.cell.styles.textColor=[255,255,255]
 data.cell.styles.fontStyle='bold'
 }
+},
+didDrawPage:function(data){
+let pageHeight=doc.internal.pageSize.height
+let pageWidth=doc.internal.pageSize.width
+doc.setFillColor(255,255,255)
+doc.rect(0,pageHeight-34,pageWidth,34,'F')
 }
 })
 rodapeSepat(doc)
