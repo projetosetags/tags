@@ -1462,3 +1462,23 @@ position:relative;
 .card-alerta-mini:hover{
 transform:translateY(-4px) scale(1.01);
 }
+.card-evidencia-completa{
+border:2px solid #22c55e!important;
+box-shadow:0 0 18px rgba(34,197,94,.30)!important;
+}
+.card-evidencia-parcial{
+border:2px solid #f59e0b!important;
+}
+.card-evidencia-pendente{
+border:2px solid #ef4444!important;
+}
+.alerta-upload{
+margin-top:8px;
+font-size:10px;
+font-weight:800;
+color:#b91c1c;
+background:#fff;
+padding:4px 8px;
+border-radius:8px;
+display:inline-block;
+}
