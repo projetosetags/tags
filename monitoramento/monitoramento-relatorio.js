@@ -711,3 +711,503 @@ MATRIZ PRIMEIRO MONITORAMENTO
 
 }
 
+/*=========================================================
+023 MONITORAMENTO-RELATORIO.JS PRIMEIRO MONITORAMENTO
+=========================================================*/
+async function gerarPrimeiroMonitoramento(){
+
+let box=document.getElementById('previewRelatorio')
+
+if(!box){
+return
+}
+
+box.innerHTML=`
+<div style="padding:40px;color:#fff;font-size:22px;font-weight:800;">
+GERANDO MATRIZ DE MONITORAMENTO...
+</div>
+`
+
+let origem='TODAS'
+
+let filtro=document.getElementById('filtroOrigem')
+
+if(filtro){
+origem=filtro.value||'TODAS'
+}
+
+let query=client
+.from('monitoramento_itens')
+.select('*')
+.order('item',{ascending:true})
+
+if(origem!=='TODAS'){
+query=query.eq('origem',origem)
+}
+
+let{data,error}=await query
+
+if(error){
+console.log(error)
+
+box.innerHTML=`
+<div style="padding:40px;color:#fff;">
+ERRO AO GERAR MATRIZ
+</div>
+`
+
+return
+}
+
+data=data||[]
+
+let html=''
+
+html+=`
+<div style="
+background:#fff;
+color:#000;
+padding:40px;
+font-family:Arial,sans-serif;
+">
+
+<div style="
+text-align:center;
+font-size:34px;
+font-weight:900;
+margin-bottom:40px;
+">
+MATRIZ - PRIMEIRO MONITORAMENTO
+</div>
+
+<div style="margin-bottom:12px;">
+<b>TC:</b> TCE-RO
+</div>
+
+<div style="margin-bottom:12px;">
+<b>Órgão / Entidade:</b> ${origem}
+</div>
+
+<div style="margin-bottom:12px;">
+<b>Acórdão em Monitoramento:</b>
+Acórdão APL-TC n. 00170/25
+</div>
+
+<div style="margin-bottom:12px;">
+<b>Processos:</b>
+PCe n. 01702/22 e PCe n. 04340/25
+</div>
+
+<div style="margin-bottom:20px;">
+<b>Relator:</b>
+
+<select style="
+padding:8px;
+border:1px solid #ccc;
+border-radius:8px;
+margin-left:10px;
+">
+
+<option>
+Conselheiro WILBER CARLOS DOS SANTOS COIMBRA – PRESIDENTE
+</option>
+
+<option>
+Conselheiro PAULO CURI NETO
+</option>
+
+<option>
+Conselheiro EDILSON DE SOUSA SILVA
+</option>
+
+<option>
+Conselheiro JAILSON VIANA DE ALMEIDA
+</option>
+
+<option>
+Conselheiro FRANCISCO CARVALHO DA SILVA
+</option>
+
+<option>
+Conselheiro JOSÉ EULER POTYGUARA PEREIRA DE MELLO
+</option>
+
+<option>
+Conselheiro-Substituto OMAR PIRES DIAS
+</option>
+
+<option>
+Conselheiro-Substituto FRANCISCO JÚNIOR FERREIRA DA SILVA
+</option>
+
+</select>
+
+</div>
+`
+
+data.forEach((i,index)=>{
+
+let numero=String(index+1).padStart(3,'0')
+
+html+=`
+
+<table style="
+width:100%;
+border-collapse:collapse;
+margin-top:30px;
+font-size:12px;
+">
+
+<tr>
+
+<td style="
+border:1px solid #000;
+background:#facc15;
+font-weight:900;
+padding:6px;
+width:60px;
+text-align:center;
+">
+${numero}
+</td>
+
+<td style="
+border:1px solid #000;
+background:#65a30d;
+font-weight:900;
+padding:6px;
+width:80px;
+color:#fff;
+">
+Item:
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+width:80px;
+font-weight:700;
+">
+${i.item||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+background:#65a30d;
+font-weight:900;
+padding:6px;
+width:180px;
+color:#fff;
+">
+Descrição da Ação:
+</td>
+
+<td style="
+border:1px solid #000;
+padding:10px;
+font-weight:700;
+">
+${i.descricao||i.deliberacao||'-'}
+</td>
+
+</tr>
+
+<tr>
+
+<td colspan="2" style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+Deliberação:
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+${i.deliberacao||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+N. subitem
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+${i.subitem||'-'}
+</td>
+
+</tr>
+
+<tr>
+
+<td colspan="2" style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+Plano de Ação/Ação Proposta
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+${i.acao_gestor||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+Produto Entregue
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+${i.produto||i.produto_esperado||'-'}
+</td>
+
+</tr>
+
+<tr>
+
+<td colspan="2" style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+Status da Ação
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+${i.status||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+%
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+font-weight:900;
+">
+${Number(i.percentual||0)}%
+</td>
+
+</tr>
+
+<tr>
+
+<td style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+Ação do Gestor
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+${i.acao_gestor||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+Causa
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+${i.causa||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+</td>
+
+</tr>
+
+<tr>
+
+<td style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+Efeito
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+${i.efeito||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+Benefício Esperado
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+${i.beneficio_esperado||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+</td>
+
+</tr>
+
+<tr>
+
+<td style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+Prazo
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+${i.prazo||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+Criticidade
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+font-weight:700;
+">
+${i.criticidade||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+padding:6px;
+">
+</td>
+
+</tr>
+
+<tr>
+
+<td style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+Observações
+</td>
+
+<td colspan="4" style="
+border:1px solid #000;
+padding:16px;
+">
+</td>
+
+</tr>
+
+<tr>
+
+<td style="
+border:1px solid #000;
+background:#d9f99d;
+padding:6px;
+font-weight:700;
+">
+Evidências
+</td>
+
+<td colspan="4" style="
+border:1px solid #000;
+padding:22px;
+">
+</td>
+
+</tr>
+
+</table>
+`
+
+})
+
+html+=`
+
+<div style="
+margin-top:40px;
+font-size:13px;
+line-height:1.8;
+">
+
+<b>Observação:</b>
+
+O presente relatório é gerado a partir dos dados inseridos no sistema TAG/Sedam-2026, integrando informações do Supabase e do repositório GitHub (projetosetags/tags). Dados preliminares sujeitos a validação posterior pela auditoria técnica.
+
+</div>
+
+</div>
+`
+
+box.innerHTML=html
+
+}
