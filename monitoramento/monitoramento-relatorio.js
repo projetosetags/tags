@@ -744,7 +744,6 @@ GERANDO MATRIZ DE MONITORAMENTO...
 `
 
 let origem='TODAS'
-
 let filtro=document.getElementById('filtroOrigem')
 
 if(filtro){
@@ -775,7 +774,6 @@ font-weight:700;
 ERRO AO GERAR MATRIZ
 </div>
 `
-
 return
 }
 
@@ -783,8 +781,22 @@ data=data||[]
 
 let html=''
 
-html+=`
+let evidenciasMap={}
+let{data:evidenciasTodas}=await client
+.from('monitoramento_evidencias_lancadas')
+.select('*')
 
+;(evidenciasTodas||[]).forEach(e=>{
+
+if(!evidenciasMap[e.item_id]){
+evidenciasMap[e.item_id]=[]
+}
+
+evidenciasMap[e.item_id].push(e)
+
+})
+
+html+=`
 <div style="
 background:#f4f4f4;
 padding:40px;
@@ -832,28 +844,18 @@ margin-bottom:6px;
 Órgão / Entidade
 </div>
 
-<select id="relatorioOrgao" style="
+<input
+value="${origem}"
+style="
 width:100%;
 padding:10px 14px;
 border-radius:10px;
 border:1px solid #cbd5e1;
 background:#fff;
 font-size:14px;
-">
-
-<option ${origem==='SEDAM'?'selected':''}>
-SEDAM
-</option>
-
-<option ${origem==='SEPAT'?'selected':''}>
-SEPAT
-</option>
-
-<option ${origem==='QUEIMADAS'?'selected':''}>
-QUEIMADAS
-</option>
-
-</select>
+font-weight:700;
+"
+readonly>
 
 </div>
 
@@ -867,7 +869,6 @@ Acórdão em Monitoramento
 </div>
 
 <input
-id="relatorioAcordao"
 value="${
 origem==='SEDAM'
 ?'APL-TC 00170/25'
@@ -882,7 +883,9 @@ border-radius:10px;
 border:1px solid #cbd5e1;
 background:#fff;
 font-size:14px;
-">
+font-weight:700;
+"
+readonly>
 
 </div>
 
@@ -896,7 +899,6 @@ Processo(s)
 </div>
 
 <input
-id="relatorioProcesso"
 value="${
 origem==='SEDAM'
 ?'PCe 01702/22 e 04340/25'
@@ -911,67 +913,20 @@ border-radius:10px;
 border:1px solid #cbd5e1;
 background:#fff;
 font-size:14px;
-">
+font-weight:700;
+"
+readonly>
 
 </div>
 
 </div>
 
 <div style="
-display:flex;
-align-items:center;
-gap:12px;
-flex-wrap:wrap;
 margin-top:18px;
-">
-
-<div style="font-weight:700;">
-Relator:
-</div>
-
-<select id="relatorioRelator" style="
-padding:10px 14px;
-border-radius:10px;
-border:1px solid #cbd5e1;
-background:#fff;
+font-weight:700;
 font-size:14px;
-min-width:420px;
 ">
-
-<option>
-Conselheiro WILBER CARLOS DOS SANTOS COIMBRA – PRESIDENTE
-</option>
-
-<option>
-Conselheiro PAULO CURI NETO
-</option>
-
-<option>
-Conselheiro EDILSON DE SOUSA SILVA
-</option>
-
-<option>
-Conselheiro JAILSON VIANA DE ALMEIDA
-</option>
-
-<option>
-Conselheiro FRANCISCO CARVALHO DA SILVA
-</option>
-
-<option>
-Conselheiro JOSÉ EULER POTYGUARA PEREIRA DE MELLO
-</option>
-
-<option>
-Conselheiro-Substituto OMAR PIRES DIAS
-</option>
-
-<option>
-Conselheiro-Substituto FRANCISCO JÚNIOR FERREIRA DA SILVA
-</option>
-
-</select>
-
+Relator: Conselheiro-Substituto FRANCISCO JÚNIOR FERREIRA DA SILVA
 </div>
 
 </div>
@@ -1006,34 +961,14 @@ Subitens analisados: ${data.length}
 
 </div>
 `
-let evidenciasMap={}
-let {data:evidenciasTodas}=await client
-.from('monitoramento_evidencias')
-.select('*')
 
-;(evidenciasTodas||[]).forEach(e=>{
-
-if(!evidenciasMap[e.item_id]){
-evidenciasMap[e.item_id]=[]
-}
-
-evidenciasMap[e.item_id].push(e)
-
-})
-data.forEach((i,index)=>{
+for(let[index,i]of data.entries()){
 
 let numero=String(index+1).padStart(3,'0')
 let evidencias=evidenciasMap[i.id]||[]
+let evidenciaSalva=evidencias[0]||null
 let corStatus='#facc15'
 
-let{data:evidenciaSalva}=await client
-.from('monitoramento_evidencias_lancadas')
-.select('*')
-.eq('item_id',i.id)
-.maybeSingle()
-
-let evidenciasTexto=evidenciaSalva?.evidencias||'-'
-let observacoesTexto=evidenciaSalva?.descricao||'-'
 if((i.status||'').includes('EXECUTADA')){
 corStatus='#86efac'
 }
@@ -1047,7 +982,6 @@ corStatus='#93c5fd'
 }
 
 html+=`
-
 <div style="
 background:#fff;
 border-radius:14px;
@@ -1092,7 +1026,6 @@ font-size:13px;
 ">
 
 <tr>
-
 <td style="
 background:#dcfce7;
 border:1px solid #d1d5db;
@@ -1110,11 +1043,9 @@ font-weight:700;
 ">
 ${i.descricao||i.deliberacao||'-'}
 </td>
-
 </tr>
 
 <tr>
-
 <td style="
 background:#dcfce7;
 border:1px solid #d1d5db;
@@ -1130,11 +1061,9 @@ padding:12px;
 ">
 ${i.deliberacao||'-'}
 </td>
-
 </tr>
 
 <tr>
-
 <td style="
 background:#dcfce7;
 border:1px solid #d1d5db;
@@ -1150,31 +1079,9 @@ padding:12px;
 ">
 ${i.acao_gestor||'-'}
 </td>
-
 </tr>
 
 <tr>
-
-<td style="
-background:#dcfce7;
-border:1px solid #d1d5db;
-padding:10px;
-font-weight:800;
-">
-Produto a ser Entregue
-</td>
-
-<td style="
-border:1px solid #d1d5db;
-padding:12px;
-">
-${i.produto_esperado||i.produto||'-'}
-</td>
-
-</tr>
-
-<tr>
-
 <td style="
 background:#dcfce7;
 border:1px solid #d1d5db;
@@ -1190,11 +1097,9 @@ padding:12px;
 ">
 ${i.produto||i.produto_esperado||'-'}
 </td>
-
 </tr>
 
 <tr>
-
 <td style="
 background:#dcfce7;
 border:1px solid #d1d5db;
@@ -1210,59 +1115,11 @@ padding:12px;
 background:${corStatus};
 font-weight:900;
 ">
-
-<select style="
-width:100%;
-padding:10px;
-border-radius:8px;
-border:1px solid #cbd5e1;
-font-weight:800;
-">
-
-<option ${(i.status||'').includes('EM ANDAMENTO')?'selected':''}>
-EM ANDAMENTO
-</option>
-
-<option ${(i.status||'').includes('EXECUTADA')?'selected':''}>
-EXECUTADA
-</option>
-
-<option ${(i.status||'').includes('PARCIAL')?'selected':''}>
-PARCIALMENTE EXECUTADA
-</option>
-
-<option ${(i.status||'').includes('NÃO')?'selected':''}>
-NÃO EXECUTADA
-</option>
-
-</select>
-
+${i.status||'-'}
 </td>
-
 </tr>
 
 <tr>
-
-<td style="
-background:#dcfce7;
-border:1px solid #d1d5db;
-padding:10px;
-font-weight:800;
-">
-Ação do Gestor
-</td>
-
-<td style="
-border:1px solid #d1d5db;
-padding:12px;
-">
-${i.acao_gestor||'-'}
-</td>
-
-</tr>
-
-<tr>
-
 <td style="
 background:#dcfce7;
 border:1px solid #d1d5db;
@@ -1275,70 +1132,13 @@ Causa
 <td style="
 border:1px solid #d1d5db;
 padding:12px;
+white-space:pre-wrap;
 ">
-<select multiple style="
-width:100%;
-min-height:120px;
-padding:10px;
-border-radius:8px;
-border:1px solid #cbd5e1;
-margin-bottom:10px;
-">
-
-<option selected>
-Fragilidade operacional
-</option>
-
-<option>
-Ausência de normatização
-</option>
-
-<option>
-Baixa execução orçamentária
-</option>
-
-<option>
-Deficiência de pessoal
-</option>
-
-<option>
-Ausência de planejamento
-</option>
-
-<option>
-Problemas tecnológicos
-</option>
-
-<option>
-Morosidade administrativa
-</option>
-
-<option>
-Dependência de terceiros
-</option>
-
-<option>
-Falta de integração institucional
-</option>
-
-</select>
-
-<textarea style="
-width:100%;
-min-height:90px;
-padding:12px;
-border-radius:8px;
-border:1px solid #cbd5e1;
-resize:vertical;
-">
-${i.causa||''}
-</textarea>
+${i.causa||'-'}
 </td>
-
 </tr>
 
 <tr>
-
 <td style="
 background:#dcfce7;
 border:1px solid #d1d5db;
@@ -1351,70 +1151,13 @@ Efeito
 <td style="
 border:1px solid #d1d5db;
 padding:12px;
+white-space:pre-wrap;
 ">
-<select multiple style="
-width:100%;
-min-height:120px;
-padding:10px;
-border-radius:8px;
-border:1px solid #cbd5e1;
-margin-bottom:10px;
-">
-
-<option selected>
-Risco ao cumprimento institucional
-</option>
-
-<option>
-Comprometimento da efetividade
-</option>
-
-<option>
-Prejuízo à governança
-</option>
-
-<option>
-Atraso na implementação
-</option>
-
-<option>
-Impacto ambiental
-</option>
-
-<option>
-Fragilidade de controle
-</option>
-
-<option>
-Risco reputacional
-</option>
-
-<option>
-Prejuízo operacional
-</option>
-
-<option>
-Baixa eficiência administrativa
-</option>
-
-</select>
-
-<textarea style="
-width:100%;
-min-height:90px;
-padding:12px;
-border-radius:8px;
-border:1px solid #cbd5e1;
-resize:vertical;
-">
-${i.efeito||''}
-</textarea>
+${i.efeito||'-'}
 </td>
-
 </tr>
 
 <tr>
-
 <td style="
 background:#dcfce7;
 border:1px solid #d1d5db;
@@ -1430,11 +1173,9 @@ padding:12px;
 ">
 ${i.beneficio_esperado||'-'}
 </td>
-
 </tr>
 
 <tr>
-
 <td style="
 background:#dcfce7;
 border:1px solid #d1d5db;
@@ -1455,11 +1196,9 @@ i.prazo
 :'-'
 }
 </td>
-
 </tr>
 
 <tr>
-
 <td style="
 background:#dcfce7;
 border:1px solid #d1d5db;
@@ -1474,69 +1213,17 @@ border:1px solid #d1d5db;
 padding:12px;
 font-weight:900;
 ">
-<select style="
-width:100%;
-padding:10px;
-border-radius:8px;
-border:1px solid #cbd5e1;
-font-weight:800;
-">
-
-<option ${
+${
 Number(i.percentual||0)<30
-?'selected'
-:''
-}>
-ALTA
-</option>
-
-<option ${
-Number(i.percentual||0)>=30
-&&
-Number(i.percentual||0)<70
-?'selected'
-:''
-}>
-MÉDIA
-</option>
-
-<option ${
-Number(i.percentual||0)>=70
-?'selected'
-:''
-}>
-BAIXA
-</option>
-
-</select>
+?'ALTA'
+:Number(i.percentual||0)<70
+?'MÉDIA'
+:'BAIXA'
+}
 </td>
-
 </tr>
 
 <tr>
-
-<td style="
-background:#dcfce7;
-border:1px solid #d1d5db;
-padding:10px;
-font-weight:800;
-">
-Observações
-</td>
-
-<td style="
-border:1px solid #d1d5db;
-padding:18px;
-min-height:80px;
-">
-</td>
-
-</tr>
-
-<tr>
-
-<tr>
-
 <td style="
 background:#dcfce7;
 border:1px solid #d1d5db;
@@ -1551,12 +1238,6 @@ Evidências
 border:1px solid #d1d5db;
 padding:18px;
 background:#f9fafb;
-">
-
-<div style="
-display:flex;
-flex-direction:column;
-gap:18px;
 ">
 
 ${
@@ -1628,10 +1309,7 @@ NENHUMA EVIDÊNCIA LANÇADA NO PAINEL EVIDÊNCIAS
 `
 }
 
-</div>
-
 </td>
-
 </tr>
 
 </table>
@@ -1639,10 +1317,9 @@ NENHUMA EVIDÊNCIA LANÇADA NO PAINEL EVIDÊNCIAS
 </div>
 `
 
-})
+}
 
 html+=`
-
 <div style="
 background:#fff;
 border-radius:14px;
@@ -1665,41 +1342,18 @@ font-size:13px;
 line-height:2;
 ">
 
-<b>Deliberação:</b>
-Descrição das atividades / ações a serem desenvolvidas ao longo dos prazos descritos.<br>
-
-<b>N. Subitem:</b>
-Numeração dos subitens descritos no Plano de Ação.<br>
-
-<b>Plano de Ação/Ação Proposta:</b>
-Descrição da ação que o gestor irá implementar para resolver o problema.<br>
-
-<b>Produto a ser entregue:</b>
-Produto gerado a partir da ação do gestor para cumprimento da deliberação.<br>
-
-<b>Status da Ação:</b>
-Descrever se está EM ANDAMENTO, EXECUTADO ou PARCIALMENTE EXECUTADO.<br>
-
-<b>%:</b>
-Percentual de execução da atividade proposta.<br>
-
-<b>Causas:</b>
-Evolução das causas identificadas na auditoria monitorada.<br>
-
-<b>Efeitos:</b>
-Consequências identificadas na auditoria monitorada.<br>
-
-<b>Benefício esperado:</b>
-Mensuração qualitativa e quantitativa dos benefícios obtidos.<br>
-
-<b>Prazo:</b>
-Descrever no formato dd-mm-aaaa.<br>
-
-<b>Criticidade:</b>
-Descrever se Alta, Média ou Baixa.<br>
-
-<b>Evidências:</b>
-Documentos, fotos, extratos, inspeções ou qualquer outro elemento comprobatório.<br>
+<b>Deliberação:</b>Descrição das atividades / ações a serem desenvolvidas ao longo dos prazos descritos.<br>
+<b>N. Subitem:</b>Numeração dos subitens descritos no Plano de Ação.<br>
+<b>Plano de Ação/Ação Proposta:</b>Descrição da ação que o gestor irá implementar para resolver o problema.<br>
+<b>Produto a ser entregue:</b>Produto gerado a partir da ação do gestor para cumprimento da deliberação.<br>
+<b>Status da Ação:</b>Descrever se está EM ANDAMENTO, EXECUTADO ou PARCIALMENTE EXECUTADO.<br>
+<b>%:</b>Percentual de execução da atividade proposta.<br>
+<b>Causas:</b>Evolução das causas identificadas na auditoria monitorada.<br>
+<b>Efeitos:</b>Consequências identificadas na auditoria monitorada.<br>
+<b>Benefício esperado:</b>Mensuração qualitativa e quantitativa dos benefícios obtidos.<br>
+<b>Prazo:</b>Descrever no formato dd-mm-aaaa.<br>
+<b>Criticidade:</b>Descrever se Alta, Média ou Baixa.<br>
+<b>Evidências:</b>Documentos, fotos, extratos, inspeções ou qualquer outro elemento comprobatório.<br>
 
 </div>
 
@@ -1727,4 +1381,5 @@ O presente relatório é gerado a partir dos dados inseridos no sistema TAG/Seda
 box.innerHTML=html
 
 }
+
 console.log('monitoramento-relatorio.js carregado')
