@@ -1467,11 +1467,27 @@ plugins:[ChartDataLabels]
 /*=========================================================
 031 MONITORAMENTO-PAINEL.JS ABRIR EVIDÊNCIA ITEM
 =========================================================*/
-async function abrirEvidenciaItem(itemId){
+async function abrirEvidenciaItem(itemId,origem){
 
 window.ITEM_EVIDENCIA_ATUAL=itemId
 
 abrirTela('evidencias')
+
+let origemFinal=(origem||'TODAS').toUpperCase()
+
+let filtroTopo=document.getElementById('filtroOrigem')
+
+if(filtroTopo){
+filtroTopo.value=origemFinal
+}
+
+let filtroEvidencia=document.getElementById('filtroOrigemEvidencia')
+
+if(filtroEvidencia){
+filtroEvidencia.value=origemFinal
+}
+
+await renderPainelEvidencias()
 
 setTimeout(()=>{
 
@@ -1488,12 +1504,18 @@ block:'center'
 
 linha.classList.add('evidencia-destaque')
 
+linha.style.boxShadow='0 0 0 4px rgba(59,130,246,.45)'
+
 setTimeout(()=>{
+
 linha.classList.remove('evidencia-destaque')
+
+linha.style.boxShadow=''
+
 },2500)
 
 }
 
-},350)
+},450)
 
 }
