@@ -1446,12 +1446,100 @@ let linhas=''
 
 linhas+=`
 <tr>
-<td>${i.subitem||'-'}</td>
-<td>${i.descricao||i.deliberacao||'-'}</td>
-<td contenteditable="true"></td>
-<td>${i.produto||i.produto_esperado||'-'}</td>
-<td contenteditable="true"></td>
-<td>${i.status||'-'}</td>
+
+<td style="
+border:1px solid #000;
+padding:8px;
+vertical-align:top;
+font-size:11px;
+font-weight:700;
+text-align:center;
+">
+${i.item||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+padding:8px;
+vertical-align:top;
+font-size:11px;
+line-height:1.45;
+white-space:pre-wrap;
+word-break:break-word;
+">
+${i.descricaoitem||i.titulo_item||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+padding:8px;
+vertical-align:top;
+font-size:11px;
+font-weight:700;
+text-align:center;
+">
+${i.subitem||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+padding:8px;
+vertical-align:top;
+font-size:11px;
+line-height:1.45;
+white-space:pre-wrap;
+word-break:break-word;
+">
+${i.descricao||i.deliberacao||'-'}
+</td>
+
+<td style="
+border:1px solid #000;
+padding:8px;
+vertical-align:top;
+font-size:11px;
+line-height:1.45;
+white-space:pre-wrap;
+word-break:break-word;
+">
+${i.produto||i.produto_esperado||'-'}
+</td>
+
+<td
+contenteditable="true"
+style="
+border:1px solid #000;
+padding:8px;
+vertical-align:top;
+font-size:11px;
+line-height:1.45;
+background:#fffef5;
+min-width:220px;
+">
+</td>
+
+<td style="
+border:1px solid #000;
+padding:8px;
+vertical-align:top;
+font-size:11px;
+font-weight:800;
+text-align:center;
+background:${
+(i.status||'').includes('EXECUTADA')
+?'#dcfce7'
+:
+(i.status||'').includes('PARCIAL')
+?'#fef3c7'
+:
+(i.status||'').includes('NÃO')
+?'#fee2e2'
+:'#dbeafe'
+};
+">
+${i.status||'-'}
+</td>
+
 </tr>
 `
 
@@ -1567,6 +1655,25 @@ font-size:12px;
 border:1px solid #000;
 padding:10px;
 background:#dbeafe;
+min-width:90px;
+">
+Nr. Item
+</th>
+
+<th style="
+border:1px solid #000;
+padding:10px;
+background:#dbeafe;
+min-width:260px;
+">
+Item
+</th>
+
+<th style="
+border:1px solid #000;
+padding:10px;
+background:#dbeafe;
+min-width:110px;
 ">
 Nr. Subitem
 </th>
@@ -1575,22 +1682,16 @@ Nr. Subitem
 border:1px solid #000;
 padding:10px;
 background:#dbeafe;
+min-width:320px;
 ">
-Deliberação
+Subitem
 </th>
 
 <th style="
 border:1px solid #000;
 padding:10px;
 background:#dbeafe;
-">
-Plano de Ação / Ação Proposta
-</th>
-
-<th style="
-border:1px solid #000;
-padding:10px;
-background:#dbeafe;
+min-width:260px;
 ">
 Produto a Ser Entregue
 </th>
@@ -1599,6 +1700,7 @@ Produto a Ser Entregue
 border:1px solid #000;
 padding:10px;
 background:#dbeafe;
+min-width:260px;
 ">
 Produto Entregue
 </th>
@@ -1607,6 +1709,7 @@ Produto Entregue
 border:1px solid #000;
 padding:10px;
 background:#dbeafe;
+min-width:160px;
 ">
 Status da Ação
 </th>
