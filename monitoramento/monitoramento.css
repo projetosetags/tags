@@ -1403,31 +1403,38 @@ box-shadow:0 6px 18px rgba(249,115,22,.10)!important;
 .card-origem-sepat .card-alerta-titulo,
 .card-origem-queimadas .card-alerta-titulo{
 color:#000!important;
-font-weight:900!important;
-font-size:18px!important;
-line-height:1.35!important;
-margin-bottom:14px!important;
+font-weight:800!important;
+font-size:11px!important;
+line-height:1.32!important;
+margin-bottom:8px!important;
+word-break:break-word;
+overflow:visible!important;
+display:block!important;
 }
 .card-origem-sedam .card-alerta-info,
 .card-origem-sepat .card-alerta-info,
 .card-origem-queimadas .card-alerta-info{
 color:#111!important;
-font-size:14px!important;
+font-size:10px!important;
 font-weight:600!important;
-line-height:1.6!important;
-padding-top:4px!important;
+line-height:1.4!important;
+padding-top:2px!important;
+word-break:break-word;
+overflow:visible!important;
+display:block!important;
 }
 .badge-origem{
 position:absolute;
-right:14px;
-bottom:12px;
-font-size:12px;
-font-weight:900;
-letter-spacing:.8px;
-padding:4px 10px;
-border-radius:999px;
-background:rgba(255,255,255,.55);
-backdrop-filter:blur(4px);
+right:8px;
+bottom:6px;
+font-size:9px;
+font-weight:700;
+letter-spacing:.4px;
+padding:1px 4px;
+border-radius:6px;
+background:transparent;
+backdrop-filter:none;
+opacity:.85;
 }
 .badge-sedam{
 color:#15803d;
@@ -1442,14 +1449,15 @@ color:#ea580c;
 border:1px solid rgba(234,88,12,.20);
 }
 .card-alerta-mini{
-padding:18px!important;
-border-radius:18px!important;
-min-height:220px!important;
+padding:12px 12px 26px 12px!important;
+border-radius:16px!important;
+min-height:165px!important;
 display:flex;
 flex-direction:column;
 justify-content:flex-start;
 transition:.25s ease;
 overflow:hidden;
+position:relative;
 }
 .card-alerta-mini:hover{
 transform:translateY(-4px) scale(1.01);
