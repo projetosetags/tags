@@ -1189,7 +1189,33 @@ padding:12px;
 background:${corStatus};
 font-weight:900;
 ">
-${i.status||'-'}
+
+<select style="
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+font-weight:800;
+">
+
+<option ${(i.status||'').includes('EM ANDAMENTO')?'selected':''}>
+EM ANDAMENTO
+</option>
+
+<option ${(i.status||'').includes('EXECUTADA')?'selected':''}>
+EXECUTADA
+</option>
+
+<option ${(i.status||'').includes('PARCIAL')?'selected':''}>
+PARCIALMENTE EXECUTADA
+</option>
+
+<option ${(i.status||'').includes('NÃO')?'selected':''}>
+NÃO EXECUTADA
+</option>
+
+</select>
+
 </td>
 
 </tr>
@@ -1229,7 +1255,63 @@ Causa
 border:1px solid #d1d5db;
 padding:12px;
 ">
-${i.causa||'-'}
+<select multiple style="
+width:100%;
+min-height:120px;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:10px;
+">
+
+<option selected>
+Fragilidade operacional
+</option>
+
+<option>
+Ausência de normatização
+</option>
+
+<option>
+Baixa execução orçamentária
+</option>
+
+<option>
+Deficiência de pessoal
+</option>
+
+<option>
+Ausência de planejamento
+</option>
+
+<option>
+Problemas tecnológicos
+</option>
+
+<option>
+Morosidade administrativa
+</option>
+
+<option>
+Dependência de terceiros
+</option>
+
+<option>
+Falta de integração institucional
+</option>
+
+</select>
+
+<textarea style="
+width:100%;
+min-height:90px;
+padding:12px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+resize:vertical;
+">
+${i.causa||''}
+</textarea>
 </td>
 
 </tr>
@@ -1249,7 +1331,63 @@ Efeito
 border:1px solid #d1d5db;
 padding:12px;
 ">
-${i.efeito||'-'}
+<select multiple style="
+width:100%;
+min-height:120px;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:10px;
+">
+
+<option selected>
+Risco ao cumprimento institucional
+</option>
+
+<option>
+Comprometimento da efetividade
+</option>
+
+<option>
+Prejuízo à governança
+</option>
+
+<option>
+Atraso na implementação
+</option>
+
+<option>
+Impacto ambiental
+</option>
+
+<option>
+Fragilidade de controle
+</option>
+
+<option>
+Risco reputacional
+</option>
+
+<option>
+Prejuízo operacional
+</option>
+
+<option>
+Baixa eficiência administrativa
+</option>
+
+</select>
+
+<textarea style="
+width:100%;
+min-height:90px;
+padding:12px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+resize:vertical;
+">
+${i.efeito||''}
+</textarea>
 </td>
 
 </tr>
@@ -1315,7 +1453,41 @@ border:1px solid #d1d5db;
 padding:12px;
 font-weight:900;
 ">
-${i.criticidade||'-'}
+<select style="
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+font-weight:800;
+">
+
+<option ${
+Number(i.percentual||0)<30
+?'selected'
+:''
+}>
+ALTA
+</option>
+
+<option ${
+Number(i.percentual||0)>=30
+&&
+Number(i.percentual||0)<70
+?'selected'
+:''
+}>
+MÉDIA
+</option>
+
+<option ${
+Number(i.percentual||0)>=70
+?'selected'
+:''
+}>
+BAIXA
+</option>
+
+</select>
 </td>
 
 </tr>
