@@ -175,7 +175,7 @@ alertas.push('Criticidade alta identificada')
 }
 
 html+=`
-<div class="card-alerta-mini ${classeOrigem}">
+<div class="card-alerta-mini ${classeOrigem}" onclick="abrirEvidenciaItem(${i.id})" style="cursor:pointer;">
 <div class="card-alerta-titulo">
 ITEM ${i.item||'-'} — ${String(i.deliberacao||i.descricao||'-')}
 </div>
@@ -1382,5 +1382,39 @@ weight:'bold'
 },
 plugins:[ChartDataLabels]
 })
+
+}
+
+/*=========================================================
+031 MONITORAMENTO-PAINEL.JS ABRIR EVIDÊNCIA ITEM
+=========================================================*/
+async function abrirEvidenciaItem(itemId){
+
+window.ITEM_EVIDENCIA_ATUAL=itemId
+
+abrirTela('evidencias')
+
+setTimeout(()=>{
+
+let linha=document.querySelector(
+`[data-evidencia-item="${itemId}"]`
+)
+
+if(linha){
+
+linha.scrollIntoView({
+behavior:'smooth',
+block:'center'
+})
+
+linha.classList.add('evidencia-destaque')
+
+setTimeout(()=>{
+linha.classList.remove('evidencia-destaque')
+},2500)
+
+}
+
+},350)
 
 }
