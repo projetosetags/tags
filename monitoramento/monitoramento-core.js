@@ -470,3 +470,7 @@ painel.classList.toggle(
 )
 
 }
+
+if(typeof renderPainelEvidencias==='function'){
+renderPainelEvidencias()
+}
