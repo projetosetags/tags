@@ -395,14 +395,34 @@ Benefícios Esperados
 </div>
 </section>
 <section id="tela-evidencias" class="tela-monitoramento hidden">
-<div class="upload-box">
-<input type="file" id="arquivoEvidencia">
-<button class="btn-padrao" onclick="uploadEvidencia()">
-📤 Enviar Evidência
-</button>
+
+<div class="top-actions">
+
+<input
+type="text"
+id="buscaEvidencia"
+placeholder="Pesquisar item/subitem..."
+class="input-busca"
+onkeyup="renderPainelEvidencias()"
+>
+
+<select
+id="filtroOrigemEvidencia"
+class="select-monitoramento"
+onchange="renderPainelEvidencias()"
+>
+<option value="TODAS">Todas</option>
+<option value="SEDAM">SEDAM</option>
+<option value="SEPAT">SEPAT</option>
+<option value="QUEIMADAS">QUEIMADAS</option>
+</select>
+
 </div>
-<div id="listaEvidencias"></div>
+
+<div id="painelEvidenciasItens"></div>
+
 </section>
+  
 <section id="tela-analises" class="tela-monitoramento hidden">
 <div class="analise-box">
 <div class="toolbar-analise">
