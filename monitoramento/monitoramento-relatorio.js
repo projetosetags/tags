@@ -1415,7 +1415,7 @@ unidade='Secretaria de Estado de Patrimônio e Regularização Fundiária - SEPA
 }
 
 if(origem==='QUEIMADAS'){
-unidade='Municípios e Órgãos Envolvidos nas Ações de Queimadas'
+unidade='Governo do Estado, Municípios e Órgãos Envolvidos nas Ações de Queimadas'
 }
 
 let relatorOptions=`
@@ -1438,13 +1438,27 @@ if(origem==='SEPAT'){
 tabelaOrigem='sepat_deliberacoes'
 }
 
+let monitoramentoInfo=null
+
+if(MONITORAMENTO_ATUAL){
+
+let{data:monitoramentoData,error:monitoramentoError}=await client
+.from('monitoramentos')
+.select('*')
+.eq('id',MONITORAMENTO_ATUAL)
+.single()
+
+if(monitoramentoError){
+console.log(monitoramentoError)
+}
+
+monitoramentoInfo=monitoramentoData||null
+
+}
+
 let{data,error}=await client
 .from(tabelaOrigem)
 .select('*')
-
-if(origem==='QUEIMADAS'){
-query=query.eq('origem','QUEIMADAS')
-}
 
 if(error){
 console.log(error)
@@ -1453,6 +1467,18 @@ return
 }
 
 data=(data||[])
+
+let processo=
+monitoramentoInfo?.processo||
+'00000/20XX-TCE-RO'
+
+let relator=
+monitoramentoInfo?.relator||
+'Não informado'
+
+let assuntosMonitoramento=
+monitoramentoInfo?.assuntos||
+assunto
 
 function parseSubitemPlano(s){
 
@@ -1485,12 +1511,6 @@ return na-nb
 return 0
 
 })
-
-if(error){
-console.log(error)
-alert('Erro ao gerar plano')
-return
-}
 
 let linhas=''
 
@@ -1651,7 +1671,7 @@ font-size:13px;
 PROCESSO:
 </td>
 <td style="border:1px solid #000;padding:10px;">
-00000/20XX-TCE-RO
+${processo}
 </td>
 </tr>
 
@@ -1687,7 +1707,7 @@ Monitoramento
 ASSUNTO(S):
 </td>
 <td style="border:1px solid #000;padding:10px;line-height:1.6;">
-${assunto}
+${assuntosMonitoramento}
 </td>
 </tr>
 
@@ -1705,14 +1725,17 @@ XXXXX - CPF n.***.xxx.xxx-** – Prefeito Municipal ou Secretário de Estado
 RELATOR:
 </td>
 <td style="border:1px solid #000;padding:10px;">
-<select style="
+<input
+value="${relator}"
+style="
+width:100%;
 padding:8px 12px;
 border:1px solid #000;
 border-radius:6px;
 font-weight:700;
+font-size:12px;
+box-sizing:border-box;
 ">
-${relatorOptions}
-</select>
 </td>
 </tr>
 
