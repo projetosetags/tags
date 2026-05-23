@@ -460,6 +460,59 @@ QUEIMADAS
 </div>
 
 </section>
+
+<!--=========================================================
+047 MONITORAMENTO.HTML MODAL UPLOAD EVIDENCIAS
+=========================================================-->
+<div id="modalUploadEvidencia" class="hidden">
+
+<div class="modal-impressao-content">
+
+<div class="modal-impressao-topo">
+
+<div class="modal-impressao-titulo">
+📎 Evidências do Item Monitorado
+</div>
+
+<div style="
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+">
+
+<button
+class="btn-padrao verde"
+onclick="uploadEvidencia()">
+📤 Upload
+</button>
+
+<button
+class="btn-padrao vermelho"
+onclick="fecharModalEvidencia()">
+❌ Fechar
+</button>
+
+</div>
+
+</div>
+
+<div style="
+padding:22px;
+">
+
+<input
+type="file"
+id="arquivoEvidencia"
+accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx"
+>
+
+<div id="listaEvidencias"></div>
+
+</div>
+
+</div>
+
+</div>
   
 <section id="tela-analises" class="tela-monitoramento hidden">
 <div class="analise-box">
