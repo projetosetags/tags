@@ -18,6 +18,7 @@ return
 }
 
 let totalInseridos=0
+let inserts=[]
 
 for(let item of(itens||[])){
 
@@ -25,6 +26,7 @@ let{data:evolucao,error:evolucaoError}=await client
 .from('evolucao_mensal')
 .select('*')
 .eq('deliberacao_id',item.deliberacao_id||item.id_origem)
+
 if(evolucaoError){
 console.log(evolucaoError)
 continue
@@ -34,7 +36,8 @@ for(let e of(evolucao||[])){
 
 let{data:existente}=await client
 .from('monitoramento_historico')
-.select('*')
+.select('id')
+.eq('monitoramento_id',MONITORAMENTO_ATUAL)
 .eq('item_id',item.id)
 .eq('mes_referencia',e.mes_referencia)
 .limit(1)
@@ -43,20 +46,30 @@ if(existente&&existente.length>0){
 continue
 }
 
-let{error:insertError}=await client
-.from('monitoramento_historico')
-.insert([{
+inserts.push({
 monitoramento_id:MONITORAMENTO_ATUAL,
 item_id:item.id,
 mes_referencia:e.mes_referencia,
 percentual:Number(e.percentual_lancado||0),
 origem:'TAG'
-}])
+})
 
-if(!insertError){
 totalInseridos++
+
 }
 
+}
+
+if(inserts.length>0){
+
+let{error:insertError}=await client
+.from('monitoramento_historico')
+.insert(inserts)
+
+if(insertError){
+console.log(insertError)
+alert('Erro ao inserir histórico')
+return
 }
 
 }
@@ -67,7 +80,7 @@ await registrarLog(
 MONITORAMENTO_ATUAL
 )
 
-await carregarHistorico()
+await carregarHistorico(MONITORAMENTO_ATUAL)
 
 alert(
 `${totalInseridos} históricos sincronizados`
