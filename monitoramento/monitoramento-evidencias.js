@@ -849,3 +849,103 @@ document
 .classList.add('hidden')
 
 }
+/*=========================================================
+074 MONITORAMENTO-EVIDENCIAS.JS MODAL EVIDENCIAS
+=========================================================*/
+function abrirModalEvidencia(itemId){
+
+ITEM_EVIDENCIA_ATUAL=itemId
+
+let modal=document.getElementById('modalUploadEvidencia')
+
+if(modal){
+modal.classList.remove('hidden')
+}
+
+carregarEvidencias()
+
+}
+
+function fecharModalEvidencia(){
+
+let modal=document.getElementById('modalUploadEvidencia')
+
+if(modal){
+modal.classList.add('hidden')
+}
+
+}
+
+/*=========================================================
+075 MONITORAMENTO-EVIDENCIAS.JS AUTO PERSIST CHECKBOX
+=========================================================*/
+async function persistirChecksAutomatico(id){
+
+let linha=document.querySelector(
+`[data-evidencia-item="${id}"]`
+)
+
+if(!linha)return
+
+let checks=[]
+
+linha
+.querySelectorAll('input[type="checkbox"]:checked')
+.forEach(c=>{
+checks.push(c.value)
+})
+
+let status='PENDENTE'
+
+if(checks.length>0){
+status='PARCIAL'
+}
+
+if(checks.length>=5){
+status='COMPLETA'
+}
+
+let payload={
+evidencias_check:checks,
+evidencia_status:status,
+evidencia_usuario:
+USER_MONITORAMENTO?.username||'-',
+evidencia_data:new Date()
+}
+
+let{error}=await client
+.from('monitoramento_itens')
+.update(payload)
+.eq('id',id)
+
+if(error){
+console.log(error)
+return
+}
+
+}
+
+/*=========================================================
+076 MONITORAMENTO-EVIDENCIAS.JS EVENTOS CHECKBOX
+=========================================================*/
+document.addEventListener('change',async e=>{
+
+if(
+e.target.matches(
+'.box-evidencias-check input[type="checkbox"]'
+)
+){
+
+let linha=e.target.closest(
+'[data-evidencia-item]'
+)
+
+if(!linha)return
+
+let id=linha.dataset.evidenciaItem
+
+await persistirChecksAutomatico(id)
+
+}
+
+})
