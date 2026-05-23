@@ -81,8 +81,14 @@ return
 }
 
 document.getElementById('arquivoEvidencia').value=''
-
+await client
+.from('monitoramento_itens')
+.update({
+evidencia_upload:true
+})
+.eq('id',ITEM_EVIDENCIA_ATUAL)
 await carregarEvidencias()
+await renderPainelEvidencias()
 await registrarLog(
 'UPLOAD EVIDÊNCIA',
 'monitoramento_evidencias',
@@ -355,8 +361,23 @@ let possuiEvidencia=
 i.evidencia&&
 String(i.evidencia).trim()!==''
 
+let checks=i.evidencias_check||[]
+let totalChecks=
+checks.length+
+(possuiEvidencia?1:0)+
+(i.evidencia_upload?1:0)
+let classeBorda='card-evidencia-pendente'
+
+if(i.evidencia_status==='PARCIAL'){
+classeBorda='card-evidencia-parcial'
+}
+
+if(i.evidencia_status==='COMPLETA'){
+classeBorda='card-evidencia-completa'
+}
+
 html+=`
-<div class="linha-evidencia linha-evidencia-item" data-evidencia-item="${i.id}">
+<div class="linha-evidencia linha-evidencia-item ${classeBorda}" data-evidencia-item="${i.id}">
 
 <div>
 <b>${i.item||'-'}</b>
@@ -380,9 +401,20 @@ ${mes100}
 </div>
 
 <div>
+
 <span class="badge-status-evidencia ${classe}">
 ${status}
 </span>
+
+<div style="
+margin-top:6px;
+font-size:10px;
+font-weight:800;
+color:#111;
+">
+📎 ${totalChecks} evidências
+</div>
+
 </div>
 
 <div>
@@ -390,66 +422,108 @@ ${status}
 <div class="box-evidencias-check">
 
 <label class="item-check-evidencia">
-<input type="checkbox" value="OFÍCIO">
+<input
+type="checkbox"
+value="OFÍCIO"
+${checks.includes('OFÍCIO')?'checked':''}>
 OFÍCIO
 </label>
 
 <label class="item-check-evidencia">
-<input type="checkbox" value="RELATÓRIO">
+<input
+type="checkbox"
+value="RELATÓRIO"
+${checks.includes('RELATÓRIO')?'checked':''}>
 RELATÓRIO
 </label>
 
 <label class="item-check-evidencia">
-<input type="checkbox" value="ATA">
+<input
+type="checkbox"
+value="ATA"
+${checks.includes('ATA')?'checked':''}>
 ATA
 </label>
 
 <label class="item-check-evidencia">
-<input type="checkbox" value="SEI">
+<input
+type="checkbox"
+value="SEI"
+${checks.includes('SEI')?'checked':''}>
 SEI
 </label>
 
 <label class="item-check-evidencia">
-<input type="checkbox" value="DESPACHO">
+<input
+type="checkbox"
+value="DESPACHO"
+${checks.includes('DESPACHO')?'checked':''}>
 DESPACHO
 </label>
 
 <label class="item-check-evidencia">
-<input type="checkbox" value="PORTARIA">
+<input
+type="checkbox"
+value="PORTARIA"
+${checks.includes('PORTARIA')?'checked':''}>
 PORTARIA
 </label>
 
 <label class="item-check-evidencia">
-<input type="checkbox" value="PRINT SISTEMA">
+<input
+type="checkbox"
+value="PRINT SISTEMA"
+${checks.includes('PRINT SISTEMA')?'checked':''}>
 PRINT SISTEMA
 </label>
 
 <label class="item-check-evidencia">
-<input type="checkbox" value="CHECKLIST">
+<input
+type="checkbox"
+value="CHECKLIST"
+${checks.includes('CHECKLIST')?'checked':''}>
 CHECKLIST
 </label>
 
 <label class="item-check-evidencia">
-<input type="checkbox" value="PARECER">
+<input
+type="checkbox"
+value="PARECER"
+${checks.includes('PARECER')?'checked':''}>
 PARECER
 </label>
 
 <label class="item-check-evidencia">
-<input type="checkbox" value="MEMORANDO">
+<input
+type="checkbox"
+value="MEMORANDO"
+${checks.includes('MEMORANDO')?'checked':''}>
 MEMORANDO
 </label>
 
 <label class="item-check-evidencia">
-<input type="checkbox" value="INSPEÇÃO">
+<input
+type="checkbox"
+value="INSPEÇÃO"
+${checks.includes('INSPEÇÃO')?'checked':''}>
 INSPEÇÃO
 </label>
 
 <label class="item-check-evidencia">
-<input type="checkbox" value="FOTO">
+<input
+type="checkbox"
+value="FOTO"
+${checks.includes('FOTO')?'checked':''}>
 FOTO
 </label>
 
 </div>
+
+${!i.evidencia_upload?`
+<div class="alerta-upload">
+📎 Fazer Upload PDF/IMG
+</div>
+`:''}
 
 <textarea
 id="obsEvidencia_${i.id}"
@@ -457,15 +531,79 @@ class="evidencia-textarea"
 placeholder="Exemplo: Ofício n. 120/2026/GAB/SEDAM; Processo SEI 0000.123456/2026-10; Relatório técnico da Coordenadoria X; Ata reunião 15-05-2026..."
 >${i.evidencia||''}</textarea>
 
+${i.evidencia_resumo_ia?`
+<div class="box-resumo-ia">
+<div class="titulo-resumo-ia">
+🧠 Resumo IA
 </div>
+<div class="texto-resumo-ia">
+${i.evidencia_resumo_ia}
+</div>
+</div>
+`:''}
 
-<div>
+<div style="
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:10px;
+">
 
 <button
 class="btn-salvar-evidencia ${possuiEvidencia?'btn-evidencia-ok':''}"
 onclick="salvarEvidenciaLancada(${i.id},this)">
 ${possuiEvidencia?'✔ SALVO':'💾 SALVAR'}
 </button>
+
+<button
+class="btn-padrao azul"
+onclick="gerarPDFItem(${i.id})">
+📄 PDF
+</button>
+
+<button
+class="btn-padrao roxo"
+onclick="gerarResumoIA(${i.id})">
+🧠 IA
+</button>
+
+</div>
+
+</div>
+
+<div style="
+font-size:10px;
+line-height:1.4;
+color:#222;
+">
+
+<div>
+<b>Usuário:</b>
+${i.evidencia_usuario||'-'}
+</div>
+
+<div>
+<b>Data:</b>
+${i.evidencia_data
+?new Date(i.evidencia_data)
+.toLocaleString('pt-BR')
+:'-'}
+</div>
+
+<div style="
+margin-top:8px;
+font-weight:800;
+color:${
+i.evidencia_status==='COMPLETA'
+?'#15803d'
+:
+i.evidencia_status==='PARCIAL'
+?'#b45309'
+:'#b91c1c'
+};
+">
+${i.evidencia_status||'PENDENTE'}
+</div>
 
 </div>
 
@@ -491,129 +629,76 @@ Nenhum subitem atingiu 100% até o momento.
 box.innerHTML=html
 
 }
-/*=========================================================
-052 MONITORAMENTO-EVIDENCIAS.JS FUNCTION SALVAREVIDENCIALANCADA
-=========================================================*/
-async function salvarEvidenciaLancada(itemId,btn){
+async function salvarEvidenciaLancada(id,btn){
 
-try{
+let texto=document
+.getElementById(`obsEvidencia_${id}`)
+?.value||''
+
+let linha=document.querySelector(
+`[data-evidencia-item="${id}"]`
+)
+
+let checks=[]
+
+if(linha){
+
+linha
+.querySelectorAll('input[type="checkbox"]:checked')
+.forEach(c=>{
+checks.push(c.value)
+})
+
+}
+
+let status='PENDENTE'
+
+if(texto.trim()!==''&&checks.length>=3){
+status='COMPLETA'
+}else if(texto.trim()!==''||checks.length>0){
+status='PARCIAL'
+}
 
 btn.disabled=true
-
-let linha=btn.closest('.linha-evidencia-item')
-
-let checks=[
-...linha.querySelectorAll('input[type="checkbox"]:checked')
-]
-
-let evidencias=checks
-.map(c=>c.value)
-.join('; ')
-
-let observacoes=
-linha.querySelector('.evidencia-textarea')
-?.value
-?.trim()||''
-
-let {data:item,error:itemError}=await client
-.from('monitoramento_itens')
-.select('*')
-.eq('id',itemId)
-.single()
-
-if(itemError||!item){
-
-console.log(itemError)
-
-alert('Item não encontrado')
-
-btn.disabled=false
-
-return
-
-}
+btn.innerHTML='SALVANDO...'
 
 let payload={
-item_id:Number(item.id),
-origem:item.origem||'',
-item:String(item.item||''),
-subitem:String(item.subitem||''),
-produto:item.produto||item.produto_esperado||'-',
-status:item.status||'-',
-percentual:Number(item.percentual||0),
-mes_100:item.mes_100||item.mes_referencia||'-',
-evidencias:evidencias,
-descricao:observacoes,
-observacoes:observacoes,
-updated_at:new Date().toISOString()
+
+evidencia:texto,
+evidencias_check:checks,
+evidencia_usuario:
+USER_MONITORAMENTO?.username||'-',
+
+evidencia_data:new Date(),
+
+evidencia_status:status
+
 }
 
-console.log('SALVANDO:',payload)
-
-let {data:existe}=await client
-.from('monitoramento_evidencias_lancadas')
-.select('id')
-.eq('item_id',item.id)
-.maybeSingle()
-
-let erro=null
-
-if(existe){
-
-let r=await client
-.from('monitoramento_evidencias_lancadas')
+let{error}=await client
+.from('monitoramento_itens')
 .update(payload)
-.eq('item_id',item.id)
+.eq('id',id)
 
-erro=r.error
-
-}else{
-
-let r=await client
-.from('monitoramento_evidencias_lancadas')
-.insert(payload)
-
-erro=r.error
-
-}
-
-if(erro){
-
-console.log('ERRO SUPABASE:',erro)
-
-alert('Erro ao salvar evidência')
-
+if(error){
+console.log(error)
+alert('Erro ao salvar')
 btn.disabled=false
-
 return
-
 }
 
-btn.innerHTML='✅ SALVO'
-btn.style.background='#166534'
-
-setTimeout(()=>{
-
-btn.innerHTML='💾 SALVAR'
-btn.style.background='#16a34a'
-
-},2000)
-
+await registrarLog(
+'EVIDÊNCIA LANÇADA',
+'monitoramento_itens',
+id
+)
+btn.classList.add('btn-evidencia-ok')
+btn.innerHTML='✔ SALVO'
 btn.disabled=false
-
-}catch(e){
-
-console.log('ERRO GERAL:',e)
-
-alert('Erro inesperado ao salvar')
-
-btn.disabled=false
-
+if(typeof atualizarCardDashboard==='function'){
+atualizarCardDashboard(id,status)
 }
-
 }
-
-
 /*=========================================================
 071 MONITORAMENTO-EVIDENCIAS.JS DEBUG GLOBAL
 LOCAL: FINAL DO ARQUIVO
@@ -622,3 +707,121 @@ AÇÃO: ADICIONAR
 window.addEventListener('error',e=>{
 console.log('ERRO GLOBAL:',e.message)
 })
+/*=========================================================
+072 MONITORAMENTO-EVIDENCIAS.JS PDF ITEM
+=========================================================*/
+async function gerarPDFItem(id){
+
+let{jsPDF}=window.jspdf
+
+let doc=new jsPDF()
+
+let{data,error}=await client
+.from('monitoramento_itens')
+.select('*')
+.eq('id',id)
+.single()
+
+if(error||!data){
+console.log(error)
+return
+}
+
+doc.setFontSize(16)
+
+doc.text(
+`ITEM ${data.item||'-'}`,
+14,
+20
+)
+
+doc.setFontSize(12)
+
+doc.text(
+`SUBITEM: ${data.subitem||'-'}`,
+14,
+32
+)
+
+doc.text(
+`STATUS: ${data.status||'-'}`,
+14,
+42
+)
+
+doc.text(
+`EVIDÊNCIA:`,
+14,
+56
+)
+
+let texto=
+doc.splitTextToSize(
+data.evidencia||'-',
+180
+)
+
+doc.text(
+texto,
+14,
+66
+)
+
+doc.save(
+`ITEM_${data.item||'MONITORAMENTO'}.pdf`
+)
+
+}
+/*=========================================================
+073 MONITORAMENTO-EVIDENCIAS.JS IA RESUMO
+=========================================================*/
+async function gerarResumoIA(id){
+
+let{data,error}=await client
+.from('monitoramento_itens')
+.select('*')
+.eq('id',id)
+.single()
+
+if(error||!data){
+console.log(error)
+return
+}
+
+let texto=data.evidencia||''
+
+if(!texto.trim()){
+alert('Sem evidência para resumir')
+return
+}
+
+let resumo=
+texto
+.split('.')
+.slice(0,3)
+.join('.')
+.trim()+'.'
+
+let{error:updateError}=await client
+.from('monitoramento_itens')
+.update({
+evidencia_resumo_ia:resumo
+})
+.eq('id',id)
+
+if(updateError){
+console.log(updateError)
+return
+}
+
+await registrarLog(
+'IA RESUMO EVIDÊNCIA',
+'monitoramento_itens',
+id
+)
+
+await renderPainelEvidencias()
+
+alert('Resumo IA gerado')
+
+}
