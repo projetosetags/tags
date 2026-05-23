@@ -1371,7 +1371,7 @@ line-height:1.8;
 
 <b>Observação:</b>
 
-O presente relatório é gerado a partir dos dados inseridos no sistema TAG/Sedam-2026, integrando informações do Supabase e do repositório GitHub (projetosetags/tags). Dados preliminares sujeitos a validação posterior pela auditoria técnica.
+O presente relatório é gerado a partir dos dados inseridos no sistema TAG-2026, integrando informações do Supabase e do repositório GitHub (projetosetags/tags). Dados preliminares sujeitos a validação posterior pela auditoria técnica.
 
 </div>
 
@@ -1383,3 +1383,259 @@ box.innerHTML=html
 }
 
 console.log('monitoramento-relatorio.js carregado')
+/*=========================================================
+119 MONITORAMENTO-RELATORIO.JS GERAR PLANO MONITORAMENTO WORD
+=========================================================*/
+async function gerarPlanoMonitoramentoWord(){
+
+let origem=(document.getElementById('filtroOrigem')?.value||'SEDAM').toUpperCase()
+
+let assunto=''
+
+if(origem==='SEDAM'){
+assunto='Monitoramento Ambiental, Governança Ambiental, Execução das Deliberações e Avaliação da Implementação das Ações Estratégicas da SEDAM – Exercício 2026.'
+}
+
+if(origem==='SEPAT'){
+assunto='Regularização Fundiária, Gestão Patrimonial, Governança Institucional e Avaliação da Execução das Deliberações da SEPAT – Exercício 2026.'
+}
+
+if(origem==='QUEIMADAS'){
+assunto='Avaliação das ações de prevenção e combate às queimadas e Monitoramento Ambiental, Queimadas, Governança Climática e Respostas Institucionais – Exercício 2026.'
+}
+
+let unidade=''
+
+if(origem==='SEDAM'){
+unidade='Secretaria de Estado do Desenvolvimento Ambiental - SEDAM'
+}
+
+if(origem==='SEPAT'){
+unidade='Secretaria de Estado de Patrimônio e Regularização Fundiária - SEPAT'
+}
+
+if(origem==='QUEIMADAS'){
+unidade='Municípios e Órgãos Envolvidos nas Ações de Queimadas'
+}
+
+let relatorOptions=`
+<option>Conselheiro Edilson de Sousa Silva</option>
+<option>Conselheiro Francisco Carvalho da Silva</option>
+<option>Conselheiro José Euler Potyguara Pereira de Mello</option>
+<option>Conselheiro Wilber Carlos dos Santos Coimbra</option>
+<option>Conselheiro Paulo Curi Neto</option>
+<option>Conselheiro-Substituto Francisco Júnior Ferreira da Silva</option>
+<option>Conselheiro-Substituto Omar Pires Dias</option>
+`
+
+let{data,error}=await client
+.from('monitoramento_itens')
+.select('*')
+.eq('origem',origem)
+.order('subitem',{ascending:true})
+
+if(error){
+console.log(error)
+alert('Erro ao gerar plano')
+return
+}
+
+let linhas=''
+
+;(data||[]).forEach(i=>{
+
+linhas+=`
+<tr>
+<td>${i.subitem||'-'}</td>
+<td>${i.descricao||i.deliberacao||'-'}</td>
+<td contenteditable="true"></td>
+<td>${i.produto||i.produto_esperado||'-'}</td>
+<td contenteditable="true"></td>
+<td>${i.status||'-'}</td>
+</tr>
+`
+
+})
+
+let html=`
+<div id="planoMonitoramentoWord" style="
+background:#fff;
+padding:30px;
+color:#000;
+font-family:Arial,sans-serif;
+">
+
+<div style="
+text-align:center;
+font-size:22px;
+font-weight:900;
+margin-bottom:24px;
+">
+PLANO DE MONITORAMENTO
+</div>
+
+<table style="
+width:100%;
+border-collapse:collapse;
+margin-bottom:24px;
+font-size:13px;
+">
+
+<tr>
+<td style="border:1px solid #000;padding:10px;font-weight:700;width:280px;">
+PROCESSO:
+</td>
+<td style="border:1px solid #000;padding:10px;">
+00000/20XX-TCE-RO
+</td>
+</tr>
+
+<tr>
+<td style="border:1px solid #000;padding:10px;font-weight:700;">
+UNIDADE(S) JURISDICIONADA(S):
+</td>
+<td style="border:1px solid #000;padding:10px;">
+${unidade}
+</td>
+</tr>
+
+<tr>
+<td style="border:1px solid #000;padding:10px;font-weight:700;">
+CATEGORIA:
+</td>
+<td style="border:1px solid #000;padding:10px;">
+Auditoria e Inspeção
+</td>
+</tr>
+
+<tr>
+<td style="border:1px solid #000;padding:10px;font-weight:700;">
+SUBCATEGORIA:
+</td>
+<td style="border:1px solid #000;padding:10px;">
+Monitoramento
+</td>
+</tr>
+
+<tr>
+<td style="border:1px solid #000;padding:10px;font-weight:700;">
+ASSUNTO(S):
+</td>
+<td style="border:1px solid #000;padding:10px;line-height:1.6;">
+${assunto}
+</td>
+</tr>
+
+<tr>
+<td style="border:1px solid #000;padding:10px;font-weight:700;">
+RESPONSÁVEL(IS) PELOS ÓRGÃOS/ENTIDADES:
+</td>
+<td style="border:1px solid #000;padding:10px;">
+XXXXX - CPF n.***.xxx.xxx-** – Prefeito Municipal ou Secretário de Estado
+</td>
+</tr>
+
+<tr>
+<td style="border:1px solid #000;padding:10px;font-weight:700;">
+RELATOR:
+</td>
+<td style="border:1px solid #000;padding:10px;">
+<select style="
+padding:8px 12px;
+border:1px solid #000;
+border-radius:6px;
+font-weight:700;
+">
+${relatorOptions}
+</select>
+</td>
+</tr>
+
+</table>
+
+<table style="
+width:100%;
+border-collapse:collapse;
+font-size:12px;
+">
+
+<thead>
+
+<tr>
+
+<th style="
+border:1px solid #000;
+padding:10px;
+background:#dbeafe;
+">
+Nr. Subitem
+</th>
+
+<th style="
+border:1px solid #000;
+padding:10px;
+background:#dbeafe;
+">
+Deliberação
+</th>
+
+<th style="
+border:1px solid #000;
+padding:10px;
+background:#dbeafe;
+">
+Plano de Ação / Ação Proposta
+</th>
+
+<th style="
+border:1px solid #000;
+padding:10px;
+background:#dbeafe;
+">
+Produto a Ser Entregue
+</th>
+
+<th style="
+border:1px solid #000;
+padding:10px;
+background:#dbeafe;
+">
+Produto Entregue
+</th>
+
+<th style="
+border:1px solid #000;
+padding:10px;
+background:#dbeafe;
+">
+Status da Ação
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+${linhas}
+
+</tbody>
+
+</table>
+
+</div>
+`
+
+let preview=document.getElementById('previewRelatorio')
+
+if(preview){
+
+preview.innerHTML=html
+
+preview.style.background='#fff'
+
+preview.style.color='#000'
+
+}
+
+}
