@@ -264,17 +264,59 @@ String(userP.origem||'').toUpperCase()==='TCERO'||
 userP.permissao_pdf===true
 )
 ){
+if(document.getElementById('view-dashboard')&&!document.getElementById('view-dashboard').classList.contains('hidden')){
+pdfHTML=`
+<button onclick="gerarPDFDashboard()" class="btn-pdf">
+PDF DASHBOARD
+</button>
+<button onclick="gerarWordDashboard()" class="btn-pdf btn-word">
+WORD DASHBOARD
+</button>
+`
+}
+
 if(document.getElementById('view-resumo')&&!document.getElementById('view-resumo').classList.contains('hidden')){
-pdfHTML=`<button onclick="gerarPDFResumo()" class="btn-pdf">PDF RESUMO</button>`
+pdfHTML=`
+<button onclick="gerarPDFResumo()" class="btn-pdf">
+PDF RESUMO
+</button>
+<button onclick="gerarWordResumo()" class="btn-pdf btn-word">
+WORD RESUMO
+</button>
+`
 }
+
 if(document.getElementById('view-mensal')&&!document.getElementById('view-mensal').classList.contains('hidden')){
-pdfHTML=`<button onclick="gerarPDFMonitoramento()" class="btn-pdf">PDF MONITORAMENTO</button>`
+pdfHTML=`
+<button onclick="gerarPDFMonitoramento()" class="btn-pdf">
+PDF MONITORAMENTO
+</button>
+<button onclick="gerarWordMonitoramento()" class="btn-pdf btn-word">
+WORD MONITORAMENTO
+</button>
+`
 }
+
 if(document.getElementById('view-analise')&&!document.getElementById('view-analise').classList.contains('hidden')){
-pdfHTML=`<button onclick="gerarPDFGraficos()" class="btn-pdf">PDF GRÁFICOS</button>`
+pdfHTML=`
+<button onclick="gerarPDFGraficos()" class="btn-pdf">
+PDF GRÁFICOS
+</button>
+<button onclick="gerarWordGraficos()" class="btn-pdf btn-word">
+WORD GRÁFICOS
+</button>
+`
 }
+
 if(document.getElementById('view-concluidos')&&!document.getElementById('view-concluidos').classList.contains('hidden')){
-pdfHTML=`<button onclick="gerarPDFCumpridos()" class="btn-pdf">PDF 100%</button>`
+pdfHTML=`
+<button onclick="gerarPDFCumpridos()" class="btn-pdf">
+PDF 100%
+</button>
+<button onclick="gerarWordCumpridos()" class="btn-pdf btn-word">
+WORD 100%
+</button>
+`
 }
 }
 let pdfContainer=document.getElementById('pdf-container')
