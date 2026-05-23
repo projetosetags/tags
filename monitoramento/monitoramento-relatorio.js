@@ -1727,3 +1727,4 @@ O presente relatório é gerado a partir dos dados inseridos no sistema TAG/Seda
 box.innerHTML=html
 
 }
+console.log('monitoramento-relatorio.js carregado')
