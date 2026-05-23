@@ -455,3 +455,281 @@ align:'right'
 }
 doc.save('pdf_100_cumpridos_tag_sedam.pdf')
 }
+/*=========================================================
+050 WORD BASE
+=========================================================*/
+function baixarWord(nome,conteudo){
+
+let html=`
+<html xmlns:o='urn:schemas-microsoft-com:office:office'
+xmlns:w='urn:schemas-microsoft-com:office:word'
+xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='utf-8'>
+<title>${nome}</title>
+</head>
+<body>
+${conteudo}
+</body>
+</html>
+`
+
+let blob=new Blob(
+['\ufeff',html],
+{
+type:'application/msword'
+}
+)
+
+let url=URL.createObjectURL(blob)
+
+let a=document.createElement('a')
+
+a.href=url
+
+a.download=nome+'.doc'
+
+document.body.appendChild(a)
+
+a.click()
+
+document.body.removeChild(a)
+
+URL.revokeObjectURL(url)
+
+}
+/*=========================================================
+051 WORD DASHBOARD
+=========================================================*/
+function gerarWordDashboard(){
+
+let itens=document.getElementById('dashboardTotalItens')?.innerText||'0'
+
+let subitens=document.getElementById('dashboardTotalSubitens')?.innerText||'0'
+
+let media=document.getElementById('dashboardMediaGeral')?.innerText||'0%'
+
+let html=`
+<h1>DASHBOARD EXECUTIVO - TAG SEDAM 2026</h1>
+
+<table border="1" cellspacing="0" cellpadding="6">
+<tr>
+<th>Itens Estratégicos</th>
+<th>Subitens</th>
+<th>Média Geral</th>
+</tr>
+
+<tr>
+<td>${itens}</td>
+<td>${subitens}</td>
+<td>${media}</td>
+</tr>
+</table>
+
+<br>
+
+<h2>Relatório Executivo</h2>
+
+<p>
+Painel consolidado de acompanhamento técnico do TAG SEDAM 2026.
+</p>
+`
+
+baixarWord(
+'dashboard_tag_sedam',
+html
+)
+
+}
+/*=========================================================
+052 WORD RESUMO
+=========================================================*/
+function gerarWordResumo(){
+
+let lista=[...(window.allData||[])].sort(compareSubitem)
+
+let linhas=lista.map(i=>`
+<tr>
+<td>${i.item||'-'}</td>
+<td>${i.subitem||'-'}</td>
+<td>${i.descricao||'-'}</td>
+<td>${i.produto||'-'}</td>
+<td>${getTotal(i)}%</td>
+</tr>
+`).join('')
+
+let html=`
+<h1>RESUMO EXECUTIVO - TAG SEDAM 2026</h1>
+
+<table border="1" cellspacing="0" cellpadding="5">
+
+<tr>
+<th>Item</th>
+<th>Subitem</th>
+<th>Descrição</th>
+<th>Produto</th>
+<th>%</th>
+</tr>
+
+${linhas}
+
+</table>
+`
+
+baixarWord(
+'resumo_tag_sedam',
+html
+)
+
+}
+/*=========================================================
+053 WORD MONITORAMENTO
+=========================================================*/
+function gerarWordMonitoramento(){
+
+let lista=[...(window.allData||[])].sort(compareSubitem)
+
+let linhas=lista.map(i=>`
+<tr>
+<td>${i.item||'-'}</td>
+<td>${i.subitem||'-'}</td>
+<td>${i.descricao||'-'}</td>
+<td>${i.produto||'-'}</td>
+<td>${i.responsavel||'-'}</td>
+<td>${getTotal(i)}%</td>
+</tr>
+`).join('')
+
+let html=`
+<h1>MONITORAMENTO COMPLETO - TAG SEDAM 2026</h1>
+
+<table border="1" cellspacing="0" cellpadding="5">
+
+<tr>
+<th>Item</th>
+<th>Subitem</th>
+<th>Descrição</th>
+<th>Produto</th>
+<th>Responsável</th>
+<th>Total</th>
+</tr>
+
+${linhas}
+
+</table>
+`
+
+baixarWord(
+'monitoramento_tag_sedam',
+html
+)
+
+}
+/*=========================================================
+054 WORD GRAFICOS
+=========================================================*/
+function gerarWordGraficos(){
+
+let info=window.graficoAtualInfo||{}
+
+let html=`
+<h1>ANÁLISE GRÁFICA - TAG SEDAM 2026</h1>
+
+<p>
+Relatório gráfico consolidado do painel TAG SEDAM 2026.
+</p>
+
+<table border="1" cellspacing="0" cellpadding="5">
+
+<tr>
+<th>Tipo</th>
+<th>Informação</th>
+</tr>
+
+<tr>
+<td>Item</td>
+<td>${info.item||'-'}</td>
+</tr>
+
+<tr>
+<td>Subitem</td>
+<td>${info.subitem||'-'}</td>
+</tr>
+
+<tr>
+<td>JAN</td>
+<td>${info.jan||0}%</td>
+</tr>
+
+<tr>
+<td>FEV</td>
+<td>${info.fev||0}%</td>
+</tr>
+
+<tr>
+<td>MAR</td>
+<td>${info.mar||0}%</td>
+</tr>
+
+<tr>
+<td>ABR</td>
+<td>${info.abr||0}%</td>
+</tr>
+
+<tr>
+<td>MAI</td>
+<td>${info.mai||0}%</td>
+</tr>
+
+</table>
+`
+
+baixarWord(
+'graficos_tag_sedam',
+html
+)
+
+}
+/*=========================================================
+055 WORD 100
+=========================================================*/
+function gerarWordCumpridos(){
+
+let lista=(window.allData||[])
+.filter(i=>getTotal(i)>=100)
+.sort(compareSubitem)
+
+let linhas=lista.map(i=>`
+<tr>
+<td>${i.item||'-'}</td>
+<td>${i.subitem||'-'}</td>
+<td>${i.descricao||'-'}</td>
+<td>${i.produto||'-'}</td>
+<td>100%</td>
+</tr>
+`).join('')
+
+let html=`
+<h1>SUBITENS 100% CUMPRIDOS - TAG SEDAM 2026</h1>
+
+<table border="1" cellspacing="0" cellpadding="5">
+
+<tr>
+<th>Item</th>
+<th>Subitem</th>
+<th>Descrição</th>
+<th>Produto</th>
+<th>%</th>
+</tr>
+
+${linhas}
+
+</table>
+`
+
+baixarWord(
+'100_tag_sedam',
+html
+)
+
+}
