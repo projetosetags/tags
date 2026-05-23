@@ -1428,11 +1428,63 @@ let relatorOptions=`
 <option>Conselheiro-Substituto Omar Pires Dias</option>
 `
 
+let tabelaOrigem='monitoramento_itens'
+
+if(origem==='SEDAM'){
+tabelaOrigem='deliberacoes'
+}
+
+if(origem==='SEPAT'){
+tabelaOrigem='sepat_deliberacoes'
+}
+
 let{data,error}=await client
-.from('monitoramento_itens')
+.from(tabelaOrigem)
 .select('*')
-.eq('origem',origem)
-.order('subitem',{ascending:true})
+
+if(origem==='QUEIMADAS'){
+query=query.eq('origem','QUEIMADAS')
+}
+
+if(error){
+console.log(error)
+alert('Erro ao gerar plano')
+return
+}
+
+data=(data||[])
+
+function parseSubitemPlano(s){
+
+let txt=String(s||'0')
+
+let partes=txt.split('.')
+
+return partes.map(n=>parseInt(n)||0)
+
+}
+
+data.sort((a,b)=>{
+
+let pa=parseSubitemPlano(a.subitem)
+let pb=parseSubitemPlano(b.subitem)
+
+let tam=Math.max(pa.length,pb.length)
+
+for(let i=0;i<tam;i++){
+
+let na=pa[i]||0
+let nb=pb[i]||0
+
+if(na!==nb){
+return na-nb
+}
+
+}
+
+return 0
+
+})
 
 if(error){
 console.log(error)
@@ -1444,87 +1496,110 @@ let linhas=''
 
 ;(data||[]).forEach(i=>{
 
+let descricaoItem=
+i.descricaoitem||
+i.item_descricao||
+i.descricao_item||
+i.titulo_item||
+'-'
+
+let descricaoSubitem=
+i.descricao||
+i.deliberacao||
+i.subitem_descricao||
+'-'
+
+let produto=
+i.produto||
+i.produto_esperado||
+'-'
+
 linhas+=`
 <tr>
 
 <td style="
 border:1px solid #000;
-padding:8px;
-vertical-align:top;
-font-size:11px;
-font-weight:700;
+padding:6px;
+font-size:10px;
+font-weight:800;
 text-align:center;
+vertical-align:top;
+width:70px;
 ">
 ${i.item||'-'}
 </td>
 
 <td style="
 border:1px solid #000;
-padding:8px;
+padding:6px;
+font-size:10px;
+line-height:1.35;
 vertical-align:top;
-font-size:11px;
-line-height:1.45;
-white-space:pre-wrap;
+white-space:normal;
 word-break:break-word;
+width:220px;
 ">
-${i.descricaoitem||i.titulo_item||'-'}
+${descricaoItem}
 </td>
 
 <td style="
 border:1px solid #000;
-padding:8px;
-vertical-align:top;
-font-size:11px;
-font-weight:700;
+padding:6px;
+font-size:10px;
+font-weight:800;
 text-align:center;
+vertical-align:top;
+width:90px;
 ">
 ${i.subitem||'-'}
 </td>
 
 <td style="
 border:1px solid #000;
-padding:8px;
+padding:6px;
+font-size:10px;
+line-height:1.35;
 vertical-align:top;
-font-size:11px;
-line-height:1.45;
-white-space:pre-wrap;
+white-space:normal;
 word-break:break-word;
+width:320px;
 ">
-${i.descricao||i.deliberacao||'-'}
+${descricaoSubitem}
 </td>
 
 <td style="
 border:1px solid #000;
-padding:8px;
+padding:6px;
+font-size:10px;
+line-height:1.35;
 vertical-align:top;
-font-size:11px;
-line-height:1.45;
-white-space:pre-wrap;
+white-space:normal;
 word-break:break-word;
+width:220px;
 ">
-${i.produto||i.produto_esperado||'-'}
+${produto}
 </td>
 
-<td
-contenteditable="true"
-style="
+<td contenteditable="true" style="
 border:1px solid #000;
-padding:8px;
+padding:6px;
+font-size:10px;
+line-height:1.35;
 vertical-align:top;
-font-size:11px;
-line-height:1.45;
 background:#fffef5;
+width:220px;
 min-width:220px;
 ">
 </td>
 
 <td style="
 border:1px solid #000;
-padding:8px;
-vertical-align:top;
-font-size:11px;
-font-weight:800;
+padding:6px;
+font-size:10px;
+font-weight:900;
 text-align:center;
+vertical-align:top;
+width:120px;
 background:${
 (i.status||'').includes('EXECUTADA')
 ?'#dcfce7'
@@ -1548,9 +1623,11 @@ ${i.status||'-'}
 let html=`
 <div id="planoMonitoramentoWord" style="
 background:#fff;
-padding:30px;
+padding:18px;
 color:#000;
 font-family:Arial,sans-serif;
+width:100%;
+overflow:auto;
 ">
 
 <div style="
@@ -1644,7 +1721,9 @@ ${relatorOptions}
 <table style="
 width:100%;
 border-collapse:collapse;
-font-size:12px;
+font-size:10px;
+table-layout:fixed;
+word-break:break-word;
 ">
 
 <thead>
