@@ -587,60 +587,110 @@ let linha=document.getElementById('graficoLinhaSepat')
 let pizza=document.getElementById('graficoPizzaSepat')
 let barras=document.getElementById('graficoBarrasSepat')
 
+/*=========================================================
+PAGINA 1 EVOLUÇÃO
+=========================================================*/
 if(linha){
 
 let imgLinha=linha.toDataURL('image/png',1.0)
 
-doc.setFontSize(12)
+doc.setFontSize(13)
 
-doc.text('EVOLUÇÃO CONSOLIDADA',10,68)
+doc.text('EVOLUÇÃO MENSAL',10,68)
 
-doc.addImage(imgLinha,'PNG',10,74,190,56)
+doc.addImage(imgLinha,'PNG',10,74,190,78)
+
+doc.setFontSize(9)
+
+doc.setTextColor(80)
+
+doc.text(
+'Análise consolidada da evolução mensal do desempenho da TAG SEPAT 2026.',
+10,
+160,
+{
+maxWidth:188
+}
+)
 
 }
 
+/*=========================================================
+PAGINA 2 DISTRIBUIÇÃO
+=========================================================*/
 if(pizza){
 
 doc.addPage()
 
 doc.setFontSize(16)
 
+doc.setTextColor(15,23,42)
+
 doc.text('DISTRIBUIÇÃO PERCENTUAL',10,14)
 
 let imgPizza=pizza.toDataURL('image/png',1.0)
 
-doc.addImage(imgPizza,'PNG',20,28,165,92)
+doc.addImage(imgPizza,'PNG',20,28,165,110)
+
+doc.setFontSize(9)
+
+doc.setTextColor(80)
+
+doc.text(
+'Distribuição consolidada dos percentuais de cumprimento dos subitens monitorados.',
+10,
+150,
+{
+maxWidth:188
+}
+)
 
 }
 
+/*=========================================================
+PAGINA 3 DESEMPENHO
+=========================================================*/
 if(barras){
 
 doc.addPage()
 
 doc.setFontSize(16)
 
+doc.setTextColor(15,23,42)
+
 doc.text('DESEMPENHO POR ITEM ESTRATÉGICO',10,14)
 
 let imgBarras=barras.toDataURL('image/png',1.0)
 
-doc.addImage(imgBarras,'PNG',10,28,190,92)
+doc.addImage(imgBarras,'PNG',10,28,190,100)
 
-}
+doc.setFontSize(9)
 
-doc.setFontSize(8)
-
-doc.setTextColor(90)
+doc.setTextColor(80)
 
 doc.text(
-'Relatório executivo consolidado do monitoramento técnico da TAG SEPAT 2026.',
+'Comparativo consolidado do desempenho percentual entre os itens estratégicos da TAG SEPAT 2026.',
 10,
-275,
+142,
 {
-maxWidth:190
+maxWidth:188
 }
 )
 
+}
+
+/*=========================================================
+RODAPÉ EM TODAS AS PÁGINAS
+=========================================================*/
+let totalPages=doc.internal.getNumberOfPages()
+
+for(let i=1;i<=totalPages;i++){
+
+doc.setPage(i)
+
 rodapeSepat(doc)
+
+}
 
 doc.save('pdf_dashboard_tag_sepat.pdf')
 
