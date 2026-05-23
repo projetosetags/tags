@@ -1376,46 +1376,81 @@ color:#dbeafe;
 .badge-andamento{background:#2563eb;color:#fff}
 
 .card-origem-sedam{
-background:linear-gradient(135deg,#dfffe2,#b7f5c1)!important;
-border:1px solid rgba(34,197,94,.45)!important;
-color:#053b16!important;
+background:linear-gradient(135deg,#f0fff4,#c9f7d4)!important;
+border-left:5px solid #22c55e!important;
+border:1px solid rgba(34,197,94,.18)!important;
+color:#000!important;
+position:relative;
+box-shadow:0 6px 18px rgba(34,197,94,.10)!important;
 }
 .card-origem-sepat{
-background:linear-gradient(135deg,#dbeafe,#bfdbfe)!important;
-border:1px solid rgba(59,130,246,.45)!important;
-color:#082f66!important;
+background:linear-gradient(135deg,#eff6ff,#cfe3ff)!important;
+border-left:5px solid #3b82f6!important;
+border:1px solid rgba(59,130,246,.18)!important;
+color:#000!important;
+position:relative;
+box-shadow:0 6px 18px rgba(59,130,246,.10)!important;
 }
 .card-origem-queimadas{
-background:linear-gradient(135deg,#ffe7c2,#ffd08a)!important;
-border:1px solid rgba(249,115,22,.45)!important;
-color:#7c2d12!important;
+background:linear-gradient(135deg,#fff7ed,#ffd9a8)!important;
+border-left:5px solid #f97316!important;
+border:1px solid rgba(249,115,22,.18)!important;
+color:#000!important;
+position:relative;
+box-shadow:0 6px 18px rgba(249,115,22,.10)!important;
 }
-.card-origem-sedam .monitoramento-titulo,
-.card-origem-sepat .monitoramento-titulo,
-.card-origem-queimadas .monitoramento-titulo{
-color:#111!important;
+.card-origem-sedam .card-alerta-titulo,
+.card-origem-sepat .card-alerta-titulo,
+.card-origem-queimadas .card-alerta-titulo{
+color:#000!important;
 font-weight:900!important;
+font-size:18px!important;
+line-height:1.35!important;
+margin-bottom:14px!important;
 }
-.card-origem-sedam ul,
-.card-origem-sepat ul,
-.card-origem-queimadas ul{
-color:#222!important;
+.card-origem-sedam .card-alerta-info,
+.card-origem-sepat .card-alerta-info,
+.card-origem-queimadas .card-alerta-info{
+color:#111!important;
+font-size:14px!important;
+font-weight:600!important;
+line-height:1.6!important;
+padding-top:4px!important;
 }
 .badge-origem{
 position:absolute;
-right:12px;
-bottom:10px;
+right:14px;
+bottom:12px;
 font-size:12px;
 font-weight:900;
-opacity:.95;
-letter-spacing:.5px;
+letter-spacing:.8px;
+padding:4px 10px;
+border-radius:999px;
+background:rgba(255,255,255,.55);
+backdrop-filter:blur(4px);
 }
 .badge-sedam{
 color:#15803d;
+border:1px solid rgba(21,128,61,.20);
 }
 .badge-sepat{
 color:#2563eb;
+border:1px solid rgba(37,99,235,.20);
 }
 .badge-queimadas{
 color:#ea580c;
+border:1px solid rgba(234,88,12,.20);
+}
+.card-alerta-mini{
+padding:18px!important;
+border-radius:18px!important;
+min-height:220px!important;
+display:flex;
+flex-direction:column;
+justify-content:flex-start;
+transition:.25s ease;
+overflow:hidden;
+}
+.card-alerta-mini:hover{
+transform:translateY(-4px) scale(1.01);
 }
