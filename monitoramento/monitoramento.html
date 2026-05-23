@@ -825,6 +825,52 @@ flex-wrap:wrap;
 </div>
 
 </div>
+<!--=========================================================
+066 MODAL UPLOAD EVIDÊNCIA
+=========================================================-->
+<div id="modalUploadEvidencia" class="modal-impressao hidden">
+
+<div class="modal-impressao-content">
+
+<div class="modal-impressao-topo">
+
+<div class="modal-impressao-titulo">
+📎 Upload Evidência
+</div>
+
+<button
+class="btn-padrao vermelho"
+onclick="fecharModalUpload()">
+✖ Fechar
+</button>
+
+</div>
+
+<div style="padding:20px;">
+
+<input
+type="file"
+id="arquivoEvidencia"
+class="input-form"
+style="margin-bottom:14px;"
+>
+
+<button
+class="btn-padrao verde"
+onclick="uploadEvidencia()">
+📤 Enviar Evidência
+</button>
+
+<div
+id="listaEvidencias"
+style="margin-top:18px;">
+</div>
+
+</div>
+
+</div>
+
+</div>
 <script src="monitoramento-core.js"></script>
 <script src="monitoramento-painel.js"></script>
 <script src="monitoramento-matriz.js"></script>
