@@ -702,6 +702,7 @@ btn.disabled=false
 if(typeof atualizarCardDashboard==='function'){
 atualizarCardDashboard(id,status)
 }
+await renderPainelEvidencias()
 }
 /*=========================================================
 071 MONITORAMENTO-EVIDENCIAS.JS DEBUG GLOBAL
