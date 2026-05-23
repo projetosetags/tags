@@ -394,33 +394,33 @@ Benefícios Esperados
 </table>
 </div>
 </section>
+/*=========================================================
+044 MONITORAMENTO.HTML TELA EVIDENCIAS
+ARQUIVO: monitoramento.html
+LOCAL: SUBSTITUIR TODO O BLOCO <section id="tela-evidencias">
+AÇÃO: SUBSTITUIR COMPLETO
+=========================================================*/
 <section id="tela-evidencias" class="tela-monitoramento hidden">
-
 <div class="top-actions">
-
-<input
-type="text"
-id="buscaEvidencia"
-placeholder="Pesquisar item/subitem..."
-class="input-busca"
-onkeyup="renderPainelEvidencias()"
->
-
-<select
-id="filtroOrigemEvidencia"
-class="select-monitoramento"
-onchange="renderPainelEvidencias()"
->
+<input type="text" id="buscaEvidencia" placeholder="Pesquisar item/subitem/produto..." class="input-busca" onkeyup="renderPainelEvidencias()">
+<select id="filtroOrigemEvidencia" class="select-monitoramento" onchange="renderPainelEvidencias()">
 <option value="TODAS">Todas</option>
 <option value="SEDAM">SEDAM</option>
 <option value="SEPAT">SEPAT</option>
 <option value="QUEIMADAS">QUEIMADAS</option>
 </select>
-
 </div>
-
+<div class="tabela-evidencias-wrap">
+<div class="linha-evidencia linha-evidencia-header">
+<div>ITEM</div>
+<div>SUBITEM</div>
+<div>PRODUTO</div>
+<div>MÊS 100%</div>
+<div>STATUS</div>
+<div>EVIDÊNCIAS</div>
+</div>
 <div id="painelEvidenciasItens"></div>
-
+</div>
 </section>
   
 <section id="tela-analises" class="tela-monitoramento hidden">
