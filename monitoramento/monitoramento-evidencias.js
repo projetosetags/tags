@@ -308,45 +308,123 @@ return txt.includes(busca)
 })
 let html=''
 data.forEach(i=>{
+
 let status=i.status||'-'
 let classe='badge-andamento'
+
 if(status.includes('EXECUTADA'))classe='badge-executada'
 if(status.includes('PARCIAL'))classe='badge-parcial'
 if(status.includes('NÃO'))classe='badge-nao'
+
 let mes100=i.mes_100||i.mes_referencia||'-'
+
 html+=`
 <div class="linha-evidencia linha-evidencia-item">
-<div><b>${i.item||'-'}</b></div>
-<div>${i.subitem||'-'}</div>
-<div>${i.produto||i.produto_esperado||'-'}</div>
-<div>${mes100}</div>
+
+<div>
+<b>${i.item||'-'}</b>
+</div>
+
+<div>
+${i.subitem||'-'}
+</div>
+
+<div>
+${i.produto||i.produto_esperado||'-'}
+</div>
+
+<div>
+${mes100}
+</div>
+
 <div>
 <span class="badge-status-evidencia ${classe}">
 ${status}
 </span>
 </div>
+
 <div>
-<select class="evidencia-select" multiple>
-<option>OFÍCIO</option>
-<option>RELATÓRIO</option>
-<option>ATA</option>
-<option>SEI</option>
-<option>DESPACHO</option>
-<option>PORTARIA</option>
-<option>PRINT</option>
-<option>FOTO</option>
-<option>VÍDEO</option>
-<option>CHECKLIST</option>
-<option>PLANILHA</option>
-<option>PARECER</option>
-<option>MEMORANDO</option>
-<option>INSPEÇÃO IN LOCO</option>
-<option>PAINEL SISTEMA</option>
-<option>DOCUMENTO PDF</option>
-<option>OUTRO</option>
-</select>
-<textarea class="evidencia-textarea" placeholder="Descreva as evidências, número documento, órgão/setor, observações e demais informações..."></textarea>
+
+<div class="box-evidencias-check">
+
+<label class="item-check-evidencia">
+<input type="checkbox" value="OFÍCIO">
+OFÍCIO
+</label>
+
+<label class="item-check-evidencia">
+<input type="checkbox" value="RELATÓRIO">
+RELATÓRIO
+</label>
+
+<label class="item-check-evidencia">
+<input type="checkbox" value="ATA">
+ATA
+</label>
+
+<label class="item-check-evidencia">
+<input type="checkbox" value="SEI">
+SEI
+</label>
+
+<label class="item-check-evidencia">
+<input type="checkbox" value="DESPACHO">
+DESPACHO
+</label>
+
+<label class="item-check-evidencia">
+<input type="checkbox" value="PORTARIA">
+PORTARIA
+</label>
+
+<label class="item-check-evidencia">
+<input type="checkbox" value="PRINT SISTEMA">
+PRINT SISTEMA
+</label>
+
+<label class="item-check-evidencia">
+<input type="checkbox" value="CHECKLIST">
+CHECKLIST
+</label>
+
+<label class="item-check-evidencia">
+<input type="checkbox" value="PARECER">
+PARECER
+</label>
+
+<label class="item-check-evidencia">
+<input type="checkbox" value="MEMORANDO">
+MEMORANDO
+</label>
+
+<label class="item-check-evidencia">
+<input type="checkbox" value="INSPEÇÃO">
+INSPEÇÃO
+</label>
+
+<label class="item-check-evidencia">
+<input type="checkbox" value="FOTO">
+FOTO
+</label>
+
 </div>
+
+<textarea
+id="obsEvidencia_${i.id}"
+class="evidencia-textarea"
+placeholder="Exemplo: Ofício n. 120/2026/GAB/SEDAM; Processo SEI 0000.123456/2026-10; Relatório técnico da Coordenadoria X; Ata reunião 15-05-2026..."
+></textarea>
+
+</div>
+
+<div>
+<button
+class="btn-salvar-evidencia"
+onclick="salvarEvidenciaLancada(${i.id},this)">
+💾 SALVAR
+</button>
+</div>
+
 </div>
 `
 })
@@ -358,4 +436,61 @@ Nenhum subitem atingiu 100% até o momento.
 `
 }
 box.innerHTML=html
+}
+/*=========================================================
+052 MONITORAMENTO-EVIDENCIAS.JS FUNCTION SALVAREVIDENCIALANCADA
+=========================================================*/
+async function salvarEvidenciaLancada(itemId,btn){
+
+let linha=btn.closest('.linha-evidencia-item')
+
+let checks=[...linha.querySelectorAll('input[type="checkbox"]:checked')]
+.map(c=>c.value)
+.join('; ')
+
+let observacoes=linha.querySelector('.evidencia-textarea')?.value||''
+
+let{data:item}=await client
+.from('monitoramento_itens')
+.select('*')
+.eq('id',itemId)
+.single()
+
+if(!item){
+alert('Item não encontrado')
+return
+}
+
+let payload={
+item_id:item.id,
+origem:item.origem||'',
+item:item.item||'',
+subitem:item.subitem||'',
+produto:item.produto||item.produto_esperado||'',
+status:item.status||'',
+percentual:Number(item.percentual||0),
+mes_100:item.mes_100||item.mes_referencia||'',
+evidencias:checks,
+descricao:observacoes,
+observacoes:observacoes
+}
+
+let{error}=await client
+.from('monitoramento_evidencias_lancadas')
+.upsert(payload,{onConflict:'item_id'})
+
+if(error){
+console.log(error)
+alert('Erro ao salvar evidência')
+return
+}
+
+btn.innerHTML='✅ SALVO'
+btn.style.background='#166534'
+
+setTimeout(()=>{
+btn.innerHTML='💾 SALVAR'
+btn.style.background='#16a34a'
+},2000)
+
 }
