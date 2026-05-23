@@ -1374,3 +1374,48 @@ color:#dbeafe;
 .badge-parcial{background:#f59e0b;color:#fff}
 .badge-nao{background:#dc2626;color:#fff}
 .badge-andamento{background:#2563eb;color:#fff}
+
+.card-origem-sedam{
+background:linear-gradient(135deg,#dfffe2,#b7f5c1)!important;
+border:1px solid rgba(34,197,94,.45)!important;
+color:#053b16!important;
+}
+.card-origem-sepat{
+background:linear-gradient(135deg,#dbeafe,#bfdbfe)!important;
+border:1px solid rgba(59,130,246,.45)!important;
+color:#082f66!important;
+}
+.card-origem-queimadas{
+background:linear-gradient(135deg,#ffe7c2,#ffd08a)!important;
+border:1px solid rgba(249,115,22,.45)!important;
+color:#7c2d12!important;
+}
+.card-origem-sedam .monitoramento-titulo,
+.card-origem-sepat .monitoramento-titulo,
+.card-origem-queimadas .monitoramento-titulo{
+color:#111!important;
+font-weight:900!important;
+}
+.card-origem-sedam ul,
+.card-origem-sepat ul,
+.card-origem-queimadas ul{
+color:#222!important;
+}
+.badge-origem{
+position:absolute;
+right:12px;
+bottom:10px;
+font-size:12px;
+font-weight:900;
+opacity:.95;
+letter-spacing:.5px;
+}
+.badge-sedam{
+color:#15803d;
+}
+.badge-sepat{
+color:#2563eb;
+}
+.badge-queimadas{
+color:#ea580c;
+}
