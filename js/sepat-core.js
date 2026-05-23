@@ -1973,3 +1973,125 @@ btn.style.display='none'
 }
 
 }
+/*=========================================================
+050 EXPORTAR WORD BASE
+=========================================================*/
+function baixarWordSepat(nome,conteudo){
+
+let html=`
+<html xmlns:o='urn:schemas-microsoft-com:office:office'
+xmlns:w='urn:schemas-microsoft-com:office:word'
+xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='utf-8'>
+<title>${nome}</title>
+</head>
+<body>
+${conteudo}
+</body>
+</html>
+`
+
+let blob=new Blob(
+['\ufeff',html],
+{
+type:'application/msword'
+}
+)
+
+let url=URL.createObjectURL(blob)
+
+let a=document.createElement('a')
+
+a.href=url
+
+a.download=nome+'.doc'
+
+document.body.appendChild(a)
+
+a.click()
+
+document.body.removeChild(a)
+
+URL.revokeObjectURL(url)
+
+}
+
+/*=========================================================
+051 WORD DASHBOARD
+=========================================================*/
+function gerarWordDashboardSepat(){
+
+let itens=document.getElementById('kpiItensSepat')?.innerText||'0'
+let subitens=document.getElementById('kpiSubitensSepat')?.innerText||'0'
+let produtos=document.getElementById('kpiProdutosSepat')?.innerText||'0'
+let media=document.getElementById('kpiMediaSepat')?.innerText||'0%'
+
+let html=`
+<h1>DASHBOARD EXECUTIVO - TAG SEPAT 2026</h1>
+
+<table border="1" cellspacing="0" cellpadding="6">
+<tr>
+<th>Itens Estratégicos</th>
+<th>Subitens</th>
+<th>Produtos</th>
+<th>Média Geral</th>
+</tr>
+<tr>
+<td>${itens}</td>
+<td>${subitens}</td>
+<td>${produtos}</td>
+<td>${media}</td>
+</tr>
+</table>
+
+<br>
+
+<h2>Relatório Executivo</h2>
+
+<p>
+Painel consolidado de monitoramento técnico da TAG SEPAT 2026.
+</p>
+`
+
+baixarWordSepat(
+'dashboard_tag_sepat',
+html
+)
+
+}
+function gerarWordMonitoramentoSepat(){
+
+let linhas=(sepatData||[]).map(i=>`
+<tr>
+<td>${i.siglaitem||'-'}</td>
+<td>${i.descricaoitem||'-'}</td>
+<td>${i.produto||'-'}</td>
+<td>${i.cargo||'-'}</td>
+<td>${getTotalSepat(i)}%</td>
+</tr>
+`).join('')
+
+let html=`
+<h1>MONITORAMENTO TAG SEPAT 2026</h1>
+
+<table border="1" cellspacing="0" cellpadding="5">
+<tr>
+<th>Item</th>
+<th>Descrição</th>
+<th>Produto</th>
+<th>Responsável</th>
+<th>Total</th>
+</tr>
+
+${linhas}
+
+</table>
+`
+
+baixarWordSepat(
+'monitoramento_tag_sepat',
+html
+)
+
+}
