@@ -504,3 +504,92 @@ alert('Erro inesperado ao salvar')
 }
 
 }
+/*=========================================================
+070 MONITORAMENTO-EVIDENCIAS.JS FUNCTION SALVAREVIDENCIALINHA
+ARQUIVO: monitoramento-evidencias.js
+LOCAL: PROCURE function salvarEvidenciaLinha
+AÇÃO: SE NÃO EXISTIR, ADICIONAR NO FINAL DO ARQUIVO
+=========================================================*/
+async function salvarEvidenciaLinha(itemId){
+
+let checks=[
+...document.querySelectorAll(`.evcheck-${itemId}:checked`)
+]
+
+let evidenciasSelecionadas=
+checks.map(c=>c.value)
+
+let observacao=
+document.getElementById(`obsEv-${itemId}`)?.value||''
+
+let item=
+window.monitoramentoItens?.find(i=>String(i.id)===String(itemId))
+
+if(!item){
+alert('Item não localizado')
+return
+}
+
+let payload={
+item_id:itemId,
+tipo_evidencia:evidenciasSelecionadas.join('; '),
+descricao:observacao,
+numero_documento:'-',
+orgao:item.origem||'-',
+status_validacao:'VALIDADA',
+confiabilidade:'ALTA'
+}
+
+console.log('PAYLOAD:',payload)
+
+let {data:existente,error:erroBusca}=await client
+.from('monitoramento_evidencias')
+.select('id')
+.eq('item_id',itemId)
+.limit(1)
+
+if(erroBusca){
+console.log(erroBusca)
+alert('Erro ao consultar evidência')
+return
+}
+
+let erro=null
+
+if(existente&&existente.length>0){
+
+let r=await client
+.from('monitoramento_evidencias')
+.update(payload)
+.eq('item_id',itemId)
+
+erro=r.error
+
+}else{
+
+let r=await client
+.from('monitoramento_evidencias')
+.insert(payload)
+
+erro=r.error
+
+}
+
+if(erro){
+console.log('ERRO SUPABASE:',erro)
+alert('Erro ao salvar evidência')
+return
+}
+
+alert('Evidência salva com sucesso')
+
+}
+
+/*=========================================================
+071 MONITORAMENTO-EVIDENCIAS.JS DEBUG GLOBAL
+LOCAL: FINAL DO ARQUIVO
+AÇÃO: ADICIONAR
+=========================================================*/
+window.addEventListener('error',e=>{
+console.log('ERRO GLOBAL:',e.message)
+})
