@@ -263,6 +263,8 @@ async function popularSelectHistorico(){
 
 let select=document.getElementById('historicoMonitoramentoSelect')
 
+console.log('SELECT:',select)
+
 if(!select){
 return
 }
@@ -273,9 +275,14 @@ let{data,error}=await client
 .order('titulo',{ascending:true})
 
 if(error){
-console.log(error)
+
+console.log('ERRO HISTÓRICO:',error)
+
 return
+
 }
+
+console.log('MONITORAMENTOS:',data)
 
 select.innerHTML=''
 
@@ -289,8 +296,13 @@ ${m.titulo||'Monitoramento'}
 
 })
 
+if(data&&data.length>0){
+
+await carregarHistoricoMonitoramento()
+
 }
 
+}
 /*=========================================================
 021 MONITORAMENTO-HISTORICO.JS CARREGAR HISTORICO
 =========================================================*/
@@ -320,7 +332,13 @@ renderListaHistorico(data||[])
 =========================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
 
+console.log('HISTÓRICO INIT')
+
+if(typeof popularSelectHistorico==='function'){
+
 await popularSelectHistorico()
+
+}
 
 let select=document.getElementById('historicoMonitoramentoSelect')
 
