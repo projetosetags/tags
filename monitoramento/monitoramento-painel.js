@@ -177,7 +177,7 @@ alertas.push('Criticidade alta identificada')
 html+=`
 <div class="card-alerta-mini ${classeOrigem}">
 <div class="card-alerta-titulo">
-ITEM ${i.item||'-'} — ${i.deliberacao||i.descricao||'-'}
+ITEM ${i.item||'-'} — ${String(i.deliberacao||i.descricao||'-')}
 </div>
 
 <div class="card-alerta-info">
