@@ -74,9 +74,15 @@ carregarAuditoriaCompleta()
 }
 }
 if(nome==='historico'){
+
+if(typeof popularSelectHistorico==='function'){
+await popularSelectHistorico()
+}
+
 if(typeof carregarHistorico==='function'){
 carregarHistorico()
 }
+
 }
 if(nome==='riscos'){
 if(typeof carregarPainelRiscos==='function'){
@@ -111,9 +117,16 @@ console.log(e)
 047 MONITORAMENTO-CORE.JS FUNCTION ABRIRTELA
 =========================================================*/
 if(tela==='evidencias'){
+/*=========================================================
+101 MONITORAMENTO-CORE.JS INIT EVIDENCIAS
+=========================================================*/
+document.addEventListener('DOMContentLoaded',()=>{
+
 if(typeof renderPainelEvidencias==='function'){
 renderPainelEvidencias()
 }
+
+})
 }
 }
 
@@ -398,33 +411,6 @@ return
 }
 topo.classList.toggle('recolhido')
 }
-/*=========================================================
-007 MONITORAMENTO-CORE.JS USUÁRIO LGPD TOPO
-=========================================================*/
-function formatarNomeLGPD(nome){
-
-if(!nome){
-return'USUÁRIO'
-}
-
-let partes=String(nome).trim().split(' ')
-
-if(partes.length<=2){
-return nome
-}
-
-let primeiro=partes[0]
-
-let ultimo=partes[partes.length-1]
-
-let meio=partes
-.slice(1,-1)
-.map(p=>p.charAt(0).toUpperCase()+'.')
-.join(' ')
-
-return `${primeiro} ${meio} ${ultimo}`
-
-}
 
 /*=========================================================
 007 MONITORAMENTO-CORE.JS USUÁRIO LGPD TOPO
@@ -445,6 +431,7 @@ let meio=partes[1].charAt(0)+'.'
 let ultimo=partes[partes.length-1]
 return primeiro+' '+meio+' '+ultimo
 }
+
 function atualizarUsuarioTopo(){
 let el=document.getElementById('usuarioCabecalho')
 if(!el){
