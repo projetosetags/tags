@@ -396,28 +396,67 @@ Benefícios Esperados
 </section>
 
 <section id="tela-evidencias" class="tela-monitoramento hidden">
+
 <div class="top-actions">
-<input type="text" id="buscaEvidencia" placeholder="Pesquisar item/subitem/produto..." class="input-busca" onkeyup="renderPainelEvidencias()">
-<select id="filtroOrigemEvidencia" class="select-monitoramento" onchange="renderPainelEvidencias()">
-<option value="TODAS">Todas</option>
-<option value="SEDAM">SEDAM</option>
-<option value="SEPAT">SEPAT</option>
-<option value="QUEIMADAS">QUEIMADAS</option>
+
+<input
+type="text"
+id="buscaEvidencia"
+placeholder="Pesquisar item/subitem/produto..."
+class="input-busca"
+onkeyup="renderPainelEvidencias()"
+>
+
+<select
+id="filtroOrigemEvidencia"
+class="select-monitoramento"
+onchange="renderPainelEvidencias()"
+>
+
+<option value="TODAS">
+Todas
+</option>
+
+<option value="SEDAM">
+SEDAM
+</option>
+
+<option value="SEPAT">
+SEPAT
+</option>
+
+<option value="QUEIMADAS">
+QUEIMADAS
+</option>
+
 </select>
+
 </div>
 
 <div class="tabela-evidencias-wrap">
+
 <div class="linha-evidencia linha-evidencia-header">
+
 <div>ITEM</div>
+
 <div>SUBITEM</div>
+
 <div>PRODUTO</div>
+
 <div>MÊS 100%</div>
+
 <div>STATUS</div>
+
 <div>EVIDÊNCIAS / OBSERVAÇÕES</div>
+
 <div>SALVAR</div>
+
 </div>
+
 <div id="painelEvidenciasItens"></div>
+
 </div>
+
 </section>
   
 <section id="tela-analises" class="tela-monitoramento hidden">
@@ -482,20 +521,21 @@ Benefícios Esperados
 </button>
 
 <button class="btn-padrao azul" onclick="gerarAnaliseSeparada()">
-🧠 Análise em Separado
+🧠 Análise Separada
 </button>
 
 <button class="btn-padrao vermelho" onclick="gerarPDFMonitoramento()">
 📄 Gerar PDF
 </button>
 
-<button class="btn-padrao" onclick="gerarPDFMonitoramento()">
-📑 Exportar PDF
-</button>
-
 <button class="btn-padrao azul" onclick="exportarWordMonitoramento()">
 📝 Gerar e Exportar Word
 </button>
+
+<button class="btn-padrao" onclick="abrirModoImpressao()">
+🖨 Modo Impressão
+</button>
+
 </div>
 
 <div id="previewRelatorio" class="preview-relatorio"></div>
@@ -748,22 +788,37 @@ Efetividade Institucional
 </main>
 </div>
 <div id="modalImpressao" class="modal-impressao hidden">
+
 <div class="modal-impressao-content">
+
 <div class="modal-impressao-topo">
+
 <div class="modal-impressao-titulo">
 📄 Impressão Oficial
 </div>
-<div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+<div style="
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+">
+
 <button class="btn-padrao verde" onclick="window.print()">
 🖨 Imprimir
 </button>
+
 <button class="btn-padrao vermelho" onclick="fecharModalImpressao()">
-Fechar
+❌ Fechar
 </button>
+
 </div>
+
 </div>
+
 <div id="conteudoImpressao"></div>
+
 </div>
+
 </div>
 <script src="monitoramento-core.js"></script>
 <script src="monitoramento-painel.js"></script>
@@ -781,5 +836,25 @@ Fechar
 <script src="monitoramento-central.js"></script>
 <script src="monitoramento-beneficios.js"></script>
 <script src="monitoramento-integracao.js"></script>
+
+<!--=========================================================
+065 MONITORAMENTO.HTML INICIALIZAÇÃO
+LOCAL: ANTES DO </body>
+AÇÃO: ADICIONAR
+=========================================================-->
+<script>
+
+document.addEventListener('DOMContentLoaded',()=>{
+
+let tela=document.getElementById('tela-dashboard')
+
+if(tela){
+tela.classList.remove('hidden')
+tela.style.display='block'
+}
+
+})
+
+</script>
 </body>
 </html>
