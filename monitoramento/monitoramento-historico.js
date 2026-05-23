@@ -178,3 +178,80 @@ color:'rgba(255,255,255,.05)'
 })
 
 }
+/*=========================================================
+020 MONITORAMENTO-HISTORICO.JS POPULAR SELECT
+=========================================================*/
+async function popularSelectHistorico(){
+
+let select=document.getElementById('historicoMonitoramentoSelect')
+
+if(!select){
+return
+}
+
+let {data,error}=await client
+.from('monitoramentos')
+.select('*')
+.order('titulo',{ascending:true})
+
+if(error){
+console.log(error)
+return
+}
+
+select.innerHTML=`
+<option value="">
+Selecione um monitoramento
+</option>
+`
+
+;(data||[]).forEach(m=>{
+
+select.innerHTML+=`
+<option value="${m.id}">
+${m.titulo||'Monitoramento'}
+</option>
+`
+
+})
+
+}
+
+/*=========================================================
+021 MONITORAMENTO-HISTORICO.JS CARREGAR HISTORICO
+=========================================================*/
+async function carregarHistoricoMonitoramento(){
+
+let monitoramentoId=document
+.getElementById('historicoMonitoramentoSelect')
+?.value
+
+if(!monitoramentoId){
+
+alert('Selecione um monitoramento')
+
+return
+
+}
+
+let {data,error}=await client
+.from('monitoramento_historico')
+.select('*')
+.eq('monitoramento_id',monitoramentoId)
+.order('created_at',{ascending:true})
+
+if(error){
+
+console.log(error)
+
+return
+
+}
+
+console.log('HISTÓRICO:',data)
+
+renderGraficoHistorico(data||[])
+
+renderListaHistorico(data||[])
+
+}
