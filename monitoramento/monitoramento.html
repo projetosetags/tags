@@ -30,11 +30,13 @@ MONITORAMENTO TÉCNICO
 <div class="login-monitoramento-subtitulo">
 Tribunal de Contas • Painel de Auditoria e Monitoramento
 </div>
-<input id="usuario" placeholder="Usuário" class="input-login-monitoramento">
-<input id="senha" type="password" placeholder="Senha" class="input-login-monitoramento">
-<button onclick="loginMonitoramento()" class="btn-login-monitoramento">
+<form onsubmit="event.preventDefault();loginMonitoramento();">
+<input id="usuario" autocomplete="username" placeholder="Usuário" class="input-login-monitoramento">
+<input id="senha" type="password" autocomplete="current-password" placeholder="Senha" class="input-login-monitoramento">
+<button type="submit" class="btn-login-monitoramento">
 ENTRAR
 </button>
+</form>
 <div class="login-monitoramento-info">
 🔒 Acesso restrito aos usuários autorizados
 </div>
