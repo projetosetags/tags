@@ -194,6 +194,107 @@ Sair
 
 </nav>
 
+<!-- 004 DASHBOARD -->
+<div id="view-dashboard" class="tab-view hidden">
+
+<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3 mb-4">
+
+<div id="cardMediaGeral" class="bg-white/90 rounded-3xl p-5 shadow border border-emerald-100">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Média Geral</div>
+<div id="dashboardMediaGeral" class="text-[46px] font-black text-emerald-500 leading-none mt-1">0%</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Desempenho consolidado</div>
+</div>
+
+<div id="cardTotalItens" class="bg-white/90 rounded-3xl p-5 shadow border border-blue-100">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Itens</div>
+<div id="dashboardTotalItensCard" class="text-[46px] font-black text-blue-500 leading-none mt-1">0</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Itens monitorados</div>
+</div>
+
+<div id="cardTotalSubitens" class="bg-white/90 rounded-3xl p-5 shadow border border-violet-100">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Subitens</div>
+<div id="dashboardTotalSubitensCard" class="text-[46px] font-black text-violet-500 leading-none mt-1">0</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Subitens cadastrados</div>
+</div>
+
+<div id="cardCumpridos" class="bg-white/90 rounded-3xl p-5 shadow border border-green-100">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">100%</div>
+<div id="dashboardCumpridos" class="text-[46px] font-black text-green-500 leading-none mt-1">0</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Cumpridos</div>
+</div>
+
+<div id="cardCriticos" class="bg-white/90 rounded-3xl p-5 shadow border border-red-100">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Críticos</div>
+<div id="dashboardCriticos" class="text-[46px] font-black text-red-500 leading-none mt-1">0</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Abaixo de 30%</div>
+</div>
+
+<div id="cardAndamento" class="bg-white/90 rounded-3xl p-5 shadow border border-orange-100">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Execução</div>
+<div id="dashboardAndamento" class="text-[46px] font-black text-orange-500 leading-none mt-1">0</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Em andamento</div>
+</div>
+
+<div id="cardPendentes" class="bg-white/90 rounded-3xl p-5 shadow border border-slate-200">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Pendentes</div>
+<div id="dashPendentes" class="text-[46px] font-black text-slate-400 leading-none mt-1">0</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Não iniciados</div>
+</div>
+
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+<div class="bg-white/90 rounded-3xl p-5 shadow border border-slate-100">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-[13px] font-black uppercase tracking-wide text-slate-700">
+Desempenho por Item
+</h3>
+<div class="text-[10px] font-black text-emerald-500 uppercase">
+Atualizado
+</div>
+</div>
+<div class="chart-container">
+<canvas id="graficoDashboardItens"></canvas>
+</div>
+</div>
+
+<div class="bg-white/90 rounded-3xl p-5 shadow border border-slate-100">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-[13px] font-black uppercase tracking-wide text-slate-700">
+Evolução Mensal
+</h3>
+<div class="text-[10px] font-black text-blue-500 uppercase">
+Média Geral
+</div>
+</div>
+<div class="chart-container">
+<canvas id="graficoDashboardLinha"></canvas>
+</div>
+</div>
+
+<div class="bg-white/90 rounded-3xl p-5 shadow border border-slate-100">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-[13px] font-black uppercase tracking-wide text-slate-700">
+Distribuição
+</h3>
+<div class="text-[10px] font-black text-violet-500 uppercase">
+Subitens
+</div>
+</div>
+<div class="chart-container">
+<canvas id="graficoDashboardPizza"></canvas>
+</div>
+</div>
+
+</div>
+
+<div class="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 text-[12px] font-semibold text-slate-700 leading-relaxed">
+As informações constantes neste painel possuem caráter preliminar e informativo, baseadas nos dados declarados até o momento pelos jurisdicionados envolvidos no monitoramento do TAG SEDAM 2026.
+</div>
+
+</div>
+
 <!-- 005 RESUMO -->
 <div id="view-resumo" class="tab-view">
 
@@ -229,10 +330,10 @@ OCULTAR 100%
 
 </div>
 
-<!-- 007 MONITORAMENTO -->
+<!-- 006 MONITORAMENTO -->
 <div id="view-mensal" class="tab-view hidden">
 
-<div id="view-mensal-filtros" class="flex flex-wrap gap-2 mb-3 items-center justify-between">
+<div class="flex flex-wrap gap-2 mb-3 items-center justify-between">
 
 <div id="boxModoResumoMensal" class="flex flex-wrap gap-2 items-center">
 
@@ -245,7 +346,7 @@ SUBITEM
 </button>
 
 </div>
-</div>
+
 <div class="flex justify-end items-center gap-2 flex-wrap">
 
 <input id="dataInicioMensal" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
@@ -258,151 +359,63 @@ OCULTAR 100%
 
 </div>
 
-<!-- 006 VOLTAR -->
+</div>
+
 <button id="btn-voltar" onclick="fecharDrill()" style="display:none" class="mb-2 text-xs bg-red-600 px-2 py-1 rounded">
 ← VOLTAR
 </button>
 
-<!-- DASHBOARD -->
-<div id="view-dashboard" class="tab-content">
-
-<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3 mb-4">
-
-<div id="cardMediaGeral" class="bg-white/90 rounded-3xl p-5 shadow border border-emerald-100">
-<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Média Geral</div>
-<div id="dashboardMediaGeral" class="text-[46px] font-black text-emerald-500 leading-none mt-1">0%</div>
-<div class="text-[12px] font-bold text-slate-600 mt-2">Desempenho consolidado</div>
-</div>
-
-<div id="cardTotalItens" class="bg-white/90 rounded-3xl p-5 shadow border border-blue-100">
-<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Itens</div>
-<div id="dashboardTotalItens" class="text-[46px] font-black text-blue-500 leading-none mt-1">0</div>
-<div class="text-[12px] font-bold text-slate-600 mt-2">Itens monitorados</div>
-</div>
-
-<div id="cardTotalSubitens" class="bg-white/90 rounded-3xl p-5 shadow border border-violet-100">
-<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Subitens</div>
-<div id="dashboardTotalSubitens" class="text-[46px] font-black text-violet-500 leading-none mt-1">0</div>
-<div class="text-[12px] font-bold text-slate-600 mt-2">Subitens cadastrados</div>
-</div>
-
-<div id="cardCumpridos" class="bg-white/90 rounded-3xl p-5 shadow border border-green-100">
-<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">100%</div>
-<div id="dashboardCumpridos" class="text-[46px] font-black text-green-500 leading-none mt-1">0</div>
-<div class="text-[12px] font-bold text-slate-600 mt-2">Cumpridos</div>
-</div>
-
-<div id="cardCriticos" class="bg-white/90 rounded-3xl p-5 shadow border border-red-100">
-<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Críticos</div>
-<div id="dashboardCriticos" class="text-[46px] font-black text-red-500 leading-none mt-1">0</div>
-<div class="text-[12px] font-bold text-slate-600 mt-2">Abaixo de 30%</div>
-</div>
-
-<div id="cardAndamento" class="bg-white/90 rounded-3xl p-5 shadow border border-orange-100">
-<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Execução</div>
-<div id="dashboardAndamento" class="text-[46px] font-black text-orange-500 leading-none mt-1">0</div>
-<div class="text-[12px] font-bold text-slate-600 mt-2">Em andamento</div>
-</div>
-
-<div id="cardPendentes" class="bg-white/90 rounded-3xl p-5 shadow border border-slate-200">
-<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Pendentes</div>
-<div id="dashPendentes" class="text-[46px] font-black text-slate-400 leading-none mt-1">0</div>
-<div class="text-[12px] font-bold text-slate-600 mt-2">Não iniciados</div>
-</div>
-
-</div>
-
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-<div class="bg-white/90 rounded-3xl p-5 shadow border border-slate-100">
-<div class="flex items-center justify-between mb-3">
-<h3 class="text-[13px] font-black uppercase tracking-wide text-slate-700">Desempenho por Item</h3>
-<div class="text-[10px] font-black text-emerald-500 uppercase">Atualizado</div>
-</div>
-<div class="chart-container">
-<canvas id="graficoDashboardItens"></canvas>
-</div>
-</div>
-
-<div class="bg-white/90 rounded-3xl p-5 shadow border border-slate-100">
-<div class="flex items-center justify-between mb-3">
-<h3 class="text-[13px] font-black uppercase tracking-wide text-slate-700">Evolução Mensal</h3>
-<div class="text-[10px] font-black text-blue-500 uppercase">Média Geral</div>
-</div>
-<div class="chart-container">
-<canvas id="graficoDashboardLinha"></canvas>
-</div>
-</div>
-
-<div class="bg-white/90 rounded-3xl p-5 shadow border border-slate-100">
-<div class="flex items-center justify-between mb-3">
-<h3 class="text-[13px] font-black uppercase tracking-wide text-slate-700">Distribuição</h3>
-<div class="text-[10px] font-black text-violet-500 uppercase">Subitens</div>
-</div>
-<div class="chart-container">
-<canvas id="graficoDashboardPizza"></canvas>
-</div>
-</div>
-
-</div>
-
-<div class="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 text-[12px] font-semibold text-slate-700 leading-relaxed">
-As informações constantes neste painel possuem caráter preliminar e informativo, baseadas nos dados declarados até o momento pelos jurisdicionados envolvidos no monitoramento do TAG SEDAM 2026.
-</div>
-
-</div>
-
-<!-- 007 MONITORAMENTO -->
-<div id="view-mensal" class="tab-view hidden">
-
-<div class="flex justify-end items-center gap-2 mb-3 flex-wrap">
-
-<input id="dataInicioMensal" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
-
-<input id="dataFimMensal" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
-
-<button
-type="button"
-onclick="toggleOcultarConcluidos()"
-class="text-xs bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
-OCULTAR 100%
-</button>
-
-</div>
 <div class="bg-slate-900/40 rounded-xl border border-white/5 overflow-x-auto">
+
 <table class="w-full text-left border-collapse min-w-[1400px]">
+
 <thead>
+
 <tr class="text-[8px] text-slate-500 uppercase border-b border-white/10">
-<th id="thNumero">
-SUBITEM
-</th>
-<th id="thDescricao">
-DESCRIÇÃO
-</th>
-<th id="thProduto">
-PRODUTOS
-</th>
+
+<th id="thNumero">SUBITEM</th>
+
+<th id="thDescricao">DESCRIÇÃO</th>
+
+<th id="thProduto">PRODUTOS</th>
+
 <th>Responsável(is)</th>
+
 <th>Setor</th>
+
 <th>Data Início</th>
+
 <th class="opacity-40">JAN</th>
+
 <th class="opacity-40">FEV</th>
+
 <th class="opacity-40">MAR</th>
+
 <th class="text-blue-400">ABR</th>
+
 <th class="text-yellow-400">MAI</th>
+
 <th>Total</th>
+
 </tr>
+
 </thead>
+
 <tbody id="table-body" class="text-[10px]"></tbody>
+
 </table>
-</div>
+
 </div>
 
-<!-- 008 ANALISE -->
+</div>
+
+<!-- 007 ANALISE -->
 <div id="view-analise" class="tab-view hidden">
 
 <select id="tipoGrafico" class="hidden">
-<option value="subitem" selected>POR SUBITEM</option>
+<option value="subitem" selected>
+POR SUBITEM
+</option>
 </select>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
@@ -425,7 +438,7 @@ PRODUTOS
 
 </div>
 
-<!-- 009 CONCLUIDOS -->
+<!-- 008 CONCLUIDOS -->
 <div id="view-concluidos" class="tab-view hidden">
 
 <div id="concluidos-container" class="grid grid-cols-6 sm:grid-cols-12 lg:grid-cols-18 gap-1 mb-8"></div>
