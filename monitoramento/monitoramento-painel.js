@@ -49,7 +49,13 @@ data=aplicarFiltroOrigem(data||[])
 
 let cardsFiltrados=[...(data||[])]
 
-let total=cardsFiltrados.length
+let totalSubitens=cardsFiltrados.length
+
+let totalItens=new Set(
+cardsFiltrados.map(i=>
+String(i.item||'').trim()
+).filter(Boolean)
+).size
 let executadas=0
 let parciais=0
 let naoExecutadas=0
@@ -117,7 +123,7 @@ let kpiParciais=document.getElementById('kpiParciais')
 let kpiNaoExecutadas=document.getElementById('kpiNaoExecutadas')
 let kpiAndamento=document.getElementById('kpiAndamento')
 if(kpiTotal){
-kpiTotal.innerHTML=total
+kpiTotal.innerHTML=totalItens
 }
 if(kpiExecutadas){
 kpiExecutadas.innerHTML=executadas
@@ -133,11 +139,9 @@ kpiAndamento.innerHTML=andamento
 }
 let percentualEvidencia=0
 
-if(total>0){
-
+if(totalSubitens>0){
 percentualEvidencia=
-(itensCompletos/total)*100
-
+(itensCompletos/totalSubitens)*100
 }
 
 let kpiSemEvidencia=
