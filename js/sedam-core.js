@@ -1222,8 +1222,8 @@ console.log('LISTA DASHBOARD:',lista)
 if(!lista.length){
 
 let a=document.getElementById('dashboardMediaGeral')
-let b=document.getElementById('dashboardTotalItens')
-let c=document.getElementById('dashboardTotalSubitens')
+let b=document.getElementById('dashboardTotalItensCard')
+let c=document.getElementById('dashboardTotalSubitensCard')
 let d=document.getElementById('dashboardCumpridos')
 let e=document.getElementById('dashboardCriticos')
 let f=document.getElementById('dashboardAndamento')
@@ -1303,8 +1303,16 @@ pendentes++
 })
 
 document.getElementById('dashboardMediaGeral').innerText=media+'%'
-document.getElementById('dashboardTotalItens').innerText=totalItens
-document.getElementById('dashboardTotalSubitens').innerText=totalSubitens
+let elItens=document.getElementById('dashboardTotalItensCard')
+let elSubitens=document.getElementById('dashboardTotalSubitensCard')
+
+if(elItens){
+elItens.innerText=totalItens
+}
+
+if(elSubitens){
+elSubitens.innerText=totalSubitens
+}
 document.getElementById('dashboardCumpridos').innerText=concluidos
 document.getElementById('dashboardCriticos').innerText=criticos
 document.getElementById('dashboardAndamento').innerText=andamento
