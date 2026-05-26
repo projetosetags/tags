@@ -540,3 +540,18 @@ filter:brightness(1.05);
 #btn-ocultar{height:56px!important;padding:0 24px!important;font-size:15px!important;font-weight:900!important;border-radius:28px!important;}
 #view-mensal tr{border-bottom:1px solid #e5e7eb!important;}
 #view-mensal tbody tr:hover{background:#f8fafc!important;transition:.2s!important;}
+/*=========================================================
+147 SEDAM.CSS FIXAR PAINEL NO ZOOM
+=========================================================*/
+html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important;}
+#dashboard{width:100%!important;max-width:100%!important;overflow-x:hidden!important;}
+.topo-sedam-modern{width:100%!important;max-width:100%!important;overflow:hidden!important;}
+.tab-view{width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;}
+.table-wrap{width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch!important;}
+#view-mensal{width:100%!important;max-width:100%!important;overflow-x:auto!important;padding-bottom:8px!important;}
+#view-mensal table{min-width:1450px!important;}
+.grid,.grid-cards,.cards-container,.cards-dashboard-mini{width:100%!important;max-width:100%!important;overflow:hidden!important;}
+canvas{max-width:100%!important;height:auto!important;}
+@media(max-width:1600px){#dashboard{padding-left:8px!important;padding-right:8px!important;}}
+@media(max-width:1200px){.topo-sedam-modern{flex-wrap:wrap!important;gap:10px!important;}}
+@media(max-width:900px){#view-mensal table{min-width:1300px!important;}}
