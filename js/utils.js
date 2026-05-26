@@ -148,11 +148,63 @@ renderResumo()
 018 UTILS TOGGLEOCULTARCONCLUIDOS
 =========================================================*/
 function toggleOcultarConcluidos(){
+
 ocultarConcluidos=!ocultarConcluidos
-let b=document.getElementById('btn-ocultar')
-if(b)b.innerText=ocultarConcluidos?'MOSTRAR 100%':'OCULTAR 100%'
-renderTable()
+
 renderResumo()
+
+renderTable()
+
+renderConcluidos()
+
+renderDashboard()
+
+let lista=[...(window.allData||[])]
+
+if(ocultarConcluidos){
+lista=lista.filter(i=>getTotal(i)<100)
+}
+
+let totalItens=[
+...new Set(
+lista.map(i=>{
+
+let sub=String(i.subitem||'').trim()
+
+let partes=sub.split('.')
+
+return partes[0]||'0'
+
+})
+)
+].length
+
+let totalSubitens=lista.length
+
+let media=Math.round(
+lista.reduce((acc,c)=>{
+return acc+Number(getTotal(c)||0)
+},0)/(lista.length||1)
+)
+
+let topoItens=document.getElementById('topTotalItens')
+
+let topoSubitens=document.getElementById('topTotalSubitens')
+
+let totalGeral=document.getElementById('total-geral')
+
+if(topoItens){
+topoItens.innerText=totalItens
+}
+
+if(topoSubitens){
+topoSubitens.innerText=totalSubitens
+}
+
+if(totalGeral){
+totalGeral.innerText=media+'%'
+}
+
 }
 /*=========================================================
 019 UTILS FECHARDRILL
