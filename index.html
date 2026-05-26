@@ -195,7 +195,27 @@ Sair
 </nav>
 
 <!-- 004 FILTROS -->
+<div id="view-mensal-filtros" class="flex flex-wrap gap-2 mb-3 items-center justify-between">
 
+<div id="boxModoResumoMensal" class="flex flex-wrap gap-2 items-center">
+
+<button
+onclick="modoResumo='item';renderTable()"
+id="btnModoItemMensal"
+class="text-xs bg-amber-500 hover:bg-amber-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
+ITEM
+</button>
+
+<button
+onclick="modoResumo='subitem';renderTable()"
+id="btnModoSubitemMensal"
+class="text-xs bg-blue-500 hover:bg-blue-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
+SUBITEM
+</button>
+
+</div>
+
+</div>
 <!-- 005 RESUMO -->
 <div id="view-resumo" class="tab-view">
 <div class="flex flex-wrap gap-2 mb-3 items-center justify-between">
