@@ -1211,7 +1211,12 @@ return 0
 =========================================================*/
 function renderDashboard(){
 console.log('RENDER DASHBOARD')
-let lista=(window.allData||[]).filter(i=>String(i.item||'').trim()!=='')
+let lista=(window.allData||[])
+.filter(i=>String(i.item||'').trim()!=='')
+
+if(ocultarConcluidos){
+lista=lista.filter(i=>getTotal(i)<100)
+}
 console.log('LISTA DASHBOARD:',lista)
 
 if(!lista.length){
@@ -1240,9 +1245,13 @@ String(i.subitem||'').trim()!==''
 ).length
 
 let totalItens=new Set(
-lista.map(i=>
-String(i.item||'').trim()
-).filter(Boolean)
+lista.map(i=>{
+let item=String(i.item||'').trim()
+if(item.includes('.')){
+item=item.split('.')[0]
+}
+return item
+}).filter(Boolean)
 ).size
 
 let media=Math.round(
