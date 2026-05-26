@@ -194,52 +194,70 @@ Sair
 
 </nav>
 
-<!-- 004 FILTROS -->
+<!-- 005 RESUMO -->
+<div id="view-resumo" class="tab-view">
+
+<div class="flex flex-wrap gap-2 mb-3 items-center justify-between">
+
+<div id="boxModoResumo" class="flex flex-wrap gap-2 items-center">
+
+<button onclick="modoResumo='item';renderResumo()" id="btnModoItem" class="text-xs bg-amber-500 hover:bg-amber-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
+ITEM
+</button>
+
+<button onclick="modoResumo='subitem';renderResumo()" id="btnModoSubitem" class="text-xs bg-blue-500 hover:bg-blue-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
+SUBITEM
+</button>
+
+</div>
+
+<div class="flex justify-end items-center gap-2 ml-auto flex-wrap">
+
+<input id="dataInicio" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
+
+<input id="dataFim" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
+
+<button type="button" onclick="toggleOcultarConcluidos()" id="btn-ocultar" class="text-xs bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+OCULTAR 100%
+</button>
+
+</div>
+
+</div>
+
+<div id="cards-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"></div>
+
+</div>
+
+<!-- 007 MONITORAMENTO -->
+<div id="view-mensal" class="tab-view hidden">
+
 <div id="view-mensal-filtros" class="flex flex-wrap gap-2 mb-3 items-center justify-between">
 
 <div id="boxModoResumoMensal" class="flex flex-wrap gap-2 items-center">
 
-<button
-onclick="modoResumo='item';renderTable()"
-id="btnModoItemMensal"
-class="text-xs bg-amber-500 hover:bg-amber-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
+<button onclick="modoTabela='item';renderTable()" id="btnModoItemMensal" class="text-xs bg-amber-500 hover:bg-amber-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
 ITEM
 </button>
 
-<button
-onclick="modoResumo='subitem';renderTable()"
-id="btnModoSubitemMensal"
-class="text-xs bg-blue-500 hover:bg-blue-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
+<button onclick="modoTabela='subitem';renderTable()" id="btnModoSubitemMensal" class="text-xs bg-blue-500 hover:bg-blue-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
 SUBITEM
 </button>
 
 </div>
 
-</div>
-<!-- 005 RESUMO -->
-<div id="view-resumo" class="tab-view">
-<div class="flex flex-wrap gap-2 mb-3 items-center justify-between">
-<div id="boxModoResumo" class="flex flex-wrap gap-2 items-center">
-<button onclick="modoResumo='item';renderResumo()" id="btnModoItem" class="text-xs bg-amber-500 hover:bg-amber-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
-ITEM
-</button>
-<button onclick="modoResumo='subitem';renderResumo()" id="btnModoSubitem" class="text-xs bg-blue-500 hover:bg-blue-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
-SUBITEM
-</button>
-</div>
-<div class="flex justify-end items-center gap-2 ml-auto flex-wrap">
-<input id="dataInicio" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
-<input id="dataFim" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
-<button
-type="button"
-onclick="toggleOcultarConcluidos()"
-id="btn-ocultar"
-class="text-xs bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+<div class="flex justify-end items-center gap-2 flex-wrap">
+
+<input id="dataInicioMensal" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
+
+<input id="dataFimMensal" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
+
+<button type="button" onclick="toggleOcultarConcluidos()" class="text-xs bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
 OCULTAR 100%
 </button>
+
 </div>
-</div>
-<div id="cards-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"></div>
+
 </div>
 
 <!-- 006 VOLTAR -->
