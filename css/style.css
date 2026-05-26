@@ -536,7 +536,6 @@ filter:brightness(1.05);
 #view-mensal th:nth-child(11),#view-mensal td:nth-child(11){background:#fff7cc!important;border-left:2px solid #facc15!important;border-right:2px solid #facc15!important;}
 #view-mensal th:nth-child(11){font-size:14px!important;font-weight:900!important;color:#000!important;}
 #view-mensal td:nth-child(11) .input-mes,#view-mensal td:nth-child(11) span{background:#fde68a!important;color:#000!important;font-size:13px!important;font-weight:900!important;border:2px solid #f59e0b!important;}
-#dataInicio,#dataFim{min-width:210px!important;height:56px!important;font-size:16px!important;font-weight:900!important;padding:0 18px!important;border-radius:28px!important;background:#fff!important;color:#000!important;border:2px solid #e5e7eb!important;}
 #btn-ocultar{height:56px!important;padding:0 24px!important;font-size:15px!important;font-weight:900!important;border-radius:28px!important;}
 #view-mensal tr{border-bottom:1px solid #e5e7eb!important;}
 #view-mensal tbody tr:hover{background:#f8fafc!important;transition:.2s!important;}
@@ -552,11 +551,15 @@ html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!import
 #view-mensal table{width:100%!important;min-width:1580px!important;table-layout:fixed!important;border-collapse:collapse!important;background:#fff!important;}
 .grid,.grid-cards,.cards-container,.cards-dashboard-mini{width:100%!important;max-width:100%!important;overflow:hidden!important;}
 canvas{max-width:100%!important;height:auto!important;}
-#dataInicio,#dataFim{width:210px!important;min-width:210px!important;max-width:210px!important;height:52px!important;font-size:20px!important;font-weight:900!important;border-radius:26px!important;background:#fff!important;color:#000!important;border:2px solid #d6d3d1!important;padding:0 18px!important;display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;}
-#dataInicio::-webkit-datetime-edit,#dataFim::-webkit-datetime-edit{color:#000!important;font-weight:900!important;padding:0 6px!important;}
-#dataInicio::-webkit-calendar-picker-indicator,#dataFim::-webkit-calendar-picker-indicator{cursor:pointer!important;opacity:.9!important;transform:scale(1.15)!important;}
 #btn-ocultar{height:52px!important;padding:0 22px!important;border-radius:26px!important;font-size:14px!important;font-weight:900!important;}
 @media(max-width:1700px){#view-mensal table{min-width:1500px!important;}}
 @media(max-width:1400px){#view-mensal table{min-width:1450px!important;}}
 @media(max-width:1200px){#view-mensal table{min-width:1380px!important;}#dashboard{padding:0 4px!important;}}
 @media(max-width:900px){#view-mensal table{min-width:1280px!important;}}
+/*=========================================================
+149 SEDAM.CSS DATA FIX DEFINITIVO
+=========================================================*/
+#dataInicio,#dataFim{-webkit-appearance:none!important;appearance:none!important;width:230px!important;min-width:230px!important;max-width:230px!important;height:54px!important;background:#ffffff!important;color:#000000!important;font-size:0!important;font-weight:900!important;border:2px solid #d6d3d1!important;border-radius:28px!important;padding:0 52px 0 18px!important;position:relative!important;box-sizing:border-box!important;overflow:hidden!important;}
+#dataInicio::-webkit-datetime-edit,#dataFim::-webkit-datetime-edit{font-size:18px!important;color:#000!important;font-weight:900!important;letter-spacing:.3px!important;}
+#dataInicio::-webkit-datetime-edit-fields-wrapper,#dataFim::-webkit-datetime-edit-fields-wrapper{display:flex!important;align-items:center!important;}
+#dataInicio::-webkit-calendar-picker-indicator,#dataFim::-webkit-calendar-picker-indicator{position:absolute!important;right:14px!important;width:22px!important;height:22px!important;cursor:pointer!important;opacity:1!important;filter:contrast(1.1)!important;}
