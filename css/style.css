@@ -543,15 +543,18 @@ filter:brightness(1.05);
 /*=========================================================
 147 SEDAM.CSS FIXAR PAINEL NO ZOOM
 =========================================================*/
-html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important;}
-#dashboard{width:100%!important;max-width:100%!important;overflow-x:hidden!important;}
+html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important;background:#f5f0e6!important;}
+#dashboard{width:100%!important;max-width:100%!important;overflow-x:hidden!important;padding:0 8px!important;box-sizing:border-box!important;}
 .topo-sedam-modern{width:100%!important;max-width:100%!important;overflow:hidden!important;}
-.tab-view{width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;}
-.table-wrap{width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch!important;}
-#view-mensal{width:100%!important;max-width:100%!important;overflow-x:auto!important;padding-bottom:8px!important;}
-#view-mensal table{min-width:1450px!important;}
+.tab-view{width:100%!important;max-width:100%!important;overflow-x:hidden!important;box-sizing:border-box!important;}
+#view-mensal{width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;padding-bottom:10px!important;border-radius:22px!important;}
+#view-mensal .table-wrap{width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;border-radius:22px!important;-webkit-overflow-scrolling:touch!important;}
+#view-mensal table{width:100%!important;min-width:1580px!important;table-layout:fixed!important;border-collapse:collapse!important;background:#fff!important;}
 .grid,.grid-cards,.cards-container,.cards-dashboard-mini{width:100%!important;max-width:100%!important;overflow:hidden!important;}
 canvas{max-width:100%!important;height:auto!important;}
-@media(max-width:1600px){#dashboard{padding-left:8px!important;padding-right:8px!important;}}
-@media(max-width:1200px){.topo-sedam-modern{flex-wrap:wrap!important;gap:10px!important;}}
-@media(max-width:900px){#view-mensal table{min-width:1300px!important;}}
+#dataInicio,#dataFim{min-width:190px!important;height:52px!important;font-size:15px!important;font-weight:900!important;border-radius:26px!important;background:#fff!important;color:#000!important;border:2px solid #d6d3d1!important;padding:0 16px!important;}
+#btn-ocultar{height:52px!important;padding:0 22px!important;border-radius:26px!important;font-size:14px!important;font-weight:900!important;}
+@media(max-width:1700px){#view-mensal table{min-width:1500px!important;}}
+@media(max-width:1400px){#view-mensal table{min-width:1450px!important;}}
+@media(max-width:1200px){#view-mensal table{min-width:1380px!important;}#dashboard{padding:0 4px!important;}}
+@media(max-width:900px){#view-mensal table{min-width:1280px!important;}}
