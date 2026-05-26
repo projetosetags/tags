@@ -1,120 +1,222 @@
 /*=========================================================
+004 BOTÕES ITEM/SUBITEM MONITORAMENTO
+=========================================================*/
+window.modoTabela='subitem'
+
+document.getElementById('btnModoItemMensal')?.addEventListener('click',()=>{
+window.modoTabela='item'
+renderTable()
+})
+
+document.getElementById('btnModoSubitemMensal')?.addEventListener('click',()=>{
+window.modoTabela='subitem'
+renderTable()
+})
+/*=========================================================
 001 MONITORAMENTO FUNCTION RENDERRESUMO
 =========================================================*/
 function renderResumo(){
+
 let dados=window.allData||[]
+
 if(!dados||!dados.length){
+
 let el=document.getElementById('cards-container')
+
 if(el)el.innerHTML=''
+
 return
+
 }
+
 let mapa={}
+
 let base=[...dados]
+
 if(filtroDataInicio||filtroDataFim){
+
 base=base.filter(i=>{
+
 let d=parseDataLocal(i.data_inicio)||parseDataLocal(i.prazo_texto)
+
 if(!d)return false
+
 if(filtroDataInicio&&d<parseDataLocal(filtroDataInicio))return false
+
 if(filtroDataFim&&d>parseDataLocal(filtroDataFim))return false
+
 return true
+
 })
+
 }
+
 if(ocultarConcluidos){
+
 base=base.filter(i=>getTotal(i)<100)
+
 }
+
 base.forEach(i=>{
-let key=(modoResumo==='item')?String(i.item||''):String(i.subitem||'')
+
+let key=(modoResumo==='item')
+?String(i.item||'')
+:String(i.subitem||'')
+
 if(!key)return
+
 if(!mapa[key])mapa[key]=[]
+
 mapa[key].push(i)
+
 })
-let keys=Object.keys(mapa).filter(k=>k).sort((a,b)=>{
-let ra=(base||[]).find(x=>String((modoResumo==='item')?x.item:x.subitem)===String(a))||{subitem:a,item:a}
-let rb=(base||[]).find(x=>String((modoResumo==='item')?x.item:x.subitem)===String(b))||{subitem:b,item:b}
+
+let keys=Object.keys(mapa)
+.filter(k=>k)
+.sort((a,b)=>{
+
+let ra=(base||[]).find(x=>
+String((modoResumo==='item')
+?x.item
+:x.subitem)===String(a)
+)||{subitem:a,item:a}
+
+let rb=(base||[]).find(x=>
+String((modoResumo==='item')
+?x.item
+:x.subitem)===String(b)
+)||{subitem:b,item:b}
+
 return compareSubitem(ra,rb)
+
 })
+
 let html=''
+
 let container=document.getElementById('cards-container')
+
 if(container)container.innerHTML=''
+
 keys.forEach(k=>{
+
 let lista=mapa[k]||[]
+
 if(!lista.length)return
-let media=Math.round(lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1))
-let cor=media<=30?'bg-status-red':media>=100?'bg-status-green':'bg-status-yellow'
+
+let media=Math.round(
+lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1)
+)
+
+let cor=
+media<=30
+?'bg-status-red'
+:
+media>=100
+?'bg-status-green'
+:'bg-status-yellow'
+
 let itemBase=lista[0]||{}
+
 let descricao=''
+
 if(modoResumo==='item'){
+
 let registroDescricao=(window.allData||[])
 .find(x=>
 String(x.item||'')===String(k)&&
 x.descricaoitem&&
 x.descricaoitem.trim()
 )
+
 descricao=registroDescricao?.descricaoitem||''
+
 }else{
+
 descricao=
-lista.find(x=>x.descricao&&x.descricao.trim())?.descricao||
-''
+lista.find(x=>x.descricao&&x.descricao.trim())?.descricao||''
+
 }
+
 let itemClick=k
+
 let itemNumero=String(itemBase.item||'-')
+
 let subitemNumero=String(itemBase.subitem||'-')
+
 html+=`
+
 <div class="flex flex-col">
-<div class="card-micro ${cor}" onclick="abrirDetalhesResumo('${itemClick}')" style="padding:12px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+
+<div
+class="card-micro ${cor}"
+onclick="abrirDetalhesResumo('${itemClick}')"
+style="padding:12px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+
 <div style="font-size:18px;font-weight:900;color:#000000;line-height:1;">
 ITEM ${itemNumero}
 </div>
-${modoResumo==='subitem'?`
+
+${
+modoResumo==='subitem'
+?
+`
 <div style="font-size:11px;font-weight:900;color:#0f172a;line-height:1;margin-top:4px;">
 SUBITEM ${subitemNumero}
 </div>
-`:''}
-${descricao?`
+`
+:''
+}
+
+${
+descricao
+?
+`
 <div style="font-size:11px;font-weight:700;color:#000000;margin-top:8px;text-align:center;line-height:1.3;max-width:100%;">
 ${descricao}
 </div>
-`:''}
+`
+:''
+}
+
 <div class="percent-big" style="margin-top:10px;">
 ${media}%
 </div>
+
 </div>
+
 </div>
+
 `
+
 })
+
 let el=document.getElementById('cards-container')
+
 if(el)el.innerHTML=html
+
 }
+
 /*=========================================================
 002 MONITORAMENTO FUNCTION ABRIRITEM
 =========================================================*/
 function abrirItem(item){
+
 filtroItemAtivo=item
+
 switchTab('mensal')
+
 renderTable()
+
 document.getElementById('btn-voltar').style.display='block'
+
 }
+
 /*=========================================================
 003 MONITORAMENTO FUNCTION RENDERTABLE
 =========================================================*/
 function renderTable(){
 
 const mesesOrdem=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
-
-const mesesLabel={
-jan:'JAN',
-fev:'FEV',
-mar:'MAR',
-abr:'ABR',
-mai:'MAI',
-jun:'JUN',
-jul:'JUL',
-ago:'AGO',
-set:'SET',
-out:'OUT',
-nov:'NOV',
-dez:'DEZ'
-}
 
 let hoje=new Date()
 
@@ -157,13 +259,15 @@ let tbody=document.getElementById('table-body')
 if(!tbody)return
 
 let thNumero=document.getElementById('thNumero')
+
 let thDescricao=document.getElementById('thDescricao')
+
 let thProduto=document.getElementById('thProduto')
 
 if(thNumero){
 
 thNumero.innerHTML=
-modoTabela==='item'
+window.modoTabela==='item'
 ?'ITEM (Nr.)'
 :'SUBITEM'
 
@@ -172,7 +276,7 @@ modoTabela==='item'
 if(thDescricao){
 
 thDescricao.innerHTML=
-modoTabela==='item'
+window.modoTabela==='item'
 ?'DESCRIÇÃO ITEM'
 :'DESCRIÇÃO'
 
@@ -181,7 +285,7 @@ modoTabela==='item'
 if(thProduto){
 
 thProduto.innerHTML=
-modoTabela==='item'
+window.modoTabela==='item'
 ?'AÇÃO'
 :'PRODUTOS'
 
@@ -210,8 +314,6 @@ let usernameAtual=String(userP?.username||'').toLowerCase()
 let origemUsuario=String(userP?.origem||'').toUpperCase()
 
 let mesEdicao=mesesLiberados[mesesLiberados.length-1]
-
-let valorAtual=Number(i[mesEdicao]||0)
 
 let isNivel1=nivel===1
 
@@ -250,30 +352,37 @@ i.responsavel_manual||
 }
 
 return `
+
 <tr class="border-b border-white/5 tr-hover ${bg}">
 
 <td class="p-2 font-black text-blue-400">
+
 ${
-modoTabela==='item'
+window.modoTabela==='item'
 ?(i.item||'-')
 :(i.subitem||'-')
 }
+
 </td>
 
 <td class="p-2 td-desc">
+
 ${
-modoTabela==='item'
+window.modoTabela==='item'
 ?(i.descricaoitem||i.item_descricao||'-')
 :(i.descricao||'-')
 }
+
 </td>
 
 <td class="p-2 td-desc text-[10px] text-slate-700">
+
 ${
-modoTabela==='item'
+window.modoTabela==='item'
 ?(i.acao||i.produto||'-')
 :(i.produto||'-')
 }
+
 </td>
 
 <td class="text-xs p-1">
@@ -355,22 +464,10 @@ return `
 
 ${
 editar
-
 ?
-
-`<input
-type="number"
-min="0"
-max="100"
-step="1"
-class="input-mes"
-value="${valor}"
-onchange="if(this.disabled)return;salvar(this.value,'${i.id}','${m}')">`
-
+`<input type="number" min="0" max="100" step="1" class="input-mes" value="${valor}" onchange="if(this.disabled)return;salvar(this.value,'${i.id}','${m}')">`
 :
-
 `<span>${valor}%</span>`
-
 }
 
 </td>
@@ -385,144 +482,13 @@ ${total.toFixed(2)}%
 </td>
 
 </tr>
+
 `
 
 }).join('')
 
-let itensTotal=new Set(
-lista.map(x=>{
-let item=String(x.item||'').trim()
-if(item.includes('.')){
-item=item.split('.')[0]
-}
-return item
-}).filter(Boolean)
-).size
-
-let pdfHTML=''
-
-if(
-userP&&
-(
-Number(userP.nivel_acesso)===1||
-String(userP.origem||'').toUpperCase()==='TCERO'||
-userP.permissao_pdf===true
-)
-){
-
-if(document.getElementById('view-dashboard')&&!document.getElementById('view-dashboard').classList.contains('hidden')){
-
-pdfHTML=`
-<button onclick="gerarPDFDashboard()" class="btn-pdf">
-PDF DASHBOARD
-</button>
-
-<button onclick="gerarWordDashboard()" class="btn-pdf btn-word">
-WORD DASHBOARD
-</button>
-`
-
 }
 
-if(document.getElementById('view-resumo')&&!document.getElementById('view-resumo').classList.contains('hidden')){
-
-pdfHTML=`
-<button onclick="gerarPDFResumo()" class="btn-pdf">
-PDF RESUMO
-</button>
-
-<button onclick="gerarWordResumo()" class="btn-pdf btn-word">
-WORD RESUMO
-</button>
-`
-
-}
-
-if(document.getElementById('view-mensal')&&!document.getElementById('view-mensal').classList.contains('hidden')){
-
-pdfHTML=`
-<button onclick="gerarPDFMonitoramento()" class="btn-pdf">
-PDF MONITORAMENTO
-</button>
-
-<button onclick="gerarWordMonitoramento()" class="btn-pdf btn-word">
-WORD MONITORAMENTO
-</button>
-`
-
-}
-
-if(document.getElementById('view-analise')&&!document.getElementById('view-analise').classList.contains('hidden')){
-
-pdfHTML=`
-<button onclick="gerarPDFGraficos()" class="btn-pdf">
-PDF GRÁFICOS
-</button>
-
-<button onclick="gerarWordGraficos()" class="btn-pdf btn-word">
-WORD GRÁFICOS
-</button>
-`
-
-}
-
-if(document.getElementById('view-concluidos')&&!document.getElementById('view-concluidos').classList.contains('hidden')){
-
-pdfHTML=`
-<button onclick="gerarPDFCumpridos()" class="btn-pdf">
-PDF 100%
-</button>
-
-<button onclick="gerarWordCumpridos()" class="btn-pdf btn-word">
-WORD 100%
-</button>
-`
-
-}
-
-}
-
-let pdfContainer=document.getElementById('pdf-container')
-
-if(pdfContainer){
-
-pdfContainer.innerHTML=`
-
-<div class="flex gap-2 items-center flex-wrap">
-
-${pdfHTML}
-
-<div class="flex items-center gap-1 bg-white/90 px-3 py-1 rounded-xl border border-slate-300 shadow-sm">
-
-<span class="text-sm font-black text-blue-900">
-${itensTotal}
-</span>
-
-<span class="text-[10px] font-black text-slate-700 uppercase">
-Itens
-</span>
-
-</div>
-
-<div class="flex items-center gap-1 bg-white/90 px-3 py-1 rounded-xl border border-slate-300 shadow-sm">
-
-<span class="text-sm font-black text-emerald-700">
-${totalRegistros}
-</span>
-
-<span class="text-[10px] font-black text-slate-700 uppercase">
-Subitens
-</span>
-
-</div>
-
-</div>
-
-`
-
-}
-
-}
 /*=========================================================
 004 MONITORAMENTO FUNCTION RENDERCONCLUIDOS
 =========================================================*/
