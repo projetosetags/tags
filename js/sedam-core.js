@@ -12,8 +12,13 @@ let dash=document.getElementById('dashboard')
 let dataInicio=document.getElementById('dataInicio')
 let dataFim=document.getElementById('dataFim')
 
-if(dataInicio)dataInicio.value='2025-01-01'
-if(dataFim)dataFim.value='2028-01-01'
+if(dataInicio&&!dataInicio.value){
+dataInicio.value='2025-01-01'
+}
+
+if(dataFim&&!dataFim.value){
+dataFim.value='2028-01-01'
+}
 
 localStorage.removeItem('uid')
 
@@ -63,7 +68,9 @@ info.innerHTML=
 aplicarPermissoesAbas()
 
 await carregarDados()
+
 aplicarAcessoMonitoramento()
+
 let abaSalva=localStorage.getItem('activeTab')||'dashboard'
 
 switchTab(abaSalva)
