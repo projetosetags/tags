@@ -1211,7 +1211,7 @@ return 0
 =========================================================*/
 function renderDashboard(){
 console.log('RENDER DASHBOARD')
-let lista=window.allData||[]
+let lista=(window.allData||[]).filter(i=>String(i.item||'').trim()!=='')
 console.log('LISTA DASHBOARD:',lista)
 
 if(!lista.length){
@@ -1235,11 +1235,15 @@ if(g)g.innerText='0'
 return
 }
 
-let totalSubitens=lista.length
+let totalSubitens=lista.filter(i=>
+String(i.subitem||'').trim()!==''
+).length
 
-let totalItens=[...new Set(
-lista.map(i=>String(i.item||'0'))
-)].length
+let totalItens=new Set(
+lista.map(i=>
+String(i.item||'').trim()
+).filter(Boolean)
+).size
 
 let media=Math.round(
 lista.reduce((acc,c)=>{
@@ -1296,7 +1300,7 @@ document.getElementById('dashboardCumpridos').innerText=concluidos
 document.getElementById('dashboardCriticos').innerText=criticos
 document.getElementById('dashboardAndamento').innerText=andamento
 document.getElementById('dashPendentes').innerText=pendentes
-  
+
 let topo=document.getElementById('total-geral')
 
 if(topo){
@@ -1375,6 +1379,7 @@ plugins:[ChartDataLabels]
 
 if(dashPizza){
 dashPizza.destroy()
+}
 }
 /*=========================================================
 007 DASHBOARD GRAFICO PIZZA
