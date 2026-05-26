@@ -1245,11 +1245,17 @@ String(i.subitem||'').trim()!==''
 
 let totalItens=new Set(
 lista.map(i=>{
-let item=String(i.item||'').trim()
-if(item.includes('.')){
-item=item.split('.')[0]
+
+let sub=String(i.subitem||'').trim()
+
+let partes=sub.split('.')
+
+if(partes.length){
+return partes[0]
 }
-return item
+
+return String(i.item||'').trim()
+
 }).filter(Boolean)
 ).size
 
