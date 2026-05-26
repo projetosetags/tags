@@ -770,9 +770,15 @@ window.resumoData=[...dadosFiltrados]
 
 console.log('TOTAL FINAL ALLDATA:',window.allData.length)
 
+let listaTopo=[...(window.allData||[])]
+
+if(ocultarConcluidos){
+listaTopo=listaTopo.filter(i=>getTotal(i)<100)
+}
+
 let totalItens=[
 ...new Set(
-window.allData.map(i=>{
+listaTopo.map(i=>{
 
 let sub=String(i.subitem||'').trim()
 
@@ -788,12 +794,12 @@ return String(i.item||'0')
 )
 ].length
 
-let totalSubitens=window.allData.length
+let totalSubitens=listaTopo.length
 
 let media=Math.round(
-window.allData.reduce((acc,c)=>{
-return acc+Number(c.total_cumprimento||0)
-},0)/(window.allData.length||1)
+listaTopo.reduce((acc,c)=>{
+return acc+Number(getTotal(c)||0)
+},0)/(listaTopo.length||1)
 )
 
 let topoItens=document.getElementById('topTotalItens')
@@ -1817,4 +1823,56 @@ alert('Backup Sedam realizado com sucesso')
 console.log(e)
 alert('Erro ao gerar backup')
 }
+}
+
+function carregarDadosTopo(){
+
+let lista=[...(window.allData||[])]
+
+if(ocultarConcluidos){
+lista=lista.filter(i=>getTotal(i)<100)
+}
+
+let totalItens=[
+...new Set(
+lista.map(i=>{
+
+let sub=String(i.subitem||'').trim()
+
+let partes=sub.split('.')
+
+if(partes.length){
+return partes[0]
+}
+
+return String(i.item||'0')
+
+})
+)
+].length
+
+let totalSubitens=lista.length
+
+let media=Math.round(
+lista.reduce((acc,c)=>{
+return acc+Number(getTotal(c)||0)
+},0)/(lista.length||1)
+)
+
+let topoItens=document.getElementById('topTotalItens')
+let topoSubitens=document.getElementById('topTotalSubitens')
+let totalGeral=document.getElementById('total-geral')
+
+if(topoItens){
+topoItens.innerText=totalItens
+}
+
+if(topoSubitens){
+topoSubitens.innerText=totalSubitens
+}
+
+if(totalGeral){
+totalGeral.innerText=media+'%'
+}
+
 }
