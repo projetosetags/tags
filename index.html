@@ -333,7 +333,7 @@ OCULTAR 100%
 <!-- 006 MONITORAMENTO -->
 <div id="view-mensal" class="tab-view hidden">
 
-<div class="flex flex-wrap gap-2 mb-3 items-center justify-between">
+<div id="view-mensal-filtros" class="flex flex-wrap gap-2 mb-3 items-center justify-between">
 
 <div id="boxModoResumoMensal" class="flex flex-wrap gap-2 items-center">
 
@@ -347,7 +347,7 @@ SUBITEM
 
 </div>
 
-<div class="flex justify-end items-center gap-2 flex-wrap">
+<div class="flex justify-end items-center gap-2 ml-auto flex-wrap">
 
 <input id="dataInicioMensal" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
 
@@ -373,29 +373,53 @@ OCULTAR 100%
 
 <tr class="text-[8px] text-slate-500 uppercase border-b border-white/10">
 
-<th id="thNumero">SUBITEM</th>
+<th id="thNumero">
+SUBITEM
+</th>
 
-<th id="thDescricao">DESCRIÇÃO</th>
+<th id="thDescricao">
+DESCRIÇÃO
+</th>
 
-<th id="thProduto">PRODUTOS</th>
+<th id="thProduto">
+PRODUTOS
+</th>
 
-<th>Responsável(is)</th>
+<th>
+Responsável(is)
+</th>
 
-<th>Setor</th>
+<th>
+Setor
+</th>
 
-<th>Data Início</th>
+<th>
+Data Início
+</th>
 
-<th class="opacity-40">JAN</th>
+<th class="opacity-40">
+JAN
+</th>
 
-<th class="opacity-40">FEV</th>
+<th class="opacity-40">
+FEV
+</th>
 
-<th class="opacity-40">MAR</th>
+<th class="opacity-40">
+MAR
+</th>
 
-<th class="text-blue-400">ABR</th>
+<th class="text-blue-400">
+ABR
+</th>
 
-<th class="text-yellow-400">MAI</th>
+<th class="text-yellow-400">
+MAI
+</th>
 
-<th>Total</th>
+<th>
+Total
+</th>
 
 </tr>
 
@@ -413,9 +437,11 @@ OCULTAR 100%
 <div id="view-analise" class="tab-view hidden">
 
 <select id="tipoGrafico" class="hidden">
+
 <option value="subitem" selected>
 POR SUBITEM
 </option>
+
 </select>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
