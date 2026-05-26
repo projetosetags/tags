@@ -123,7 +123,30 @@ return true
 let totalRegistros=lista.length
 let tbody=document.getElementById('table-body')
 if(!tbody)return
+let thNumero=document.getElementById('thNumero')
+let thDescricao=document.getElementById('thDescricao')
+let thProduto=document.getElementById('thProduto')
 
+if(thNumero){
+thNumero.innerHTML=
+modoResumo==='item'
+?'ITEM (Nr.)'
+:'SUBITEM'
+}
+
+if(thDescricao){
+thDescricao.innerHTML=
+modoResumo==='item'
+?'DESCRIÇÃO ITEM'
+:'DESCRIÇÃO'
+}
+
+if(thProduto){
+thProduto.innerHTML=
+modoResumo==='item'
+?'AÇÃO'
+:'PRODUTOS'
+}
 tbody.innerHTML=lista.map(i=>{
 
 let dataFormatada=i.data_inicio?formatarDataBR(i.data_inicio):(i.prazo_texto||'-')
