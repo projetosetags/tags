@@ -1389,7 +1389,7 @@ plugins:[ChartDataLabels]
 if(dashPizza){
 dashPizza.destroy()
 }
-}
+
 /*=========================================================
 007 DASHBOARD GRAFICO PIZZA
 =========================================================*/
