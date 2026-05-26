@@ -489,14 +489,14 @@ boxModoResumo.style.display='none'
 
 }
 
-document.querySelectorAll('.tab-content,.tab-view').forEach(v=>{
+document.querySelectorAll('.tab-view').forEach(v=>{
 v.classList.remove('active')
 v.classList.add('hidden')
 v.style.display='none'
 v.style.visibility='hidden'
 v.style.opacity='0'
 })
-
+  
 document.querySelectorAll('.tab-btn').forEach(b=>{
 b.classList.remove('tab-active')
 })
@@ -580,14 +580,13 @@ if(window.graficoGeral&&typeof window.graficoGeral.resize==='function'){
 window.graficoGeral.resize()
 }
 
-document.querySelectorAll('#view-analise canvas,#view-graficos canvas').forEach(c=>{
+document.querySelectorAll('#view-analise canvas').forEach(c=>{
 c.style.display='block'
 c.style.visibility='visible'
 c.style.opacity='1'
 c.style.width='100%'
 c.style.maxWidth='100%'
 c.style.height='320px'
-c.style.maxHeight='320px'
 })
 
 },350)
