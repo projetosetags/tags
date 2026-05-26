@@ -772,9 +772,19 @@ console.log('TOTAL FINAL ALLDATA:',window.allData.length)
 
 let totalItens=[
 ...new Set(
-window.allData.map(i=>
-String(i.item||'0')
-)
+window.allData.map(i=>{
+
+let sub=String(i.subitem||'').trim()
+
+let partes=sub.split('.')
+
+if(partes.length){
+return partes[0]
+}
+
+return String(i.item||'0')
+
+})
 )
 ].length
 
