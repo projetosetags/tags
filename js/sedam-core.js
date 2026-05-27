@@ -9,8 +9,8 @@ let geral=document.getElementById('painel-geral-acesso')
 let login=document.getElementById('login-screen')
 let dash=document.getElementById('dashboard')
 
-let dataInicio=document.getElementById('dataInicio')
-let dataFim=document.getElementById('dataFim')
+let dataInicioMensal=document.getElementById('dataInicioMensal')
+let dataFimMensal=document.getElementById('dataFimMensal')
 
 if(dataInicio&&!dataInicio.value){
 dataInicio.value='2025-01-01'
@@ -19,7 +19,13 @@ dataInicio.value='2025-01-01'
 if(dataFim&&!dataFim.value){
 dataFim.value='2028-01-01'
 }
+if(dataInicioMensal&&!dataInicioMensal.value){
+dataInicioMensal.value='2025-01-01'
+}
 
+if(dataFimMensal&&!dataFimMensal.value){
+dataFimMensal.value='2028-01-01'
+}
 localStorage.removeItem('uid')
 
 let userLocal=localStorage.getItem('user')
