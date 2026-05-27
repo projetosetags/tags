@@ -709,7 +709,7 @@ total=Math.max(...meses,0)
 
 return{
 ...i,
-item:String(i.item||i.numitem||String(i.subitem||'').split('.')[0]||'0'),
+item:String(i.numitem||String(i.subitem||'').split('.')[0]||'0'),
 subitem:String(i.subitem||'0.0'),
 ordem1:Number(i.ordem1||i.numsubitem||0),
 ordem2:Number(i.ordem2||0),
