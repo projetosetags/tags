@@ -9,6 +9,7 @@ let sepatData=[]
 let sepatFiltrados=[]
 let modoResumoSepat='item'
 let modoTabelaSepat='subitem'
+let modoConclusaoSepat='item'
 let graficoLinhaSepat=null
 let graficoPizzaSepat=null
 let graficoBarrasSepat=null
@@ -1208,8 +1209,17 @@ return
 box.innerHTML=lista.map(i=>`
 <div class="card-resumo-sepat verde" onclick="abrirModalResumoSepat('${i.subitem}')">
 <div>
-<div class="card-resumo-head">SUBITEM ${i.subitem||'-'}</div>
-<div class="card-resumo-desc">${truncarSepat(i.produto||'-',150)}</div>
+${modoConclusaoSepat==='item'
+?`
+<div class="text-[10px] font-black text-blue-900 uppercase mb-1">${i.tematica||'-'}</div>
+<div class="text-[20px] font-black text-blue-700 leading-none mb-1">${i.item||'-'}</div>
+<div class="text-[11px] font-bold text-slate-700 leading-snug">${truncarSepat(i.descricaoitem||'-',180)}</div>
+`
+:`
+<div class="card-resumo-head">SUBITEM ${i.siglaitem||i.subitem||'-'}</div>
+<div class="card-resumo-desc">${truncarSepat(i.subitem||i.produto||'-',150)}</div>
+`
+}
 </div>
 <div class="card-resumo-total">100%</div>
 </div>
