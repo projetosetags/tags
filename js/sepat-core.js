@@ -1722,13 +1722,13 @@ modoTabelaSepat==='item'
 body:rows,
 theme:'striped',
 styles:{
-fontSize:7.4,
+fontSize:6.6,
 overflow:'linebreak',
-cellPadding:2.4,
-valign:'middle',
+cellPadding:1.8,
+valign:'top',
 textColor:[15,23,42],
 lineColor:[210,215,220],
-lineWidth:.2
+lineWidth:.15
 },
 headStyles:{
 fillColor:[15,23,42],
@@ -1745,13 +1745,26 @@ columnStyles:(()=>{
 
 let estilos={
 
-0:{cellWidth:18,halign:'center'},
+0:{
+cellWidth:38,
+halign:'left',
+valign:'top'
+},
 
-1:{cellWidth:118},
+1:{
+cellWidth:120,
+valign:'top'
+},
 
-2:{cellWidth:42},
+2:{
+cellWidth:42,
+valign:'top'
+},
 
-3:{cellWidth:30}
+3:{
+cellWidth:28,
+valign:'top'
+}
 
 }
 
@@ -1761,7 +1774,8 @@ mesesAtivos.forEach(()=>{
 
 estilos[indice]={
 cellWidth:9,
-halign:'center'
+halign:'center',
+valign:'middle'
 }
 
 indice++
@@ -1769,8 +1783,9 @@ indice++
 })
 
 estilos[indice]={
-cellWidth:14,
-halign:'center'
+cellWidth:12,
+halign:'center',
+valign:'middle'
 }
 
 return estilos
@@ -1923,15 +1938,52 @@ modoConclusaoSepat==='item'
 ]],
 body:rows,
 theme:'striped',
-styles:{fontSize:8,overflow:'linebreak',cellPadding:3},
-headStyles:{fillColor:[4,120,87],textColor:[255,255,255]},
-columnStyles:{
-0:{cellWidth:28,halign:'center'},
-1:{cellWidth:52},
-2:{cellWidth:170},
-3:{cellWidth:18,halign:'center'}
+styles:{
+fontSize:6.6,
+overflow:'linebreak',
+cellPadding:1.8,
+valign:'top',
+textColor:[15,23,42],
+lineColor:[210,215,220],
+lineWidth:.15
 },
-margin:{top:18,bottom:28,left:5,right:5}
+headStyles:{
+fillColor:[15,23,42],
+textColor:[255,255,255],
+fontStyle:'bold',
+fontSize:8.2,
+halign:'center',
+valign:'middle'
+},
+alternateRowStyles:{
+fillColor:[245,247,250]
+},
+columnStyles:{
+0:{
+cellWidth:34,
+halign:'left',
+valign:'top'
+},
+1:{
+cellWidth:52,
+valign:'top'
+},
+2:{
+cellWidth:152,
+valign:'top'
+},
+3:{
+cellWidth:14,
+halign:'center',
+valign:'middle'
+}
+},
+margin:{
+top:18,
+bottom:42,
+left:5,
+right:5
+}
 })
 rodapeSepat(doc)
 doc.save('pdf_100_tag_sepat.pdf')
