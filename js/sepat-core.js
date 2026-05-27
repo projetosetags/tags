@@ -994,6 +994,14 @@ if(modal)modal.classList.add('hidden')
 017 SEPAT CORE RENDER TABELA MONITORAMENTO
 =========================================================*/
 function renderTabelaSepat(){
+let view=document.getElementById('view-monitoramento')
+if(view){
+if(modoTabelaSepat==='item'){
+view.classList.add('tabela-item-sepat')
+}else{
+view.classList.remove('tabela-item-sepat')
+}
+}
 let tbody=document.getElementById('tbodySepat')
 if(!tbody)return
 let busca=String(
