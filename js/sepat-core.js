@@ -1879,19 +1879,46 @@ doc.save('pdf_graficos_tag_sepat.pdf')
 function gerarPDFConcluidosSepat(){
 let doc=criarDocSepat('l')
 let lista=[...(sepatData||[])].filter(i=>getTotalSepat(i)>=100).sort(compareSepat)
-let rows=lista.map(i=>[i.siglaitem||'-',i.subitem||'-',i.produto||'-',i.cargo||'-',getTotalSepat(i)+'%'])
+let rows=lista.map(i=>[
+modoConclusaoSepat==='item'
+?String(i.item||'-')
+:String(i.siglaitem||i.subitem||'-'),
+modoConclusaoSepat==='item'
+?String(i.tematica||'-')
+:String(i.subitem||'-'),
+modoConclusaoSepat==='item'
+?String(i.descricaoitem||'-')
+:String(i.produto||'-'),
+'100%'
+])
 doc.setFontSize(14)
 doc.text('SUBITENS 100% CUMPRIDOS - TAG SEPAT 2026',10,12)
 doc.setFontSize(10)
 doc.text('TOTAL: '+lista.length,10,18)
 doc.autoTable({
 startY:24,
-head:[['Item','Subitem','Produto','Responsável','%']],
+head:[[
+modoConclusaoSepat==='item'
+?'ITEM'
+:'SUBITEM',
+modoConclusaoSepat==='item'
+?'TEMÁTICA'
+:'DESCRIÇÃO',
+modoConclusaoSepat==='item'
+?'DESCRIÇÃO ITEM'
+:'PRODUTO',
+'%'
+]],
 body:rows,
 theme:'striped',
-styles:{fontSize:7.5,overflow:'linebreak',cellPadding:1.5},
+styles:{fontSize:8,overflow:'linebreak',cellPadding:3},
 headStyles:{fillColor:[4,120,87],textColor:[255,255,255]},
-columnStyles:{0:{cellWidth:22},1:{cellWidth:22},2:{cellWidth:130},3:{cellWidth:70},4:{cellWidth:18,halign:'center'}},
+columnStyles:{
+0:{cellWidth:28,halign:'center'},
+1:{cellWidth:52},
+2:{cellWidth:170},
+3:{cellWidth:18,halign:'center'}
+},
 margin:{top:18,bottom:28,left:5,right:5}
 })
 rodapeSepat(doc)
