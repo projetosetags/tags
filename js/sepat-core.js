@@ -1227,6 +1227,11 @@ ${i.tematica||'-'}
 <div class="card-resumo-desc">
 ${i.descricaoitem||'-'}
 </div>
+
+<div style="margin-top:14px;font-size:12px;line-height:1.45;font-weight:700;color:#334155;">
+<b>Produto:</b><br>
+${i.produto||'-'}
+</div>
 `
 :`
 <div class="card-resumo-head">
@@ -1234,7 +1239,12 @@ ${i.siglaitem||i.subitem||'-'}
 </div>
 
 <div class="card-resumo-desc">
-${i.subitem||i.produto||'-'}
+${i.subitem||'-'}
+</div>
+
+<div style="margin-top:14px;font-size:12px;line-height:1.45;font-weight:700;color:#334155;">
+<b>Produto:</b><br>
+${i.produto||'-'}
 </div>
 `
 }
