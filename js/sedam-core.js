@@ -842,23 +842,33 @@ renderDashboard()
 005A SEDAM CORE FUNCTION COMPARESUBITEM
 =========================================================*/
 function compareSubitem(a,b){
-let oa=Number(a.ordem1||a.ordem||a.numsubitem||0)
-let ob=Number(b.ordem1||b.ordem||b.numsubitem||0)
-if(oa>0&&ob>0&&oa!==ob)return oa-ob
-let o2a=Number(a.ordem2||0)
-let o2b=Number(b.ordem2||0)
-if(oa>0&&ob>0&&o2a!==o2b)return o2a-o2b
-let sa=String(a.subitem||a.item||'0.0').replace(/[^\d\.]/g,'')
-let sb=String(b.subitem||b.item||'0.0').replace(/[^\d\.]/g,'')
+
+let sa=String(a.subitem||a.item||'0.0')
+.replace(/[^\d\.]/g,'')
+
+let sb=String(b.subitem||b.item||'0.0')
+.replace(/[^\d\.]/g,'')
+
 let pa=sa.split('.').map(n=>parseInt(n)||0)
+
 let pb=sb.split('.').map(n=>parseInt(n)||0)
+
 let max=Math.max(pa.length,pb.length)
+
 for(let i=0;i<max;i++){
+
 let va=pa[i]||0
+
 let vb=pb[i]||0
-if(va!==vb)return va-vb
+
+if(va!==vb){
+return va-vb
 }
+
+}
+
 return 0
+
 }
 /*=========================================================
 005B SEDAM CORE FUNCTION RENDERRESUMO ITENS
