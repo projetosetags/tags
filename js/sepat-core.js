@@ -1624,30 +1624,39 @@ doc.save('pdf_resumo_tag_sepat.pdf')
 function gerarPDFMonitoramentoSepat(){
 let doc=criarDocSepat('l')
 let lista=[...(sepatData||[])].sort(compareSepat)
-let rows=lista.map(i=>[
+let meses=[
+{campo:'jan',label:'JAN'},
+{campo:'fev',label:'FEV'},
+{campo:'mar',label:'MAR'},
+{campo:'abr',label:'ABR'},
+{campo:'mai',label:'MAI'},
+{campo:'jun',label:'JUN'},
+{campo:'jul',label:'JUL'},
+{campo:'ago',label:'AGO'},
+{campo:'set',label:'SET'},
+{campo:'out',label:'OUT'},
+{campo:'nov',label:'NOV'},
+{campo:'dez',label:'DEZ'}
+]
+let mesAtual=new Date().getMonth()
+let mesesAtivos=meses.slice(0,mesAtual+1)
+let rows=lista.map(i=>{
+let linha=[
 modoTabelaSepat==='item'
 ?String(i.item||'-')
 :String(i.siglaitem||'-'),
-
 modoTabelaSepat==='item'
 ?String(i.descricaoitem||'-')
 :String(i.subitem||'-'),
 String(i.produto||'-'),
-String(i.cargo||'-'),
-Number(i.jan||0)+'%',
-Number(i.fev||0)+'%',
-Number(i.mar||0)+'%',
-Number(i.abr||0)+'%',
-Number(i.mai||0)+'%',
-Number(i.jun||0)+'%',
-Number(i.jul||0)+'%',
-Number(i.ago||0)+'%',
-Number(i.set||0)+'%',
-Number(i.out||0)+'%',
-Number(i.nov||0)+'%',
-Number(i.dez||0)+'%',
-getTotalSepat(i)+'%'
-])
+String(i.cargo||'-')
+]
+mesesAtivos.forEach(m=>{
+linha.push(Number(i[m.campo]||0)+'%')
+})
+linha.push(getTotalSepat(i)+'%')
+return linha
+})
 doc.setFontSize(15)
 doc.setTextColor(15,23,42)
 doc.text('MONITORAMENTO COMPLETO - TAG SEPAT 2026',14,14)
@@ -1660,26 +1669,27 @@ head:[[
 modoTabelaSepat==='item'
 ?'ITEM'
 :'SUBITEM',
-
 modoTabelaSepat==='item'
 ?'DESCRIÇÃO ITEM'
 :'DESCRIÇÃO',
-
 'PRODUTO',
-'RESPONSÁVEL','JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ','TOTAL']],
+'RESPONSÁVEL',
+...mesesAtivos.map(m=>m.label),
+'TOTAL'
+]],
 body:rows,
-theme:'grid',
+theme:'striped',
 styles:{
-fontSize:6.2,
+fontSize:7.4,
 overflow:'linebreak',
-cellPadding:1.6,
+cellPadding:2.4,
 valign:'middle',
 textColor:[15,23,42],
 lineColor:[210,215,220],
 lineWidth:.2
 },
 headStyles:{
-fillColor:[7,89,201],
+fillColor:[15,23,42],
 textColor:[255,255,255],
 fontStyle:'bold',
 fontSize:8.5,
@@ -1687,27 +1697,43 @@ halign:'center',
 valign:'middle'
 },
 alternateRowStyles:{
-fillColor:[248,250,252]
+fillColor:[245,247,250]
 },
-columnStyles:{
-0:{cellWidth:14,halign:'center'},
-1:{cellWidth:104},
-2:{cellWidth:38},
-3:{cellWidth:24},
-4:{cellWidth:8,halign:'center'},
-5:{cellWidth:8,halign:'center'},
-6:{cellWidth:8,halign:'center'},
-7:{cellWidth:8,halign:'center'},
-8:{cellWidth:8,halign:'center'},
-9:{cellWidth:8,halign:'center'},
-10:{cellWidth:8,halign:'center'},
-11:{cellWidth:8,halign:'center'},
-12:{cellWidth:8,halign:'center'},
-13:{cellWidth:8,halign:'center'},
-14:{cellWidth:8,halign:'center'},
-15:{cellWidth:8,halign:'center'},
-16:{cellWidth:12,halign:'center'}
-},
+columnStyles:(()=>{
+
+let estilos={
+
+0:{cellWidth:18,halign:'center'},
+
+1:{cellWidth:118},
+
+2:{cellWidth:42},
+
+3:{cellWidth:30}
+
+}
+
+let indice=4
+
+mesesAtivos.forEach(()=>{
+
+estilos[indice]={
+cellWidth:9,
+halign:'center'
+}
+
+indice++
+
+})
+
+estilos[indice]={
+cellWidth:14,
+halign:'center'
+}
+
+return estilos
+
+})(),
 margin:{
 top:20,
 bottom:42,
