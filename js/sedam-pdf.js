@@ -742,24 +742,108 @@ right:20
 })
 y=pdf.lastAutoTable.finalY+12
 async function adicionarGrafico(canvasId,titulo){
+
 let canvas=document.getElementById(canvasId)
+
 if(!canvas)return
-let img=canvas.toDataURL('image/png',1.0)
+
+let originalChart=Chart.getChart(canvas)
+
+if(!originalChart)return
+
+let tempCanvas=document.createElement('canvas')
+
+tempCanvas.width=2200
+
+tempCanvas.height=900
+
+let tempCtx=tempCanvas.getContext('2d')
+
+new Chart(tempCtx,{
+type:originalChart.config.type,
+data:JSON.parse(JSON.stringify(originalChart.config.data)),
+options:{
+...JSON.parse(JSON.stringify(originalChart.config.options)),
+responsive:false,
+animation:false,
+plugins:{
+legend:{
+labels:{
+font:{
+size:18,
+weight:'bold'
+}
+}
+},
+datalabels:{
+font:{
+size:16,
+weight:'bold'
+}
+}
+},
+scales:{
+x:{
+ticks:{
+font:{
+size:16,
+weight:'bold'
+}
+}
+},
+y:{
+ticks:{
+font:{
+size:16,
+weight:'bold'
+}
+}
+}
+}
+}
+})
+
+await new Promise(r=>setTimeout(r,400))
+
+let img=tempCanvas.toDataURL('image/png',1.0)
+
 if(y>185){
 pdf.addPage()
 y=20
 }
+
 pdf.setFontSize(12)
+
 pdf.setTextColor(25,25,25)
+
 pdf.text(titulo,margem,y)
+
 y+=5
-pdf.addImage(img,'PNG',12,y,186,58)
-y+=68
+
+pdf.addImage(
+img,
+'PNG',
+10,
+y,
+190,
+78,
+undefined,
+'FAST'
+)
+
+y+=88
+
 }
 await adicionarGrafico('graficoDashboardItens','Desempenho por Item')
 await adicionarGrafico('graficoDashboardLinha','Evolução Mensal')
 await adicionarGrafico('graficoDashboardPizza','Distribuição dos Subitens')
 adicionarRodapePadraoPDF(pdf)
+pdf.setProperties({
+title:'Dashboard TAG SEDAM 2026',
+subject:'Monitoramento TAG SEDAM',
+author:'Tribunal de Contas do Estado de Rondônia',
+creator:'TCE-RO'
+})
 pdf.save('dashboard-tag-sedam-2026.pdf')
 }
 
