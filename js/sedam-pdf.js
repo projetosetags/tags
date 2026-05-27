@@ -731,5 +731,65 @@ baixarWord(
 '100_tag_sedam',
 html
 )
+}
 
+async function gerarPDFDashboard(){
+const {jsPDF}=window.jspdf
+let pdf=new jsPDF('p','mm','a4')
+let margem=10
+let y=15
+pdf.setFont('helvetica','bold')
+pdf.setFontSize(18)
+pdf.text('DASHBOARD TAG SEDAM 2026',105,y,{align:'center'})
+y+=10
+pdf.setFontSize(9)
+pdf.setTextColor(90)
+pdf.text('Painel consolidado de acompanhamento do TAG SEDAM 2026',105,y,{align:'center'})
+y+=15
+let cards=[
+['Média Geral',document.getElementById('dashboardMediaGeral')?.innerText||'0%'],
+['Itens',document.getElementById('dashboardTotalItensCard')?.innerText||'0'],
+['Subitens',document.getElementById('dashboardTotalSubitensCard')?.innerText||'0'],
+['100%',document.getElementById('dashboardCumpridos')?.innerText||'0'],
+['Críticos',document.getElementById('dashboardCriticos')?.innerText||'0'],
+['Execução',document.getElementById('dashboardAndamento')?.innerText||'0'],
+['Pendentes',document.getElementById('dashPendentes')?.innerText||'0']
+]
+pdf.autoTable({
+startY:y,
+head:[['Indicador','Valor']],
+body:cards,
+theme:'grid',
+styles:{
+fontSize:9,
+halign:'center'
+},
+headStyles:{
+fillColor:[30,41,59]
+}
+})
+y=pdf.lastAutoTable.finalY+10
+async function adicionarGrafico(canvasId,titulo){
+let canvas=document.getElementById(canvasId)
+if(!canvas)return
+let img=canvas.toDataURL('image/png',1.0)
+if(y>220){
+pdf.addPage()
+y=20
+}
+pdf.setFontSize(12)
+pdf.setTextColor(0)
+pdf.text(titulo,margem,y)
+y+=4
+pdf.addImage(img,'PNG',15,y,180,60)
+y+=70
+}
+await adicionarGrafico('graficoDashboardItens','Desempenho por Item')
+await adicionarGrafico('graficoDashboardLinha','Evolução Mensal')
+await adicionarGrafico('graficoDashboardPizza','Distribuição')
+pdf.setFontSize(8)
+pdf.setTextColor(120)
+pdf.text('As informações possuem caráter preliminar e informativo.',10,290)
+pdf.text('Página '+pdf.internal.getNumberOfPages(),195,290,{align:'right'})
+pdf.save('dashboard-tag-sedam-2026.pdf')
 }
