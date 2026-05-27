@@ -8,6 +8,7 @@ let sepatUser=null
 let sepatData=[]
 let sepatFiltrados=[]
 let modoResumoSepat='item'
+let modoTabelaSepat='subitem'
 let graficoLinhaSepat=null
 let graficoPizzaSepat=null
 let graficoBarrasSepat=null
