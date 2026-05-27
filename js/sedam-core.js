@@ -1815,19 +1815,9 @@ lista=lista.filter(i=>getTotal(i)<100)
 
 let totalItens=[
 ...new Set(
-lista.map(i=>{
-
-let sub=String(i.subitem||'').trim()
-
-let partes=sub.split('.')
-
-if(partes.length){
-return partes[0]
-}
-
-return String(i.item||'0')
-
-})
+lista.map(i=>
+Number(i.numitem||0)
+).filter(Boolean)
 )
 ].length
 
