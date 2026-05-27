@@ -358,7 +358,7 @@ tabUsuarios.style.display='inline-flex'
 
 }
 let btnsWord=document.querySelectorAll(
-'#btnWordResumo,#btnWordMonitoramento,#btnWordGraficos,#btnWordConcluidos'
+'#btnWordDashboard,#btnWordResumo,#btnWordMonitoramento,#btnWordGraficos,#btnWordConcluidos'
 )
 
 btnsWord.forEach(btn=>{
