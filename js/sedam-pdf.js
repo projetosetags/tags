@@ -1,3 +1,4 @@
+const NOTA_TECNICA_PDF=`As informações constantes neste painel, gráficos, indicadores e relatórios possuem caráter preliminar e meramente informativo, sendo baseadas nos dados declarados e apresentados até o presente momento pelos jurisdicionados envolvidos. Ressalta-se que tais informações ainda não passaram pela análise técnica de consistência documental, verificação de evidências, validação metodológica e conferência conclusiva pela equipe técnica de auditores designados. A validação oficial ocorrerá posteriormente, por meio da análise técnica dos relatórios de execução, documentos comprobatórios e demais evidências encaminhadas pelos órgãos e entidades responsáveis, culminando na emissão do respectivo Relatório de Monitoramento e demais manifestações técnicas oficiais do Tribunal de Contas.`
 /*=========================================================
 001 PDF FUNCTION GERARPDFBACKUP
 =========================================================*/
@@ -791,5 +792,30 @@ pdf.setFontSize(8)
 pdf.setTextColor(120)
 pdf.text('As informações possuem caráter preliminar e informativo.',10,290)
 pdf.text('Página '+pdf.internal.getNumberOfPages(),195,290,{align:'right'})
+adicionarRodapePadraoPDF(pdf)
 pdf.save('dashboard-tag-sedam-2026.pdf')
+}
+function adicionarRodapePadraoPDF(pdf){
+let total=pdf.internal.getNumberOfPages()
+for(let i=1;i<=total;i++){
+pdf.setPage(i)
+let pageHeight=pdf.internal.pageSize.height
+let pageWidth=pdf.internal.pageSize.width
+pdf.setFillColor(255,255,255)
+pdf.rect(0,pageHeight-36,pageWidth,36,'F')
+pdf.setDrawColor(220,220,220)
+pdf.line(8,pageHeight-37,pageWidth-8,pageHeight-37)
+pdf.setTextColor(85,85,85)
+pdf.setFontSize(7)
+pdf.text('Tribunal de Contas do Estado de Rondônia - TAG SEDAM 2026',10,pageHeight-31)
+pdf.setFontSize(5)
+let linhas=pdf.splitTextToSize(NOTA_TECNICA_PDF,pageWidth-24)
+pdf.text(linhas,10,pageHeight-25,{
+maxWidth:pageWidth-24,
+align:'justify'
+})
+pdf.setFontSize(8)
+pdf.setTextColor(90)
+pdf.text('Página '+i+' de '+total,pageWidth-10,pageHeight-6,{align:'right'})
+}
 }
