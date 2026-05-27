@@ -150,7 +150,7 @@ Sair
 </header>
 
 <!-- 003 MENU -->
-<nav class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-7 gap-2 mb-4">
+<nav class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 gap-3 mb-4">
 
 <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn flex flex-col items-center justify-center rounded-2xl p-3 min-h-[82px] bg-white/90 border border-[#e5d6c3] shadow-[0_4px_14px_rgba(0,0,0,0.08)] hover:scale-[1.01] transition-all duration-300">
 <div class="text-2xl mb-1">📈</div>
@@ -197,7 +197,7 @@ Sair
 <!-- 004 DASHBOARD -->
 <div id="view-dashboard" class="tab-view hidden">
 
-<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3 mb-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-3 mb-4">
 
 <div id="cardMediaGeral" class="bg-white/90 rounded-3xl p-5 shadow border border-emerald-100">
 <div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Média Geral</div>
@@ -325,9 +325,7 @@ OCULTAR 100%
 </div>
 
 </div>
-
-<div id="cards-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"></div>
-
+<div id="cards-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3"></div>
 </div>
 
 <!-- 006 MONITORAMENTO -->
@@ -381,7 +379,7 @@ OCULTAR 100%
 
 <div class="bg-slate-900/40 rounded-xl border border-white/5 overflow-x-auto">
 
-<table class="w-full text-left border-collapse min-w-[1400px]">
+<table class="w-full text-left border-collapse min-w-full">
 
 <thead>
 
@@ -480,9 +478,7 @@ POR SUBITEM
 
 <!-- 008 CONCLUIDOS -->
 <div id="view-concluidos" class="tab-view hidden">
-
-<div id="concluidos-container" class="grid grid-cols-6 sm:grid-cols-12 lg:grid-cols-18 gap-1 mb-8"></div>
-
+<div id="concluidos-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2 mb-8"></div>
 <div class="bg-slate-900/40 p-6 rounded-xl border border-emerald-500/20">
 
 <h3 style="font-size:22px;font-weight:900;color:#000000;margin-bottom:18px;text-transform:uppercase;">
