@@ -556,7 +556,7 @@ renderGraficoBarrasSepat(lista)
 /*=========================================================
 010A SEPAT PDF DASHBOARD
 =========================================================*/
-function gerarPDFDashboardSepat(){
+async function gerarPDFDashboardSepat(){
 
 let doc=criarDocSepat('p')
 
@@ -592,7 +592,7 @@ PAGINA 1 EVOLUÇÃO
 =========================================================*/
 if(linha){
 
-let imgLinha=linha.toDataURL('image/png',1.0)
+let imgLinha=await gerarImagemHDChartSepat('graficoLinhaSepat')
 
 doc.setFontSize(13)
 
@@ -628,7 +628,7 @@ doc.setTextColor(15,23,42)
 
 doc.text('DISTRIBUIÇÃO PERCENTUAL',10,14)
 
-let imgPizza=pizza.toDataURL('image/png',1.0)
+let imgPizza=await gerarImagemHDChartSepat('graficoPizzaSepat')
 
 doc.addImage(imgPizza,'PNG',20,28,165,110)
 
@@ -1354,22 +1354,160 @@ ${editandoPerfisSepat?`<button onclick="excluirPerfilSepat('${p.id}')" style="wi
 =========================================================*/
 function criarDocSepat(orientacao='p'){
 const {jsPDF}=window.jspdf
-return new jsPDF(orientacao,'mm','a4')
+let doc=new jsPDF({
+orientation:orientacao,
+unit:'mm',
+format:'a4',
+compress:true,
+putOnlyUsedFonts:true,
+precision:16
+})
+doc.setProperties({
+title:'TAG SEPAT 2026',
+subject:'Monitoramento TAG SEPAT',
+author:'Tribunal de Contas do Estado de Rondônia',
+creator:'TCE-RO'
+})
+doc.setFont('helvetica')
+return doc
 }
+
 function rodapeSepat(doc){
+
 let total=doc.internal.getNumberOfPages()
+
 for(let i=1;i<=total;i++){
+
 doc.setPage(i)
+
 let h=doc.internal.pageSize.height
+
 let w=doc.internal.pageSize.width
+
+doc.setFillColor(255,255,255)
+
+doc.rect(0,h-36,w,36,'F')
+
+doc.setDrawColor(220,220,220)
+
+doc.line(6,h-37,w-6,h-37)
+
 doc.setFontSize(7)
-doc.setTextColor(80,80,80)
-doc.text('Tribunal de Contas do Estado de Rondônia - TAG SEPAT 2026',8,h-20)
-doc.setFontSize(5)
-doc.text(NOTA_TECNICA_SEPAT,8,h-15,{maxWidth:w-35,align:'justify'})
-doc.setFontSize(7)
-doc.text('Página '+i+' de '+total,w-8,h-6,{align:'right'})
+
+doc.setTextColor(60,60,60)
+
+doc.text(
+'Tribunal de Contas do Estado de Rondônia - TAG SEPAT 2026',
+8,
+h-30
+)
+
+doc.setFontSize(4.8)
+
+doc.setTextColor(90,90,90)
+
+let linhas=doc.splitTextToSize(
+NOTA_TECNICA_SEPAT,
+w-24
+)
+
+doc.text(
+linhas,
+8,
+h-24,
+{
+align:'justify'
 }
+)
+
+doc.setFontSize(7)
+
+doc.setTextColor(80,80,80)
+
+doc.text(
+'Página '+i+' de '+total,
+w-8,
+h-6,
+{
+align:'right'
+}
+)
+
+}
+
+}
+/*=========================================================
+024A SEPAT PDF CANVAS HD
+=========================================================*/
+async function gerarImagemHDChartSepat(canvasId){
+
+let canvas=document.getElementById(canvasId)
+
+if(!canvas)return null
+
+let originalChart=Chart.getChart(canvas)
+
+if(!originalChart)return null
+
+let tempCanvas=document.createElement('canvas')
+
+tempCanvas.width=2400
+
+tempCanvas.height=1200
+
+let tempCtx=tempCanvas.getContext('2d')
+
+new Chart(tempCtx,{
+type:originalChart.config.type,
+data:JSON.parse(JSON.stringify(originalChart.config.data)),
+options:{
+...JSON.parse(JSON.stringify(originalChart.config.options)),
+responsive:false,
+animation:false,
+plugins:{
+legend:{
+display:true,
+labels:{
+font:{
+size:20,
+weight:'bold'
+},
+color:'#111827'
+}
+},
+datalabels:{
+display:true,
+font:{
+size:18,
+weight:'bold'
+}
+}
+},
+scales:{
+x:{
+ticks:{
+font:{
+size:16,
+weight:'bold'
+}
+}
+},
+y:{
+ticks:{
+font:{
+size:16,
+weight:'bold'
+}
+}
+}
+}
+}
+})
+
+await new Promise(r=>setTimeout(r,500))
+
+return tempCanvas.toDataURL('image/png',1.0)
+
 }
 /*=========================================================
 025 SEPAT PDF RESUMO
@@ -1418,7 +1556,7 @@ startY:22,
 head:[['ITEM/SUBITEM','DESCRIÇÃO','PRODUTO','%']],
 body:rows,
 styles:{
-fontSize:6,
+fontSize:7.5,
 overflow:'linebreak',
 cellPadding:1.5,
 lineColor:[220,220,220],
@@ -1514,7 +1652,7 @@ headStyles:{
 fillColor:[7,89,201],
 textColor:[255,255,255],
 fontStyle:'bold',
-fontSize:7,
+fontSize:8.5,
 halign:'center',
 valign:'middle'
 },
@@ -1573,7 +1711,7 @@ doc.save('pdf_monitoramento_tag_sepat.pdf')
 /*=========================================================
 027 SEPAT PDF GRAFICOS
 =========================================================*/
-function gerarPDFGraficosSepat(){
+async function gerarPDFGraficosSepat(){
 
 let doc=criarDocSepat('p')
 
@@ -1584,7 +1722,7 @@ alert('Gráfico não encontrado')
 return
 }
 
-let img=canvas.toDataURL('image/png',1.0)
+let img=await gerarImagemHDChartSepat('graficoMasterSepat')
 
 doc.setFontSize(14)
 doc.setTextColor(0,0,0)
@@ -1665,7 +1803,7 @@ startY:24,
 head:[['Item','Subitem','Produto','Responsável','%']],
 body:rows,
 theme:'striped',
-styles:{fontSize:6,overflow:'linebreak',cellPadding:1.5},
+styles:{fontSize:7.5,overflow:'linebreak',cellPadding:1.5},
 headStyles:{fillColor:[4,120,87],textColor:[255,255,255]},
 columnStyles:{0:{cellWidth:22},1:{cellWidth:22},2:{cellWidth:130},3:{cellWidth:70},4:{cellWidth:18,halign:'center'}},
 margin:{top:18,bottom:28,left:5,right:5}
