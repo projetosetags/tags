@@ -1029,7 +1029,8 @@ i.cargo
 if(ocultar100){
 lista=lista.filter(i=>getTotalSepat(i)<100)
 }
-const mesAtual='mai'
+const mesesOrdem=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
+const mesAtual=mesesOrdem[new Date().getMonth()]
 let thModo=document.getElementById('thModoSepat')
 let thDescricao=document.getElementById('thDescricaoSepat')
 
@@ -1045,27 +1046,27 @@ let total=getTotalSepat(i)
 let html=`
 <tr>
 
-<td class="col-subitem">
+<td class="col-subitem" style="width:220px;min-width:220px;max-width:220px;font-size:10px;font-weight:900;line-height:1.5;white-space:normal;word-break:break-word;vertical-align:top;">
 ${modoTabelaSepat==='item'
 ?(i.item||'-')
 :(i.siglaitem||'-')}
 </td>
 
-<td style="max-width:420px">
+<td style="max-width:520px;font-size:10px;line-height:1.55;vertical-align:top;">
 ${modoTabelaSepat==='item'
 ?(i.descricaoitem||'-')
 :(i.subitem||'-')}
 </td>
 
-<td>
+<td style="font-size:9px;line-height:1.4;max-width:170px;vertical-align:top;">
 ${i.produto||'-'}
 </td>
 
-<td>
+<td style="font-size:9px;line-height:1.35;max-width:130px;vertical-align:top;">
 ${i.cargo||'-'}
 </td>
 
-<td>
+<td style="font-size:9px;text-align:center;white-space:nowrap;">
 ${formatarDataSepat(i.data_inicio)}
 </td>
 `
@@ -1099,15 +1100,9 @@ mes===mesAtual
 ?'mes-atual-sepat'
 :''
 
-let ocultar=(
-mes==='jun'||
-mes==='jul'||
-mes==='ago'||
-mes==='set'||
-mes==='out'||
-mes==='nov'||
-mes==='dez'
-)
+let indiceMes=mesesOrdem.indexOf(mes)
+let indiceAtual=mesesOrdem.indexOf(mesAtual)
+let ocultar=indiceMes>indiceAtual
 
 html+=`
 <td class="mes-col mes-${mes} ${clsMes} ${ocultar?'hidden':''}">
