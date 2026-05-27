@@ -1031,6 +1031,7 @@ lista=lista.filter(i=>getTotalSepat(i)<100)
 }
 const mesesOrdem=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
 const mesAtual=mesesOrdem[new Date().getMonth()]
+const indiceAtual=mesesOrdem.indexOf(mesAtual)
 let thModo=document.getElementById('thModoSepat')
 let thDescricao=document.getElementById('thDescricaoSepat')
 
@@ -1046,13 +1047,13 @@ let total=getTotalSepat(i)
 let html=`
 <tr>
 
-<td class="col-subitem" style="width:220px;min-width:220px;max-width:220px;font-size:10px;font-weight:900;line-height:1.5;white-space:normal;word-break:break-word;vertical-align:top;">
+<td class="col-subitem" style="width:340px;min-width:340px;max-width:340px;font-size:10px;font-weight:900;line-height:1.5;white-space:normal;word-break:break-word;vertical-align:top;">
 ${modoTabelaSepat==='item'
 ?(i.item||'-')
 :(i.siglaitem||'-')}
 </td>
 
-<td style="max-width:520px;font-size:10px;line-height:1.55;vertical-align:top;">
+<td style="max-width:760px;font-size:9px;line-height:1.55;vertical-align:top;">
 ${modoTabelaSepat==='item'
 ?(i.descricaoitem||'-')
 :(i.subitem||'-')}
@@ -1071,7 +1072,9 @@ ${formatarDataSepat(i.data_inicio)}
 </td>
 `
 
-MESES_SEPAT.forEach(mes=>{
+MESES_SEPAT
+.filter(m=>mesesOrdem.indexOf(m)<=indiceAtual)
+.forEach(mes=>{
 let nivel=Number(sepatUser?.nivel_acesso||99)
 let valorAtual=Number(i[mes]||0)
 let podeEditar=false
@@ -1100,12 +1103,8 @@ mes===mesAtual
 ?'mes-atual-sepat'
 :''
 
-let indiceMes=mesesOrdem.indexOf(mes)
-let indiceAtual=mesesOrdem.indexOf(mesAtual)
-let ocultar=indiceMes>indiceAtual
-
 html+=`
-<td class="mes-col mes-${mes} ${clsMes} ${ocultar?'hidden':''}">
+<td class="mes-col mes-${mes} ${clsMes}">
 <input
 type="text"
 inputmode="numeric"
