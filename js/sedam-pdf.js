@@ -9,14 +9,7 @@ doc.setFontSize(10)
 doc.text("BACKUP DELIBERAÇÕES",10,10)
 let rows=d.map(i=>[i.subitem,String(i.descricao||'-').substring(0,40),String(i.responsavel||'-'),Math.max(i.jan||0,i.fev||0,i.mar||0,i.abr||0,i.mai||0,i.jun||0,i.jul||0,i.ago||0,i.set||0,i.out||0,i.nov||0,i.dez||0)+'%'])
 doc.autoTable({head:[['Subitem','Descrição','Responsável','%']],body:rows,startY:24,styles:{fontSize:6},margin:{top:20,bottom:38,left:5,right:5},didDrawPage:function(data){let pageHeight=doc.internal.pageSize.height;let pageWidth=doc.internal.pageSize.width;doc.setFillColor(255,255,255);doc.rect(0,pageHeight-34,pageWidth,34,'F');doc.setTextColor(90,90,90);doc.setFontSize(7);doc.text('Tribunal de Contas do Estado de Rondônia - TAG SEDAM 2026',6,pageHeight-26);doc.setFontSize(4);doc.text(NOTA_TECNICA_PDF,10,pageHeight-18,{maxWidth:pageWidth-55,align:'justify'})}})
-let totalPages=doc.internal.getNumberOfPages()
-for(let i=1;i<=totalPages;i++){
-doc.setPage(i)
-let pageHeight=doc.internal.pageSize.height
-let pageWidth=doc.internal.pageSize.width
-doc.setFontSize(7)
-doc.text('Página '+i+' de '+totalPages,pageWidth-10,pageHeight-6,{align:'right'})
-}
+adicionarRodapePadraoPDF(doc)
 doc.save("backup_deliberacoes.pdf")
 }
 /*=========================================================
@@ -143,21 +136,7 @@ align:'justify'
 )
 }
 })
-let totalPages=doc.internal.getNumberOfPages()
-for(let i=1;i<=totalPages;i++){
-doc.setPage(i)
-let pageHeight=doc.internal.pageSize.height
-let pageWidth=doc.internal.pageSize.width
-doc.setFontSize(7)
-doc.text(
-'Página '+i+' de '+totalPages,
-pageWidth-10,
-pageHeight-6,
-{
-align:'right'
-}
-)
-}
+adicionarRodapePadraoPDF(doc)
 doc.save('pdf_resumo_tag_sedam.pdf')
 }
 /*=========================================================
@@ -310,14 +289,7 @@ texto=
 doc.text(texto,10,128,{maxWidth:185})
 doc.setFontSize(8)
 doc.text(NOTA_TECNICA_PDF,10,140,{maxWidth:190})
-let totalPages=doc.internal.getNumberOfPages()
-for(let i=1;i<=totalPages;i++){
-doc.setPage(i)
-let pageHeight=doc.internal.pageSize.height
-let pageWidth=doc.internal.pageSize.width
-doc.setFontSize(7)
-doc.text('Página '+i+' de '+totalPages,pageWidth-10,pageHeight-6,{align:'right'})
-}
+adicionarRodapePadraoPDF(doc)
 doc.save('pdf_graficos_tag_sedam.pdf')
 }
 /*=========================================================
@@ -439,21 +411,7 @@ align:'justify'
 )
 }
 })
-let totalPages=doc.internal.getNumberOfPages()
-for(let i=1;i<=totalPages;i++){
-doc.setPage(i)
-let pageHeight=doc.internal.pageSize.height
-let pageWidth=doc.internal.pageSize.width
-doc.setFontSize(7)
-doc.text(
-'Página '+i+' de '+totalPages,
-pageWidth-10,
-pageHeight-6,
-{
-align:'right'
-}
-)
-}
+adicionarRodapePadraoPDF(doc)
 doc.save('pdf_100_cumpridos_tag_sedam.pdf')
 }
 /*=========================================================
@@ -741,12 +699,13 @@ let margem=10
 let y=15
 pdf.setFont('helvetica','bold')
 pdf.setFontSize(18)
+pdf.setTextColor(25,25,25)
 pdf.text('DASHBOARD TAG SEDAM 2026',105,y,{align:'center'})
-y+=10
+y+=8
 pdf.setFontSize(9)
 pdf.setTextColor(90)
 pdf.text('Painel consolidado de acompanhamento do TAG SEDAM 2026',105,y,{align:'center'})
-y+=15
+y+=12
 let cards=[
 ['Média Geral',document.getElementById('dashboardMediaGeral')?.innerText||'0%'],
 ['Itens',document.getElementById('dashboardTotalItensCard')?.innerText||'0'],
@@ -758,43 +717,53 @@ let cards=[
 ]
 pdf.autoTable({
 startY:y,
-head:[['Indicador','Valor']],
+head:[['INDICADOR','VALOR']],
 body:cards,
 theme:'grid',
 styles:{
 fontSize:9,
-halign:'center'
+cellPadding:3,
+halign:'center',
+valign:'middle',
+lineColor:[220,220,220],
+lineWidth:.2
 },
 headStyles:{
-fillColor:[30,41,59]
+fillColor:[30,41,59],
+textColor:[255,255,255],
+fontStyle:'bold'
+},
+alternateRowStyles:{
+fillColor:[248,248,248]
+},
+margin:{
+left:20,
+right:20
 }
 })
-y=pdf.lastAutoTable.finalY+10
+y=pdf.lastAutoTable.finalY+12
 async function adicionarGrafico(canvasId,titulo){
 let canvas=document.getElementById(canvasId)
 if(!canvas)return
 let img=canvas.toDataURL('image/png',1.0)
-if(y>220){
+if(y>185){
 pdf.addPage()
 y=20
 }
 pdf.setFontSize(12)
-pdf.setTextColor(0)
+pdf.setTextColor(25,25,25)
 pdf.text(titulo,margem,y)
-y+=4
-pdf.addImage(img,'PNG',15,y,180,60)
-y+=70
+y+=5
+pdf.addImage(img,'PNG',12,y,186,58)
+y+=68
 }
 await adicionarGrafico('graficoDashboardItens','Desempenho por Item')
 await adicionarGrafico('graficoDashboardLinha','Evolução Mensal')
-await adicionarGrafico('graficoDashboardPizza','Distribuição')
-pdf.setFontSize(8)
-pdf.setTextColor(120)
-pdf.text('As informações possuem caráter preliminar e informativo.',10,290)
-pdf.text('Página '+pdf.internal.getNumberOfPages(),195,290,{align:'right'})
+await adicionarGrafico('graficoDashboardPizza','Distribuição dos Subitens')
 adicionarRodapePadraoPDF(pdf)
 pdf.save('dashboard-tag-sedam-2026.pdf')
 }
+
 function adicionarRodapePadraoPDF(pdf){
 let total=pdf.internal.getNumberOfPages()
 for(let i=1;i<=total;i++){
