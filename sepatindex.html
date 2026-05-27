@@ -180,15 +180,26 @@ OCULTAR 100%
 <input id="buscaMonitoramentoSepat" oninput="renderTabelaSepat()" placeholder="Pesquisar..." class="input-busca-sepat">
 <div class="flex items-center gap-2 ml-2">
 <button
-onclick="modoTabelaSepat='item';renderTabelaSepat()"
+onclick="
+modoTabelaSepat='item';
+document.getElementById('btnModoItemSepat').classList.add('ativo-sepat')
+document.getElementById('btnModoSubitemSepat').classList.remove('ativo-sepat')
+renderTabelaSepat()
+"
 id="btnModoItemSepat"
-class="text-[10px] bg-amber-500 hover:bg-amber-400 text-white px-3 py-1 rounded-xl font-black shadow">
+class="btn-modo-sepat ativo-sepat">
 ITEM
 </button>
+
 <button
-onclick="modoTabelaSepat='subitem';renderTabelaSepat()"
+onclick="
+modoTabelaSepat='subitem';
+document.getElementById('btnModoSubitemSepat').classList.add('ativo-sepat')
+document.getElementById('btnModoItemSepat').classList.remove('ativo-sepat')
+renderTabelaSepat()
+"
 id="btnModoSubitemSepat"
-class="text-[10px] bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-xl font-black shadow">
+class="btn-modo-sepat">
 SUBITEM
 </button>
 </div>
