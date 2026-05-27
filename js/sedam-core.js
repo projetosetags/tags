@@ -357,7 +357,29 @@ tabUsuarios.style.display='inline-flex'
 }
 
 }
+let btnsWord=document.querySelectorAll(
+'#btnWordResumo,#btnWordMonitoramento,#btnWordGraficos,#btnWordConcluidos'
+)
 
+btnsWord.forEach(btn=>{
+
+btn.classList.add('hidden')
+
+btn.style.display='none'
+
+})
+
+if(nivel===1){
+
+btnsWord.forEach(btn=>{
+
+btn.classList.remove('hidden')
+
+btn.style.display='inline-flex'
+
+})
+
+}
 }
 /*=========================================================
 003 SEDAM CORE FUNCTION SWITCHTAB
