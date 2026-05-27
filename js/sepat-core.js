@@ -1625,8 +1625,13 @@ function gerarPDFMonitoramentoSepat(){
 let doc=criarDocSepat('l')
 let lista=[...(sepatData||[])].sort(compareSepat)
 let rows=lista.map(i=>[
-String(i.siglaitem||'-'),
-String(i.descricaoitem||i.subitem||'-'),
+modoTabelaSepat==='item'
+?String(i.item||'-')
+:String(i.siglaitem||'-'),
+
+modoTabelaSepat==='item'
+?String(i.descricaoitem||'-')
+:String(i.subitem||'-'),
 String(i.produto||'-'),
 String(i.cargo||'-'),
 Number(i.jan||0)+'%',
@@ -1651,7 +1656,17 @@ doc.setTextColor(100)
 doc.text('Painel consolidado de monitoramento técnico da SEPAT.',14,19)
 doc.autoTable({
 startY:24,
-head:[['ITEM','SUBITEM / DESCRIÇÃO','PRODUTO','RESPONSÁVEL','JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ','TOTAL']],
+head:[[
+modoTabelaSepat==='item'
+?'ITEM'
+:'SUBITEM',
+
+modoTabelaSepat==='item'
+?'DESCRIÇÃO ITEM'
+:'DESCRIÇÃO',
+
+'PRODUTO',
+'RESPONSÁVEL','JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ','TOTAL']],
 body:rows,
 theme:'grid',
 styles:{
