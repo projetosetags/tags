@@ -778,7 +778,7 @@ listaTopo=listaTopo.filter(i=>getTotal(i)<100)
 
 let totalItens=[
 ...new Set(
-listaTopo.map(i=>
+window.allData.map(i=>
 Number(i.numitem||0)
 ).filter(Boolean)
 )
