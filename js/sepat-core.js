@@ -1021,17 +1021,31 @@ if(ocultar100){
 lista=lista.filter(i=>getTotalSepat(i)<100)
 }
 const mesAtual='mai'
+let thModo=document.getElementById('thModoSepat')
+let thDescricao=document.getElementById('thDescricaoSepat')
+
+if(modoTabelaSepat==='item'){
+if(thModo)thModo.innerText='ITEM'
+if(thDescricao)thDescricao.innerText='DESCRIÇÃO ITEM'
+}else{
+if(thModo)thModo.innerText='SUBITEM'
+if(thDescricao)thDescricao.innerText='DESCRIÇÃO'
+}
 tbody.innerHTML=lista.map(i=>{
 let total=getTotalSepat(i)
 let html=`
 <tr>
 
 <td class="col-subitem">
-${i.siglaitem||'-'}
+${modoTabelaSepat==='item'
+?(i.item||'-')
+:(i.siglaitem||'-')}
 </td>
 
 <td style="max-width:420px">
-${i.subitem||'-'}
+${modoTabelaSepat==='item'
+?(i.descricaoitem||'-')
+:(i.subitem||'-')}
 </td>
 
 <td>
