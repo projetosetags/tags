@@ -196,7 +196,14 @@ Sair
 
 <!-- 004 DASHBOARD -->
 <div id="view-dashboard" class="tab-view hidden">
-
+<div class="flex justify-end items-center gap-2 mb-4 flex-wrap">
+<button onclick="gerarPDFDashboard()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+📄 PDF
+</button>
+<button id="btnWordDashboard" onclick="gerarWordDashboard()" class="hidden text-xs bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+📝 WORD
+</button>
+</div>
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-3 mb-4">
 
 <div id="cardMediaGeral" class="bg-white/90 rounded-3xl p-5 shadow border border-emerald-100">
@@ -312,7 +319,6 @@ SUBITEM
 <div class="flex justify-end items-center gap-2 ml-auto flex-wrap">
 
 <input id="dataInicio" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
-
 <input id="dataFim" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
 <button onclick="gerarPDFResumo()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
 📄 PDF
@@ -320,12 +326,7 @@ SUBITEM
 <button id="btnWordResumo" onclick="gerarWordResumo()" class="hidden text-xs bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
 📝 WORD
 </button>
-<button onclick="gerarPDFMonitoramento()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
-📄 PDF
-</button>
-<button id="btnWordMonitoramento" onclick="gerarWordMonitoramento()" class="hidden text-xs bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
-📝 WORD
-</button>
+
 <button type="button" onclick="toggleOcultarConcluidos()" id="btn-ocultar" class="text-xs bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
 OCULTAR 100%
 </button>
@@ -368,7 +369,12 @@ type="date"
 onchange="aplicarFiltroData()"
 class="text-xs bg-white border border-slate-300 text-slate-800 px-4 py-2 rounded-2xl shadow-sm font-bold min-w-[170px]"
 >
-
+<button onclick="gerarPDFMonitoramento()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+📄 PDF
+</button>
+<button id="btnWordMonitoramento" onclick="gerarWordMonitoramento()" class="hidden text-xs bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+📝 WORD
+</button>
 <button
 type="button"
 onclick="toggleOcultarConcluidos()"
