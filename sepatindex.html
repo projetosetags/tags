@@ -178,6 +178,20 @@ OCULTAR 100%
 <section id="view-monitoramento" class="view-sepat hidden">
 <div class="barra-filtros-sepat">
 <input id="buscaMonitoramentoSepat" oninput="renderTabelaSepat()" placeholder="Pesquisar..." class="input-busca-sepat">
+<div class="flex items-center gap-2 ml-2">
+<button
+onclick="modoTabelaSepat='item';renderTabelaSepat()"
+id="btnModoItemSepat"
+class="text-[10px] bg-amber-500 hover:bg-amber-400 text-white px-3 py-1 rounded-xl font-black shadow">
+ITEM
+</button>
+<button
+onclick="modoTabelaSepat='subitem';renderTabelaSepat()"
+id="btnModoSubitemSepat"
+class="text-[10px] bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-xl font-black shadow">
+SUBITEM
+</button>
+</div>
 <button onclick="gerarPDFMonitoramentoSepat()" class="btn-pdf-sepat">PDF Monitoramento</button>
 <button onclick="gerarWordMonitoramentoSepat()" class="btn-pdf-sepat btn-word-sepat">WORD Monitoramento</button>
 <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:1000;white-space:nowrap">
@@ -190,8 +204,10 @@ OCULTAR 100%
 <table class="tabela-sepat">
 <thead>
 <tr>
-<th class="col-subitem">SUBITEM</th>
-<th>DESCRIÇÃO</th>
+<th id="thModoSepat" class="col-subitem">
+SUBITEM
+</th>
+<th id="thDescricaoSepat">DESCRIÇÃO</th>
 <th>PRODUTOS</th>
 <th>RESPONSÁVEL(IS)</th>
 <th>DATA INÍCIO</th>
