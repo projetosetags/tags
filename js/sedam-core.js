@@ -778,19 +778,9 @@ listaTopo=listaTopo.filter(i=>getTotal(i)<100)
 
 let totalItens=[
 ...new Set(
-listaTopo.map(i=>{
-
-let sub=String(i.subitem||'').trim()
-
-let partes=sub.split('.')
-
-if(partes.length){
-return partes[0]
-}
-
-return String(i.item||'0')
-
-})
+listaTopo.map(i=>
+Number(i.numitem||0)
+).filter(Boolean)
 )
 ].length
 
@@ -1260,19 +1250,9 @@ String(i.subitem||'').trim()!==''
 ).length
 
 let totalItens=new Set(
-lista.map(i=>{
-
-let sub=String(i.subitem||'').trim()
-
-let partes=sub.split('.')
-
-if(partes.length){
-return partes[0]
-}
-
-return String(i.item||'').trim()
-
-}).filter(Boolean)
+lista.map(i=>
+Number(i.numitem||0)
+).filter(Boolean)
 ).size
 
 let media=Math.round(
