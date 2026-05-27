@@ -182,3 +182,6 @@ border:1px solid rgba(255,255,255,.18)!important;
 transform:translateY(-1px);
 filter:brightness(1.05);
 }
+.btn-modo-sepat{background:linear-gradient(135deg,#f8fafc,#e2e8f0);border:1px solid #cbd5e1;color:#334155;padding:7px 14px;border-radius:14px;font-size:11px;font-weight:900;letter-spacing:.4px;box-shadow:0 3px 10px rgba(0,0,0,.08);transition:.25s;display:inline-flex;align-items:center;justify-content:center;min-width:82px;}
+.btn-modo-sepat:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.14);background:linear-gradient(135deg,#ffffff,#dbeafe);}
+.btn-modo-sepat.ativo-sepat{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:1px solid #2563eb;box-shadow:0 6px 18px rgba(37,99,235,.35);}
