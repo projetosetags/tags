@@ -1680,11 +1680,11 @@ halign:'left',
 valign:'top'
 },
 1:{
-cellWidth:96,
+cellWidth:90,
 valign:'top'
 },
 2:{
-cellWidth:44,
+cellWidth:40,
 valign:'top'
 },
 3:{
