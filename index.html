@@ -305,9 +305,16 @@ As informações constantes neste painel possuem caráter preliminar e informati
 <!-- 005 RESUMO -->
 <div id="view-resumo" class="tab-view">
 
-<div class="flex flex-wrap items-center justify-between gap-3 mb-4 bg-white/80 rounded-[26px] p-4 shadow-sm">
+<div class="barra-topo-resumo">
 
-<div id="boxModoResumo" class="flex items-center gap-2 ml-auto flex-wrap">
+<input
+id="buscaResumo"
+type="text"
+placeholder="Pesquisar..."
+oninput="renderResumo()"
+class="input-busca-resumo">
+
+<div class="acoes-topo-resumo">
 
 <button
 onclick="
@@ -333,48 +340,32 @@ class="btn-modo-resumo">
 SUBITEM
 </button>
 
-<input
-id="dataInicio"
-type="date"
-onchange="aplicarFiltroData()"
-class="input-data-resumo">
-
-<input
-id="dataFim"
-type="date"
-onchange="aplicarFiltroData()"
-class="input-data-resumo">
-
 <button
 onclick="gerarPDFResumo()"
 class="btn-pdf-resumo">
-📄 PDF
+PDF RESUMO
 </button>
 
 <button
 id="btnWordResumo"
 onclick="gerarWordResumo()"
-class="btn-word-resumo hidden">
-📝 WORD
+class="btn-word-resumo">
+WORD RESUMO
 </button>
 
-<button
-type="button"
-onclick="toggleOcultarConcluidos()"
-id="btn-ocultar"
-class="btn-ocultar-resumo">
+<label class="check-ocultar-resumo">
+<input
+type="checkbox"
+id="ocultar100Resumo"
+onchange="renderResumo()">
 OCULTAR 100%
-</button>
-
+</label>
 </div>
-
 </div>
-
 <div
 id="cards-container"
 class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
 </div>
-
 </div>
 
 <!-- 006 MONITORAMENTO -->
