@@ -1793,7 +1793,10 @@ window.location.href='sepatindex.html'
 function abrirPainelQueimadas(){
 alert('Painel de Combate às Queimadas em desenvolvimento.')
 }
-function voltarPainelGeralSedam(){
+
+function voltarPainelGeral(){
+localStorage.removeItem('user')
+localStorage.removeItem('uid')
 let geral=document.getElementById('painel-geral-acesso')
 let login=document.getElementById('login-screen')
 let dash=document.getElementById('dashboard')
@@ -1812,6 +1815,7 @@ if(dash){
 dash.classList.add('hidden')
 dash.style.display='none'
 }
+window.scrollTo(0,0)
 }
 
 async function backupSedam(){
