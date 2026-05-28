@@ -219,12 +219,7 @@ sepatFiltrados=[]
 document.getElementById('app-sepat').classList.add('hidden')
 document.getElementById('login-sepat').classList.remove('hidden')
 }
-/*=========================================================
-005 SEPAT CORE VOLTAR PAINEL GERAL
-=========================================================*/
-function voltarPainelGeral(){
-window.location.href='index.html'
-}
+
 /*=========================================================
 006 SEPAT CORE PERMISSOES
 =========================================================*/
@@ -984,135 +979,6 @@ ${MESES_SEPAT.slice(0,5).map(m=>`
 modal.classList.remove('hidden')
 }
 ```javascript
-/*=========================================================
-015A WORD BASE OFICIAL
-=========================================================*/
-function baixarWord(nome,conteudo){
-
-let html=`
-<html xmlns:o='urn:schemas-microsoft-com:office:office'
-xmlns:w='urn:schemas-microsoft-com:office:word'
-xmlns='http://www.w3.org/TR/REC-html40'>
-
-<head>
-
-<meta charset='utf-8'>
-
-<title>${nome}</title>
-
-<style>
-
-@page{
-size:A4;
-margin-top:3cm;
-margin-right:2cm;
-margin-bottom:2cm;
-margin-left:3cm;
-}
-
-body{
-font-family:Calibri,Arial,sans-serif;
-font-size:12pt;
-line-height:1.15;
-text-align:justify;
-color:#111827;
-}
-
-h1{
-font-family:Calibri,Arial,sans-serif;
-font-size:16pt;
-font-weight:700;
-margin-top:0;
-margin-bottom:16px;
-color:#0f172a;
-}
-
-h2{
-font-family:Calibri,Arial,sans-serif;
-font-size:13pt;
-font-weight:700;
-margin-top:18px;
-margin-bottom:10px;
-color:#0f172a;
-}
-
-p{
-font-family:Calibri,Arial,sans-serif;
-font-size:12pt;
-line-height:1.15;
-text-align:justify;
-margin-top:0;
-margin-bottom:10pt;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:12px;
-margin-bottom:18px;
-font-family:Calibri,Arial,sans-serif;
-font-size:8pt;
-}
-
-th{
-background:#e5e7eb;
-font-weight:700;
-text-align:center;
-padding:6px;
-border:1px solid #9ca3af;
-}
-
-td{
-padding:5px;
-border:1px solid #cbd5e1;
-vertical-align:top;
-text-align:justify;
-}
-
-.small{
-font-size:8pt;
-line-height:1.15;
-color:#555;
-}
-
-</style>
-
-</head>
-
-<body>
-
-${conteudo}
-
-</body>
-
-</html>
-`
-
-let blob=new Blob(
-['\ufeff',html],
-{
-type:'application/msword'
-}
-)
-
-let url=URL.createObjectURL(blob)
-
-let a=document.createElement('a')
-
-a.href=url
-
-a.download=nome+'.doc'
-
-document.body.appendChild(a)
-
-a.click()
-
-document.body.removeChild(a)
-
-URL.revokeObjectURL(url)
-
-}
-```
 
 /*=========================================================
 016 SEPAT CORE FECHAR MODAL
@@ -2875,7 +2741,7 @@ html
 }
 
 /*=========================================================
-054 WORD CONCLUIDOS
+055 WORD CONCLUIDOS
 =========================================================*/
 function gerarWordConcluidosSepat(){
 
@@ -2940,7 +2806,7 @@ ${linhas}
 </table>
 
 <p class="small">
-Relatório consolidado dos subitens integralmente cumpridos.
+Relatório consolidado dos subitens integralmente cumpridos da TAG SEPAT 2026.
 </p>
 
 `
@@ -2951,6 +2817,620 @@ html
 )
 
 }
+/*=========================================================
+056 WORD GRAFICOS
+=========================================================*/
+function gerarWordGraficosSepat(){
+
+let desc=document.getElementById('descGraficoSepat')?.innerText||'-'
+
+let itemSelecionado=document.getElementById('filtroItemSepat')?.value||'todos'
+
+let subSelecionado=document.getElementById('filtroSubitemSepat')?.value||'TOTAL'
+
+let html=`
+
+<h1>
+ANÁLISE GRÁFICA - TAG SEPAT 2026
+</h1>
+
+<p>
+Relatório consolidado de análise gráfica e evolução estratégica da TAG SEPAT 2026.
+</p>
+
+<table>
+
+<tr>
+<th>Filtro</th>
+<th>Informação</th>
+</tr>
+
+<tr>
+<td>Item Selecionado</td>
+<td>${itemSelecionado}</td>
+</tr>
+
+<tr>
+<td>Subitem Selecionado</td>
+<td>${subSelecionado}</td>
+</tr>
+
+<tr>
+<td>Descrição Consolidada</td>
+<td>${desc}</td>
+</tr>
+
+</table>
+
+<p class="small">
+Os dados apresentados possuem caráter preliminar e dependem de validação técnica documental.
+</p>
+
+`
+
+baixarWordSepat(
+'Graficos_TAG_SEPAT_2026',
+html
+)
+
+}
+/*=========================================================
+057 EXPORTAR TODOS PDF
+=========================================================*/
+async function exportarTodosPDFSepat(){
+
+await gerarPDFDashboardSepat()
+
+await gerarPDFResumoSepat()
+
+await gerarPDFMonitoramentoSepat()
+
+await gerarPDFGraficosSepat()
+
+await gerarPDFConcluidosSepat()
+
+}
+/*=========================================================
+058 EXPORTAR TODOS WORD
+=========================================================*/
+async function exportarTodosWordSepat(){
+
+gerarWordDashboardSepat()
+
+gerarWordResumoSepat()
+
+gerarWordMonitoramentoSepat()
+
+gerarWordGraficosSepat()
+
+gerarWordConcluidosSepat()
+
+}
+/*=========================================================
+059 FORMATAR PERCENTUAL
+=========================================================*/
+function formatarPercentualSepat(v){
+
+v=Number(v||0)
+
+if(isNaN(v))v=0
+
+return parseInt(v)+'%'
+
+}
+/*=========================================================
+060 FORMATAR TEXTO
+=========================================================*/
+function formatarTextoSepat(v){
+
+return String(v||'-')
+.trim()
+
+}
+/*=========================================================
+061 FORMATAR SETOR
+=========================================================*/
+function formatarSetorSepat(i){
+
+return String(
+i.cargo||
+i.setor||
+i.coordenadoria||
+'-'
+)
+
+}
+/*=========================================================
+062 FORMATAR PRODUTO
+=========================================================*/
+function formatarProdutoSepat(i){
+
+return String(
+i.produto||
+'-'
+)
+
+}
+/*=========================================================
+063 FORMATAR ITEM
+=========================================================*/
+function formatarItemSepat(i){
+
+return String(
+i.item||
+i.siglaitem||
+'-'
+)
+
+}
+/*=========================================================
+064 FORMATAR SUBITEM
+=========================================================*/
+function formatarSubitemSepat(i){
+
+return String(
+i.subitem||
+'-'
+)
+
+}
+/*=========================================================
+065 FORMATAR DESCRICAO
+=========================================================*/
+function formatarDescricaoSepat(i){
+
+return String(
+i.descricaoitem||
+i.subitem||
+'-'
+)
+
+}
+/*=========================================================
+066 LIMPAR CACHE LOCAL
+=========================================================*/
+function limparCacheSepat(){
+
+localStorage.removeItem('sepatUser')
+
+localStorage.removeItem('sepat_tab')
+
+alert('Cache local removido com sucesso.')
+
+location.reload()
+
+}
+/*=========================================================
+067 RECARREGAR DADOS
+=========================================================*/
+async function recarregarDadosSepat(){
+
+await carregarSepatDados()
+
+renderDashboardSepat()
+
+renderResumoSepat()
+
+renderTabelaSepat()
+
+renderConcluidosSepat()
+
+popularItensSepat()
+
+popularSubitensSepat()
+
+renderGraficoMasterSepat()
+
+}
+/*=========================================================
+068 FECHAR MODAL AO CLICAR FORA
+=========================================================*/
+window.addEventListener('click',e=>{
+
+let modal=document.getElementById('modalSepat')
+
+if(
+modal&&
+e.target===modal
+){
+fecharModalSepat()
+}
+
+})
+/*=========================================================
+069 ENTER LOGIN
+=========================================================*/
+window.addEventListener('keydown',e=>{
+
+if(e.key==='Enter'){
+
+let login=document.getElementById('login-sepat')
+
+if(
+login&&
+!login.classList.contains('hidden')
+){
+loginSepat()
+}
+
+}
+
+})
+/*=========================================================
+070 AUTO INIT
+=========================================================*/
+async function initSepat(){
+
+try{
+
+await carregarSepatDados()
+
+renderDashboardSepat()
+
+renderResumoSepat()
+
+renderTabelaSepat()
+
+renderConcluidosSepat()
+
+popularItensSepat()
+
+popularSubitensSepat()
+
+renderGraficoMasterSepat()
+
+}catch(e){
+
+console.log(e)
+
+}
+
+}
+/*=========================================================
+071 FILTROS AUTOMATICOS
+=========================================================*/
+function aplicarFiltrosSepat(){
+
+renderResumoSepat()
+
+renderTabelaSepat()
+
+renderConcluidosSepat()
+
+renderDashboardSepat()
+
+}
+/*=========================================================
+072 RESET FILTROS
+=========================================================*/
+function resetarFiltrosSepat(){
+
+let busca=document.getElementById('buscaMonitoramentoSepat')
+
+if(busca){
+busca.value=''
+}
+
+let ocultar1=document.getElementById('ocultar100Sepat')
+
+if(ocultar1){
+ocultar1.checked=false
+}
+
+let ocultar2=document.getElementById('ocultar100ResumoSepat')
+
+if(ocultar2){
+ocultar2.checked=false
+}
+
+renderResumoSepat()
+
+renderTabelaSepat()
+
+renderConcluidosSepat()
+
+}
+/*=========================================================
+073 TOTALIZADORES
+=========================================================*/
+function obterTotaisSepat(){
+
+let lista=[...(sepatData||[])]
+
+return{
+
+itens:[...new Set(
+lista.map(i=>String(i.siglaitem||'').trim())
+.filter(Boolean)
+)].length,
+
+subitens:lista.length,
+
+produtos:[...new Set(
+lista.map(i=>String(i.produto||'').trim())
+.filter(Boolean)
+)].length,
+
+concluidos:lista.filter(i=>getTotalSepat(i)>=100).length,
+
+media:Math.round(
+lista.reduce((acc,c)=>acc+getTotalSepat(c),0)/(lista.length||1)
+)
+
+}
+
+}
+/*=========================================================
+074 KPI MINI UPDATE
+=========================================================*/
+function atualizarKPIsDashboardSepat(){
+
+let t=obterTotaisSepat()
+
+let itens=document.getElementById('kpiItensSepat')
+let subitens=document.getElementById('kpiSubitensSepat')
+let produtos=document.getElementById('kpiProdutosSepat')
+let media=document.getElementById('kpiMediaSepat')
+
+if(itens)itens.innerText=t.itens
+if(subitens)subitens.innerText=t.subitens
+if(produtos)produtos.innerText=t.produtos
+if(media)media.innerText=t.media+'%'
+
+}
+/*=========================================================
+075 VALIDAR NUMERO
+=========================================================*/
+function validarNumeroSepat(v){
+
+v=Number(v||0)
+
+if(isNaN(v))v=0
+
+if(v<0)v=0
+
+if(v>100)v=100
+
+return v
+
+}
 ```
-
-
+```javascript
+/*=========================================================
+076 ATUALIZAR TODOS OS PAINEIS
+=========================================================*/
+function atualizarTodosPaineisSepat(){
+renderDashboardSepat()
+renderResumoSepat()
+renderTabelaSepat()
+renderConcluidosSepat()
+popularItensSepat()
+popularSubitensSepat()
+renderGraficoMasterSepat()
+atualizarMiniKPIsSepat()
+atualizarKPIsDashboardSepat()
+}
+/*=========================================================
+077 ORDENAR LISTA
+=========================================================*/
+function ordenarListaSepat(lista){
+return[...(lista||[])].sort(compareSepat)
+}
+/*=========================================================
+078 FILTRAR 100
+=========================================================*/
+function filtrar100Sepat(lista){
+return[...(lista||[])].filter(i=>getTotalSepat(i)>=100)
+}
+/*=========================================================
+079 FILTRAR PENDENTES
+=========================================================*/
+function filtrarPendentesSepat(lista){
+return[...(lista||[])].filter(i=>getTotalSepat(i)<=0)
+}
+/*=========================================================
+080 FILTRAR ANDAMENTO
+=========================================================*/
+function filtrarAndamentoSepat(lista){
+return[...(lista||[])].filter(i=>getTotalSepat(i)>0&&getTotalSepat(i)<100)
+}
+/*=========================================================
+081 TOTAL MEDIO
+=========================================================*/
+function calcularMediaSepat(lista){
+lista=[...(lista||[])]
+return Math.round(lista.reduce((acc,c)=>acc+getTotalSepat(c),0)/(lista.length||1))
+}
+/*=========================================================
+082 EXPORTAR JSON
+=========================================================*/
+function exportarJSONSepat(){
+let lista=[...(sepatData||[])]
+let blob=new Blob([JSON.stringify(lista,null,2)],{type:'application/json'})
+let a=document.createElement('a')
+a.href=URL.createObjectURL(blob)
+a.download='tag_sepat_2026.json'
+a.click()
+}
+/*=========================================================
+083 EXPORTAR CSV
+=========================================================*/
+function exportarCSVSepat(){
+let lista=[...(sepatData||[])]
+let cab=['ITEM','SUBITEM','DESCRICAO','PRODUTO','TOTAL']
+let linhas=lista.map(i=>[
+`"${i.siglaitem||''}"`,
+`"${i.subitem||''}"`,
+`"${String(i.descricaoitem||'').replace(/"/g,'')}"`,
+`"${String(i.produto||'').replace(/"/g,'')}"`,
+`"${getTotalSepat(i)}%"`
+].join(';'))
+let csv=[cab.join(';'),...linhas].join('\n')
+let blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'})
+let a=document.createElement('a')
+a.href=URL.createObjectURL(blob)
+a.download='tag_sepat_2026.csv'
+a.click()
+}
+/*=========================================================
+084 GERAR BACKUP COMPLETO
+=========================================================*/
+async function gerarBackupCompletoSepat(){
+await backupSepat()
+exportarCSVSepat()
+exportarJSONSepat()
+}
+/*=========================================================
+085 STATUS CLASSE
+=========================================================*/
+function obterStatusClasseSepat(v){
+v=Number(v||0)
+if(v>=100)return'status-verde'
+if(v>0&&v<100)return'status-amarelo'
+return'status-vermelho'
+}
+/*=========================================================
+086 STATUS TEXTO
+=========================================================*/
+function obterStatusTextoSepat(v){
+v=Number(v||0)
+if(v>=100)return'100% CUMPRIDO'
+if(v>0&&v<100)return'EM EXECUÇÃO'
+return'PENDENTE'
+}
+/*=========================================================
+087 GERAR RESUMO EXECUTIVO
+=========================================================*/
+function gerarResumoExecutivoSepat(){
+let lista=[...(sepatData||[])]
+let totais=obterTotaisSepat()
+return`Painel consolidado TAG SEPAT 2026.
+Itens Estratégicos:
+${totais.itens}
+Subitens Monitorados:
+${totais.subitens}
+Produtos Estratégicos:
+${totais.produtos}
+Subitens 100% Cumpridos:
+${totais.concluidos}
+Média Geral Consolidada:
+${totais.media}%`
+}
+/*=========================================================
+088 COPIAR RESUMO
+=========================================================*/
+async function copiarResumoSepat(){
+let texto=gerarResumoExecutivoSepat()
+try{
+await navigator.clipboard.writeText(texto)
+alert('Resumo copiado com sucesso.')
+}catch(e){
+console.log(e)
+alert('Erro ao copiar resumo.')
+}
+}
+/*=========================================================
+089 GERAR HTML RELATORIO
+=========================================================*/
+function gerarHTMLRelatorioSepat(){
+let resumo=gerarResumoExecutivoSepat()
+return`
+<div style="font-family:Calibri,Arial,sans-serif;font-size:12pt;line-height:1.5;color:#111827;">
+<h1 style="font-size:18pt;font-weight:700;color:#0f172a;">
+RELATÓRIO EXECUTIVO - TAG SEPAT 2026
+</h1>
+<p style="white-space:pre-line;">
+${resumo}
+</p>
+</div>
+`
+}
+/*=========================================================
+090 IMPRIMIR RELATORIO
+=========================================================*/
+function imprimirRelatorioSepat(){
+let html=gerarHTMLRelatorioSepat()
+let w=window.open('','_blank')
+w.document.write(html)
+w.document.close()
+w.focus()
+w.print()
+}
+/*=========================================================
+091 VALIDAR LOGIN
+=========================================================*/
+function validarLoginSepat(){
+if(!sepatUser){
+alert('Sessão inválida.')
+logoutSepat()
+return false
+}
+return true
+}
+/*=========================================================
+092 VALIDAR ADMIN
+=========================================================*/
+function validarAdminSepat(){
+if(!sepatUser||Number(sepatUser.nivel_acesso||99)!==1){
+alert('Acesso restrito.')
+return false
+}
+return true
+}
+/*=========================================================
+093 CONTAR CONCLUIDOS
+=========================================================*/
+function contarConcluidosSepat(){
+return(sepatData||[]).filter(i=>getTotalSepat(i)>=100).length
+}
+/*=========================================================
+094 CONTAR PENDENTES
+=========================================================*/
+function contarPendentesSepat(){
+return(sepatData||[]).filter(i=>getTotalSepat(i)<=0).length
+}
+/*=========================================================
+095 CONTAR ANDAMENTO
+=========================================================*/
+function contarAndamentoSepat(){
+return(sepatData||[]).filter(i=>getTotalSepat(i)>0&&getTotalSepat(i)<100).length
+}
+/*=========================================================
+096 OBTER DATA ATUAL
+=========================================================*/
+function obterDataAtualSepat(){
+let d=new Date()
+let dia=String(d.getDate()).padStart(2,'0')
+let mes=String(d.getMonth()+1).padStart(2,'0')
+let ano=d.getFullYear()
+return`${dia}/${mes}/${ano}`
+}
+/*=========================================================
+097 GERAR TITULO PDF
+=========================================================*/
+function gerarTituloPDFSepat(titulo){
+return titulo+' • TAG SEPAT 2026'
+}
+/*=========================================================
+098 GERAR TITULO WORD
+=========================================================*/
+function gerarTituloWordSepat(titulo){
+return titulo+' - TAG SEPAT 2026'
+}
+/*=========================================================
+099 PREPARAR EXPORTACAO
+=========================================================*/
+function prepararExportacaoSepat(){
+let data=obterDataAtualSepat()
+return{
+data:data,
+usuario:sepatUser?.nome_completo||'-',
+origem:sepatUser?.origem||'SEPAT'
+}
+}
+/*=========================================================
+100 FINALIZAR SISTEMA
+=========================================================*/
+console.log('TAG SEPAT 2026 • Sistema carregado com sucesso.')
+```
+function truncarSepat(txt,n)
