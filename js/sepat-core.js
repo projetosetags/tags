@@ -1819,7 +1819,11 @@ doc.setTextColor(110)
 doc.text('As informações constantes neste painel possuem caráter preliminar e dependem de validação técnica documental.',14,finalY+8,{maxWidth:250})
 }
 rodapeSepat(doc)
-doc.save('pdf_monitoramento_tag_sepat.pdf')
+doc.save(
+modoTabelaSepat==='item'
+?'Itens_Monitoramento_TAG_SEPAT_2026.pdf'
+:'Subitens_Monitoramento_TAG_SEPAT_2026.pdf'
+)
 }
 /*=========================================================
 027 SEPAT PDF GRAFICOS
