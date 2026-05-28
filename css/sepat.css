@@ -126,3 +126,13 @@ img{max-width:100%;display:block;}
 /*=========================================================014 RESPONSIVO=========================================================*/
 @media(max-width:1200px){.kpis-sepat{grid-template-columns:repeat(2,1fr);}.grid-dashboard-sepat{grid-template-columns:1fr;}.tabela-wrap-sepat{max-height:none;}}
 @media(max-width:680px){.main-sepat{padding:10px;}.topo-sepat{flex-direction:column;align-items:flex-start;gap:10px;}.tabs-sepat{top:118px;}.tab-sepat{min-width:110px!important;height:68px!important;font-size:10px!important;}.kpis-sepat{grid-template-columns:1fr;}.kpi-sepat{height:96px;}.kpi-sepat strong{font-size:42px!important;}.grid-dashboard-sepat{grid-template-columns:1fr;}.card-title-sepat{font-size:20px!important;}.cards-resumo-sepat,#cardsConcluidosSepat{grid-template-columns:1fr!important;}.barra-filtros-sepat{align-items:stretch;}.btn-pdf-sepat,.btn-word-sepat,.btn-modo-sepat,.input-busca-sepat{width:100%!important;min-width:100%!important;}}
+/*=========================================================
+041 RESUMO BOTOES
+=========================================================*/
+.btn-modo-resumo{height:42px;padding:0 18px;border-radius:16px;background:linear-gradient(135deg,#f8fafc,#dbe4f0);border:1px solid #cbd5e1;color:#334155;font-size:11px;font-weight:1000;display:inline-flex;align-items:center;justify-content:center;transition:.2s;box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.btn-modo-resumo:hover{transform:translateY(-1px);background:linear-gradient(135deg,#ffffff,#dbeafe);}
+.btn-modo-resumo.ativo-resumo{background:linear-gradient(135deg,#2563eb,#1d4ed8);border-color:#2563eb;color:#fff;box-shadow:0 8px 18px rgba(37,99,235,.35);}
+.input-data-resumo{height:42px;padding:0 14px;border-radius:16px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;font-size:11px;font-weight:900;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.btn-pdf-resumo{height:42px;padding:0 18px;border:none;border-radius:16px;background:#dc2626;color:#fff;font-size:11px;font-weight:1000;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(220,38,38,.22);}
+.btn-word-resumo{height:42px;padding:0 18px;border:none;border-radius:16px;background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;font-size:11px;font-weight:1000;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(37,99,235,.25);}
+.btn-ocultar-resumo{height:42px;padding:0 18px;border:none;border-radius:16px;background:#0f172a;color:#fff;font-size:11px;font-weight:1000;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(15,23,42,.22);}
