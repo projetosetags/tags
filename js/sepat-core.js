@@ -1967,21 +1967,35 @@ doc.save('pdf_graficos_tag_sepat.pdf')
 028 SEPAT PDF CONCLUIDOS
 =========================================================*/
 function gerarPDFConcluidosSepat(){
+
 let doc=criarDocSepat('l')
-let lista=[...(sepatData||[])].filter(i=>getTotalSepat(i)>=100).sort(compareSepat)
+
+let lista=[...(sepatData||[])]
+.filter(i=>getTotalSepat(i)>=100)
+.sort(compareSepat)
+
 let rows=lista.map(i=>[
+
+modoConclusaoSepat==='item'
+?String(i.siglaitem||i.subitem||'-')
+:String(i.item||'-'),
+
 modoConclusaoSepat==='item'
 ?String(i.item||'-')
 :String(i.siglaitem||i.subitem||'-'),
+
 modoConclusaoSepat==='item'
 ?String(i.tematica||'-')
 :String(i.subitem||'-'),
+
 modoConclusaoSepat==='item'
 ?String(i.descricaoitem||'-')
 :String(i.produto||'-'),
+
 '100%'
+
 ])
-doc.setFontSize(14)
+
 doc.setFontSize(14)
 
 doc.text(
@@ -1991,24 +2005,45 @@ modoConclusaoSepat==='item'
 10,
 12
 )
+
 doc.setFontSize(10)
-doc.text('TOTAL: '+lista.length,10,18)
+
+doc.text(
+'TOTAL: '+lista.length,
+10,
+18
+)
+
 doc.autoTable({
+
 startY:24,
+
 head:[[
+
+modoConclusaoSepat==='item'
+?'SUBITEM'
+:'ITEM',
+
 modoConclusaoSepat==='item'
 ?'ITEM'
 :'SUBITEM',
+
 modoConclusaoSepat==='item'
 ?'TEMÁTICA'
 :'DESCRIÇÃO',
+
 modoConclusaoSepat==='item'
 ?'DESCRIÇÃO ITEM'
 :'PRODUTO',
+
 '%'
+
 ]],
+
 body:rows,
+
 theme:'striped',
+
 styles:{
 fontSize:6.6,
 overflow:'linebreak',
@@ -2018,6 +2053,7 @@ textColor:[15,23,42],
 lineColor:[210,215,220],
 lineWidth:.15
 },
+
 headStyles:{
 fillColor:[15,23,42],
 textColor:[255,255,255],
@@ -2026,45 +2062,61 @@ fontSize:8.2,
 halign:'center',
 valign:'middle'
 },
+
 alternateRowStyles:{
 fillColor:[245,247,250]
 },
+
 columnStyles:{
+
 0:{
-cellWidth:34,
-halign:'left',
+cellWidth:24,
+halign:'center',
 valign:'top'
 },
+
 1:{
-cellWidth:52,
+cellWidth:28,
+halign:'center',
 valign:'top'
 },
+
 2:{
-cellWidth:152,
+cellWidth:44,
 valign:'top'
 },
+
 3:{
+cellWidth:136,
+valign:'top'
+},
+
+4:{
 cellWidth:14,
 halign:'center',
 valign:'middle'
 }
+
 },
+
 margin:{
 top:18,
 bottom:42,
 left:5,
 right:5
 }
+
 })
+
 rodapeSepat(doc)
+
 doc.save(
 modoConclusaoSepat==='item'
 ?'Itens_100%_Cumpridos_TAG_SEPAT_2026.pdf'
 :'Subitens_100%_Cumpridos_TAG_SEPAT_2026.pdf'
 )
+
 }
-
-
 
 let editandoPerfisSepat=false
 
