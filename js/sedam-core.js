@@ -1889,3 +1889,103 @@ totalGeral.innerText=media+'%'
 }
 
 }
+/*=========================================================
+006 WORD FUNCTION GERARWORDCUMPRIDOS
+=========================================================*/
+async function gerarWordCumpridos(){
+
+let lista=(window.allData||[])
+.filter(i=>getTotal(i)>=100)
+.sort(compareSubitem)
+
+let html=`
+<html>
+<head>
+<meta charset="UTF-8">
+<title>100% Cumpridos TAG SEDAM 2026</title>
+<style>
+body{
+font-family:Arial;
+padding:20px;
+font-size:12px;
+}
+table{
+width:100%;
+border-collapse:collapse;
+}
+th,td{
+border:1px solid #999;
+padding:6px;
+vertical-align:top;
+}
+th{
+background:#dbeafe;
+}
+</style>
+</head>
+<body>
+
+<h2>SUBITENS 100% CUMPRIDOS - TAG SEDAM 2026</h2>
+
+<p>
+TOTAL DE SUBITENS: ${lista.length}
+</p>
+
+<table>
+
+<tr>
+<th>ITEM</th>
+<th>SUBITEM</th>
+<th>DESCRIÇÃO</th>
+<th>PRODUTO</th>
+<th>SETOR</th>
+<th>%</th>
+</tr>
+`
+
+lista.forEach(i=>{
+
+html+=`
+<tr>
+
+<td>
+${i.item||'-'}
+</td>
+
+<td>
+${i.subitem||'-'}
+</td>
+
+<td>
+${i.descricao||'-'}
+</td>
+
+<td>
+${i.produto||'-'}
+</td>
+
+<td>
+${i.setor||i.coordenadoria||'-'}
+</td>
+
+<td>
+100%
+</td>
+
+</tr>
+`
+
+})
+
+html+=`
+</table>
+</body>
+</html>
+`
+
+baixarWord(
+html,
+'100_Cumpridos_TAG_SEDAM_2026.doc'
+)
+
+}
