@@ -983,21 +983,106 @@ ${MESES_SEPAT.slice(0,5).map(m=>`
 `
 modal.classList.remove('hidden')
 }
+```javascript
 /*=========================================================
-015A baixar word
+015A WORD BASE OFICIAL
 =========================================================*/
 function baixarWord(nome,conteudo){
+
 let html=`
 <html xmlns:o='urn:schemas-microsoft-com:office:office'
 xmlns:w='urn:schemas-microsoft-com:office:word'
 xmlns='http://www.w3.org/TR/REC-html40'>
+
 <head>
+
 <meta charset='utf-8'>
+
 <title>${nome}</title>
+
+<style>
+
+@page{
+size:A4;
+margin-top:3cm;
+margin-right:2cm;
+margin-bottom:2cm;
+margin-left:3cm;
+}
+
+body{
+font-family:Calibri,Arial,sans-serif;
+font-size:12pt;
+line-height:1.15;
+text-align:justify;
+color:#111827;
+}
+
+h1{
+font-family:Calibri,Arial,sans-serif;
+font-size:16pt;
+font-weight:700;
+margin-top:0;
+margin-bottom:16px;
+color:#0f172a;
+}
+
+h2{
+font-family:Calibri,Arial,sans-serif;
+font-size:13pt;
+font-weight:700;
+margin-top:18px;
+margin-bottom:10px;
+color:#0f172a;
+}
+
+p{
+font-family:Calibri,Arial,sans-serif;
+font-size:12pt;
+line-height:1.15;
+text-align:justify;
+margin-top:0;
+margin-bottom:10pt;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:12px;
+margin-bottom:18px;
+font-family:Calibri,Arial,sans-serif;
+font-size:8pt;
+}
+
+th{
+background:#e5e7eb;
+font-weight:700;
+text-align:center;
+padding:6px;
+border:1px solid #9ca3af;
+}
+
+td{
+padding:5px;
+border:1px solid #cbd5e1;
+vertical-align:top;
+text-align:justify;
+}
+
+.small{
+font-size:8pt;
+line-height:1.15;
+color:#555;
+}
+
+</style>
+
 </head>
 
 <body>
+
 ${conteudo}
+
 </body>
 
 </html>
@@ -1027,6 +1112,8 @@ document.body.removeChild(a)
 URL.revokeObjectURL(url)
 
 }
+```
+
 /*=========================================================
 016 SEPAT CORE FECHAR MODAL
 =========================================================*/
