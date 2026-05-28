@@ -144,3 +144,4 @@ img{max-width:100%;display:block;}
 .acoes-topo-resumo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto;}
 .check-ocultar-resumo{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:1000;color:#0f172a;white-space:nowrap;}
 .check-ocultar-resumo input{width:16px;height:16px;}
+.box-pesquisa-resumo{flex:1;display:flex;align-items:center;min-width:320px;}
