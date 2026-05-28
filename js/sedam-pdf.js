@@ -158,69 +158,200 @@ return 0
 004 PDF FUNCTION GERARPDFMONITORAMENTO
 =========================================================*/
 async function gerarPDFMonitoramento(){
+
 const {jsPDF}=window.jspdf
+
 let doc=new jsPDF('l','mm','a4')
-let lista=[...(window.allData||[])].sort(compareSubitemPDF)
-doc.setFontSize(14)
-doc.text('MONITORAMENTO COMPLETO - TAG SEDAM 2026',10,12)
-let rows=lista.map(i=>{
-let total=getTotal(i)
-return[
-i.subitem||'-',
-i.descricao||'-',
-String(i.produto||'-'),
-String(i.responsavel||'-'),
-(i.jan||0)+'%',
-(i.fev||0)+'%',
-(i.mar||0)+'%',
-(i.abr||0)+'%',
-(i.mai||0)+'%',
-total+'%'
+
+let lista=[...(window.allData||[])]
+.sort(compareSubitemPDF)
+
+let meses=[
+{campo:'jan',label:'JAN'},
+{campo:'fev',label:'FEV'},
+{campo:'mar',label:'MAR'},
+{campo:'abr',label:'ABR'},
+{campo:'mai',label:'MAI'},
+{campo:'jun',label:'JUN'},
+{campo:'jul',label:'JUL'},
+{campo:'ago',label:'AGO'},
+{campo:'set',label:'SET'},
+{campo:'out',label:'OUT'},
+{campo:'nov',label:'NOV'},
+{campo:'dez',label:'DEZ'}
 ]
+
+let mesAtual=new Date().getMonth()
+
+let mesesAtivos=meses.slice(0,mesAtual+1)
+
+doc.setFontSize(14)
+
+doc.text(
+'MONITORAMENTO COMPLETO - TAG SEDAM 2026',
+10,
+12
+)
+
+let rows=lista.map(i=>{
+
+let total=getTotal(i)
+
+let linha=[
+
+modoTabela==='item'
+?String(i.item||'-')
+:String(i.subitem||'-'),
+
+modoTabela==='item'
+?String(i.descricaoitem||'-')
+:String(i.descricao||'-'),
+
+String(i.produto||'-'),
+
+String(i.setor||i.coordenadoria||'-')
+
+]
+
+mesesAtivos.forEach(m=>{
+
+linha.push(
+Number(i[m.campo]||0)+'%'
+)
+
 })
+
+linha.push(total+'%')
+
+return linha
+
+})
+
 doc.autoTable({
+
 startY:24,
-head:[['Sub','Descrição Completa','Produtos','Responsável','JAN','FEV','MAR','ABR','MAI','TOTAL']],
+
+head:[[
+
+modoTabela==='item'
+?'ITEM'
+:'SUBITEM',
+
+modoTabela==='item'
+?'DESCRIÇÃO ITEM'
+:'DESCRIÇÃO',
+
+'PRODUTO',
+
+'SETOR',
+
+...mesesAtivos.map(m=>m.label),
+
+'TOTAL'
+
+]],
+
 body:rows,
+
 theme:'grid',
+
 styles:{
 fontSize:6,
 overflow:'linebreak',
 cellPadding:2,
 valign:'middle'
 },
+
 headStyles:{
 fillColor:[180,150,110],
 textColor:[0,0,0],
 fontStyle:'bold'
 },
-columnStyles:{
-0:{cellWidth:14},
-1:{cellWidth:82},
-2:{cellWidth:72},
-3:{cellWidth:40},
-4:{cellWidth:10},
-5:{cellWidth:10},
-6:{cellWidth:10},
-7:{cellWidth:10},
-8:{cellWidth:10},
-9:{cellWidth:16}
+
+columnStyles:(()=>{
+
+let estilos={
+
+0:{
+cellWidth:22,
+halign:'center',
+valign:'top'
 },
+
+1:{
+cellWidth:96,
+valign:'top'
+},
+
+2:{
+cellWidth:64,
+valign:'top'
+},
+
+3:{
+cellWidth:34,
+valign:'top'
+}
+
+}
+
+let indice=4
+
+mesesAtivos.forEach(()=>{
+
+estilos[indice]={
+cellWidth:10,
+halign:'center'
+}
+
+indice++
+
+})
+
+estilos[indice]={
+cellWidth:16,
+halign:'center'
+}
+
+return estilos
+
+})(),
+
 margin:{
 top:20,
 bottom:38,
 left:5,
 right:5
 },
+
 didDrawPage:function(data){
+
 let pageHeight=doc.internal.pageSize.height
+
 let pageWidth=doc.internal.pageSize.width
+
 doc.setFillColor(255,255,255)
-doc.rect(0,pageHeight-34,pageWidth,34,'F')
+
+doc.rect(
+0,
+pageHeight-34,
+pageWidth,
+34,
+'F'
+)
+
 doc.setTextColor(90,90,90)
+
 doc.setFontSize(7)
-doc.text('Tribunal de Contas do Estado de Rondônia - TAG SEDAM 2026',6,pageHeight-26)
+
+doc.text(
+'Tribunal de Contas do Estado de Rondônia - TAG SEDAM 2026',
+6,
+pageHeight-26
+)
+
 doc.setFontSize(4)
+
 doc.text(
 NOTA_TECNICA_PDF,
 10,
@@ -230,21 +361,41 @@ maxWidth:pageWidth-55,
 align:'justify'
 }
 )
+
 }
+
 })
-let finalY=doc.lastAutoTable.finalY+10
+
+let finalY=(doc.lastAutoTable.finalY||240)+10
+
 doc.setFontSize(10)
-let total100=lista.filter(i=>getTotal(i)>=100).length
-let media=Math.round(lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1))
+
+let total100=lista
+.filter(i=>getTotal(i)>=100)
+.length
+
+let media=Math.round(
+lista.reduce(
+(acc,c)=>acc+getTotal(c),
+0
+)/(lista.length||1)
+)
+
 doc.text(
-'O monitoramento consolidado demonstra '+lista.length+' subitens estratégicos acompanhados, sendo '+total100+' integralmente cumpridos (100%). A média geral consolidada do painel corresponde a '+media+'% de execução.',
+'O monitoramento consolidado demonstra '+lista.length+' registros estratégicos acompanhados, sendo '+total100+' integralmente cumpridos (100%). A média geral consolidada do painel corresponde a '+media+'% de execução.',
 10,
 finalY,
 {
 maxWidth:260
 }
 )
-doc.save('pdf_monitoramento_tag_sedam.pdf')
+
+doc.save(
+modoTabela==='item'
+?'Itens_Monitoramento_TAG_SEDAM_2026.pdf'
+:'Subitens_Monitoramento_TAG_SEDAM_2026.pdf'
+)
+
 }
 /*=========================================================
 004 PDF FUNCTION GERARPDFGRAFICOS
