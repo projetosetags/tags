@@ -2415,6 +2415,7 @@ btn.style.display='none'
 }
 
 }
+
 /*=========================================================
 050 EXPORTAR WORD BASE
 =========================================================*/
@@ -2424,13 +2425,97 @@ let html=`
 <html xmlns:o='urn:schemas-microsoft-com:office:office'
 xmlns:w='urn:schemas-microsoft-com:office:word'
 xmlns='http://www.w3.org/TR/REC-html40'>
+
 <head>
+
 <meta charset='utf-8'>
+
 <title>${nome}</title>
+
+<style>
+
+@page{
+size:A4;
+margin-top:3cm;
+margin-right:2cm;
+margin-bottom:2cm;
+margin-left:3cm;
+}
+
+body{
+font-family:Calibri,Arial,sans-serif;
+font-size:12pt;
+line-height:1.15;
+text-align:justify;
+color:#111827;
+}
+
+h1{
+font-family:Calibri,Arial,sans-serif;
+font-size:16pt;
+font-weight:700;
+margin-bottom:14px;
+color:#0f172a;
+}
+
+h2{
+font-family:Calibri,Arial,sans-serif;
+font-size:13pt;
+font-weight:700;
+margin-top:18px;
+margin-bottom:10px;
+color:#0f172a;
+}
+
+p{
+font-family:Calibri,Arial,sans-serif;
+font-size:12pt;
+line-height:1.15;
+text-align:justify;
+margin-top:0;
+margin-bottom:10px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:12px;
+margin-bottom:18px;
+font-family:Calibri,Arial,sans-serif;
+font-size:8pt;
+}
+
+th{
+background:#e5e7eb;
+font-weight:700;
+text-align:center;
+padding:6px;
+border:1px solid #9ca3af;
+}
+
+td{
+padding:5px;
+border:1px solid #cbd5e1;
+vertical-align:top;
+text-align:justify;
+}
+
+.small{
+font-size:8pt;
+line-height:1.15;
+color:#555;
+}
+
+</style>
+
 </head>
+
 <body>
+
 ${conteudo}
+
 </body>
+
 </html>
 `
 
@@ -2458,7 +2543,7 @@ document.body.removeChild(a)
 URL.revokeObjectURL(url)
 
 }
-
+```javascript
 /*=========================================================
 051 WORD DASHBOARD
 =========================================================*/
@@ -2470,30 +2555,35 @@ let produtos=document.getElementById('kpiProdutosSepat')?.innerText||'0'
 let media=document.getElementById('kpiMediaSepat')?.innerText||'0%'
 
 let html=`
+
 <h1>DASHBOARD EXECUTIVO - TAG SEPAT 2026</h1>
 
-<table border="1" cellspacing="0" cellpadding="6">
+<p>
+Painel consolidado de monitoramento técnico da TAG SEPAT 2026.
+</p>
+
+<table>
+
 <tr>
 <th>Itens Estratégicos</th>
 <th>Subitens</th>
 <th>Produtos</th>
 <th>Média Geral</th>
 </tr>
+
 <tr>
-<td>${itens}</td>
-<td>${subitens}</td>
-<td>${produtos}</td>
-<td>${media}</td>
+<td align="center">${itens}</td>
+<td align="center">${subitens}</td>
+<td align="center">${produtos}</td>
+<td align="center">${media}</td>
 </tr>
+
 </table>
 
-<br>
-
-<h2>Relatório Executivo</h2>
-
-<p>
-Painel consolidado de monitoramento técnico da TAG SEPAT 2026.
+<p class="small">
+Documento gerado automaticamente pelo sistema de monitoramento TAG SEPAT 2026.
 </p>
+
 `
 
 baixarWordSepat(
@@ -2502,114 +2592,93 @@ html
 )
 
 }
-function gerarWordMonitoramentoSepat(){
 
-let linhas=(sepatData||[]).map(i=>`
-<tr>
-<td>${i.siglaitem||'-'}</td>
-<td>${i.descricaoitem||'-'}</td>
-<td>${i.produto||'-'}</td>
-<td>${i.cargo||'-'}</td>
-<td>${getTotalSepat(i)}%</td>
-</tr>
-`).join('')
-
-let html=`
-<h1>MONITORAMENTO TAG SEPAT 2026</h1>
-
-<table border="1" cellspacing="0" cellpadding="5">
-<tr>
-<th>Item</th>
-<th>Descrição</th>
-<th>Produto</th>
-<th>Responsável</th>
-<th>Total</th>
-</tr>
-
-${linhas}
-
-</table>
-`
-
-baixarWordSepat(
-'monitoramento_tag_sepat',
-html
-)
-
-}
+/*=========================================================
+052 WORD RESUMO
+=========================================================*/
 function gerarWordResumoSepat(){
 
 let lista=[...(sepatData||[])].sort(compareSepat)
 
-let html=`
-<h1 style="font-family:Arial;color:#0f172a;">
-RESUMO EXECUTIVO - TAG SEPAT 2026
-</h1>
-
-<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-family:Arial;font-size:10pt;">
-
-<tr style="background:#0f172a;color:#ffffff;font-weight:bold;">
-
-<th style="width:18%;">
-${modoResumoSepat==='item'?'ITEM':'SUBITEM'}
-</th>
-
-<th style="width:48%;">
-${modoResumoSepat==='item'?'DESCRIÇÃO ITEM':'DESCRIÇÃO'}
-</th>
-
-<th style="width:26%;">
-PRODUTO
-</th>
-
-<th style="width:8%;">
-%
-</th>
-
-</tr>
-`
+let linhas=''
 
 lista.forEach(i=>{
 
-html+=`
+linhas+=`
+
 <tr>
 
-<td valign="top">
+<td>
 ${modoResumoSepat==='item'
 ?(i.item||'-')
 :(i.siglaitem||'-')}
 </td>
 
-<td valign="top">
+<td>
 ${modoResumoSepat==='item'
 ?(i.descricaoitem||'-')
 :(i.subitem||'-')}
 </td>
 
-<td valign="top">
+<td>
 ${i.produto||'-'}
 </td>
 
-<td align="center" valign="middle">
+<td align="center">
 ${getTotalSepat(i)}%
 </td>
 
 </tr>
+
 `
 
 })
 
-html+=`
+let html=`
+
+<h1>
+${modoResumoSepat==='item'
+?'ITENS - RESUMO EXECUTIVO TAG SEPAT 2026'
+:'SUBITENS - RESUMO EXECUTIVO TAG SEPAT 2026'}
+</h1>
+
+<table>
+
+<tr>
+
+<th>
+${modoResumoSepat==='item'
+?'ITEM'
+:'SUBITEM'}
+</th>
+
+<th>
+${modoResumoSepat==='item'
+?'DESCRIÇÃO ITEM'
+:'DESCRIÇÃO'}
+</th>
+
+<th>
+PRODUTO
+</th>
+
+<th>
+%
+</th>
+
+</tr>
+
+${linhas}
+
 </table>
 
-<br>
-
-<p style="font-size:8pt;color:#555;line-height:1.5;">
-As informações constantes neste painel possuem caráter preliminar e dependem de validação técnica documental.
+<p class="small">
+As informações constantes neste relatório possuem caráter preliminar e dependem de validação técnica documental.
 </p>
+
 `
 
-baixarWord(
+baixarWordSepat(
 modoResumoSepat==='item'
 ?'Itens_Resumo_TAG_SEPAT_2026'
 :'Subitens_Resumo_TAG_SEPAT_2026',
@@ -2617,3 +2686,184 @@ html
 )
 
 }
+
+/*=========================================================
+053 WORD MONITORAMENTO
+=========================================================*/
+function gerarWordMonitoramentoSepat(){
+
+let lista=[...(sepatData||[])].sort(compareSepat)
+
+let linhas=''
+
+lista.forEach(i=>{
+
+linhas+=`
+
+<tr>
+
+<td>
+${modoTabelaSepat==='item'
+?(i.item||'-')
+:(i.siglaitem||'-')}
+</td>
+
+<td>
+${modoTabelaSepat==='item'
+?(i.descricaoitem||'-')
+:(i.subitem||'-')}
+</td>
+
+<td>
+${i.produto||'-'}
+</td>
+
+<td>
+${i.cargo||'-'}
+</td>
+
+<td align="center">
+${getTotalSepat(i)}%
+</td>
+
+</tr>
+
+`
+
+})
+
+let html=`
+
+<h1>
+MONITORAMENTO COMPLETO - TAG SEPAT 2026
+</h1>
+
+<table>
+
+<tr>
+
+<th>
+${modoTabelaSepat==='item'
+?'ITEM'
+:'SUBITEM'}
+</th>
+
+<th>
+${modoTabelaSepat==='item'
+?'DESCRIÇÃO ITEM'
+:'DESCRIÇÃO'}
+</th>
+
+<th>
+PRODUTO
+</th>
+
+<th>
+RESPONSÁVEL
+</th>
+
+<th>
+TOTAL
+</th>
+
+</tr>
+
+${linhas}
+
+</table>
+
+<p class="small">
+Relatório consolidado de acompanhamento técnico da TAG SEPAT 2026.
+</p>
+
+`
+
+baixarWordSepat(
+modoTabelaSepat==='item'
+?'Itens_Monitoramento_TAG_SEPAT_2026'
+:'Subitens_Monitoramento_TAG_SEPAT_2026',
+html
+)
+
+}
+
+/*=========================================================
+054 WORD CONCLUIDOS
+=========================================================*/
+function gerarWordConcluidosSepat(){
+
+let lista=[...(sepatData||[])]
+.filter(i=>getTotalSepat(i)>=100)
+.sort(compareSepat)
+
+let linhas=''
+
+lista.forEach(i=>{
+
+linhas+=`
+
+<tr>
+
+<td>
+${i.siglaitem||'-'}
+</td>
+
+<td>
+${i.subitem||'-'}
+</td>
+
+<td>
+${i.descricaoitem||'-'}
+</td>
+
+<td>
+${i.produto||'-'}
+</td>
+
+<td align="center">
+100%
+</td>
+
+</tr>
+
+`
+
+})
+
+let html=`
+
+<h1>
+SUBITENS 100% CUMPRIDOS - TAG SEPAT 2026
+</h1>
+
+<table>
+
+<tr>
+
+<th>ITEM</th>
+<th>SUBITEM</th>
+<th>DESCRIÇÃO</th>
+<th>PRODUTO</th>
+<th>%</th>
+
+</tr>
+
+${linhas}
+
+</table>
+
+<p class="small">
+Relatório consolidado dos subitens integralmente cumpridos.
+</p>
+
+`
+
+baixarWordSepat(
+'Subitens_100_Cumpridos_TAG_SEPAT_2026',
+html
+)
+
+}
+```
+
+
