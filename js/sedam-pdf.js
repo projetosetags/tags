@@ -477,6 +477,7 @@ doc.save('pdf_100_cumpridos_tag_sedam.pdf')
 }
 ```
 ```javascript id="ui12fn2"
+```javascript
 /*=========================================================
 051 WORD DASHBOARD
 =========================================================*/
@@ -485,51 +486,30 @@ let itens=document.getElementById('dashboardTotalItens')?.innerText||'0'
 let subitens=document.getElementById('dashboardTotalSubitens')?.innerText||'0'
 let media=document.getElementById('dashboardMediaGeral')?.innerText||'0%'
 let html=`
-<h1 style="
-font-family:Calibri,Arial,sans-serif;
-font-size:18pt;
-font-weight:700;
-color:#1e293b;
-margin-bottom:12px;
-">
+<h1 style="font-family:Calibri,Arial,sans-serif;font-size:18pt;font-weight:700;color:#1e293b;margin-bottom:12px;">
 DASHBOARD EXECUTIVO - TAG SEDAM 2026
 </h1>
-<table border="1" cellspacing="0" cellpadding="6" style="
-width:100%;
-border-collapse:collapse;
-font-family:Calibri,Arial,sans-serif;
-font-size:10pt;
-">
-<tr style="
-background:#1e293b;
-color:#ffffff;
-font-weight:bold;
-">
+<table border="1" cellspacing="0" cellpadding="6" style="width:100%;border-collapse:collapse;font-family:Calibri,Arial,sans-serif;font-size:10pt;">
+<tr style="background:#1e293b;color:#ffffff;font-weight:bold;">
 <th>Itens Estratégicos</th>
 <th>Subitens</th>
 <th>Média Geral</th>
 </tr>
 <tr>
-<td>${itens}</td>
-<td>${subitens}</td>
-<td>${media}</td>
+<td align="center">${itens}</td>
+<td align="center">${subitens}</td>
+<td align="center">${media}</td>
 </tr>
 </table>
 <br>
-<h2 style="
-font-family:Calibri,Arial,sans-serif;
-font-size:14pt;
-color:#1e293b;
-">
+<h2 style="font-family:Calibri,Arial,sans-serif;font-size:14pt;color:#1e293b;">
 Relatório Executivo
 </h2>
-<p style="
-font-family:Calibri,Arial,sans-serif;
-font-size:11pt;
-line-height:1.5;
-text-align:justify;
-">
+<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.5;text-align:justify;">
 Painel consolidado de acompanhamento técnico do TAG SEDAM 2026 contendo indicadores estratégicos, evolução consolidada e análise gerencial.
+</p>
+<p style="font-family:Calibri,Arial,sans-serif;font-size:9pt;color:#475569;line-height:1.45;text-align:justify;">
+As informações constantes neste relatório possuem caráter preliminar e dependem de validação técnica documental pela equipe técnica do Tribunal de Contas do Estado de Rondônia.
 </p>
 `
 baixarWord(
@@ -537,6 +517,8 @@ baixarWord(
 html
 )
 }
+```
+
 /*=========================================================
 050 WORD BASE
 =========================================================*/
