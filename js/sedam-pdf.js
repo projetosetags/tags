@@ -1,4 +1,3 @@
-```javascript
 /*=========================================================
 001 PDF FUNCTION GERARPDFBACKUP
 =========================================================*/
@@ -69,7 +68,7 @@ adicionarRodapePadraoPDF(doc)
 doc.save('backup_deliberacoes_tag_sedam.pdf')
 }
 /*=========================================================
-003 PDF FUNCTION GERARPDFRESUMO
+002 PDF FUNCTION GERARPDFRESUMO
 =========================================================*/
 async function gerarPDFResumo(){
 const {jsPDF}=window.jspdf
@@ -171,7 +170,7 @@ adicionarRodapePadraoPDF(doc)
 doc.save('pdf_resumo_tag_sedam.pdf')
 }
 /*=========================================================
-00 PDF FUNCTION COMPARESUBITEMPDF
+003 PDF FUNCTION COMPARESUBITEMPDF
 =========================================================*/
 function compareSubitemPDF(a,b){
 let sa=String(a.subitem||a.item||'0.0').replace(/[^\d\.]/g,'')
@@ -321,7 +320,7 @@ modoTabela==='item'
 )
 }
 /*=========================================================
-00 PDF FUNCTION GERARPDFGRAFICOS
+005 PDF FUNCTION GERARPDFGRAFICOS
 =========================================================*/
 async function gerarPDFGraficos(){
 const {jsPDF}=window.jspdf
@@ -377,7 +376,7 @@ adicionarRodapePadraoPDF(doc)
 doc.save('pdf_graficos_tag_sedam.pdf')
 }
 /*=========================================================
-005 PDF FUNCTION GERARPDFCUMPRIDOS
+006 PDF FUNCTION GERARPDFCUMPRIDOS
 =========================================================*/
 async function gerarPDFCumpridos(){
 const {jsPDF}=window.jspdf
@@ -475,8 +474,6 @@ bottom:38
 adicionarRodapePadraoPDF(doc)
 doc.save('pdf_100_cumpridos_tag_sedam.pdf')
 }
-```
-```javascript
 /*=========================================================
 050 WORD BASE
 =========================================================*/
@@ -768,8 +765,6 @@ ${linhas}
 `
 baixarWord('100_tag_sedam',html)
 }
-```
-
 /*=========================================================
 056 PDF DASHBOARD
 =========================================================*/
@@ -1081,5 +1076,3 @@ return String(i.item||'-')
 function formatarSubitemPDF(i){
 return String(i.subitem||'-')
 }
-
-
