@@ -984,6 +984,50 @@ ${MESES_SEPAT.slice(0,5).map(m=>`
 modal.classList.remove('hidden')
 }
 /*=========================================================
+015A baixar word
+=========================================================*/
+function baixarWord(nome,conteudo){
+let html=`
+<html xmlns:o='urn:schemas-microsoft-com:office:office'
+xmlns:w='urn:schemas-microsoft-com:office:word'
+xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='utf-8'>
+<title>${nome}</title>
+</head>
+
+<body>
+${conteudo}
+</body>
+
+</html>
+`
+
+let blob=new Blob(
+['\ufeff',html],
+{
+type:'application/msword'
+}
+)
+
+let url=URL.createObjectURL(blob)
+
+let a=document.createElement('a')
+
+a.href=url
+
+a.download=nome+'.doc'
+
+document.body.appendChild(a)
+
+a.click()
+
+document.body.removeChild(a)
+
+URL.revokeObjectURL(url)
+
+}
+/*=========================================================
 016 SEPAT CORE FECHAR MODAL
 =========================================================*/
 function fecharModalSepat(){
