@@ -1631,29 +1631,29 @@ fillColor:[248,248,248]
 },
 columnStyles:{
 0:{
-cellWidth:44,
+cellWidth:40,
 halign:'left',
 valign:'top'
 },
 1:{
-cellWidth:104,
+cellWidth:96,
 valign:'top'
 },
 2:{
-cellWidth:54,
+cellWidth:44,
 valign:'top'
 },
 3:{
-cellWidth:16,
+cellWidth:12,
 halign:'center',
 valign:'middle'
 }
 },
 margin:{
-top:18,
-bottom:36,
-left:5,
-right:5
+top:20,
+bottom:42,
+left:4,
+right:4
 },
 pageBreak:'auto',
 rowPageBreak:'avoid',
@@ -2437,6 +2437,86 @@ ${linhas}
 
 baixarWordSepat(
 'monitoramento_tag_sepat',
+html
+)
+
+}
+function gerarWordResumoSepat(){
+
+let lista=[...(sepatData||[])].sort(compareSepat)
+
+let html=`
+<h1 style="font-family:Arial;color:#0f172a;">
+RESUMO EXECUTIVO - TAG SEPAT 2026
+</h1>
+
+<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-family:Arial;font-size:10pt;">
+
+<tr style="background:#0f172a;color:#ffffff;font-weight:bold;">
+
+<th style="width:18%;">
+${modoResumoSepat==='item'?'ITEM':'SUBITEM'}
+</th>
+
+<th style="width:48%;">
+${modoResumoSepat==='item'?'DESCRIÇÃO ITEM':'DESCRIÇÃO'}
+</th>
+
+<th style="width:26%;">
+PRODUTO
+</th>
+
+<th style="width:8%;">
+%
+</th>
+
+</tr>
+`
+
+lista.forEach(i=>{
+
+html+=`
+<tr>
+
+<td valign="top">
+${modoResumoSepat==='item'
+?(i.item||'-')
+:(i.siglaitem||'-')}
+</td>
+
+<td valign="top">
+${modoResumoSepat==='item'
+?(i.descricaoitem||'-')
+:(i.subitem||'-')}
+</td>
+
+<td valign="top">
+${i.produto||'-'}
+</td>
+
+<td align="center" valign="middle">
+${getTotalSepat(i)}%
+</td>
+
+</tr>
+`
+
+})
+
+html+=`
+</table>
+
+<br>
+
+<p style="font-size:8pt;color:#555;line-height:1.5;">
+As informações constantes neste painel possuem caráter preliminar e dependem de validação técnica documental.
+</p>
+`
+
+baixarWord(
+modoResumoSepat==='item'
+?'Itens_Resumo_TAG_SEPAT_2026'
+:'Subitens_Resumo_TAG_SEPAT_2026',
 html
 )
 
