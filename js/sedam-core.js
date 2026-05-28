@@ -8,7 +8,8 @@ document.body.style.visibility='hidden'
 let geral=document.getElementById('painel-geral-acesso')
 let login=document.getElementById('login-screen')
 let dash=document.getElementById('dashboard')
-
+let dataInicio=document.getElementById('dataInicio')
+let dataFim=document.getElementById('dataFim')
 let dataInicioMensal=document.getElementById('dataInicioMensal')
 let dataFimMensal=document.getElementById('dataFimMensal')
 
