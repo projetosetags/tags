@@ -476,49 +476,7 @@ adicionarRodapePadraoPDF(doc)
 doc.save('pdf_100_cumpridos_tag_sedam.pdf')
 }
 ```
-```javascript id="ui12fn2"
 ```javascript
-/*=========================================================
-051 WORD DASHBOARD
-=========================================================*/
-function gerarWordDashboard(){
-let itens=document.getElementById('dashboardTotalItens')?.innerText||'0'
-let subitens=document.getElementById('dashboardTotalSubitens')?.innerText||'0'
-let media=document.getElementById('dashboardMediaGeral')?.innerText||'0%'
-let html=`
-<h1 style="font-family:Calibri,Arial,sans-serif;font-size:18pt;font-weight:700;color:#1e293b;margin-bottom:12px;">
-DASHBOARD EXECUTIVO - TAG SEDAM 2026
-</h1>
-<table border="1" cellspacing="0" cellpadding="6" style="width:100%;border-collapse:collapse;font-family:Calibri,Arial,sans-serif;font-size:10pt;">
-<tr style="background:#1e293b;color:#ffffff;font-weight:bold;">
-<th>Itens Estratégicos</th>
-<th>Subitens</th>
-<th>Média Geral</th>
-</tr>
-<tr>
-<td align="center">${itens}</td>
-<td align="center">${subitens}</td>
-<td align="center">${media}</td>
-</tr>
-</table>
-<br>
-<h2 style="font-family:Calibri,Arial,sans-serif;font-size:14pt;color:#1e293b;">
-Relatório Executivo
-</h2>
-<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.5;text-align:justify;">
-Painel consolidado de acompanhamento técnico do TAG SEDAM 2026 contendo indicadores estratégicos, evolução consolidada e análise gerencial.
-</p>
-<p style="font-family:Calibri,Arial,sans-serif;font-size:9pt;color:#475569;line-height:1.45;text-align:justify;">
-As informações constantes neste relatório possuem caráter preliminar e dependem de validação técnica documental pela equipe técnica do Tribunal de Contas do Estado de Rondônia.
-</p>
-`
-baixarWord(
-'dashboard_tag_sedam',
-html
-)
-}
-```
-
 /*=========================================================
 050 WORD BASE
 =========================================================*/
@@ -585,13 +543,47 @@ document.body.removeChild(a)
 URL.revokeObjectURL(url)
 }
 /*=========================================================
-051 WORD RESUMO
+051 WORD DASHBOARD
+=========================================================*/
+function gerarWordDashboard(){
+let itens=document.getElementById('dashboardTotalItens')?.innerText||'0'
+let subitens=document.getElementById('dashboardTotalSubitens')?.innerText||'0'
+let media=document.getElementById('dashboardMediaGeral')?.innerText||'0%'
+let html=`
+<h1 style="font-family:Calibri,Arial,sans-serif;font-size:18pt;font-weight:700;color:#1e293b;margin-bottom:12px;">
+DASHBOARD EXECUTIVO - TAG SEDAM 2026
+</h1>
+<table border="1" cellspacing="0" cellpadding="6" style="width:100%;border-collapse:collapse;font-family:Calibri,Arial,sans-serif;font-size:10pt;">
+<tr style="background:#1e293b;color:#ffffff;font-weight:bold;">
+<th>Itens Estratégicos</th>
+<th>Subitens</th>
+<th>Média Geral</th>
+</tr>
+<tr>
+<td align="center">${itens}</td>
+<td align="center">${subitens}</td>
+<td align="center">${media}</td>
+</tr>
+</table>
+<br>
+<h2 style="font-family:Calibri,Arial,sans-serif;font-size:14pt;color:#1e293b;">
+Relatório Executivo
+</h2>
+<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.5;text-align:justify;">
+Painel consolidado de acompanhamento técnico do TAG SEDAM 2026 contendo indicadores estratégicos, evolução consolidada e análise gerencial.
+</p>
+<p style="font-family:Calibri,Arial,sans-serif;font-size:9pt;color:#475569;line-height:1.45;text-align:justify;">
+As informações constantes neste relatório possuem caráter preliminar e dependem de validação técnica documental pela equipe técnica do Tribunal de Contas do Estado de Rondônia.
+</p>
+`
+baixarWord('dashboard_tag_sedam',html)
+}
+/*=========================================================
+052 WORD RESUMO
 =========================================================*/
 function gerarWordResumo(){
 let lista=[...(window.allData||[])].sort(compareSubitemPDF)
-let media=Math.round(
-lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1)
-)
+let media=Math.round(lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1))
 let linhas=lista.map(i=>`
 <tr>
 <td>${i.item||'-'}</td>
@@ -603,18 +595,10 @@ let linhas=lista.map(i=>`
 </tr>
 `).join('')
 let html=`
-<h1 style="
-font-size:18pt;
-font-weight:700;
-color:#1e293b;
-margin-bottom:10px;
-">
+<h1 style="font-size:18pt;font-weight:700;color:#1e293b;margin-bottom:10px;">
 RESUMO EXECUTIVO - TAG SEDAM 2026
 </h1>
-<p style="
-font-size:11pt;
-margin-bottom:14px;
-">
+<p style="font-size:11pt;margin-bottom:14px;">
 Média Geral Consolidada:
 <b>${media}%</b>
 </p>
@@ -630,13 +614,10 @@ Média Geral Consolidada:
 ${linhas}
 </table>
 `
-baixarWord(
-'resumo_tag_sedam',
-html
-)
+baixarWord('resumo_tag_sedam',html)
 }
 /*=========================================================
-052 WORD MONITORAMENTO
+053 WORD MONITORAMENTO
 =========================================================*/
 function gerarWordMonitoramento(){
 let lista=[...(window.allData||[])].sort(compareSubitemPDF)
@@ -650,22 +631,12 @@ let linhas=lista.map(i=>`
 <td>${getTotal(i)}%</td>
 </tr>
 `).join('')
-let media=Math.round(
-lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1)
-)
+let media=Math.round(lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1))
 let html=`
-<h1 style="
-font-size:18pt;
-font-weight:700;
-color:#1e293b;
-margin-bottom:10px;
-">
+<h1 style="font-size:18pt;font-weight:700;color:#1e293b;margin-bottom:10px;">
 MONITORAMENTO COMPLETO - TAG SEDAM 2026
 </h1>
-<p style="
-font-size:11pt;
-margin-bottom:14px;
-">
+<p style="font-size:11pt;margin-bottom:14px;">
 Média Geral Consolidada:
 <b>${media}%</b>
 </p>
@@ -681,10 +652,7 @@ Média Geral Consolidada:
 ${linhas}
 </table>
 `
-baixarWord(
-'monitoramento_tag_sedam',
-html
-)
+baixarWord('monitoramento_tag_sedam',html)
 }
 /*=========================================================
 054 WORD GRAFICOS
@@ -692,20 +660,10 @@ html
 function gerarWordGraficos(){
 let info=window.graficoAtualInfo||{}
 let html=`
-<h1 style="
-font-size:18pt;
-font-weight:700;
-color:#1e293b;
-margin-bottom:10px;
-">
+<h1 style="font-size:18pt;font-weight:700;color:#1e293b;margin-bottom:10px;">
 ANÁLISE GRÁFICA - TAG SEDAM 2026
 </h1>
-<p style="
-font-size:11pt;
-line-height:1.5;
-text-align:justify;
-margin-bottom:14px;
-">
+<p style="font-size:11pt;line-height:1.5;text-align:justify;margin-bottom:14px;">
 Relatório gráfico consolidado do painel estratégico TAG SEDAM 2026.
 </p>
 <table border="1" cellspacing="0" cellpadding="5">
@@ -771,18 +729,13 @@ Relatório gráfico consolidado do painel estratégico TAG SEDAM 2026.
 </tr>
 </table>
 `
-baixarWord(
-'graficos_tag_sedam',
-html
-)
+baixarWord('graficos_tag_sedam',html)
 }
 /*=========================================================
 055 WORD 100
 =========================================================*/
 function gerarWordCumpridos(){
-let lista=(window.allData||[])
-.filter(i=>getTotal(i)>=100)
-.sort(compareSubitemPDF)
+let lista=(window.allData||[]).filter(i=>getTotal(i)>=100).sort(compareSubitemPDF)
 let linhas=lista.map(i=>`
 <tr>
 <td>${i.item||'-'}</td>
@@ -794,18 +747,10 @@ let linhas=lista.map(i=>`
 </tr>
 `).join('')
 let html=`
-<h1 style="
-font-size:18pt;
-font-weight:700;
-color:#15803d;
-margin-bottom:10px;
-">
+<h1 style="font-size:18pt;font-weight:700;color:#15803d;margin-bottom:10px;">
 SUBITENS 100% CUMPRIDOS - TAG SEDAM 2026
 </h1>
-<p style="
-font-size:11pt;
-margin-bottom:14px;
-">
+<p style="font-size:11pt;margin-bottom:14px;">
 Total de registros integralmente cumpridos:
 <b>${lista.length}</b>
 </p>
@@ -821,13 +766,10 @@ Total de registros integralmente cumpridos:
 ${linhas}
 </table>
 `
-baixarWord(
-'100_tag_sedam',
-html
-)
+baixarWord('100_tag_sedam',html)
 }
 ```
-```javascript id="ui12fn3"
+
 /*=========================================================
 056 PDF DASHBOARD
 =========================================================*/
@@ -1139,5 +1081,5 @@ return String(i.item||'-')
 function formatarSubitemPDF(i){
 return String(i.subitem||'-')
 }
-```
+
 
