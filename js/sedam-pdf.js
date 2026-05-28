@@ -1,12 +1,14 @@
+```javascript
 /*=========================================================
 001 PDF FUNCTION GERARPDFBACKUP
 =========================================================*/
 function gerarPDFBackup(d){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4')
-doc.setFont('helvetica','normal')
+doc.setFont('times','normal')
 doc.setFontSize(12)
-doc.text('BACKUP DELIBERAÇÕES',10,12)
+doc.setTextColor(20,20,20)
+doc.text('BACKUP DELIBERAÇÕES - TAG SEDAM 2026',10,12)
 let rows=d.map(i=>[
 i.subitem||'-',
 String(i.descricao||'-'),
@@ -33,7 +35,7 @@ startY:24,
 theme:'striped',
 styles:{
 fontSize:8,
-font:'helvetica',
+font:'times',
 overflow:'linebreak',
 cellPadding:2,
 valign:'top',
@@ -47,8 +49,11 @@ textColor:[255,255,255],
 fontStyle:'bold',
 fontSize:9
 },
+alternateRowStyles:{
+fillColor:[248,248,248]
+},
 columnStyles:{
-0:{cellWidth:24},
+0:{cellWidth:24,halign:'center'},
 1:{cellWidth:108},
 2:{cellWidth:48},
 3:{cellWidth:16,halign:'center'}
@@ -61,23 +66,7 @@ right:5
 }
 })
 adicionarRodapePadraoPDF(doc)
-doc.save('backup_deliberacoes.pdf')
-}
-/*=========================================================
-002 PDF FUNCTION COMPARESUBITEMPDF
-=========================================================*/
-function compareSubitemPDF(a,b){
-let sa=String(a.subitem||a.item||'0.0').replace(/[^\d\.]/g,'')
-let sb=String(b.subitem||b.item||'0.0').replace(/[^\d\.]/g,'')
-let pa=sa.split('.').map(n=>parseInt(n)||0)
-let pb=sb.split('.').map(n=>parseInt(n)||0)
-let max=Math.max(pa.length,pb.length)
-for(let i=0;i<max;i++){
-let va=pa[i]||0
-let vb=pb[i]||0
-if(va!==vb)return va-vb
-}
-return 0
+doc.save('backup_deliberacoes_tag_sedam.pdf')
 }
 /*=========================================================
 003 PDF FUNCTION GERARPDFRESUMO
@@ -85,10 +74,14 @@ return 0
 async function gerarPDFResumo(){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4')
-doc.setFont('helvetica','normal')
+doc.setFont('times','normal')
 let lista=[...(window.allData||[])].sort(compareSubitemPDF)
-doc.setFontSize(12)
+doc.setFontSize(14)
+doc.setTextColor(20,20,20)
 doc.text('RESUMO EXECUTIVO - TAG SEDAM 2026',10,12)
+doc.setFontSize(9)
+doc.setTextColor(90)
+doc.text('Painel consolidado de acompanhamento técnico e estratégico.',10,18)
 let grupos={}
 lista.forEach(i=>{
 let itemPai=String(i.item||'').trim()
@@ -130,13 +123,13 @@ getTotal(i)+'%'
 })
 })
 doc.autoTable({
-startY:24,
+startY:26,
 head:[['ITEM / SUBITEM','DESCRIÇÃO COMPLETA','PRODUTO ESTRATÉGICO','%']],
 body:rows,
 theme:'striped',
 styles:{
 fontSize:8,
-font:'helvetica',
+font:'times',
 overflow:'linebreak',
 cellPadding:2,
 valign:'top',
@@ -199,7 +192,7 @@ return 0
 async function gerarPDFMonitoramento(){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('l','mm','a4')
-doc.setFont('helvetica','normal')
+doc.setFont('times','normal')
 let lista=[...(window.allData||[])].sort(compareSubitemPDF)
 let meses=[
 {campo:'jan',label:'JAN'},
@@ -217,8 +210,12 @@ let meses=[
 ]
 let mesAtual=new Date().getMonth()
 let mesesAtivos=meses.slice(0,mesAtual+1)
-doc.setFontSize(12)
+doc.setFontSize(14)
+doc.setTextColor(20,20,20)
 doc.text('MONITORAMENTO COMPLETO - TAG SEDAM 2026',10,12)
+doc.setFontSize(9)
+doc.setTextColor(90)
+doc.text('Painel consolidado de monitoramento estratégico.',10,18)
 let rows=lista.map(i=>{
 let total=getTotal(i)
 let linha=[
@@ -238,7 +235,7 @@ linha.push(total+'%')
 return linha
 })
 doc.autoTable({
-startY:24,
+startY:26,
 head:[[
 modoTabela==='item'
 ?'ITEM'
@@ -255,7 +252,7 @@ body:rows,
 theme:'grid',
 styles:{
 fontSize:8,
-font:'helvetica',
+font:'times',
 overflow:'linebreak',
 cellPadding:2,
 valign:'top',
@@ -268,6 +265,9 @@ fillColor:[30,41,59],
 textColor:[255,255,255],
 fontStyle:'bold',
 fontSize:8
+},
+alternateRowStyles:{
+fillColor:[248,248,248]
 },
 columnStyles:(()=>{
 let estilos={
@@ -298,13 +298,14 @@ right:5
 }
 })
 let finalY=(doc.lastAutoTable.finalY||240)+10
-doc.setFontSize(11)
+doc.setFontSize(10)
+doc.setTextColor(60)
 let total100=lista.filter(i=>getTotal(i)>=100).length
 let media=Math.round(
 lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1)
 )
 doc.text(
-'O monitoramento consolidado demonstra '+lista.length+' registros estratégicos acompanhados, sendo '+total100+' integralmente cumpridos (100%). A média geral consolidada do painel corresponde a '+media+'% de execução.',
+'O monitoramento consolidado demonstra '+lista.length+' registros estratégicos acompanhados, sendo '+total100+' integralmente cumpridos (100%). A média geral consolidada corresponde a '+media+'% de execução.',
 10,
 finalY,
 {
@@ -325,42 +326,53 @@ modoTabela==='item'
 async function gerarPDFGraficos(){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4')
-doc.setFontSize(14)
-doc.setTextColor(0,0,0)
-doc.text('ANÁLISE GRÁFICA - TAG SEDAM 2026',10,12)
-let canvas=document.getElementById('chartMaster')
-if(!canvas){
-alert('Gráfico não encontrado')
-return
-}
+doc.setFont('times','bold')
+doc.setFontSize(16)
+doc.setTextColor(20,20,20)
+doc.text('ANÁLISE GRÁFICA - TAG SEDAM 2026',105,12,{align:'center'})
+doc.setFont('times','normal')
+doc.setFontSize(9)
+doc.setTextColor(90)
+doc.text('Painel consolidado de evolução estratégica.',105,18,{align:'center'})
+let y=28
+async function adicionarGrafico(canvasId,titulo){
+let canvas=document.getElementById(canvasId)
+if(!canvas)return
 let img=canvas.toDataURL('image/png',1.0)
-doc.addImage(img,'PNG',10,30,190,90)
-let info=window.graficoAtualInfo||{}
-
-doc.setFontSize(11)
-
-let texto=''
-
-if(info.tipo==='subitem'){
-
-texto=
-'SUBITEM: '+(info.subitem||'-')+
-' | ITEM: '+(info.item||'-')+
-' | JAN: '+(info.jan||0)+'%'+
-' | FEV: '+(info.fev||0)+'%'+
-' | MAR: '+(info.mar||0)+'%'+
-' | ABR: '+(info.abr||0)+'%'+
-' | MAI: '+(info.mai||0)+'%'
-
-}else{
-
-texto=
-'ANÁLISE CONSOLIDADA GERAL DO TAG SEDAM 2026'
+if(y>185){
+doc.addPage()
+y=20
 }
-
-doc.text(texto,10,128,{maxWidth:185})
-doc.setFontSize(8)
-doc.text(NOTA_TECNICA_PDF,10,140,{maxWidth:190})
+doc.setFont('times','bold')
+doc.setFontSize(11)
+doc.setTextColor(25,25,25)
+doc.text(titulo,10,y)
+y+=5
+doc.addImage(
+img,
+'PNG',
+10,
+y,
+190,
+70
+)
+y+=80
+}
+await adicionarGrafico('graficoDashboardItens','DESEMPENHO POR ITEM')
+await adicionarGrafico('graficoDashboardLinha','EVOLUÇÃO MENSAL')
+await adicionarGrafico('graficoDashboardPizza','DISTRIBUIÇÃO DOS SUBITENS')
+doc.setFont('times','normal')
+doc.setFontSize(9)
+doc.setTextColor(60)
+doc.text(
+'Os gráficos demonstram a evolução consolidada do acompanhamento técnico e estratégico do TAG SEDAM 2026.',
+10,
+y,
+{
+maxWidth:188,
+align:'justify'
+}
+)
 adicionarRodapePadraoPDF(doc)
 doc.save('pdf_graficos_tag_sedam.pdf')
 }
@@ -386,7 +398,7 @@ Number(i.nov||0),
 Number(i.dez||0)
 )
 return total>=100
-}).sort(compareSubitem)
+}).sort(compareSubitemPDF)
 doc.setFontSize(16)
 doc.setTextColor(0,0,0)
 doc.text('SUBITENS 100% CUMPRIDOS - TAG SEDAM 2026',10,12)
@@ -413,7 +425,7 @@ i.item||'-',
 i.subitem||'-',
 i.descricao||'-',
 String(i.produto||'-'),
-String(i.responsavel||'-'),
+String(i.setor||i.coordenadoria||'-'),
 total+'%'
 ]
 })
@@ -424,15 +436,15 @@ head:[[
 'SUBITEM',
 'DESCRIÇÃO COMPLETA',
 'PRODUTO',
-'RESPONSÁVEL',
+'SETOR',
 '%'
 ]],
 body:rows,
 theme:'striped',
 styles:{
-fontSize:5,
+fontSize:7,
 overflow:'linebreak',
-cellPadding:1.2,
+cellPadding:1.4,
 valign:'top',
 textColor:[0,0,0]
 },
@@ -440,53 +452,31 @@ headStyles:{
 fillColor:[34,197,94],
 textColor:[255,255,255],
 fontStyle:'bold',
-fontSize:6
+fontSize:7
 },
 alternateRowStyles:{
 fillColor:[245,245,245]
 },
 columnStyles:{
-0:{cellWidth:14},
-1:{cellWidth:18},
-2:{cellWidth:108},
-3:{cellWidth:72},
-4:{cellWidth:42},
-5:{cellWidth:12,halign:'center'}
+0:{cellWidth:18,halign:'center'},
+1:{cellWidth:22,halign:'center'},
+2:{cellWidth:118},
+3:{cellWidth:82},
+4:{cellWidth:46},
+5:{cellWidth:14,halign:'center'}
 },
 margin:{
 top:20,
 left:8,
 right:8,
 bottom:38
-},
-didDrawPage:function(data){
-let pageHeight=doc.internal.pageSize.height
-let pageWidth=doc.internal.pageSize.width
-doc.setFillColor(255,255,255)
-doc.rect(0,pageHeight-34,pageWidth,34,'F')
-doc.setTextColor(90,90,90)
-doc.setFontSize(7)
-doc.text(
-'Tribunal de Contas do Estado de Rondônia - TAG SEDAM 2026',
-6,
-pageHeight-26
-)
-doc.setFontSize(4)
-doc.text(
-NOTA_TECNICA_PDF,
-10,
-pageHeight-18,
-{
-maxWidth:pageWidth-55,
-align:'justify'
-}
-)
 }
 })
 adicionarRodapePadraoPDF(doc)
 doc.save('pdf_100_cumpridos_tag_sedam.pdf')
 }
-
+```
+```javascript id="ui12fn2"
 /*=========================================================
 051 WORD DASHBOARD
 =========================================================*/
@@ -495,9 +485,26 @@ let itens=document.getElementById('dashboardTotalItens')?.innerText||'0'
 let subitens=document.getElementById('dashboardTotalSubitens')?.innerText||'0'
 let media=document.getElementById('dashboardMediaGeral')?.innerText||'0%'
 let html=`
-<h1>DASHBOARD EXECUTIVO - TAG SEDAM 2026</h1>
-<table border="1" cellspacing="0" cellpadding="6">
-<tr>
+<h1 style="
+font-family:Calibri,Arial,sans-serif;
+font-size:18pt;
+font-weight:700;
+color:#1e293b;
+margin-bottom:12px;
+">
+DASHBOARD EXECUTIVO - TAG SEDAM 2026
+</h1>
+<table border="1" cellspacing="0" cellpadding="6" style="
+width:100%;
+border-collapse:collapse;
+font-family:Calibri,Arial,sans-serif;
+font-size:10pt;
+">
+<tr style="
+background:#1e293b;
+color:#ffffff;
+font-weight:bold;
+">
 <th>Itens Estratégicos</th>
 <th>Subitens</th>
 <th>Média Geral</th>
@@ -509,9 +516,20 @@ let html=`
 </tr>
 </table>
 <br>
-<h2>Relatório Executivo</h2>
-<p>
-Painel consolidado de acompanhamento técnico do TAG SEDAM 2026.
+<h2 style="
+font-family:Calibri,Arial,sans-serif;
+font-size:14pt;
+color:#1e293b;
+">
+Relatório Executivo
+</h2>
+<p style="
+font-family:Calibri,Arial,sans-serif;
+font-size:11pt;
+line-height:1.5;
+text-align:justify;
+">
+Painel consolidado de acompanhamento técnico do TAG SEDAM 2026 contendo indicadores estratégicos, evolução consolidada e análise gerencial.
 </p>
 `
 baixarWord(
@@ -530,17 +548,41 @@ xmlns='http://www.w3.org/TR/REC-html40'>
 <head>
 <meta charset='utf-8'>
 <title>${nome}</title>
-</head>
-<body style="
+<style>
+body{
 margin-top:2.5cm;
 margin-right:2cm;
 margin-bottom:2cm;
 margin-left:3cm;
 font-family:Calibri,Arial,sans-serif;
 font-size:12pt;
-line-height:1.15;
+line-height:1.3;
 text-align:justify;
-">
+color:#111827;
+}
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:8px;
+margin-bottom:18px;
+}
+th{
+background:#1e293b;
+color:#ffffff;
+font-weight:bold;
+text-align:center;
+}
+th,td{
+border:1px solid #cbd5e1;
+padding:5px;
+vertical-align:top;
+}
+h1,h2,h3{
+margin-top:0;
+}
+</style>
+</head>
+<body>
 ${conteudo}
 </body>
 </html>
@@ -564,29 +606,43 @@ URL.revokeObjectURL(url)
 051 WORD RESUMO
 =========================================================*/
 function gerarWordResumo(){
-let lista=[...(window.allData||[])].sort(compareSubitem)
+let lista=[...(window.allData||[])].sort(compareSubitemPDF)
+let media=Math.round(
+lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1)
+)
 let linhas=lista.map(i=>`
 <tr>
 <td>${i.item||'-'}</td>
 <td>${i.subitem||'-'}</td>
 <td>${i.descricao||'-'}</td>
 <td>${i.produto||'-'}</td>
+<td>${i.setor||i.coordenadoria||'-'}</td>
 <td>${getTotal(i)}%</td>
 </tr>
 `).join('')
 let html=`
-<h1 style="font-family:Calibri;font-size:16pt;">RESUMO EXECUTIVO - TAG SEDAM 2026</h1>
-<table border="1" cellspacing="0" cellpadding="5" style="
-font-family:Calibri,Arial,sans-serif;
-font-size:8pt;
-border-collapse:collapse;
-width:100%;
+<h1 style="
+font-size:18pt;
+font-weight:700;
+color:#1e293b;
+margin-bottom:10px;
 ">
+RESUMO EXECUTIVO - TAG SEDAM 2026
+</h1>
+<p style="
+font-size:11pt;
+margin-bottom:14px;
+">
+Média Geral Consolidada:
+<b>${media}%</b>
+</p>
+<table border="1" cellspacing="0" cellpadding="5">
 <tr>
 <th>Item</th>
 <th>Subitem</th>
 <th>Descrição</th>
 <th>Produto</th>
+<th>Setor</th>
 <th>%</th>
 </tr>
 ${linhas}
@@ -601,7 +657,7 @@ html
 052 WORD MONITORAMENTO
 =========================================================*/
 function gerarWordMonitoramento(){
-let lista=[...(window.allData||[])].sort(compareSubitem)
+let lista=[...(window.allData||[])].sort(compareSubitemPDF)
 let linhas=lista.map(i=>`
 <tr>
 <td>${i.item||'-'}</td>
@@ -612,14 +668,26 @@ let linhas=lista.map(i=>`
 <td>${getTotal(i)}%</td>
 </tr>
 `).join('')
+let media=Math.round(
+lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1)
+)
 let html=`
-<h1 style="font-family:Calibri;font-size:16pt;">MONITORAMENTO COMPLETO - TAG SEDAM 2026</h1>
-<table border="1" cellspacing="0" cellpadding="5" style="
-font-family:Calibri,Arial,sans-serif;
-font-size:8pt;
-border-collapse:collapse;
-width:100%;
+<h1 style="
+font-size:18pt;
+font-weight:700;
+color:#1e293b;
+margin-bottom:10px;
 ">
+MONITORAMENTO COMPLETO - TAG SEDAM 2026
+</h1>
+<p style="
+font-size:11pt;
+margin-bottom:14px;
+">
+Média Geral Consolidada:
+<b>${media}%</b>
+</p>
+<table border="1" cellspacing="0" cellpadding="5">
 <tr>
 <th>Item</th>
 <th>Subitem</th>
@@ -642,9 +710,21 @@ html
 function gerarWordGraficos(){
 let info=window.graficoAtualInfo||{}
 let html=`
-<h1>ANÁLISE GRÁFICA - TAG SEDAM 2026</h1>
-<p>
-Relatório gráfico consolidado do painel TAG SEDAM 2026.
+<h1 style="
+font-size:18pt;
+font-weight:700;
+color:#1e293b;
+margin-bottom:10px;
+">
+ANÁLISE GRÁFICA - TAG SEDAM 2026
+</h1>
+<p style="
+font-size:11pt;
+line-height:1.5;
+text-align:justify;
+margin-bottom:14px;
+">
+Relatório gráfico consolidado do painel estratégico TAG SEDAM 2026.
 </p>
 <table border="1" cellspacing="0" cellpadding="5">
 <tr>
@@ -679,6 +759,34 @@ Relatório gráfico consolidado do painel TAG SEDAM 2026.
 <td>MAI</td>
 <td>${info.mai||0}%</td>
 </tr>
+<tr>
+<td>JUN</td>
+<td>${info.jun||0}%</td>
+</tr>
+<tr>
+<td>JUL</td>
+<td>${info.jul||0}%</td>
+</tr>
+<tr>
+<td>AGO</td>
+<td>${info.ago||0}%</td>
+</tr>
+<tr>
+<td>SET</td>
+<td>${info.set||0}%</td>
+</tr>
+<tr>
+<td>OUT</td>
+<td>${info.out||0}%</td>
+</tr>
+<tr>
+<td>NOV</td>
+<td>${info.nov||0}%</td>
+</tr>
+<tr>
+<td>DEZ</td>
+<td>${info.dez||0}%</td>
+</tr>
 </table>
 `
 baixarWord(
@@ -692,24 +800,40 @@ html
 function gerarWordCumpridos(){
 let lista=(window.allData||[])
 .filter(i=>getTotal(i)>=100)
-.sort(compareSubitem)
+.sort(compareSubitemPDF)
 let linhas=lista.map(i=>`
 <tr>
 <td>${i.item||'-'}</td>
 <td>${i.subitem||'-'}</td>
 <td>${i.descricao||'-'}</td>
 <td>${i.produto||'-'}</td>
+<td>${i.setor||i.coordenadoria||'-'}</td>
 <td>100%</td>
 </tr>
 `).join('')
 let html=`
-<h1>SUBITENS 100% CUMPRIDOS - TAG SEDAM 2026</h1>
+<h1 style="
+font-size:18pt;
+font-weight:700;
+color:#15803d;
+margin-bottom:10px;
+">
+SUBITENS 100% CUMPRIDOS - TAG SEDAM 2026
+</h1>
+<p style="
+font-size:11pt;
+margin-bottom:14px;
+">
+Total de registros integralmente cumpridos:
+<b>${lista.length}</b>
+</p>
 <table border="1" cellspacing="0" cellpadding="5">
 <tr>
 <th>Item</th>
 <th>Subitem</th>
 <th>Descrição</th>
 <th>Produto</th>
+<th>Setor</th>
 <th>%</th>
 </tr>
 ${linhas}
@@ -720,28 +844,33 @@ baixarWord(
 html
 )
 }
-
+```
+```javascript id="ui12fn3"
+/*=========================================================
+056 PDF DASHBOARD
+=========================================================*/
 async function gerarPDFDashboard(){
 const {jsPDF}=window.jspdf
 let pdf=new jsPDF('p','mm','a4')
 let margem=10
 let y=15
-pdf.setFont('helvetica','bold')
+pdf.setFont('times','bold')
 pdf.setFontSize(18)
 pdf.setTextColor(25,25,25)
 pdf.text('DASHBOARD TAG SEDAM 2026',105,y,{align:'center'})
 y+=8
+pdf.setFont('times','normal')
 pdf.setFontSize(9)
 pdf.setTextColor(90)
-pdf.text('Painel consolidado de acompanhamento do TAG SEDAM 2026',105,y,{align:'center'})
+pdf.text('Painel consolidado de acompanhamento técnico e estratégico.',105,y,{align:'center'})
 y+=12
 let cards=[
 ['Média Geral',document.getElementById('dashboardMediaGeral')?.innerText||'0%'],
-['Itens',document.getElementById('dashboardTotalItensCard')?.innerText||'0'],
+['Itens Estratégicos',document.getElementById('dashboardTotalItensCard')?.innerText||'0'],
 ['Subitens',document.getElementById('dashboardTotalSubitensCard')?.innerText||'0'],
-['100%',document.getElementById('dashboardCumpridos')?.innerText||'0'],
+['100% Cumpridos',document.getElementById('dashboardCumpridos')?.innerText||'0'],
 ['Críticos',document.getElementById('dashboardCriticos')?.innerText||'0'],
-['Execução',document.getElementById('dashboardAndamento')?.innerText||'0'],
+['Em Execução',document.getElementById('dashboardAndamento')?.innerText||'0'],
 ['Pendentes',document.getElementById('dashPendentes')?.innerText||'0']
 ]
 pdf.autoTable({
@@ -755,7 +884,8 @@ cellPadding:3,
 halign:'center',
 valign:'middle',
 lineColor:[220,220,220],
-lineWidth:.2
+lineWidth:.2,
+textColor:[20,20,20]
 },
 headStyles:{
 fillColor:[30,41,59],
@@ -764,6 +894,10 @@ fontStyle:'bold'
 },
 alternateRowStyles:{
 fillColor:[248,248,248]
+},
+columnStyles:{
+0:{cellWidth:90},
+1:{cellWidth:70}
 },
 margin:{
 left:20,
@@ -823,13 +957,13 @@ weight:'bold'
 }
 }
 })
-
 await new Promise(r=>setTimeout(r,400))
 let img=tempCanvas.toDataURL('image/png',1.0)
 if(y>185){
 pdf.addPage()
 y=20
 }
+pdf.setFont('times','bold')
 pdf.setFontSize(12)
 pdf.setTextColor(25,25,25)
 pdf.text(titulo,margem,y)
@@ -846,9 +980,21 @@ undefined,
 )
 y+=88
 }
-await adicionarGrafico('graficoDashboardItens','Desempenho por Item')
-await adicionarGrafico('graficoDashboardLinha','Evolução Mensal')
-await adicionarGrafico('graficoDashboardPizza','Distribuição dos Subitens')
+await adicionarGrafico('graficoDashboardItens','DESEMPENHO POR ITEM')
+await adicionarGrafico('graficoDashboardLinha','EVOLUÇÃO MENSAL')
+await adicionarGrafico('graficoDashboardPizza','DISTRIBUIÇÃO DOS SUBITENS')
+pdf.setFont('times','normal')
+pdf.setFontSize(9)
+pdf.setTextColor(60)
+pdf.text(
+'O dashboard executivo demonstra o panorama consolidado das ações monitoradas, evidenciando desempenho, evolução mensal e distribuição dos subitens estratégicos.',
+10,
+y,
+{
+maxWidth:188,
+align:'justify'
+}
+)
 adicionarRodapePadraoPDF(pdf)
 pdf.setProperties({
 title:'Dashboard TAG SEDAM 2026',
@@ -858,7 +1004,9 @@ creator:'TCE-RO'
 })
 pdf.save('dashboard-tag-sedam-2026.pdf')
 }
-
+/*=========================================================
+057 PDF RODAPE PADRAO
+=========================================================*/
 function adicionarRodapePadraoPDF(pdf){
 let total=pdf.internal.getNumberOfPages()
 for(let i=1;i<=total;i++){
@@ -870,16 +1018,144 @@ pdf.rect(0,pageHeight-36,pageWidth,36,'F')
 pdf.setDrawColor(220,220,220)
 pdf.line(8,pageHeight-37,pageWidth-8,pageHeight-37)
 pdf.setTextColor(85,85,85)
+pdf.setFont('times','normal')
 pdf.setFontSize(7)
-pdf.text('Tribunal de Contas do Estado de Rondônia - TAG SEDAM 2026',10,pageHeight-31)
+pdf.text(
+'Tribunal de Contas do Estado de Rondônia - TAG SEDAM 2026',
+10,
+pageHeight-31
+)
 pdf.setFontSize(5)
-let linhas=pdf.splitTextToSize(NOTA_TECNICA_PDF,pageWidth-24)
-pdf.text(linhas,10,pageHeight-25,{
+let linhas=pdf.splitTextToSize(
+NOTA_TECNICA_PDF,
+pageWidth-24
+)
+pdf.text(
+linhas,
+10,
+pageHeight-25,
+{
 maxWidth:pageWidth-24,
 align:'justify'
-})
+}
+)
 pdf.setFontSize(8)
 pdf.setTextColor(90)
-pdf.text('Página '+i+' de '+total,pageWidth-10,pageHeight-6,{align:'right'})
+pdf.text(
+'Página '+i+' de '+total,
+pageWidth-10,
+pageHeight-6,
+{
+align:'right'
+}
+)
 }
 }
+/*=========================================================
+058 FUNCTION GETTOTAL
+=========================================================*/
+function getTotal(i){
+return Math.max(
+Number(i.jan||0),
+Number(i.fev||0),
+Number(i.mar||0),
+Number(i.abr||0),
+Number(i.mai||0),
+Number(i.jun||0),
+Number(i.jul||0),
+Number(i.ago||0),
+Number(i.set||0),
+Number(i.out||0),
+Number(i.nov||0),
+Number(i.dez||0)
+)
+}
+/*=========================================================
+059 CONSTANTE NOTA TECNICA
+=========================================================*/
+const NOTA_TECNICA_PDF=
+'Relatório técnico preliminar elaborado com base nas informações registradas no painel TAG SEDAM 2026. Os dados apresentados estão sujeitos à validação técnica, auditoria e atualização institucional.'
+/*=========================================================
+060 FUNCTION EXPORTAR TODOS PDF
+=========================================================*/
+async function exportarTodosPDF(){
+await gerarPDFDashboard()
+await gerarPDFResumo()
+await gerarPDFMonitoramento()
+await gerarPDFGraficos()
+await gerarPDFCumpridos()
+}
+/*=========================================================
+061 FUNCTION EXPORTAR TODOS WORD
+=========================================================*/
+async function exportarTodosWord(){
+gerarWordDashboard()
+gerarWordResumo()
+gerarWordMonitoramento()
+gerarWordGraficos()
+gerarWordCumpridos()
+}
+/*=========================================================
+062 FUNCTION GERARPDFPAINELGERAL
+=========================================================*/
+async function gerarPDFPainelGeral(){
+await gerarPDFDashboard()
+}
+/*=========================================================
+063 FUNCTION GERARWORDPAINELGERAL
+=========================================================*/
+async function gerarWordPainelGeral(){
+gerarWordDashboard()
+}
+/*=========================================================
+064 FUNCTION FORMATAR PERCENTUAL PDF
+=========================================================*/
+function formatarPercentualPDF(v){
+return Number(v||0).toFixed(0)+'%'
+}
+/*=========================================================
+065 FUNCTION FORMATAR TEXTO PDF
+=========================================================*/
+function formatarTextoPDF(v){
+return String(v||'-').trim()
+}
+/*=========================================================
+066 FUNCTION FORMATAR SETOR PDF
+=========================================================*/
+function formatarSetorPDF(i){
+return String(
+i.setor||
+i.coordenadoria||
+'-'
+)
+}
+/*=========================================================
+067 FUNCTION FORMATAR PRODUTO PDF
+=========================================================*/
+function formatarProdutoPDF(i){
+return String(i.produto||'-')
+}
+/*=========================================================
+068 FUNCTION FORMATAR DESCRICAO PDF
+=========================================================*/
+function formatarDescricaoPDF(i){
+return String(
+i.descricao||
+i.descricaoitem||
+'-'
+)
+}
+/*=========================================================
+069 FUNCTION FORMATAR ITEM PDF
+=========================================================*/
+function formatarItemPDF(i){
+return String(i.item||'-')
+}
+/*=========================================================
+070 FUNCTION FORMATAR SUBITEM PDF
+=========================================================*/
+function formatarSubitemPDF(i){
+return String(i.subitem||'-')
+}
+```
+
