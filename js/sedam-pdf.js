@@ -992,7 +992,7 @@ Number(i.dez||0)
 /*=========================================================
 059 CONSTANTE NOTA TECNICA
 =========================================================*/
-const NOTA_TECNICA_PDF=
+window.NOTA_TECNICA_PDF=
 'Relatório técnico preliminar elaborado com base nas informações registradas no painel TAG SEDAM 2026. Os dados apresentados estão sujeitos à validação técnica, auditoria e atualização institucional.'
 /*=========================================================
 060 FUNCTION EXPORTAR TODOS PDF
