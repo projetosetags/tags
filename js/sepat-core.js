@@ -1919,7 +1919,15 @@ modoConclusaoSepat==='item'
 '100%'
 ])
 doc.setFontSize(14)
-doc.text('SUBITENS 100% CUMPRIDOS - TAG SEPAT 2026',10,12)
+doc.setFontSize(14)
+
+doc.text(
+modoConclusaoSepat==='item'
+?'ITENS 100% CUMPRIDOS - TAG SEPAT 2026'
+:'SUBITENS 100% CUMPRIDOS - TAG SEPAT 2026',
+10,
+12
+)
 doc.setFontSize(10)
 doc.text('TOTAL: '+lista.length,10,18)
 doc.autoTable({
@@ -1986,7 +1994,11 @@ right:5
 }
 })
 rodapeSepat(doc)
-doc.save('pdf_100_tag_sepat.pdf')
+doc.save(
+modoConclusaoSepat==='item'
+?'Itens_100%_Cumpridos_TAG_SEPAT_2026.pdf'
+:'Subitens_100%_Cumpridos_TAG_SEPAT_2026.pdf'
+)
 }
 
 
