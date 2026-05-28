@@ -1,18 +1,71 @@
+```javascript
 /*=========================================================
 001 PDF FUNCTION GERARPDFBACKUP
 =========================================================*/
 function gerarPDFBackup(d){
 const {jsPDF}=window.jspdf
-let doc=new jsPDF()
-doc.setFontSize(10)
-doc.text("BACKUP DELIBERAÇÕES",10,10)
-let rows=d.map(i=>[i.subitem,String(i.descricao||'-').substring(0,40),String(i.responsavel||'-'),Math.max(i.jan||0,i.fev||0,i.mar||0,i.abr||0,i.mai||0,i.jun||0,i.jul||0,i.ago||0,i.set||0,i.out||0,i.nov||0,i.dez||0)+'%'])
-doc.autoTable({head:[['Subitem','Descrição','Responsável','%']],body:rows,startY:24,styles:{fontSize:6},margin:{top:20,bottom:38,left:5,right:5},didDrawPage:function(data){let pageHeight=doc.internal.pageSize.height;let pageWidth=doc.internal.pageSize.width;doc.setFillColor(255,255,255);doc.rect(0,pageHeight-34,pageWidth,34,'F');doc.setTextColor(90,90,90);doc.setFontSize(7);doc.text('Tribunal de Contas do Estado de Rondônia - TAG SEDAM 2026',6,pageHeight-26);doc.setFontSize(4);doc.text(NOTA_TECNICA_PDF,10,pageHeight-18,{maxWidth:pageWidth-55,align:'justify'})}})
+let doc=new jsPDF('p','mm','a4')
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+doc.text('BACKUP DELIBERAÇÕES',10,12)
+let rows=d.map(i=>[
+i.subitem||'-',
+String(i.descricao||'-'),
+String(i.setor||i.coordenadoria||'-'),
+Math.max(
+i.jan||0,
+i.fev||0,
+i.mar||0,
+i.abr||0,
+i.mai||0,
+i.jun||0,
+i.jul||0,
+i.ago||0,
+i.set||0,
+i.out||0,
+i.nov||0,
+i.dez||0
+)+'%'
+])
+doc.autoTable({
+head:[['SUBITEM','DESCRIÇÃO','SETOR','%']],
+body:rows,
+startY:24,
+theme:'striped',
+styles:{
+fontSize:8,
+font:'helvetica',
+overflow:'linebreak',
+cellPadding:2,
+valign:'top',
+textColor:[15,23,42],
+lineColor:[210,215,220],
+lineWidth:.15
+},
+headStyles:{
+fillColor:[30,41,59],
+textColor:[255,255,255],
+fontStyle:'bold',
+fontSize:9
+},
+columnStyles:{
+0:{cellWidth:24},
+1:{cellWidth:108},
+2:{cellWidth:48},
+3:{cellWidth:16,halign:'center'}
+},
+margin:{
+top:20,
+bottom:38,
+left:5,
+right:5
+}
+})
 adicionarRodapePadraoPDF(doc)
-doc.save("backup_deliberacoes.pdf")
+doc.save('backup_deliberacoes.pdf')
 }
 /*=========================================================
-002 PDF FUNCTION COMPARESUBITEM
+002 PDF FUNCTION COMPARESUBITEMPDF
 =========================================================*/
 function compareSubitemPDF(a,b){
 let sa=String(a.subitem||a.item||'0.0').replace(/[^\d\.]/g,'')
@@ -33,9 +86,9 @@ return 0
 async function gerarPDFResumo(){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4')
-let lista=[...(window.allData||[])]
-lista=lista.sort(compareSubitemPDF)
-doc.setFontSize(14)
+doc.setFont('helvetica','normal')
+let lista=[...(window.allData||[])].sort(compareSubitemPDF)
+doc.setFontSize(12)
 doc.text('RESUMO EXECUTIVO - TAG SEDAM 2026',10,12)
 let grupos={}
 lista.forEach(i=>{
@@ -61,11 +114,7 @@ let regs=(grupos[item]||[]).sort(compareSubitemPDF)
 let media=Math.round(
 regs.reduce((acc,c)=>acc+getTotal(c),0)/(regs.length||1)
 )
-let descricaoItem=
-regs.find(x=>
-x.descricaoitem&&
-x.descricaoitem.trim()
-)?.descricaoitem||'-'
+let descricaoItem=regs.find(x=>x.descricaoitem&&x.descricaoitem.trim())?.descricaoitem||'-'
 rows.push([
 'ITEM '+item,
 descricaoItem,
@@ -85,21 +134,31 @@ doc.autoTable({
 startY:24,
 head:[['ITEM / SUBITEM','DESCRIÇÃO COMPLETA','PRODUTO ESTRATÉGICO','%']],
 body:rows,
+theme:'striped',
 styles:{
-fontSize:7,
+fontSize:8,
+font:'helvetica',
 overflow:'linebreak',
 cellPadding:2,
-lineColor:[220,220,220],
-lineWidth:.2
+valign:'top',
+textColor:[15,23,42],
+lineColor:[210,215,220],
+lineWidth:.15
+},
+headStyles:{
+fillColor:[30,41,59],
+textColor:[255,255,255],
+fontStyle:'bold',
+fontSize:9
 },
 alternateRowStyles:{
 fillColor:[248,248,248]
 },
 columnStyles:{
-0:{cellWidth:28},
-1:{cellWidth:82},
-2:{cellWidth:70},
-3:{cellWidth:15,halign:'center'}
+0:{cellWidth:32},
+1:{cellWidth:96},
+2:{cellWidth:54},
+3:{cellWidth:14,halign:'center'}
 },
 margin:{
 top:20,
@@ -114,32 +173,15 @@ data.cell.styles.fillColor=[30,58,138]
 data.cell.styles.textColor=[255,255,255]
 data.cell.styles.fontStyle='bold'
 }
-},
-didDrawPage:function(data){
-let pageHeight=doc.internal.pageSize.height
-let pageWidth=doc.internal.pageSize.width
-doc.setFillColor(255,255,255)
-doc.rect(0,pageHeight-34,pageWidth,34,'F')
-doc.setTextColor(90,90,90)
-doc.setFontSize(7)
-doc.text('Tribunal de Contas do Estado de Rondônia - TAG SEDAM 2026',6,pageHeight-26)
-doc.setFontSize(4)
-doc.text(
-NOTA_TECNICA_PDF,
-10,
-pageHeight-18,
-{
-maxWidth:pageWidth-55,
-align:'justify'
-}
-)
 }
 })
 adicionarRodapePadraoPDF(doc)
 doc.save('pdf_resumo_tag_sedam.pdf')
 }
+```
+
 /*=========================================================
-003 PDF FUNCTION COMPARESUBITEMPDF
+00 PDF FUNCTION COMPARESUBITEMPDF
 =========================================================*/
 function compareSubitemPDF(a,b){
 let sa=String(a.subitem||a.item||'0.0').replace(/[^\d\.]/g,'')
@@ -154,18 +196,15 @@ if(va!==vb)return va-vb
 }
 return 0
 }
+```javascript
 /*=========================================================
 004 PDF FUNCTION GERARPDFMONITORAMENTO
 =========================================================*/
 async function gerarPDFMonitoramento(){
-
 const {jsPDF}=window.jspdf
-
 let doc=new jsPDF('l','mm','a4')
-
-let lista=[...(window.allData||[])]
-.sort(compareSubitemPDF)
-
+doc.setFont('helvetica','normal')
+let lista=[...(window.allData||[])].sort(compareSubitemPDF)
 let meses=[
 {campo:'jan',label:'JAN'},
 {campo:'fev',label:'FEV'},
@@ -180,225 +219,114 @@ let meses=[
 {campo:'nov',label:'NOV'},
 {campo:'dez',label:'DEZ'}
 ]
-
 let mesAtual=new Date().getMonth()
-
 let mesesAtivos=meses.slice(0,mesAtual+1)
-
-doc.setFontSize(14)
-
-doc.text(
-'MONITORAMENTO COMPLETO - TAG SEDAM 2026',
-10,
-12
-)
-
+doc.setFontSize(12)
+doc.text('MONITORAMENTO COMPLETO - TAG SEDAM 2026',10,12)
 let rows=lista.map(i=>{
-
 let total=getTotal(i)
-
 let linha=[
-
 modoTabela==='item'
 ?String(i.item||'-')
 :String(i.subitem||'-'),
-
 modoTabela==='item'
 ?String(i.descricaoitem||'-')
 :String(i.descricao||'-'),
-
 String(i.produto||'-'),
-
 String(i.setor||i.coordenadoria||'-')
-
 ]
-
 mesesAtivos.forEach(m=>{
-
-linha.push(
-Number(i[m.campo]||0)+'%'
-)
-
+linha.push(Number(i[m.campo]||0)+'%')
 })
-
 linha.push(total+'%')
-
 return linha
-
 })
-
 doc.autoTable({
-
 startY:24,
-
 head:[[
-
 modoTabela==='item'
 ?'ITEM'
 :'SUBITEM',
-
 modoTabela==='item'
 ?'DESCRIÇÃO ITEM'
 :'DESCRIÇÃO',
-
 'PRODUTO',
-
 'SETOR',
-
 ...mesesAtivos.map(m=>m.label),
-
 'TOTAL'
-
 ]],
-
 body:rows,
-
 theme:'grid',
-
 styles:{
-fontSize:6,
+fontSize:8,
+font:'helvetica',
 overflow:'linebreak',
 cellPadding:2,
-valign:'middle'
+valign:'top',
+textColor:[15,23,42],
+lineColor:[210,215,220],
+lineWidth:.15
 },
-
 headStyles:{
-fillColor:[180,150,110],
-textColor:[0,0,0],
-fontStyle:'bold'
+fillColor:[30,41,59],
+textColor:[255,255,255],
+fontStyle:'bold',
+fontSize:8
 },
-
 columnStyles:(()=>{
-
 let estilos={
-
-0:{
-cellWidth:22,
-halign:'center',
-valign:'top'
-},
-
-1:{
-cellWidth:96,
-valign:'top'
-},
-
-2:{
-cellWidth:64,
-valign:'top'
-},
-
-3:{
-cellWidth:34,
-valign:'top'
+0:{cellWidth:24,halign:'center'},
+1:{cellWidth:104},
+2:{cellWidth:58},
+3:{cellWidth:38}
 }
-
-}
-
 let indice=4
-
 mesesAtivos.forEach(()=>{
-
 estilos[indice]={
 cellWidth:10,
 halign:'center'
 }
-
 indice++
-
 })
-
 estilos[indice]={
 cellWidth:16,
 halign:'center'
 }
-
 return estilos
-
 })(),
-
 margin:{
 top:20,
 bottom:38,
 left:5,
 right:5
-},
-
-didDrawPage:function(data){
-
-let pageHeight=doc.internal.pageSize.height
-
-let pageWidth=doc.internal.pageSize.width
-
-doc.setFillColor(255,255,255)
-
-doc.rect(
-0,
-pageHeight-34,
-pageWidth,
-34,
-'F'
-)
-
-doc.setTextColor(90,90,90)
-
-doc.setFontSize(7)
-
-doc.text(
-'Tribunal de Contas do Estado de Rondônia - TAG SEDAM 2026',
-6,
-pageHeight-26
-)
-
-doc.setFontSize(4)
-
-doc.text(
-NOTA_TECNICA_PDF,
-10,
-pageHeight-18,
-{
-maxWidth:pageWidth-55,
-align:'justify'
 }
-)
-
-}
-
 })
-
 let finalY=(doc.lastAutoTable.finalY||240)+10
-
-doc.setFontSize(10)
-
-let total100=lista
-.filter(i=>getTotal(i)>=100)
-.length
-
+doc.setFontSize(11)
+let total100=lista.filter(i=>getTotal(i)>=100).length
 let media=Math.round(
-lista.reduce(
-(acc,c)=>acc+getTotal(c),
-0
-)/(lista.length||1)
+lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1)
 )
-
 doc.text(
 'O monitoramento consolidado demonstra '+lista.length+' registros estratégicos acompanhados, sendo '+total100+' integralmente cumpridos (100%). A média geral consolidada do painel corresponde a '+media+'% de execução.',
 10,
 finalY,
 {
-maxWidth:260
+maxWidth:260,
+align:'justify'
 }
 )
-
+adicionarRodapePadraoPDF(doc)
 doc.save(
 modoTabela==='item'
 ?'Itens_Monitoramento_TAG_SEDAM_2026.pdf'
 :'Subitens_Monitoramento_TAG_SEDAM_2026.pdf'
 )
-
 }
+```
+
 /*=========================================================
-004 PDF FUNCTION GERARPDFGRAFICOS
+00 PDF FUNCTION GERARPDFGRAFICOS
 =========================================================*/
 async function gerarPDFGraficos(){
 const {jsPDF}=window.jspdf
@@ -564,49 +492,7 @@ align:'justify'
 adicionarRodapePadraoPDF(doc)
 doc.save('pdf_100_cumpridos_tag_sedam.pdf')
 }
-/*=========================================================
-050 WORD BASE
-=========================================================*/
-function baixarWord(nome,conteudo){
 
-let html=`
-<html xmlns:o='urn:schemas-microsoft-com:office:office'
-xmlns:w='urn:schemas-microsoft-com:office:word'
-xmlns='http://www.w3.org/TR/REC-html40'>
-<head>
-<meta charset='utf-8'>
-<title>${nome}</title>
-</head>
-<body>
-${conteudo}
-</body>
-</html>
-`
-
-let blob=new Blob(
-['\ufeff',html],
-{
-type:'application/msword'
-}
-)
-
-let url=URL.createObjectURL(blob)
-
-let a=document.createElement('a')
-
-a.href=url
-
-a.download=nome+'.doc'
-
-document.body.appendChild(a)
-
-a.click()
-
-document.body.removeChild(a)
-
-URL.revokeObjectURL(url)
-
-}
 /*=========================================================
 051 WORD DASHBOARD
 =========================================================*/
@@ -648,15 +534,53 @@ baixarWord(
 'dashboard_tag_sedam',
 html
 )
-
 }
 /*=========================================================
-052 WORD RESUMO
+050 WORD BASE
+=========================================================*/
+function baixarWord(nome,conteudo){
+let html=`
+<html xmlns:o='urn:schemas-microsoft-com:office:office'
+xmlns:w='urn:schemas-microsoft-com:office:word'
+xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='utf-8'>
+<title>${nome}</title>
+</head>
+<body style="
+margin-top:2.5cm;
+margin-right:2cm;
+margin-bottom:2cm;
+margin-left:3cm;
+font-family:Calibri,Arial,sans-serif;
+font-size:12pt;
+line-height:1.15;
+text-align:justify;
+">
+${conteudo}
+</body>
+</html>
+`
+let blob=new Blob(
+['\ufeff',html],
+{
+type:'application/msword'
+}
+)
+let url=URL.createObjectURL(blob)
+let a=document.createElement('a')
+a.href=url
+a.download=nome+'.doc'
+document.body.appendChild(a)
+a.click()
+document.body.removeChild(a)
+URL.revokeObjectURL(url)
+}
+/*=========================================================
+051 WORD RESUMO
 =========================================================*/
 function gerarWordResumo(){
-
 let lista=[...(window.allData||[])].sort(compareSubitem)
-
 let linhas=lista.map(i=>`
 <tr>
 <td>${i.item||'-'}</td>
@@ -666,12 +590,14 @@ let linhas=lista.map(i=>`
 <td>${getTotal(i)}%</td>
 </tr>
 `).join('')
-
 let html=`
-<h1>RESUMO EXECUTIVO - TAG SEDAM 2026</h1>
-
-<table border="1" cellspacing="0" cellpadding="5">
-
+<h1 style="font-family:Calibri;font-size:16pt;">RESUMO EXECUTIVO - TAG SEDAM 2026</h1>
+<table border="1" cellspacing="0" cellpadding="5" style="
+font-family:Calibri,Arial,sans-serif;
+font-size:8pt;
+border-collapse:collapse;
+width:100%;
+">
 <tr>
 <th>Item</th>
 <th>Subitem</th>
@@ -679,60 +605,52 @@ let html=`
 <th>Produto</th>
 <th>%</th>
 </tr>
-
 ${linhas}
-
 </table>
 `
-
 baixarWord(
 'resumo_tag_sedam',
 html
 )
-
 }
 /*=========================================================
-053 WORD MONITORAMENTO
+052 WORD MONITORAMENTO
 =========================================================*/
 function gerarWordMonitoramento(){
-
 let lista=[...(window.allData||[])].sort(compareSubitem)
-
 let linhas=lista.map(i=>`
 <tr>
 <td>${i.item||'-'}</td>
 <td>${i.subitem||'-'}</td>
 <td>${i.descricao||'-'}</td>
 <td>${i.produto||'-'}</td>
-<td>${i.responsavel||'-'}</td>
+<td>${i.setor||i.coordenadoria||'-'}</td>
 <td>${getTotal(i)}%</td>
 </tr>
 `).join('')
-
 let html=`
-<h1>MONITORAMENTO COMPLETO - TAG SEDAM 2026</h1>
-
-<table border="1" cellspacing="0" cellpadding="5">
-
+<h1 style="font-family:Calibri;font-size:16pt;">MONITORAMENTO COMPLETO - TAG SEDAM 2026</h1>
+<table border="1" cellspacing="0" cellpadding="5" style="
+font-family:Calibri,Arial,sans-serif;
+font-size:8pt;
+border-collapse:collapse;
+width:100%;
+">
 <tr>
 <th>Item</th>
 <th>Subitem</th>
 <th>Descrição</th>
 <th>Produto</th>
-<th>Responsável</th>
+<th>Setor</th>
 <th>Total</th>
 </tr>
-
 ${linhas}
-
 </table>
 `
-
 baixarWord(
 'monitoramento_tag_sedam',
 html
 )
-
 }
 /*=========================================================
 054 WORD GRAFICOS
