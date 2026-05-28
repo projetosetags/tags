@@ -305,36 +305,76 @@ As informações constantes neste painel possuem caráter preliminar e informati
 <!-- 005 RESUMO -->
 <div id="view-resumo" class="tab-view">
 
-<div class="flex flex-wrap gap-2 mb-3 items-center justify-between">
-<div id="boxModoResumo" class="flex flex-wrap gap-2 items-center">
-<button onclick="modoResumo='item';renderResumo()" id="btnModoItem" class="text-xs bg-amber-500 hover:bg-amber-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
+<div class="flex flex-wrap items-center justify-between gap-3 mb-4 bg-white/80 rounded-[26px] p-4 shadow-sm">
+
+<div id="boxModoResumo" class="flex items-center gap-2 ml-auto flex-wrap">
+
+<button
+onclick="
+modoResumo='item';
+this.classList.add('ativo-resumo');
+document.getElementById('btnModoSubitem').classList.remove('ativo-resumo');
+renderResumo();
+"
+id="btnModoItem"
+class="btn-modo-resumo ativo-resumo">
 ITEM
 </button>
 
-<button onclick="modoResumo='subitem';renderResumo()" id="btnModoSubitem" class="text-xs bg-blue-500 hover:bg-blue-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
+<button
+onclick="
+modoResumo='subitem';
+this.classList.add('ativo-resumo');
+document.getElementById('btnModoItem').classList.remove('ativo-resumo');
+renderResumo();
+"
+id="btnModoSubitem"
+class="btn-modo-resumo">
 SUBITEM
 </button>
-</div>
 
-<div class="flex justify-end items-center gap-2 ml-auto flex-wrap">
+<input
+id="dataInicio"
+type="date"
+onchange="aplicarFiltroData()"
+class="input-data-resumo">
 
-<input id="dataInicio" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
-<input id="dataFim" type="date" onchange="aplicarFiltroData()" class="text-xs bg-white border border-slate-300 text-slate-800 px-3 py-2 rounded-2xl shadow-sm font-bold">
-<button onclick="gerarPDFResumo()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+<input
+id="dataFim"
+type="date"
+onchange="aplicarFiltroData()"
+class="input-data-resumo">
+
+<button
+onclick="gerarPDFResumo()"
+class="btn-pdf-resumo">
 📄 PDF
 </button>
-<button id="btnWordResumo" onclick="gerarWordResumo()" class="hidden text-xs bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+
+<button
+id="btnWordResumo"
+onclick="gerarWordResumo()"
+class="btn-word-resumo hidden">
 📝 WORD
 </button>
 
-<button type="button" onclick="toggleOcultarConcluidos()" id="btn-ocultar" class="text-xs bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+<button
+type="button"
+onclick="toggleOcultarConcluidos()"
+id="btn-ocultar"
+class="btn-ocultar-resumo">
 OCULTAR 100%
 </button>
 
 </div>
 
 </div>
-<div id="cards-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3"></div>
+
+<div
+id="cards-container"
+class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+</div>
+
 </div>
 
 <!-- 006 MONITORAMENTO -->
