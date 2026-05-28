@@ -22,18 +22,32 @@
 =========================================================-->
 <section id="login-sepat" class="login-sepat">
 <div class="login-bg-sepat" style="z-index:0"></div>
-
-<div class="login-card-sepat-img" style="position:relative;z-index:10">
-<img src="assets/sepat-card.png" class="login-img-unificada">
 <div class="login-card-sepat">
-<img src="assets/sepat-card.png" class="login-img-unificada">
+<img
+src="assets/sepat-card.png"
+class="login-img-unificada"
+>
 <div class="login-actions-sepat">
-<input type="text" id="sepat-user" class="login-input-sepat">
-<input type="password" id="sepat-pass" class="login-input-sepat">
-<button class="login-btn-sepat">
+<input
+type="text"
+id="sepat-user"
+placeholder="Usuário"
+class="login-input-sepat"
+>
+<input
+type="password"
+id="sepat-pass"
+placeholder="Senha"
+class="login-input-sepat"
+>
+<button
+onclick="loginSepat()"
+class="login-btn-sepat">
 ACESSAR PAINEL
 </button>
-<button class="login-voltar-sepat">
+<button
+onclick="voltarPainelGeral()"
+class="login-voltar-sepat">
 ← Voltar ao Painel Geral
 </button>
 </div>
