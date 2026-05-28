@@ -160,15 +160,44 @@ Sair
 005 SEPAT RESUMO
 =========================================================-->
 <section id="view-resumo" class="view-sepat hidden">
-<div class="barra-filtros-sepat">
-<button onclick="modoResumoSepat='item';renderResumoSepat()" class="btn-filtro-sepat">Itens</button>
-<button onclick="modoResumoSepat='subitem';renderResumoSepat()" class="btn-filtro-sepat">Subitens</button>
-<button onclick="gerarPDFResumoSepat()" class="btn-pdf-sepat">PDF Resumo</button>
-<button onclick="gerarWordResumoSepat()" class="btn-pdf-sepat btn-word-sepat">WORD Resumo</button>
+<div class="barra-filtros-sepat flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<button
+onclick="
+modoResumoSepat='item';
+this.classList.add('ativo-sepat');
+document.getElementById('btnResumoSubitem').classList.remove('ativo-sepat');
+renderResumoSepat();
+"
+id="btnResumoItem"
+class="btn-modo-sepat ativo-sepat">
+ITEM
+</button>
+
+<button
+onclick="
+modoResumoSepat='subitem';
+this.classList.add('ativo-sepat');
+document.getElementById('btnResumoItem').classList.remove('ativo-sepat');
+renderResumoSepat();
+"
+id="btnResumoSubitem"
+class="btn-modo-sepat">
+SUBITEM
+</button>
+</div>
+<div class="flex items-center gap-2 ml-auto">
+<button onclick="gerarPDFResumoSepat()" class="btn-pdf-sepat">
+PDF Resumo
+</button>
+<button onclick="gerarWordResumoSepat()" class="btn-pdf-sepat btn-word-sepat">
+WORD Resumo
+</button>
 <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:1000;white-space:nowrap">
 <input type="checkbox" id="ocultar100ResumoSepat" onchange="renderResumoSepat()">
 OCULTAR 100%
 </label>
+</div>
 </div>
 <div id="cardsResumoSepat" class="cards-resumo-sepat"></div>
 </section>
