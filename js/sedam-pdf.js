@@ -1,4 +1,3 @@
-```javascript
 /*=========================================================
 001 PDF FUNCTION GERARPDFBACKUP
 =========================================================*/
@@ -178,8 +177,6 @@ data.cell.styles.fontStyle='bold'
 adicionarRodapePadraoPDF(doc)
 doc.save('pdf_resumo_tag_sedam.pdf')
 }
-```
-
 /*=========================================================
 00 PDF FUNCTION COMPARESUBITEMPDF
 =========================================================*/
@@ -196,7 +193,6 @@ if(va!==vb)return va-vb
 }
 return 0
 }
-```javascript
 /*=========================================================
 004 PDF FUNCTION GERARPDFMONITORAMENTO
 =========================================================*/
@@ -323,8 +319,6 @@ modoTabela==='item'
 :'Subitens_Monitoramento_TAG_SEDAM_2026.pdf'
 )
 }
-```
-
 /*=========================================================
 00 PDF FUNCTION GERARPDFGRAFICOS
 =========================================================*/
@@ -497,39 +491,29 @@ doc.save('pdf_100_cumpridos_tag_sedam.pdf')
 051 WORD DASHBOARD
 =========================================================*/
 function gerarWordDashboard(){
-
 let itens=document.getElementById('dashboardTotalItens')?.innerText||'0'
-
 let subitens=document.getElementById('dashboardTotalSubitens')?.innerText||'0'
-
 let media=document.getElementById('dashboardMediaGeral')?.innerText||'0%'
-
 let html=`
 <h1>DASHBOARD EXECUTIVO - TAG SEDAM 2026</h1>
-
 <table border="1" cellspacing="0" cellpadding="6">
 <tr>
 <th>Itens Estratégicos</th>
 <th>Subitens</th>
 <th>Média Geral</th>
 </tr>
-
 <tr>
 <td>${itens}</td>
 <td>${subitens}</td>
 <td>${media}</td>
 </tr>
 </table>
-
 <br>
-
 <h2>Relatório Executivo</h2>
-
 <p>
 Painel consolidado de acompanhamento técnico do TAG SEDAM 2026.
 </p>
 `
-
 baixarWord(
 'dashboard_tag_sedam',
 html
@@ -656,76 +640,59 @@ html
 054 WORD GRAFICOS
 =========================================================*/
 function gerarWordGraficos(){
-
 let info=window.graficoAtualInfo||{}
-
 let html=`
 <h1>ANÁLISE GRÁFICA - TAG SEDAM 2026</h1>
-
 <p>
 Relatório gráfico consolidado do painel TAG SEDAM 2026.
 </p>
-
 <table border="1" cellspacing="0" cellpadding="5">
-
 <tr>
 <th>Tipo</th>
 <th>Informação</th>
 </tr>
-
 <tr>
 <td>Item</td>
 <td>${info.item||'-'}</td>
 </tr>
-
 <tr>
 <td>Subitem</td>
 <td>${info.subitem||'-'}</td>
 </tr>
-
 <tr>
 <td>JAN</td>
 <td>${info.jan||0}%</td>
 </tr>
-
 <tr>
 <td>FEV</td>
 <td>${info.fev||0}%</td>
 </tr>
-
 <tr>
 <td>MAR</td>
 <td>${info.mar||0}%</td>
 </tr>
-
 <tr>
 <td>ABR</td>
 <td>${info.abr||0}%</td>
 </tr>
-
 <tr>
 <td>MAI</td>
 <td>${info.mai||0}%</td>
 </tr>
-
 </table>
 `
-
 baixarWord(
 'graficos_tag_sedam',
 html
 )
-
 }
 /*=========================================================
 055 WORD 100
 =========================================================*/
 function gerarWordCumpridos(){
-
 let lista=(window.allData||[])
 .filter(i=>getTotal(i)>=100)
 .sort(compareSubitem)
-
 let linhas=lista.map(i=>`
 <tr>
 <td>${i.item||'-'}</td>
@@ -735,12 +702,9 @@ let linhas=lista.map(i=>`
 <td>100%</td>
 </tr>
 `).join('')
-
 let html=`
 <h1>SUBITENS 100% CUMPRIDOS - TAG SEDAM 2026</h1>
-
 <table border="1" cellspacing="0" cellpadding="5">
-
 <tr>
 <th>Item</th>
 <th>Subitem</th>
@@ -748,12 +712,9 @@ let html=`
 <th>Produto</th>
 <th>%</th>
 </tr>
-
 ${linhas}
-
 </table>
 `
-
 baixarWord(
 '100_tag_sedam',
 html
@@ -811,23 +772,14 @@ right:20
 })
 y=pdf.lastAutoTable.finalY+12
 async function adicionarGrafico(canvasId,titulo){
-
 let canvas=document.getElementById(canvasId)
-
 if(!canvas)return
-
 let originalChart=Chart.getChart(canvas)
-
 if(!originalChart)return
-
 let tempCanvas=document.createElement('canvas')
-
 tempCanvas.width=2200
-
 tempCanvas.height=900
-
 let tempCtx=tempCanvas.getContext('2d')
-
 new Chart(tempCtx,{
 type:originalChart.config.type,
 data:JSON.parse(JSON.stringify(originalChart.config.data)),
@@ -873,22 +825,15 @@ weight:'bold'
 })
 
 await new Promise(r=>setTimeout(r,400))
-
 let img=tempCanvas.toDataURL('image/png',1.0)
-
 if(y>185){
 pdf.addPage()
 y=20
 }
-
 pdf.setFontSize(12)
-
 pdf.setTextColor(25,25,25)
-
 pdf.text(titulo,margem,y)
-
 y+=5
-
 pdf.addImage(
 img,
 'PNG',
@@ -899,9 +844,7 @@ y,
 undefined,
 'FAST'
 )
-
 y+=88
-
 }
 await adicionarGrafico('graficoDashboardItens','Desempenho por Item')
 await adicionarGrafico('graficoDashboardLinha','Evolução Mensal')
