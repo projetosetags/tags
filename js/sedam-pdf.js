@@ -487,10 +487,10 @@ xmlns='http://www.w3.org/TR/REC-html40'>
 <title>${nome}</title>
 <style>
 body{
-margin-top:2.5cm;
-margin-right:2cm;
-margin-bottom:2cm;
-margin-left:3cm;
+margin-top:0,5cm;
+margin-right:0,5cm;
+margin-bottom:0,5cm;
+margin-left:0,5cm;
 font-family:Calibri,Arial,sans-serif;
 font-size:12pt;
 line-height:1.3;
