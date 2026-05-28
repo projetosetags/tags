@@ -73,12 +73,12 @@ img{max-width:100%;display:block;}
 /*=========================================================009 FILTROS=========================================================*/
 .barra-filtros-sepat{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;padding:10px;border-radius:20px;background:rgba(255,255,255,.82);box-shadow:0 10px 30px rgba(15,23,42,.07);}
 .input-busca-sepat{height:40px;padding:0 14px;border:none;border-radius:14px;background:#fff;color:#0f172a;font-size:12px;font-weight:800;box-shadow:inset 0 0 0 1px rgba(15,23,42,.08);min-width:280px;flex:1;}
-.btn-pdf-sepat,.btn-word-sepat,.btn-modo-sepat{height:40px;padding:0 16px;border:none;border-radius:14px;font-size:11px;font-weight:1000;transition:.2s ease;}
-.btn-pdf-sepat{background:#dc2626;color:#fff;}
-.btn-word-sepat{background:linear-gradient(135deg,#1d4ed8,#2563eb)!important;color:#fff!important;}
-.btn-modo-sepat{background:linear-gradient(135deg,#f8fafc,#e2e8f0);border:1px solid #cbd5e1;color:#334155;min-width:88px;display:inline-flex;align-items:center;justify-content:center;}
-.btn-modo-sepat.ativo-sepat{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:1px solid #2563eb;box-shadow:0 6px 18px rgba(37,99,235,.35);}
-
+.btn-pdf-sepat,.btn-word-sepat,.btn-modo-sepat{height:40px;padding:0 22px;border:none;border-radius:999px;font-size:11px;font-weight:1000;letter-spacing:.7px;text-transform:uppercase;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .22s ease;box-shadow:0 4px 14px rgba(15,23,42,.10);}
+.btn-pdf-sepat{background:linear-gradient(135deg,#dc2626,#ef4444)!important;color:#ffffff!important;}
+.btn-word-sepat{background:linear-gradient(135deg,#1d4ed8,#2563eb)!important;color:#ffffff!important;}
+.btn-modo-sepat{background:linear-gradient(135deg,#eef2ff,#dbeafe)!important;border:1px solid #bfdbfe!important;color:#1e293b!important;min-width:96px;}
+.btn-pdf-sepat:hover,.btn-word-sepat:hover,.btn-modo-sepat:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(37,99,235,.18);}
+.btn-modo-sepat.ativo-sepat{background:linear-gradient(135deg,#2563eb,#1d4ed8)!important;color:#ffffff!important;border:1px solid #2563eb!important;box-shadow:0 10px 26px rgba(37,99,235,.34)!important;}
 /*=========================================================010 CARDS=========================================================*/
 .cards-resumo-sepat{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
 .card-resumo-sepat{padding:20px;border-radius:24px;border:1px solid rgba(255,255,255,.7);box-shadow:0 14px 34px rgba(15,23,42,.12);transition:.2s ease;}
