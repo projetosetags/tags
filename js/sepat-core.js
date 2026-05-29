@@ -1366,12 +1366,13 @@ return
 }
 sepatPerfis=data||[]
 box.innerHTML=`
-<div class="perfil-row-sepat" style="font-weight:1000;background:#dbeafe;border-radius:14px">
-<div>NOME</div>
-<div>USUÁRIO</div>
-<div>CARGO</div>
-<div>NÍVEL</div>
-</div>
+<div class="perfil-grid-sepat">
+
+<div class="perfil-head-sepat">NOME</div>
+<div class="perfil-head-sepat">USUÁRIO</div>
+<div class="perfil-head-sepat">CARGO</div>
+<div class="perfil-head-sepat">NÍVEL</div>
+
 ${sepatPerfis.map(p=>`
 <div class="perfil-row-sepat">
 <div>
@@ -1391,6 +1392,8 @@ ${editandoPerfisSepat?`<button onclick="excluirPerfilSepat('${p.id}')" style="wi
 </div>
 </div>
 `).join('')}
+
+</div>
 `
 }
 /*=========================================================
