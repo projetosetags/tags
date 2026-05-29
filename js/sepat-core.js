@@ -1361,7 +1361,7 @@ return
 let {data,error}=await sepatClient
 .from('sepat_perfis')
 .select('*')
-.order('id',{ascending:true})
+.order('ordem',{ascending:true})
 if(error){
 console.log(error)
 box.innerHTML='Erro ao carregar perfis.'
@@ -1371,7 +1371,7 @@ sepatPerfis=data||[]
 box.innerHTML=`
 <div class="perfil-grid-sepat">
 
-<div class="perfil-head-sepat">ID</div>
+<div class="perfil-head-sepat">NºD</div>
 <div class="perfil-head-sepat">NOME COMPLETO</div>
 <div class="perfil-head-sepat">USERNAME</div>
 <div class="perfil-head-sepat">CARGO</div>
@@ -1379,6 +1379,9 @@ box.innerHTML=`
 
 ${sepatPerfis.map(p=>`
 <div class="perfil-row-sepat">
+<div>
+${String(p.ordem||0).padStart(2,'0')}
+</div>
 <div>
 ${editandoPerfisSepat?`<input class="inputPerfilSepat" data-id="${p.id}" data-campo="nome_completo" value="${p.nome_completo||''}">`:(p.nome_completo||'-')}
 </div>
