@@ -145,4 +145,50 @@ img{max-width:100%;display:block;}
 .input-busca-resumo{height:44px;min-width:340px;padding:0 18px;border-radius:18px;border:1px solid #dbe3ef;background:#fff;color:#0f172a;font-size:12px;font-weight:900;box-shadow:inset 0 1px 3px rgba(0,0,0,.04);}
 .input-busca-resumo:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 4px rgba(37,99,235,.14);}
 .box-pesquisa-resumo{flex:1;display:flex;align-items:center;min-width:340px;}
-
+.perfil-grid-sepat{
+display:grid;
+grid-template-columns:3fr 1.2fr 4fr .8fr;
+gap:1px;
+background:#cbd5e1;
+border-radius:14px;
+overflow:hidden;
+margin-top:10px;
+}
+.perfil-head-sepat{
+background:#dbeafe;
+padding:12px;
+font-weight:900;
+font-size:13px;
+color:#0f172a;
+}
+.perfil-row-sepat{
+display:contents;
+}
+.perfil-row-sepat>div{
+background:#ffffff;
+padding:10px;
+font-size:13px;
+line-height:1.4;
+}
+.inputPerfilSepat{
+width:100%;
+padding:6px 8px;
+border:1px solid #cbd5e1;
+border-radius:8px;
+font-size:13px;
+}
+.toolbar-perfis-sepat{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-bottom:12px;
+}
+.toolbar-perfis-sepat button{
+padding:8px 14px;
+border:none;
+border-radius:10px;
+font-weight:800;
+cursor:pointer;
+background:#2563eb;
+color:#fff;
+}
