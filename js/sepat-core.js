@@ -1371,16 +1371,16 @@ sepatPerfis=data||[]
 box.innerHTML=`
 <div class="perfil-grid-sepat">
 
-<div class="perfil-head-sepat">NºD</div>
+<div class="perfil-head-sepat">Nº</div>
 <div class="perfil-head-sepat">NOME COMPLETO</div>
 <div class="perfil-head-sepat">USERNAME</div>
 <div class="perfil-head-sepat">CARGO</div>
 <div class="perfil-head-sepat">NÍVEL ACESSO</div>
-
-${sepatPerfis.map(p=>`
+<div class="perfil-head-sepat" style="text-align:center">EXCLUIR</div>
+${sepatPerfis.map((p,idx)=>`
 <div class="perfil-row-sepat">
 <div>
-${String(p.ordem||0).padStart(2,'0')}
+${String(idx+1).padStart(2,'0')}
 </div>
 <div>
 ${editandoPerfisSepat?`<input class="inputPerfilSepat" data-id="${p.id}" data-campo="nome_completo" value="${p.nome_completo||''}">`:(p.nome_completo||'-')}
