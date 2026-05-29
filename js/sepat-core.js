@@ -978,7 +978,7 @@ ${MESES_SEPAT.slice(0,5).map(m=>`
 `
 modal.classList.remove('hidden')
 }
-```javascript
+
 
 /*=========================================================
 016 SEPAT CORE FECHAR MODAL
@@ -1043,32 +1043,22 @@ tbody.innerHTML=lista.map(i=>{
 let total=getTotalSepat(i)
 let html=`
 <tr>
-
 <td class="col-subitem" style="width:340px;min-width:340px;max-width:340px;font-size:10px;font-weight:900;line-height:1.5;white-space:normal;word-break:break-word;vertical-align:top;">
-${modoTabelaSepat==='item'
-?(i.item||'-')
-:(i.siglaitem||'-')}
+${modoTabelaSepat==='item'?(i.item||'-'):(i.siglaitem||'-')}
 </td>
-
 <td style="max-width:760px;font-size:9px;line-height:1.55;vertical-align:top;">
-${modoTabelaSepat==='item'
-?(i.descricaoitem||'-')
-:(i.subitem||'-')}
+${modoTabelaSepat==='item'?(i.descricaoitem||'-'):(i.subitem||'-')}
 </td>
-
 <td style="font-size:9px;line-height:1.4;max-width:170px;vertical-align:top;">
 ${i.produto||'-'}
 </td>
-
 <td style="font-size:9px;line-height:1.35;max-width:130px;vertical-align:top;">
 ${i.cargo||'-'}
 </td>
-
 <td style="font-size:9px;text-align:center;white-space:nowrap;">
 ${formatarDataSepat(i.data_inicio)}
 </td>
 `
-
 MESES_SEPAT
 .filter(m=>mesesOrdem.indexOf(m)<=indiceAtual)
 .forEach(mes=>{
@@ -2496,7 +2486,7 @@ document.body.removeChild(a)
 URL.revokeObjectURL(url)
 
 }
-```javascript
+
 /*=========================================================
 051 WORD DASHBOARD
 =========================================================*/
@@ -3194,8 +3184,8 @@ if(v>100)v=100
 return v
 
 }
-```
-```javascript
+
+
 /*=========================================================
 076 ATUALIZAR TODOS OS PAINEIS
 =========================================================*/
@@ -3432,5 +3422,3 @@ origem:sepatUser?.origem||'SEPAT'
 100 FINALIZAR SISTEMA
 =========================================================*/
 console.log('TAG SEPAT 2026 • Sistema carregado com sucesso.')
-```
-function truncarSepat(txt,n)
