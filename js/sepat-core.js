@@ -1358,7 +1358,10 @@ if(!sepatUser||Number(sepatUser.nivel_acesso||0)!==1){
 box.innerHTML='Sem permissão.'
 return
 }
-let {data,error}=await sepatClient.from('sepat_perfis').select('*').order('nome_completo',{ascending:true})
+let {data,error}=await sepatClient
+.from('sepat_perfis')
+.select('*')
+.order('id',{ascending:true})
 if(error){
 console.log(error)
 box.innerHTML='Erro ao carregar perfis.'
@@ -1368,10 +1371,11 @@ sepatPerfis=data||[]
 box.innerHTML=`
 <div class="perfil-grid-sepat">
 
-<div class="perfil-head-sepat">NOME</div>
-<div class="perfil-head-sepat">USUÁRIO</div>
+<div class="perfil-head-sepat">ID</div>
+<div class="perfil-head-sepat">NOME COMPLETO</div>
+<div class="perfil-head-sepat">USERNAME</div>
 <div class="perfil-head-sepat">CARGO</div>
-<div class="perfil-head-sepat">NÍVEL</div>
+<div class="perfil-head-sepat">NÍVEL ACESSO</div>
 
 ${sepatPerfis.map(p=>`
 <div class="perfil-row-sepat">
