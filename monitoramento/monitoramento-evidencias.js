@@ -317,6 +317,9 @@ query=query.eq('origem',origem)
 
 let{data,error}=await query
 
+console.log('ORIGEM=',origem)
+console.log('ERRO=',error)
+console.log('DATA=',data)
 if(error){
 console.log(error)
 return
