@@ -16,184 +16,61 @@ renderTable()
 001 MONITORAMENTO FUNCTION RENDERRESUMO
 =========================================================*/
 function renderResumo(){
-
 let dados=window.allData||[]
-
 if(!dados||!dados.length){
-
 let el=document.getElementById('cards-container')
-
 if(el)el.innerHTML=''
-
 return
-
 }
-
 let mapa={}
-
 let base=[...dados]
-
+let ocultar=document.getElementById('ocultar100Resumo')?.checked||false
 if(filtroDataInicio||filtroDataFim){
-
 base=base.filter(i=>{
-
 let d=parseDataLocal(i.data_inicio)||parseDataLocal(i.prazo_texto)
-
 if(!d)return false
-
 if(filtroDataInicio&&d<parseDataLocal(filtroDataInicio))return false
-
 if(filtroDataFim&&d>parseDataLocal(filtroDataFim))return false
-
 return true
-
 })
-
 }
-
-if(ocultarConcluidos){
-
-base=base.filter(i=>getTotal(i)<100)
-
+if(ocultar){
+base=base.filter(i=>Number(getTotal(i)||0)<100)
 }
-
 base.forEach(i=>{
-
-let key=(modoResumo==='item')
-?String(i.item||'')
-:String(i.subitem||'')
-
+let key=(modoResumo==='item')?String(i.item||''):String(i.subitem||'')
 if(!key)return
-
 if(!mapa[key])mapa[key]=[]
-
 mapa[key].push(i)
-
 })
-
-let keys=Object.keys(mapa)
-.filter(k=>k)
-.sort((a,b)=>{
-
-let ra=(base||[]).find(x=>
-String((modoResumo==='item')
-?x.item
-:x.subitem)===String(a)
-)||{subitem:a,item:a}
-
-let rb=(base||[]).find(x=>
-String((modoResumo==='item')
-?x.item
-:x.subitem)===String(b)
-)||{subitem:b,item:b}
-
+let keys=Object.keys(mapa).filter(k=>k).sort((a,b)=>{
+let ra=(base||[]).find(x=>String((modoResumo==='item')?x.item:x.subitem)===String(a))||{subitem:a,item:a}
+let rb=(base||[]).find(x=>String((modoResumo==='item')?x.item:x.subitem)===String(b))||{subitem:b,item:b}
 return compareSubitem(ra,rb)
-
 })
-
 let html=''
-
 let container=document.getElementById('cards-container')
-
 if(container)container.innerHTML=''
-
 keys.forEach(k=>{
-
 let lista=mapa[k]||[]
-
 if(!lista.length)return
-
-let media=Math.round(
-lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1)
-)
-
-let cor=
-media<=30
-?'bg-status-red'
-:
-media>=100
-?'bg-status-green'
-:'bg-status-yellow'
-
+let media=Math.round(lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1))
+let cor=media<=30?'bg-status-red':media>=100?'bg-status-green':'bg-status-yellow'
 let itemBase=lista[0]||{}
-
 let descricao=''
-
 if(modoResumo==='item'){
-
-let registroDescricao=(window.allData||[])
-.find(x=>
-String(x.item||'')===String(k)&&
-x.descricaoitem&&
-x.descricaoitem.trim()
-)
-
+let registroDescricao=(window.allData||[]).find(x=>String(x.item||'')===String(k)&&x.descricaoitem&&x.descricaoitem.trim())
 descricao=registroDescricao?.descricaoitem||''
-
 }else{
-
-descricao=
-lista.find(x=>x.descricao&&x.descricao.trim())?.descricao||''
-
+descricao=lista.find(x=>x.descricao&&x.descricao.trim())?.descricao||''
 }
-
 let itemClick=k
-
 let itemNumero=String(itemBase.item||'-')
-
 let subitemNumero=String(itemBase.subitem||'-')
-
-html+=`
-
-<div class="flex flex-col">
-
-<div
-class="card-micro ${cor}"
-onclick="abrirDetalhesResumo('${itemClick}')"
-style="padding:12px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-
-<div style="font-size:18px;font-weight:900;color:#000000;line-height:1;">
-ITEM ${itemNumero}
-</div>
-
-${
-modoResumo==='subitem'
-?
-`
-<div style="font-size:11px;font-weight:900;color:#0f172a;line-height:1;margin-top:4px;">
-SUBITEM ${subitemNumero}
-</div>
-`
-:''
-}
-
-${
-descricao
-?
-`
-<div style="font-size:11px;font-weight:700;color:#000000;margin-top:8px;text-align:center;line-height:1.3;max-width:100%;">
-${descricao}
-</div>
-`
-:''
-}
-
-<div class="percent-big" style="margin-top:10px;">
-${media}%
-</div>
-
-</div>
-
-</div>
-
-`
-
+html+=`<div class="flex flex-col"><div class="card-micro ${cor}" onclick="abrirDetalhesResumo('${itemClick}')" style="padding:12px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="font-size:18px;font-weight:900;color:#000000;line-height:1;">ITEM ${itemNumero}</div>${modoResumo==='subitem'?`<div style="font-size:11px;font-weight:900;color:#0f172a;line-height:1;margin-top:4px;">SUBITEM ${subitemNumero}</div>`:''}${descricao?`<div style="font-size:11px;font-weight:700;color:#000000;margin-top:8px;text-align:center;line-height:1.3;max-width:100%;">${descricao}</div>`:''}<div class="percent-big" style="margin-top:10px;">${media}%</div></div></div>`
 })
-
 let el=document.getElementById('cards-container')
-
 if(el)el.innerHTML=html
-
 }
 
 /*=========================================================
