@@ -548,14 +548,10 @@ html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!import
 .tab-view{width:100%!important;max-width:100%!important;overflow-x:hidden!important;box-sizing:border-box!important;}
 #view-mensal{width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;padding-bottom:10px!important;border-radius:22px!important;}
 #view-mensal .table-wrap{width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;border-radius:22px!important;-webkit-overflow-scrolling:touch!important;}
-#view-mensal table{width:100%!important;min-width:1580px!important;table-layout:fixed!important;border-collapse:collapse!important;background:#fff!important;}
+#view-mensal table{width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;background:#fff!important;}
 .grid,.grid-cards,.cards-container,.cards-dashboard-mini{width:100%!important;max-width:100%!important;overflow:hidden!important;}
 canvas{max-width:100%!important;height:auto!important;}
 #btn-ocultar{height:52px!important;padding:0 22px!important;border-radius:26px!important;font-size:14px!important;font-weight:900!important;}
-@media(max-width:1700px){#view-mensal table{min-width:1500px!important;}}
-@media(max-width:1400px){#view-mensal table{min-width:1450px!important;}}
-@media(max-width:1200px){#view-mensal table{min-width:1380px!important;}#dashboard{padding:0 4px!important;}}
-@media(max-width:900px){#view-mensal table{min-width:1280px!important;}}
 /*=========================================================
 149 SEDAM.CSS DATA FIX DEFINITIVO
 =========================================================*/
@@ -570,3 +566,8 @@ canvas{max-width:100%!important;height:auto!important;}
 .btn-pdf-resumo{background:#dc2626;color:#fff;padding:10px 18px;border-radius:18px;font-size:12px;font-weight:900;cursor:pointer;border:none;display:inline-flex;align-items:center;justify-content:center;}
 .btn-word-resumo{background:#1d4ed8;color:#fff;padding:10px 18px;border-radius:18px;font-size:12px;font-weight:900;cursor:pointer;border:none;display:inline-flex;align-items:center;justify-content:center;}
 .check-ocultar-resumo{display:flex;align-items:center;gap:8px;margin-left:auto;font-size:14px;font-weight:900;white-space:nowrap;color:#000;}
+/*=========================================================
+153 MONITORAMENTO AJUSTE COLUNAS DINAMICAS
+=========================================================*/
+#view-mensal th,#view-mensal td{overflow:hidden!important;text-overflow:ellipsis!important;word-break:break-word!important;transition:all .2s ease!important;}
+#view-mensal .td-desc{max-width:none!important;}
