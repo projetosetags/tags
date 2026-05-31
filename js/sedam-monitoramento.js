@@ -499,10 +499,3 @@ return
 }
 carregarDados()
 }
-/*=========================================================
-999 RESUMO TOGGLE 100
-=========================================================*/
-function toggleOcultarResumo(){
-ocultarConcluidos=document.getElementById('ocultar100Resumo')?.checked||false
-renderResumo()
-}
