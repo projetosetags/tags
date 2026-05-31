@@ -352,3 +352,17 @@ cel.style.display=''
 })
 })
 }
+/*=========================================================
+155 MODO APRESENTACAO MONITORAMENTO
+=========================================================*/
+function modoApresentacaoMonitoramento(){
+restaurarColunasMonitoramento()
+let ocultar=[2,3,4,5,6,7,8,9]
+ocultar.forEach(indice=>{
+window.colunasMonitoramentoOcultas[indice]=true
+document.querySelectorAll('#view-mensal table tr').forEach(tr=>{
+let cel=tr.children[indice]
+if(cel)cel.style.display='none'
+})
+})
+}
