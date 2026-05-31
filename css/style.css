@@ -569,3 +569,5 @@ canvas{max-width:100%!important;height:auto!important;}
 =========================================================*/
 #view-mensal th,#view-mensal td{overflow:hidden!important;text-overflow:ellipsis!important;word-break:break-word!important;transition:all .2s ease!important;width:auto!important;min-width:auto!important;}
 #view-mensal .td-desc{max-width:none!important;}
+#view-mensal th{cursor:pointer!important;transition:.2s!important;}
+#view-mensal th:hover{background:#dbeafe!important;color:#1e40af!important;}
