@@ -648,7 +648,106 @@ Painel consolidado de acompanhamento técnico do TAG SEDAM 2026 contendo indicad
 As informações constantes neste relatório possuem caráter preliminar e dependem de validação técnica documental pela equipe técnica do Tribunal de Contas do Estado de Rondônia.
 </p>
 `
+let canvasItens=document.getElementById('graficoDashboardItens')
+let canvasLinha=document.getElementById('graficoDashboardLinha')
+let canvasPizza=document.getElementById('graficoDashboardPizza')
+
+if(canvasItens){
+
+html+=`
+<br><br>
+
+<h2 style="
+font-size:14pt;
+font-weight:700;
+color:#1e293b;
+">
+DESEMPENHO POR ITEM
+</h2>
+
+<img
+src="${canvasItens.toDataURL('image/png',1.0)}"
+style="
+width:100%;
+border:1px solid #cbd5e1;
+padding:6px;
+border:1px solid #cbd5e1;
+padding:6px;
+">
+`
+}
+
+if(canvasLinha){
+
+html+=`
+<br><br>
+
+<h2 style="
+font-size:14pt;
+font-weight:700;
+color:#1e293b;
+">
+EVOLUÇÃO MENSAL
+</h2>
+
+<img
+src="${canvasLinha.toDataURL('image/png',1.0)}"
+style="
+width:100%;
+border:1px solid #cbd5e1;
+padding:6px;
+border:1px solid #cbd5e1;
+padding:6px;
+">
+`
+}
+
+if(canvasPizza){
+
+html+=`
+<br><br>
+
+<h2 style="
+font-size:14pt;
+font-weight:700;
+color:#1e293b;
+">
+DISTRIBUIÇÃO DOS SUBITENS
+</h2>
+
+<img
+src="${canvasPizza.toDataURL('image/png',1.0)}"
+style="
+width:100%;
+border:1px solid #cbd5e1;
+padding:6px;
+">
+`
+}
+
+html+=`
+<br><br>
+
+<h2 style="
+font-size:14pt;
+font-weight:700;
+color:#1e293b;
+">
+CONCLUSÃO TÉCNICA
+</h2>
+
+<p style="
+font-size:9pt;
+color:#475569;
+line-height:1.5;
+text-align:justify;
+">
+As informações constantes neste relatório possuem caráter preliminar e dependem de validação técnica documental pela equipe técnica do Tribunal de Contas do Estado de Rondônia.
+</p>
+`
+
 baixarWord('dashboard_tag_sedam',html)
+
 }
 /*=========================================================
 052 WORD RESUMO
