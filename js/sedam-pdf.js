@@ -207,8 +207,8 @@ let meses=[
 {campo:'nov',label:'NOV'},
 {campo:'dez',label:'DEZ'}
 ]
-let mesAtual=new Date().getMonth()
-let mesesAtivos=meses.slice(0,mesAtual+1)
+let mesesLiberados=getMesesLiberados()
+let mesesAtivos=meses.filter(m=>mesesLiberados.includes(m.campo))
 doc.setFontSize(14)
 doc.setTextColor(20,20,20)
 doc.text('MONITORAMENTO COMPLETO - TAG SEDAM 2026',10,12)
