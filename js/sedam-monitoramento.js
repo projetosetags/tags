@@ -345,8 +345,7 @@ function toggleColunaMonitoramento(indice){
 window.colunasMonitoramentoOcultas[indice]=!window.colunasMonitoramentoOcultas[indice]
 document.querySelectorAll('#view-mensal table tr').forEach(tr=>{
 let cel=tr.children[indice]
-if(!cel)return
-cel.style.display=window.colunasMonitoramentoOcultas[indice]?'none':''
+if(cel)cel.style.display=window.colunasMonitoramentoOcultas[indice]?'none':''
 })
 }
 /*=========================================================
@@ -354,19 +353,22 @@ cel.style.display=window.colunasMonitoramentoOcultas[indice]?'none':''
 =========================================================*/
 function restaurarColunasMonitoramento(){
 window.colunasMonitoramentoOcultas={}
+renderTable()
+setTimeout(()=>{
 document.querySelectorAll('#view-mensal table tr').forEach(tr=>{
 for(let i=6;i<=9;i++){
 let cel=tr.children[i]
 if(cel)cel.style.display=''
 }
 })
+},50)
 }
 /*=========================================================
 155 MODO APRESENTACAO MONITORAMENTO
 =========================================================*/
 function modoApresentacaoMonitoramento(){
 restaurarColunasMonitoramento()
-let ocultar=[2,3,4,5,6,7,8,9]
+let ocultar=[3,6,7,8,9,12]
 ocultar.forEach(indice=>{
 window.colunasMonitoramentoOcultas[indice]=true
 document.querySelectorAll('#view-mensal table tr').forEach(tr=>{
