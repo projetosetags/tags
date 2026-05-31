@@ -354,7 +354,12 @@ cel.style.display=window.colunasMonitoramentoOcultas[indice]?'none':''
 =========================================================*/
 function restaurarColunasMonitoramento(){
 window.colunasMonitoramentoOcultas={}
-renderTable()
+document.querySelectorAll('#view-mensal table tr').forEach(tr=>{
+for(let i=6;i<=9;i++){
+let cel=tr.children[i]
+if(cel)cel.style.display=''
+}
+})
 }
 /*=========================================================
 155 MODO APRESENTACAO MONITORAMENTO
