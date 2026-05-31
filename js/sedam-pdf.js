@@ -755,16 +755,21 @@ baixarWord('dashboard_tag_sedam',html)
 function gerarWordResumo(){
 let lista=[...(window.allData||[])].sort(compareSubitemPDF)
 let media=Math.round(lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1))
-let linhas=lista.map(i=>`
+let mesesLiberados=getMesesLiberados()
+let cabecalhoMeses=mesesLiberados.map(m=>`<th>${m.toUpperCase()}</th>`).join('')
+let linhas=lista.map(i=>{
+let mesesHtml=mesesLiberados.map(m=>`<td>${Number(i[m]||0)}%</td>`).join('')
+return `
 <tr>
 <td>${i.item||'-'}</td>
 <td>${i.subitem||'-'}</td>
 <td>${i.descricao||'-'}</td>
 <td>${i.produto||'-'}</td>
 <td>${i.setor||i.coordenadoria||'-'}</td>
+${mesesHtml}
 <td>${getTotal(i)}%</td>
-</tr>
-`).join('')
+</tr>`
+}).join('')
 let html=`
 <h1 style="font-size:18pt;font-weight:700;color:#1e293b;margin-bottom:10px;">
 RESUMO EXECUTIVO - TAG SEDAM 2026
@@ -780,7 +785,8 @@ Média Geral Consolidada:
 <th>Descrição</th>
 <th>Produto</th>
 <th>Setor</th>
-<th>%</th>
+${cabecalhoMeses}
+<th>Total</th>
 </tr>
 ${linhas}
 </table>
@@ -792,16 +798,21 @@ baixarWord('resumo_tag_sedam',html)
 =========================================================*/
 function gerarWordMonitoramento(){
 let lista=[...(window.allData||[])].sort(compareSubitemPDF)
-let linhas=lista.map(i=>`
+let mesesLiberados=getMesesLiberados()
+let cabecalhoMeses=mesesLiberados.map(m=>`<th>${m.toUpperCase()}</th>`).join('')
+let linhas=lista.map(i=>{
+let mesesHtml=mesesLiberados.map(m=>`<td>${Number(i[m]||0)}%</td>`).join('')
+return `
 <tr>
 <td>${i.item||'-'}</td>
 <td>${i.subitem||'-'}</td>
 <td>${i.descricao||'-'}</td>
 <td>${i.produto||'-'}</td>
 <td>${i.setor||i.coordenadoria||'-'}</td>
+${mesesHtml}
 <td>${getTotal(i)}%</td>
-</tr>
-`).join('')
+</tr>`
+}).join('')
 let media=Math.round(lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1))
 let html=`
 <h1 style="font-size:18pt;font-weight:700;color:#1e293b;margin-bottom:10px;">
@@ -818,6 +829,7 @@ Média Geral Consolidada:
 <th>Descrição</th>
 <th>Produto</th>
 <th>Setor</th>
+${cabecalhoMeses}
 <th>Total</th>
 </tr>
 ${linhas}
