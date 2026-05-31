@@ -49,14 +49,14 @@ el.innerHTML='<div style="grid-column:1/-1;text-align:center;font-size:20px;font
 return
 }
 base.forEach(i=>{
-let key=(modoResumo==='item')?String(i.item||''):String(i.subitem||'')
+let key=(window.modoResumo==='item')?String(i.item||''):String(i.subitem||'')
 if(!key)return
 if(!mapa[key])mapa[key]=[]
 mapa[key].push(i)
 })
 let keys=Object.keys(mapa).filter(k=>k).sort((a,b)=>{
-let ra=(base||[]).find(x=>String((modoResumo==='item')?x.item:x.subitem)===String(a))||{subitem:a,item:a}
-let rb=(base||[]).find(x=>String((modoResumo==='item')?x.item:x.subitem)===String(b))||{subitem:b,item:b}
+let ra=(base||[]).find(x=>String((window.modoResumo==='item')?x.item:x.subitem)===String(a))||{subitem:a,item:a}
+let rb=(base||[]).find(x=>String((window.modoResumo==='item')?x.item:x.subitem)===String(b))||{subitem:b,item:b}
 return compareSubitem(ra,rb)
 })
 let html=''
@@ -70,7 +70,7 @@ if(ocultar&&media>=100)return
 let cor=media<=30?'bg-status-red':media>=100?'bg-status-green':'bg-status-yellow'
 let itemBase=lista[0]||{}
 let descricao=''
-if(modoResumo==='item'){
+if(window.modoResumo==='item'){
 let registroDescricao=(window.allData||[]).find(x=>String(x.item||'')===String(k)&&x.descricaoitem&&x.descricaoitem.trim())
 descricao=registroDescricao?.descricaoitem||''
 }else{
@@ -79,7 +79,7 @@ descricao=lista.find(x=>x.descricao&&x.descricao.trim())?.descricao||''
 let itemClick=k
 let itemNumero=String(itemBase.item||'-')
 let subitemNumero=String(itemBase.subitem||'-')
-html+=`<div class="flex flex-col"><div class="card-micro ${cor}" onclick="abrirDetalhesResumo('${itemClick}')" style="padding:12px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="font-size:18px;font-weight:900;color:#000000;line-height:1;">ITEM ${itemNumero}</div>${modoResumo==='subitem'?`<div style="font-size:11px;font-weight:900;color:#0f172a;line-height:1;margin-top:4px;">SUBITEM ${subitemNumero}</div>`:''}${descricao?`<div style="font-size:11px;font-weight:700;color:#000000;margin-top:8px;text-align:center;line-height:1.3;max-width:100%;">${descricao}</div>`:''}<div class="percent-big" style="margin-top:10px;">${media}%</div></div></div>`
+html+=`<div class="flex flex-col"><div class="card-micro ${cor}" onclick="abrirDetalhesResumo('${itemClick}')" style="padding:12px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="font-size:18px;font-weight:900;color:#000000;line-height:1;">ITEM ${itemNumero}</div>${window.modoResumo==='subitem'?`<div style="font-size:11px;font-weight:900;color:#0f172a;line-height:1;margin-top:4px;">SUBITEM ${subitemNumero}</div>`:''}${descricao?`<div style="font-size:11px;font-weight:700;color:#000000;margin-top:8px;text-align:center;line-height:1.3;max-width:100%;">${descricao}</div>`:''}<div class="percent-big" style="margin-top:10px;">${media}%</div></div></div>`
 })
 let el=document.getElementById('cards-container')
 if(el)el.innerHTML=html
