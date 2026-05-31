@@ -386,138 +386,42 @@ btn.style.display='inline-flex'
 003 SEDAM CORE FUNCTION SWITCHTAB
 =========================================================*/
 function switchTab(t){
-
-let adminsTCERO=[
-'manoel',
-'vagner',
-'gleidi'
-]
-
+let adminsTCERO=['manoel','vagner','gleidi']
 let usuarioAtual=(window.userP?.username||'').toLowerCase()
-
 let origemUsuario=String(window.userP?.origem||'').toUpperCase()
-
 let nivelUsuario=Number(window.userP?.nivel_acesso||0)
-
-let isUsuarioSEDAM=
-window.userP&&
-origemUsuario==='SEDAM'
-
-let isTCERONivel4=
-window.userP&&
-origemUsuario==='TCERO'&&
-nivelUsuario===4&&
-!adminsTCERO.includes(usuarioAtual)
-
-let ocultarPerfis=
-(
-origemUsuario==='SEDAM'&&
-nivelUsuario>=3
-)||
-(
-origemUsuario==='TCERO'&&
-nivelUsuario!==1
-)
-
+let isUsuarioSEDAM=window.userP&&origemUsuario==='SEDAM'
+let isTCERONivel4=window.userP&&origemUsuario==='TCERO'&&nivelUsuario===4&&!adminsTCERO.includes(usuarioAtual)
+let ocultarPerfis=((origemUsuario==='SEDAM'&&nivelUsuario>=3)||(origemUsuario==='TCERO'&&nivelUsuario!==1))
 let tabPerfis=document.getElementById('tab-perfis')
 let tabTCERO=document.getElementById('tab-tcero')
 let tabUsuarios=document.getElementById('tab-usuarios')
-
 if(isTCERONivel4){
-
-if(tabPerfis){
-tabPerfis.classList.add('hidden')
-tabPerfis.style.display='none'
+if(tabPerfis){tabPerfis.classList.add('hidden');tabPerfis.style.display='none'}
+if(tabTCERO){tabTCERO.classList.add('hidden');tabTCERO.style.display='none'}
+if(tabUsuarios){tabUsuarios.classList.add('hidden');tabUsuarios.style.display='none'}
 }
-
-if(tabTCERO){
-tabTCERO.classList.add('hidden')
-tabTCERO.style.display='none'
-}
-
-if(tabUsuarios){
-tabUsuarios.classList.add('hidden')
-tabUsuarios.style.display='none'
-}
-
-}
-
 if(ocultarPerfis){
-
-if(tabPerfis){
-tabPerfis.classList.add('hidden')
-tabPerfis.style.display='none'
-}
-
-if(tabUsuarios){
-tabUsuarios.classList.add('hidden')
-tabUsuarios.style.display='none'
-}
-
-if(tabTCERO){
-tabTCERO.classList.add('hidden')
-tabTCERO.style.display='none'
-}
-
+if(tabPerfis){tabPerfis.classList.add('hidden');tabPerfis.style.display='none'}
+if(tabUsuarios){tabUsuarios.classList.add('hidden');tabUsuarios.style.display='none'}
+if(tabTCERO){tabTCERO.classList.add('hidden');tabTCERO.style.display='none'}
 let viewPerfis=document.getElementById('view-perfis')
-
-if(viewPerfis){
-viewPerfis.style.display='none'
-viewPerfis.classList.add('hidden')
-}
-
+if(viewPerfis){viewPerfis.style.display='none';viewPerfis.classList.add('hidden')}
 let viewUsuarios=document.getElementById('view-usuarios')
-
-if(viewUsuarios){
-viewUsuarios.style.display='none'
-viewUsuarios.classList.add('hidden')
-}
-
+if(viewUsuarios){viewUsuarios.style.display='none';viewUsuarios.classList.add('hidden')}
 let viewTCERO=document.getElementById('view-tcero')
-
-if(viewTCERO){
-viewTCERO.style.display='none'
-viewTCERO.classList.add('hidden')
+if(viewTCERO){viewTCERO.style.display='none';viewTCERO.classList.add('hidden')}
 }
-
-}
-
 if(isUsuarioSEDAM){
-
-if(tabTCERO){
-tabTCERO.classList.add('hidden')
-tabTCERO.style.display='none'
-}
-
+if(tabTCERO){tabTCERO.classList.add('hidden');tabTCERO.style.display='none'}
 let viewTCERO=document.getElementById('view-tcero')
-
-if(viewTCERO){
-viewTCERO.style.display='none'
-viewTCERO.classList.add('hidden')
-}
-
+if(viewTCERO){viewTCERO.style.display='none';viewTCERO.classList.add('hidden')}
 let acessoTCERO=document.getElementById('acesso-tcero')
-
-if(acessoTCERO){
-acessoTCERO.style.display='none'
+if(acessoTCERO){acessoTCERO.style.display='none'}
 }
-
-}
-
 localStorage.setItem('activeTab',t)
-
 let boxModoResumo=document.getElementById('boxModoResumo')
-
-if(boxModoResumo){
-
-if(t==='resumo'){
-boxModoResumo.style.display='flex'
-}else{
-boxModoResumo.style.display='none'
-}
-
-}
-
+if(boxModoResumo){boxModoResumo.style.display=t==='resumo'?'flex':'none'}
 document.querySelectorAll('.tab-view').forEach(v=>{
 v.classList.remove('active')
 v.classList.add('hidden')
@@ -525,24 +429,9 @@ v.style.display='none'
 v.style.visibility='hidden'
 v.style.opacity='0'
 })
-  
-document.querySelectorAll('.tab-btn').forEach(b=>{
-b.classList.remove('tab-active')
-})
-
-if(
-nivelUsuario!==1&&
-(
-t==='perfis'||
-t==='usuarios'||
-t==='tcero'
-)
-){
-return
-}
-
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('tab-active'))
+if(nivelUsuario!==1&&(t==='perfis'||t==='usuarios'||t==='tcero'))return
 let view=document.getElementById('view-'+t)
-
 if(view){
 view.classList.remove('hidden')
 view.classList.add('active')
@@ -550,33 +439,23 @@ view.style.display='block'
 view.style.visibility='visible'
 view.style.opacity='1'
 }
-
 let tab=document.getElementById('tab-'+t)
-
-if(tab){
-tab.classList.add('tab-active')
+if(tab)tab.classList.add('tab-active')
+if(t==='resumo'&&typeof renderResumo==='function'){
+setTimeout(()=>renderResumo(),100)
 }
-
+if(t==='mensal'&&typeof renderTable==='function'){
+setTimeout(()=>renderTable(),100)
+}
+if(t==='concluidos'&&typeof renderConcluidos==='function'){
+setTimeout(()=>renderConcluidos(),100)
+}
 if(t==='dashboard'){
-
 setTimeout(()=>{
-
-if(typeof renderDashboard==='function'){
-renderDashboard()
-}
-
-if(window.dashLinha&&typeof window.dashLinha.resize==='function'){
-window.dashLinha.resize()
-}
-
-if(window.dashPizza&&typeof window.dashPizza.resize==='function'){
-window.dashPizza.resize()
-}
-
-if(window.dashBarras&&typeof window.dashBarras.resize==='function'){
-window.dashBarras.resize()
-}
-
+if(typeof renderDashboard==='function')renderDashboard()
+if(window.dashLinha?.resize)window.dashLinha.resize()
+if(window.dashPizza?.resize)window.dashPizza.resize()
+if(window.dashBarras?.resize)window.dashBarras.resize()
 document.querySelectorAll('#view-dashboard canvas').forEach(c=>{
 c.style.display='block'
 c.style.visibility='visible'
@@ -586,29 +465,14 @@ c.style.maxWidth='100%'
 c.style.height='220px'
 c.style.maxHeight='220px'
 })
-
 },350)
-
 }
-
 if(t==='analise'){
-
 setTimeout(()=>{
-
-initPainelGrafico()
-
-if(window.graficoResumo&&typeof window.graficoResumo.resize==='function'){
-window.graficoResumo.resize()
-}
-
-if(window.graficoMonitoramento&&typeof window.graficoMonitoramento.resize==='function'){
-window.graficoMonitoramento.resize()
-}
-
-if(window.graficoGeral&&typeof window.graficoGeral.resize==='function'){
-window.graficoGeral.resize()
-}
-
+if(typeof initPainelGrafico==='function')initPainelGrafico()
+if(window.graficoResumo?.resize)window.graficoResumo.resize()
+if(window.graficoMonitoramento?.resize)window.graficoMonitoramento.resize()
+if(window.graficoGeral?.resize)window.graficoGeral.resize()
 document.querySelectorAll('#view-analise canvas').forEach(c=>{
 c.style.display='block'
 c.style.visibility='visible'
@@ -617,61 +481,20 @@ c.style.width='100%'
 c.style.maxWidth='100%'
 c.style.height='320px'
 })
-
 },350)
-
 }
-
 if(t==='perfis'){
-
-if(nivelUsuario!==1){
-return
+if(nivelUsuario!==1)return
+setTimeout(()=>carregarPerfis(),200)
 }
-
-setTimeout(()=>{
-carregarPerfis()
-},200)
-
-}
-
 if(t==='usuarios'){
-
-if(nivelUsuario!==1){
-return
+if(nivelUsuario!==1)return
+setTimeout(()=>carregarUsuarios(),200)
 }
-
-setTimeout(()=>{
-carregarUsuarios()
-},200)
-
-}
-
 if(t==='tcero'){
-
-if(
-origemUsuario==='SEDAM'||
-(
-origemUsuario==='TCERO'&&
-nivelUsuario!==1
-)
-){
-return
+if(origemUsuario==='SEDAM'||(origemUsuario==='TCERO'&&nivelUsuario!==1))return
+setTimeout(()=>carregarTCERO(),200)
 }
-
-setTimeout(()=>{
-carregarTCERO()
-},200)
-
-}
-
-setTimeout(()=>{
-
-if(typeof renderTable==='function'){
-renderTable()
-}
-
-},100)
-
 }
 /*=========================================================
 004 SEDAM CORE FUNCTION CARREGARDADOS
