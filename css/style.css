@@ -529,7 +529,7 @@ filter:brightness(1.05);
 #view-mensal th:nth-child(n+7):nth-child(-n+18),#view-mensal td:nth-child(n+7):nth-child(-n+18){width:58px!important;min-width:58px!important;max-width:58px!important;text-align:center!important;padding:4px!important;}
 #view-mensal .input-mes{width:52px!important;height:34px!important;padding:2px!important;font-size:11px!important;font-weight:900!important;text-align:center!important;border-radius:10px!important;background:#f5efe6!important;border:1px solid #d6c7b4!important;color:#5b4b3a!important;}
 #view-mensal .td-mes-strong span{display:flex!important;align-items:center!important;justify-content:center!important;width:52px!important;height:34px!important;margin:auto!important;border-radius:10px!important;background:#f5efe6!important;font-size:11px!important;font-weight:900!important;color:#5b4b3a!important;}
-#view-mensal th:last-child,#view-mensal td:last-child{width:120px!important;min-width:120px!important;font-size:15px!important;font-weight:900!important;text-align:center!important;color:#000!important;}
+#view-mensal th:last-child,#view-mensal td:last-child{width:85px!important;min-width:85px!important;font-size:11px!important;font-weight:800!important;text-align:center!important;color:#000!important;}
 #view-mensal th:nth-child(12),#view-mensal td:nth-child(12){background:#dcfce7!important;border-left:3px solid #16a34a!important;border-right:3px solid #16a34a!important;}
 #view-mensal th:nth-child(12){font-size:16px!important;font-weight:1000!important;color:#000!important;}
 #view-mensal td:nth-child(12) .input-mes,#view-mensal td:nth-child(12) span{background:#86efac!important;color:#000!important;font-size:15px!important;font-weight:1000!important;border:2px solid #16a34a!important;}
@@ -571,3 +571,9 @@ canvas{max-width:100%!important;height:auto!important;}
 #view-mensal .td-desc{max-width:none!important;}
 #view-mensal th{cursor:pointer!important;transition:.2s!important;}
 #view-mensal th:hover{background:#dbeafe!important;color:#1e40af!important;}
+/*=========================================================
+154 RESPONSAVEL COMPACTO
+=========================================================*/
+#view-mensal th:nth-child(4),#view-mensal td:nth-child(4){width:180px!important;min-width:180px!important;max-width:180px!important;}
+#view-mensal td:nth-child(4) select{font-size:8px!important;font-weight:700!important;line-height:1!important;padding:2px 4px!important;height:30px!important;}
+#view-mensal td:nth-child(4) span{font-size:8px!important;font-weight:700!important;line-height:1.05!important;}
