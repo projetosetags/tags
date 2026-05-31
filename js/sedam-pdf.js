@@ -268,12 +268,19 @@ fontSize:8
 alternateRowStyles:{
 fillColor:[248,248,248]
 },
-columnStyles:(()=>{
-let estilos={
-0:{cellWidth:24,halign:'center'},
-1:{cellWidth:104},
-2:{cellWidth:58},
-3:{cellWidth:38}
+columnStyles:{
+0:{cellWidth:12},
+1:{cellWidth:68},
+2:{cellWidth:30},
+3:{cellWidth:18},
+4:{cellWidth:6},
+5:{cellWidth:6},
+6:{cellWidth:6},
+7:{cellWidth:6},
+8:{cellWidth:6},
+9:{cellWidth:6},
+10:{cellWidth:6},
+11:{cellWidth:10}
 }
 let indice=4
 mesesAtivos.forEach(()=>{
