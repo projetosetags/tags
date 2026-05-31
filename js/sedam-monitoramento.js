@@ -329,3 +329,15 @@ if(menu)menu.style.display=''
 if(filtros)filtros.style.marginTop=''
 }
 }
+/*=========================================================
+153 TOGGLE COLUNAS MONITORAMENTO
+=========================================================*/
+window.colunasMonitoramentoOcultas={}
+function toggleColunaMonitoramento(indice){
+window.colunasMonitoramentoOcultas[indice]=!window.colunasMonitoramentoOcultas[indice]
+document.querySelectorAll('#view-mensal table tr').forEach(tr=>{
+let cel=tr.children[indice]
+if(!cel)return
+cel.style.display=window.colunasMonitoramentoOcultas[indice]?'none':''
+})
+}
