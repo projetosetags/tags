@@ -115,6 +115,19 @@ window.graficoAtualInfo={tipo:tipo,item:selItem,subitem:selSub}
 let meses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
 let mesesKey=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
 let mesAtual=getMesAtualIndex()
+
+let hoje=new Date()
+
+if(
+hoje.getDate()>=
+new Date(
+hoje.getFullYear(),
+hoje.getMonth()+1,
+0
+).getDate()-1
+){
+mesAtual=Math.min(mesAtual+1,11)
+}
 let labels=meses.slice(0,mesAtual+1)
 let cores=['#22c55e','#3b82f6','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#84cc16','#f97316','#eab308','#14b8a6','#6366f1','#ec4899']
 let datasets=[]
@@ -143,7 +156,21 @@ for(let m=0;m<=mesAtual;m++){
 let mesKey=mesesKey[m]
 valores.push(mediaMes(dados,mesKey))
 }
-window.graficoAtualInfo={tipo:'todos',jan:valores[0]||0,fev:valores[1]||0,mar:valores[2]||0,abr:valores[3]||0,mai:valores[4]||0}
+window.graficoAtualInfo={
+tipo:'todos',
+jan:valores[0]||0,
+fev:valores[1]||0,
+mar:valores[2]||0,
+abr:valores[3]||0,
+mai:valores[4]||0,
+jun:valores[5]||0,
+jul:valores[6]||0,
+ago:valores[7]||0,
+set:valores[8]||0,
+out:valores[9]||0,
+nov:valores[10]||0,
+dez:valores[11]||0
+}
 datasets=[{
 label:'TOTAL GERAL TAG SEDAM',
 data:valores,
@@ -162,12 +189,30 @@ borderRadius:12,
 borderSkipped:false,
 maxBarThickness:42
 }]
-document.getElementById('descSubitem').innerHTML=`<div style="font-size:24px;font-weight:900;color:#000000;margin-bottom:12px;">TOTAL GERAL CONSOLIDADO DO TAG SEDAM 2026</div><div style="font-size:18px;line-height:1.8;color:#000000;font-weight:700;">O gráfico demonstra a evolução média consolidada de todos os itens e subitens monitorados no Plano de Ação do TAG SEDAM 2026.<br><br>JAN: <b>${valores[0]}%</b> | FEV: <b>${valores[1]}%</b> | MAR: <b>${valores[2]}%</b> | ABR: <b>${valores[3]}%</b> | MAI: <b>${valores[4]}%</b></div>`
+document.getElementById('descSubitem').innerHTML=`<div style="font-size:24px;font-weight:900;color:#000000;margin-bottom:12px;">TOTAL GERAL CONSOLIDADO DO TAG SEDAM 2026</div><div style="font-size:18px;line-height:1.8;color:#000000;font-weight:700;">O gráfico demonstra a evolução média consolidada de todos os itens e subitens monitorados no Plano de Ação do TAG SEDAM 2026.<br><br>${labels.map((m,idx)=>
+`${m}: <b>${valores[idx]||0}%</b>`
+).join(' | ')}</div>`
 }else{
 let i=dados.find(x=>String(x.id)===String(selSub)||String(x.subitem)===String(selSub))
 if(!i)return
 let valores=[Number(i.jan||0),Number(i.fev||0),Number(i.mar||0),Number(i.abr||0),Number(i.mai||0),Number(i.jun||0),Number(i.jul||0),Number(i.ago||0),Number(i.set||0),Number(i.out||0),Number(i.nov||0),Number(i.dez||0)]
-window.graficoAtualInfo={tipo:'subitem',item:i.item||'',subitem:i.subitem||'',jan:valores[0]||0,fev:valores[1]||0,mar:valores[2]||0,abr:valores[3]||0,mai:valores[4]||0}
+window.graficoAtualInfo={
+tipo:'subitem',
+item:i.item||'',
+subitem:i.subitem||'',
+jan:valores[0]||0,
+fev:valores[1]||0,
+mar:valores[2]||0,
+abr:valores[3]||0,
+mai:valores[4]||0,
+jun:valores[5]||0,
+jul:valores[6]||0,
+ago:valores[7]||0,
+set:valores[8]||0,
+out:valores[9]||0,
+nov:valores[10]||0,
+dez:valores[11]||0
+}
 datasets=[{
 label:'SUBITEM '+i.subitem,
 data:valores.slice(0,mesAtual+1),
