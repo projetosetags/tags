@@ -574,6 +574,7 @@ canvas{max-width:100%!important;height:auto!important;}
 /*=========================================================
 154 RESPONSAVEL COMPACTO
 =========================================================*/
-#view-mensal th:nth-child(4),#view-mensal td:nth-child(4){width:180px!important;min-width:180px!important;max-width:180px!important;}
-#view-mensal td:nth-child(4) span{font-size:8px!important;font-weight:700!important;line-height:1.05!important;white-space:normal!important;}
-#view-mensal td:nth-child(4) select{font-size:8px!important;font-weight:700!important;height:30px!important;}
+#view-mensal th:nth-child(4),#view-mensal td:nth-child(4){width:160px!important;min-width:160px!important;max-width:160px!important;}
+#view-mensal td:nth-child(4) span{font-size:7px!important;font-weight:700!important;line-height:1.05!important;}
+#view-mensal td:nth-child(4) select{font-size:7px!important;font-weight:700!important;height:28px!important;}
+#view-mensal th:nth-child(2),#view-mensal td:nth-child(2){width:auto!important;min-width:320px!important;}
