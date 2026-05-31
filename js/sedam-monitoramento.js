@@ -62,6 +62,7 @@ keys.forEach(k=>{
 let lista=mapa[k]||[]
 if(!lista.length)return
 let media=Math.round(lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1))
+if(ocultar&&media>=100)return
 let cor=media<=30?'bg-status-red':media>=100?'bg-status-green':'bg-status-yellow'
 let itemBase=lista[0]||{}
 let descricao=''
