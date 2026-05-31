@@ -613,8 +613,13 @@ URL.revokeObjectURL(url)
 051 WORD DASHBOARD
 =========================================================*/
 function gerarWordDashboard(){
-let itens=document.getElementById('dashboardTotalItens')?.innerText||'0'
-let subitens=document.getElementById('dashboardTotalSubitens')?.innerText||'0'
+let itens=(window.allData||[])
+.map(x=>String(x.item||'').trim())
+.filter(x=>x)
+.filter((v,i,a)=>a.indexOf(v)===i)
+.length
+
+let subitens=(window.allData||[]).length
 let media=document.getElementById('dashboardMediaGeral')?.innerText||'0%'
 let html=`
 <h1 style="font-family:Calibri,Arial,sans-serif;font-size:18pt;font-weight:700;color:#1e293b;margin-bottom:12px;">
