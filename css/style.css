@@ -522,7 +522,7 @@ filter:brightness(1.05);
 =========================================================*/
 #view-mensal table{width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;background:#fff!important;}
 #view-mensal th{font-size:11px!important;font-weight:900!important;padding:8px 6px!important;text-align:center!important;vertical-align:middle!important;line-height:1.2!important;cursor:pointer!important;}
-#view-mensal td{padding:8px 6px!important;vertical-align:middle!important;font-size:12px!important;font-weight:700!important;line-height:1.35!important;color:#1e293b!important;}
+#view-mensal td{padding:8px 6px!important;vertical-align:middle!important;font-size:11px!important;font-weight:700!important;line-height:1.2!important;color:#1e293b!important;}
 #view-mensal th:nth-child(1),#view-mensal td:nth-child(1){width:70px!important;min-width:70px!important;text-align:center!important;font-size:13px!important;font-weight:900!important;}
 #view-mensal th:nth-child(5),#view-mensal td:nth-child(5){width:90px!important;min-width:90px!important;text-align:center!important;}
 #view-mensal th:nth-child(6),#view-mensal td:nth-child(6){width:95px!important;min-width:95px!important;text-align:center!important;}
