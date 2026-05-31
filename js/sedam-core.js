@@ -1364,14 +1364,21 @@ if(topo){
 topo.innerText=media+'%'
 }
 
-let meses=['JAN','FEV','MAR','ABR','MAI']
-
+let meses=['JAN','FEV','MAR','ABR','MAI','JUN']
 let mediasMeses=[
 Math.round(lista.reduce((a,c)=>a+Number(c.jan||0),0)/(lista.length||1)),
 Math.round(lista.reduce((a,c)=>a+Number((c.fev&&c.fev>0)?c.fev:(c.jan||0)),0)/(lista.length||1)),
 Math.round(lista.reduce((a,c)=>a+Number((c.mar&&c.mar>0)?c.mar:((c.fev&&c.fev>0)?c.fev:(c.jan||0))),0)/(lista.length||1)),
 Math.round(lista.reduce((a,c)=>a+Number((c.abr&&c.abr>0)?c.abr:((c.mar&&c.mar>0)?c.mar:((c.fev&&c.fev>0)?c.fev:(c.jan||0)))),0)/(lista.length||1)),
 Math.round(lista.reduce((a,c)=>a+Number(getTotal(c)||0),0)/(lista.length||1))
+Math.round(
+lista.reduce((a,c)=>
+a+Number(
+(c.jun&&c.jun>0)
+?c.jun
+:getTotal(c)
+),0)/(lista.length||1)
+)
 ]
 
 if(dashLinha){
