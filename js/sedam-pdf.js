@@ -228,9 +228,9 @@ String(i.produto||'-'),
 String(i.setor||i.coordenadoria||'-')
 ]
 mesesAtivos.forEach(m=>{
-linha.push(Number(i[m.campo]||0)+'%')
+linha.push(Number(i[m.campo]||0))
 })
-linha.push(total+'%')
+linha.push(Math.round(total)+'%')
 return linha
 })
 doc.autoTable({
@@ -250,7 +250,7 @@ modoTabela==='item'
 body:rows,
 theme:'grid',
 styles:{
-fontSize:8,
+fontSize:6,
 font:'times',
 overflow:'linebreak',
 cellPadding:2,
@@ -268,30 +268,23 @@ fontSize:8
 alternateRowStyles:{
 fillColor:[248,248,248]
 },
-columnStyles:{
+columnStyles:(()=>{
+let estilos={
 0:{cellWidth:12},
 1:{cellWidth:68},
 2:{cellWidth:30},
-3:{cellWidth:18},
-4:{cellWidth:6},
-5:{cellWidth:6},
-6:{cellWidth:6},
-7:{cellWidth:6},
-8:{cellWidth:6},
-9:{cellWidth:6},
-10:{cellWidth:6},
-11:{cellWidth:10}
+3:{cellWidth:18}
 }
 let indice=4
 mesesAtivos.forEach(()=>{
 estilos[indice]={
-cellWidth:10,
+cellWidth:8,
 halign:'center'
 }
 indice++
 })
 estilos[indice]={
-cellWidth:16,
+cellWidth:12,
 halign:'center'
 }
 return estilos
