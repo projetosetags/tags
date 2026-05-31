@@ -104,288 +104,58 @@ document.getElementById('btn-voltar').style.display='block'
 003 MONITORAMENTO FUNCTION RENDERTABLE
 =========================================================*/
 function renderTable(){
-
 const mesesOrdem=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
-
 let hoje=new Date()
 let mesAtual=hoje.getMonth()
-
-if(
-hoje.getDate()>=
-new Date(
-hoje.getFullYear(),
-hoje.getMonth()+1,
-0
-).getDate()-1
-){
-mesAtual=Math.min(mesAtual+1,11)
-}
-
+if(hoje.getDate()>=new Date(hoje.getFullYear(),hoje.getMonth()+1,0).getDate()-1){mesAtual=Math.min(mesAtual+1,11)}
 let mesesLiberados=mesesOrdem.slice(0,mesAtual+1)
-
 let lista=[...(window.allData||[])].sort(compareSubitem)
-
 lista=lista.filter(i=>{
-
-if(filtroItemAtivo){
-
-if(getItemKey(i)!==filtroItemAtivo)return false
-
-}
-
+if(filtroItemAtivo&&getItemKey(i)!==filtroItemAtivo)return false
 let dataBase=parseDataLocal(i.data_inicio)||parseDataLocal(i.prazo_texto)
-
 if(filtroDataInicio||filtroDataFim){
-
 if(!dataBase)return false
-
 if(filtroDataInicio&&dataBase<parseDataLocal(filtroDataInicio))return false
-
 if(filtroDataFim&&dataBase>parseDataLocal(filtroDataFim))return false
-
 }
-
 if(ocultarConcluidos&&getTotal(i)>=100)return false
-
 return true
-
 })
-
-let totalRegistros=lista.length
-
 let tbody=document.getElementById('table-body')
-
 if(!tbody)return
-
 let thNumero=document.getElementById('thNumero')
-
 let thDescricao=document.getElementById('thDescricao')
-
 let thProduto=document.getElementById('thProduto')
-
-if(thNumero){
-
-thNumero.innerHTML=
-window.modoTabela==='item'
-?'ITEM (Nr.)'
-:'SUBITEM'
-
-}
-
-if(thDescricao){
-
-thDescricao.innerHTML=
-window.modoTabela==='item'
-?'DESCRIÇÃO ITEM'
-:'DESCRIÇÃO'
-
-}
-
-if(thProduto){
-
-thProduto.innerHTML=
-window.modoTabela==='item'
-?'AÇÃO'
-:'PRODUTOS'
-
-}
-
+if(thNumero)thNumero.innerHTML=window.modoTabela==='item'?'ITEM (Nr.)':'SUBITEM'
+if(thDescricao)thDescricao.innerHTML=window.modoTabela==='item'?'DESCRIÇÃO ITEM':'DESCRIÇÃO'
+if(thProduto)thProduto.innerHTML=window.modoTabela==='item'?'AÇÃO':'PRODUTOS'
 tbody.innerHTML=lista.map(i=>{
-
-let dataFormatada=i.data_inicio
-?formatarDataBR(i.data_inicio)
-:(i.prazo_texto||'-')
-
+let dataFormatada=i.data_inicio?formatarDataBR(i.data_inicio):(i.prazo_texto||'-')
 let total=getTotal(i)
-
-let bg=
-total<=30
-?'bg-red-900/20'
-:
-total>=100
-?'bg-emerald-900/20'
-:'bg-yellow-900/20'
-
+let bg=total<=30?'bg-red-900/20':total>=100?'bg-emerald-900/20':'bg-yellow-900/20'
 let nivel=Number(userP?.nivel_acesso||0)
-
 let usernameAtual=String(userP?.username||'').toLowerCase()
-
 let origemUsuario=String(userP?.origem||'').toUpperCase()
-
 let mesEdicao=mesesLiberados[mesesLiberados.length-1]
-
 let isNivel1=nivel===1
-
 let isHueriqui=usernameAtual==='hueriqui'
-
-let isResponsavel=
-String(i.responsavel_id||'')===String(userP?.id||'')
-
+let isResponsavel=String(i.responsavel_id||'')===String(userP?.id||'')
 let responsavelTexto=i.responsavel||'-'
-
 let listaPerfis=[...(window.perfis||[]),...(window.perfisSedam||[])]
-
-if(Number(userP?.nivel_acesso||0)!==1){
-
-listaPerfis=listaPerfis.filter(p=>
-String(p.id||'')===String(userP?.id||'')
-)
-
-}
-
-let perfilResponsavel=listaPerfis.find(p=>
-String(p.id)===String(i.responsavel_id)
-)
-
-if(perfilResponsavel){
-
-responsavelTexto=perfilResponsavel.nome_completo
-
-}else{
-
-responsavelTexto=
-i.responsavel||
-i.responsavel_manual||
-'Não informado'
-
-}
-
-return `
-
-<tr class="border-b border-white/5 tr-hover ${bg}">
-
-<td class="p-2 font-black text-blue-400">
-
-${
-window.modoTabela==='item'
-?(i.item||'-')
-:(i.subitem||'-')
-}
-
-</td>
-
-<td class="p-2 td-desc">
-
-${
-window.modoTabela==='item'
-?(i.descricaoitem||i.item_descricao||'-')
-:(i.descricao||'-')
-}
-
-</td>
-
-<td class="p-2 td-desc text-[10px] text-slate-700">
-
-${
-window.modoTabela==='item'
-?(i.acao||i.produto||'-')
-:(i.produto||'-')
-}
-
-</td>
-
-<td class="text-xs p-1">
-
-${
-userP&&Number(userP.nivel_acesso)===1
-
-?
-
-`<select onchange="salvarResponsavel('${i.id}',this.value)" class="bg-slate-100 text-slate-900 font-semibold text-xs p-1 rounded w-full">
-
-<option value="">
-${responsavelTexto||'-'}
-</option>
-
-${listaPerfis.map(p=>`
-
-<option
-title="${p.nome_completo}"
-value="${p.id}"
-${String(p.id)===String(i.responsavel_id)?'selected':''}>
-
-${p.nome_completo}
-
-</option>
-
-`).join('')}
-
-</select>`
-
-:
-
-`<span class="text-slate-800 font-semibold">
-${responsavelTexto}
-</span>`
-
-}
-
-</td>
-
-<td class="text-xs">
-${i.setor||'-'}
-</td>
-
-<td class="td-data">
-${dataFormatada}
-</td>
-
-${
-mesesLiberados.map(m=>{
-
+if(Number(userP?.nivel_acesso||0)!==1){listaPerfis=listaPerfis.filter(p=>String(p.id||'')===String(userP?.id||''))}
+let perfilResponsavel=listaPerfis.find(p=>String(p.id)===String(i.responsavel_id))
+if(perfilResponsavel){responsavelTexto=perfilResponsavel.nome_completo}else{responsavelTexto=i.responsavel||i.responsavel_manual||'Não informado'}
+return `<tr class="border-b border-white/5 tr-hover ${bg}"><td class="p-2 font-black text-blue-400">${window.modoTabela==='item'?(i.item||'-'):(i.subitem||'-')}</td><td class="p-2 td-desc">${window.modoTabela==='item'?(i.descricaoitem||i.item_descricao||'-'):(i.descricao||'-')}</td><td class="p-2 td-desc text-[10px] text-slate-700">${window.modoTabela==='item'?(i.acao||i.produto||'-'):(i.produto||'-')}</td><td class="text-xs p-1">${userP&&Number(userP.nivel_acesso)===1?`<select onchange="salvarResponsavel('${i.id}',this.value)" class="bg-slate-100 text-slate-900 font-semibold text-xs p-1 rounded w-full"><option value="">${responsavelTexto||'-'}</option>${listaPerfis.map(p=>`<option title="${p.nome_completo}" value="${p.id}" ${String(p.id)===String(i.responsavel_id)?'selected':''}>${p.nome_completo}</option>`).join('')}</select>`:`<span class="text-slate-800 font-semibold">${responsavelTexto}</span>`}</td><td class="text-xs">${i.setor||'-'}</td><td class="td-data">${dataFormatada}</td>${mesesLiberados.map(m=>{
 let valor=Number(i[m]||0)
-
 let bloqueado=valor>0
-
 let liberarMes=m===mesEdicao
-
 let editar=false
-
-if(isNivel1&&!isHueriqui){
-
-editar=true
-
-}else if(
-origemUsuario==='SEDAM'&&
-(nivel===2||nivel===3||nivel===4)&&
-isResponsavel&&
-liberarMes&&
-!bloqueado
-){
-
-editar=true
-
-}
-
-return `
-
-<td class="td-mes-strong text-center">
-
-${
-editar
-?
-`<input type="number" min="0" max="100" step="1" class="input-mes" value="${valor}" onchange="if(this.disabled)return;salvar(this.value,'${i.id}','${m}')">`
-:
-`<span>${valor}%</span>`
-}
-
-</td>
-
-`
-
+if(isNivel1&&!isHueriqui){editar=true}else if(origemUsuario==='SEDAM'&&(nivel===2||nivel===3||nivel===4)&&isResponsavel&&liberarMes&&!bloqueado){editar=true}
+let estiloMes=''
+if(m==='jun'){estiloMes='background:#ecfdf5!important;font-weight:900!important;font-size:13px!important;border-left:2px solid #10b981!important;border-right:2px solid #10b981!important;'}
+return `<td class="td-mes-strong text-center" style="${estiloMes}">${editar?`<input type="number" min="0" max="100" step="1" class="input-mes" value="${valor}" onchange="if(this.disabled)return;salvar(this.value,'${i.id}','${m}')">`:`<span>${valor}%</span>`}</td>`
+}).join('')}<td class="td-total text-emerald-400">${total.toFixed(2)}%</td></tr>`
 }).join('')
-}
-
-<td class="td-total text-emerald-400">
-${total.toFixed(2)}%
-</td>
-
-</tr>
-
-`
-
-}).join('')
-
 }
 
 /*=========================================================
@@ -518,4 +288,25 @@ window.ocultarResumo100=false
 function toggleOcultarResumo(){
 window.ocultarResumo100=document.getElementById('ocultar100Resumo')?.checked||false
 renderResumo()
+}
+/*=========================================================
+150 TOGGLE CABECALHO MONITORAMENTO
+=========================================================*/
+function toggleCabecalhoMonitoramento(){
+let topo=document.getElementById('view-mensal-filtros')
+let menu=document.querySelector('nav')
+let header=document.querySelector('.topo-sedam-modern')
+if(!topo||!menu||!header)return
+let oculto=topo.dataset.oculto==='1'
+if(oculto){
+topo.style.display='flex'
+menu.style.display=''
+header.style.display=''
+topo.dataset.oculto='0'
+}else{
+topo.style.display='none'
+menu.style.display='none'
+header.style.display='none'
+topo.dataset.oculto='1'
+}
 }
