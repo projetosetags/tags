@@ -139,10 +139,38 @@ renderResumo()
 017 UTILS APLICARFILTRODATA
 =========================================================*/
 function aplicarFiltroData(){
-filtroDataInicio=document.getElementById('dataInicio').value||null
-filtroDataFim=document.getElementById('dataFim').value||null
+filtroDataInicio=document.getElementById('dataInicioMensal')?.value||document.getElementById('dataInicio')?.value||null
+filtroDataFim=document.getElementById('dataFimMensal')?.value||document.getElementById('dataFim')?.value||null
 renderTable()
 renderResumo()
+renderConcluidos()
+renderDashboard()
+let lista=[...(window.allData||[])]
+lista=lista.filter(i=>{
+let d=parseDataLocal(i.data_inicio)||parseDataLocal(i.prazo_texto)
+if(!d)return false
+if(filtroDataInicio&&d<parseDataLocal(filtroDataInicio))return false
+if(filtroDataFim&&d>parseDataLocal(filtroDataFim))return false
+return true
+})
+if(ocultarConcluidos){
+lista=lista.filter(i=>getTotal(i)<100)
+}
+let totalItens=[...new Set(lista.map(i=>{
+let sub=String(i.subitem||'').trim()
+let partes=sub.split('.')
+return partes[0]||'0'
+}))].length
+let totalSubitens=lista.length
+let media=Math.round(lista.reduce((acc,c)=>{
+return acc+Number(getTotal(c)||0)
+},0)/(lista.length||1))
+let topoItens=document.getElementById('topTotalItens')
+let topoSubitens=document.getElementById('topTotalSubitens')
+let totalGeral=document.getElementById('total-geral')
+if(topoItens)topoItens.innerText=totalItens
+if(topoSubitens)topoSubitens.innerText=totalSubitens
+if(totalGeral)totalGeral.innerText=media+'%'
 }
 /*=========================================================
 018 UTILS TOGGLEOCULTARCONCLUIDOS
