@@ -324,7 +324,7 @@ modoTabela==='item'
 =========================================================*/
 async function gerarPDFGraficos(){
 const {jsPDF}=window.jspdf
-let doc=new jsPDF('p','mm','a4')
+let doc=new jsPDF('l','mm','a4')
 doc.setFont('times','bold')
 doc.setFontSize(16)
 doc.setTextColor(20,20,20)
@@ -335,27 +335,97 @@ doc.setTextColor(90)
 doc.text('Painel consolidado de evolução estratégica.',105,18,{align:'center'})
 let y=28
 async function adicionarGrafico(canvasId,titulo){
+
 let canvas=document.getElementById(canvasId)
+
 if(!canvas)return
-let img=canvas.toDataURL('image/png',1.0)
-if(y>185){
+
+let originalChart=Chart.getChart(canvas)
+
+if(!originalChart)return
+
+let tempCanvas=document.createElement('canvas')
+
+tempCanvas.width=2200
+tempCanvas.height=1000
+
+let tempCtx=tempCanvas.getContext('2d')
+
+new Chart(tempCtx,{
+type:originalChart.config.type,
+data:JSON.parse(JSON.stringify(originalChart.config.data)),
+options:{
+...JSON.parse(JSON.stringify(originalChart.config.options)),
+responsive:false,
+animation:false,
+plugins:{
+legend:{
+display:true,
+labels:{
+font:{
+size:18,
+weight:'bold'
+}
+}
+},
+datalabels:{
+font:{
+size:16,
+weight:'bold'
+}
+}
+},
+scales:{
+x:{
+ticks:{
+font:{
+size:16,
+weight:'bold'
+}
+}
+},
+y:{
+ticks:{
+font:{
+size:16,
+weight:'bold'
+}
+}
+}
+}
+}
+})
+
+await new Promise(r=>setTimeout(r,400))
+
+let img=tempCanvas.toDataURL('image/png',1.0)
+
+if(y>170){
 doc.addPage()
 y=20
 }
+
 doc.setFont('times','bold')
 doc.setFontSize(11)
 doc.setTextColor(25,25,25)
+
 doc.text(titulo,10,y)
+
 y+=5
+
 doc.addImage(
 img,
 'PNG',
 10,
 y,
-190,
-70
+270,
+95,
+undefined,
+'FAST'
 )
-y+=80
+
+y+=92
+
 }
 await adicionarGrafico('graficoDashboardItens','DESEMPENHO POR ITEM')
 await adicionarGrafico('graficoDashboardLinha','EVOLUÇÃO MENSAL')
@@ -651,82 +721,105 @@ ${linhas}
 `
 baixarWord('monitoramento_tag_sedam',html)
 }
-/*=========================================================
-054 WORD GRAFICOS
-=========================================================*/
 function gerarWordGraficos(){
+
 let info=window.graficoAtualInfo||{}
+
+let hoje=new Date()
+
+let limite=hoje.getMonth()
+
+if(
+hoje.getDate()>=
+new Date(
+hoje.getFullYear(),
+hoje.getMonth()+1,
+0
+).getDate()-1
+){
+limite=Math.min(limite+1,11)
+}
+
+let meses=[
+['JAN',info.jan],
+['FEV',info.fev],
+['MAR',info.mar],
+['ABR',info.abr],
+['MAI',info.mai],
+['JUN',info.jun],
+['JUL',info.jul],
+['AGO',info.ago],
+['SET',info.set],
+['OUT',info.out],
+['NOV',info.nov],
+['DEZ',info.dez]
+]
+
+let linhasMeses=meses
+.slice(0,limite+1)
+.map(m=>`
+<tr>
+<td>${m[0]}</td>
+<td>${m[1]||0}%</td>
+</tr>
+`)
+.join('')
+
 let html=`
 <h1 style="font-size:18pt;font-weight:700;color:#1e293b;margin-bottom:10px;">
 ANÁLISE GRÁFICA - TAG SEDAM 2026
 </h1>
+
 <p style="font-size:11pt;line-height:1.5;text-align:justify;margin-bottom:14px;">
 Relatório gráfico consolidado do painel estratégico TAG SEDAM 2026.
 </p>
+
 <table border="1" cellspacing="0" cellpadding="5">
 <tr>
 <th>Tipo</th>
 <th>Informação</th>
 </tr>
+
 <tr>
 <td>Item</td>
 <td>${info.item||'-'}</td>
 </tr>
+
 <tr>
 <td>Subitem</td>
 <td>${info.subitem||'-'}</td>
 </tr>
-<tr>
-<td>JAN</td>
-<td>${info.jan||0}%</td>
-</tr>
-<tr>
-<td>FEV</td>
-<td>${info.fev||0}%</td>
-</tr>
-<tr>
-<td>MAR</td>
-<td>${info.mar||0}%</td>
-</tr>
-<tr>
-<td>ABR</td>
-<td>${info.abr||0}%</td>
-</tr>
-<tr>
-<td>MAI</td>
-<td>${info.mai||0}%</td>
-</tr>
-<tr>
-<td>JUN</td>
-<td>${info.jun||0}%</td>
-</tr>
-<tr>
-<td>JUL</td>
-<td>${info.jul||0}%</td>
-</tr>
-<tr>
-<td>AGO</td>
-<td>${info.ago||0}%</td>
-</tr>
-<tr>
-<td>SET</td>
-<td>${info.set||0}%</td>
-</tr>
-<tr>
-<td>OUT</td>
-<td>${info.out||0}%</td>
-</tr>
-<tr>
-<td>NOV</td>
-<td>${info.nov||0}%</td>
-</tr>
-<tr>
-<td>DEZ</td>
-<td>${info.dez||0}%</td>
-</tr>
+
+${linhasMeses}
+
 </table>
 `
+
+let canvas=document.getElementById('chartMaster')
+
+if(canvas){
+
+let img=canvas.toDataURL('image/png',1.0)
+
+html+=`
+<br>
+<h2 style="font-size:14pt;color:#1e293b;">
+Gráfico Atual
+</h2>
+
+<img
+src="${img}"
+style="
+width:100%;
+max-width:900px;
+border:1px solid #cbd5e1;
+padding:6px;
+">
+`
+}
+
 baixarWord('graficos_tag_sedam',html)
+
 }
 /*=========================================================
 055 WORD 100
