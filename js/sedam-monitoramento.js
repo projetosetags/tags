@@ -157,7 +157,7 @@ return `<td class="td-mes-strong text-center" style="${estiloMes}">${editar?`<in
 }).join('')}<td class="td-total text-emerald-400">${total.toFixed(2)}%</td></tr>`
 }).join('')
 if(window.colunasMonitoramentoOcultas){
-Object.keys(window.colunasMonitoramentoOcultas).forEach(indice=>{
+Object.keys(window.colunasMonitoramentoOcultas||{}).forEach(indice=>{
 if(window.colunasMonitoramentoOcultas[indice]!==true)return
 document.querySelectorAll('#view-mensal table tr').forEach(tr=>{
 let cel=tr.children[Number(indice)]
@@ -297,27 +297,7 @@ function toggleOcultarResumo(){
 window.ocultarResumo100=document.getElementById('ocultar100Resumo')?.checked||false
 renderResumo()
 }
-/*=========================================================
-150 TOGGLE CABECALHO MONITORAMENTO
-=========================================================*/
-function toggleCabecalhoMonitoramento(){
-let topo=document.getElementById('view-mensal-filtros')
-let menu=document.querySelector('nav')
-let header=document.querySelector('.topo-sedam-modern')
-if(!topo||!menu||!header)return
-let oculto=topo.dataset.oculto==='1'
-if(oculto){
-topo.style.display='flex'
-menu.style.display=''
-header.style.display=''
-topo.dataset.oculto='0'
-}else{
-topo.style.display='none'
-menu.style.display='none'
-header.style.display='none'
-topo.dataset.oculto='1'
-}
-}
+
 /*=========================================================
 152 TOGGLE CABECALHO MONITORAMENTO
 =========================================================*/
@@ -353,15 +333,20 @@ if(cel)cel.style.display=window.colunasMonitoramentoOcultas[indice]?'none':''
 =========================================================*/
 function restaurarColunasMonitoramento(){
 window.colunasMonitoramentoOcultas={}
-renderTable()
-setTimeout(()=>{
+window.cabecalhoMonitoramentoOculto=false
+let topo=document.querySelector('.topo-sedam-modern')
+let menu=document.querySelector('nav')
+let filtros=document.getElementById('view-mensal-filtros')
+if(topo)topo.style.display='flex'
+if(menu)menu.style.display='grid'
+if(filtros)filtros.style.display='flex'
+let btn=document.getElementById('btnOcultarCabecalho')
+if(btn)btn.innerText='OCULTAR CABEÇALHO'
 document.querySelectorAll('#view-mensal table tr').forEach(tr=>{
-for(let i=6;i<=9;i++){
-let cel=tr.children[i]
-if(cel)cel.style.display=''
-}
+Array.from(tr.children).forEach(td=>{
+td.style.display=''
 })
-},50)
+})
 }
 /*=========================================================
 155 MODO APRESENTACAO MONITORAMENTO
