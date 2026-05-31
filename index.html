@@ -324,25 +324,25 @@ class="input-busca-resumo">
 
 <button
 onclick="
-modoResumo='item';
+window.modoResumo='item';
 this.classList.add('ativo-resumo');
 document.getElementById('btnModoSubitem').classList.remove('ativo-resumo');
 renderResumo();
 "
 id="btnModoItem"
-class="btn-modo-resumo ativo-resumo">
+class="btn-modo-resumo">
 ITEM
 </button>
 
 <button
 onclick="
-modoResumo='subitem';
+window.modoResumo='subitem';
 this.classList.add('ativo-resumo');
 document.getElementById('btnModoItem').classList.remove('ativo-resumo');
 renderResumo();
 "
 id="btnModoSubitem"
-class="btn-modo-resumo">
+class="btn-modo-resumo ativo-resumo">
 SUBITEM
 </button>
 
