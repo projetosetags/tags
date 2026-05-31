@@ -347,10 +347,19 @@ cel.style.display=window.colunasMonitoramentoOcultas[indice]?'none':''
 function restaurarColunasMonitoramento(){
 window.colunasMonitoramentoOcultas={}
 document.querySelectorAll('#view-mensal table tr').forEach(tr=>{
-Array.from(tr.children).forEach(cel=>{
-cel.style.display=''
+Array.from(tr.children).forEach(td=>{
+td.style.display=''
 })
 })
+window.cabecalhoMonitoramentoOculto=false
+let topo=document.querySelector('.topo-sedam-modern')
+let menu=document.querySelector('nav')
+if(topo)topo.style.display='flex'
+if(menu)menu.style.display='grid'
+let btn=document.getElementById('btnOcultarCabecalho')
+if(btn){
+btn.innerText='OCULTAR CABEÇALHO'
+}
 }
 /*=========================================================
 155 MODO APRESENTACAO MONITORAMENTO
