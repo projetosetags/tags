@@ -156,8 +156,9 @@ if(m==='jun'){estiloMes='background:#ecfdf5!important;font-weight:900!important;
 return `<td class="td-mes-strong text-center" style="${estiloMes}">${editar?`<input type="number" min="0" max="100" step="1" class="input-mes" value="${valor}" onchange="if(this.disabled)return;salvar(this.value,'${i.id}','${m}')">`:`<span>${valor}%</span>`}</td>`
 }).join('')}<td class="td-total text-emerald-400">${total.toFixed(2)}%</td></tr>`
 }).join('')
-Object.keys(window.colunasMonitoramentoOcultas||{}).forEach(indice=>{
-if(!window.colunasMonitoramentoOcultas[indice])return
+if(window.colunasMonitoramentoOcultas){
+Object.keys(window.colunasMonitoramentoOcultas).forEach(indice=>{
+if(window.colunasMonitoramentoOcultas[indice]!==true)return
 document.querySelectorAll('#view-mensal table tr').forEach(tr=>{
 let cel=tr.children[Number(indice)]
 if(cel)cel.style.display='none'
@@ -353,13 +354,6 @@ cel.style.display=window.colunasMonitoramentoOcultas[indice]?'none':''
 =========================================================*/
 function restaurarColunasMonitoramento(){
 window.colunasMonitoramentoOcultas={}
-window.cabecalhoMonitoramentoOculto=false
-let topo=document.querySelector('.topo-sedam-modern')
-let menu=document.querySelector('nav')
-if(topo)topo.style.display='flex'
-if(menu)menu.style.display='grid'
-let btn=document.getElementById('btnOcultarCabecalho')
-if(btn)btn.innerText='OCULTAR CABEÇALHO'
 renderTable()
 }
 /*=========================================================
