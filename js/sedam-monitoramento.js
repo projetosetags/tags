@@ -219,8 +219,18 @@ function renderTable(){
 const mesesOrdem=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
 
 let hoje=new Date()
-
 let mesAtual=hoje.getMonth()
+
+if(
+hoje.getDate()>=
+new Date(
+hoje.getFullYear(),
+hoje.getMonth()+1,
+0
+).getDate()-1
+){
+mesAtual=Math.min(mesAtual+1,11)
+}
 
 let mesesLiberados=mesesOrdem.slice(0,mesAtual+1)
 
