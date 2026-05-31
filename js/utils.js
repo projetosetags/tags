@@ -82,6 +82,25 @@ function getMesAtualIndex(){
 return new Date().getMonth()
 }
 /*=========================================================
+011A UTILS MESES LIBERADOS
+=========================================================*/
+function getMesesLiberados(){
+const meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
+let hoje=new Date()
+let mesAtual=hoje.getMonth()
+if(
+hoje.getDate()>=
+new Date(
+hoje.getFullYear(),
+hoje.getMonth()+1,
+0
+).getDate()-1
+){
+mesAtual=Math.min(mesAtual+1,11)
+}
+return meses.slice(0,mesAtual+1)
+}
+/*=========================================================
 012 UTILS MESFROMDATA
 =========================================================*/
 function mesFromData(data){
