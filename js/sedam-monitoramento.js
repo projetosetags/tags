@@ -24,7 +24,7 @@ return
 }
 let mapa={}
 let base=[...dados]
-let ocultar=document.getElementById('ocultar100Resumo')?.checked||false
+let ocultar=!!window.ocultarResumo100
 if(filtroDataInicio||filtroDataFim){
 base=base.filter(i=>{
 let d=parseDataLocal(i.data_inicio)||parseDataLocal(i.prazo_texto)
@@ -498,4 +498,12 @@ alert("Erro ao salvar")
 return
 }
 carregarDados()
+}
+/*=========================================================
+999 RESUMO TOGGLE 100
+=========================================================*/
+window.ocultarResumo100=false
+function toggleOcultarResumo(){
+window.ocultarResumo100=document.getElementById('ocultar100Resumo')?.checked||false
+renderResumo()
 }
