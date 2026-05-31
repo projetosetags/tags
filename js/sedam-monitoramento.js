@@ -341,3 +341,14 @@ if(!cel)return
 cel.style.display=window.colunasMonitoramentoOcultas[indice]?'none':''
 })
 }
+/*=========================================================
+154 RESTAURAR COLUNAS MONITORAMENTO
+=========================================================*/
+function restaurarColunasMonitoramento(){
+window.colunasMonitoramentoOcultas={}
+document.querySelectorAll('#view-mensal table tr').forEach(tr=>{
+Array.from(tr.children).forEach(cel=>{
+cel.style.display=''
+})
+})
+}
