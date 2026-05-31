@@ -613,12 +613,28 @@ String(i.responsavel_id||'')===String(userP.id||'')
 }
 
 dadosFiltrados=dadosFiltrados.sort(compareSubitem)
-window.allData=[...dadosFiltrados]
-window.dados=[...dadosFiltrados]
-window.dadosFiltrados=[...dadosFiltrados]
-window.lista=[...dadosFiltrados]
-window.listaDados=[...dadosFiltrados]
-window.resumoData=[...dadosFiltrados]
+const dadosPropagados=dadosFiltrados.map(i=>{
+let novo={...i}
+const meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
+for(let m=0;m<meses.length;m++){
+let atual=Number(novo[meses[m]]||0)
+if(atual>=100){
+for(let x=m+1;x<meses.length;x++){
+if(Number(novo[meses[x]]||0)===0){
+novo[meses[x]]=100
+}
+}
+break
+}
+}
+return novo
+})
+window.allData=[...dadosPropagados]
+window.dados=[...dadosPropagados]
+window.dadosFiltrados=[...dadosPropagados]
+window.lista=[...dadosPropagados]
+window.listaDados=[...dadosPropagados]
+window.resumoData=[...dadosPropagados]
 
 console.log('TOTAL FINAL ALLDATA:',window.allData.length)
 
