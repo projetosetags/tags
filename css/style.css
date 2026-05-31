@@ -520,22 +520,20 @@ filter:brightness(1.05);
 /*=========================================================
 145 SEDAM.CSS GRID MONITORAMENTO ORGANIZADO
 =========================================================*/
-#view-mensal table{width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
-#view-mensal th{font-size:11px!important;font-weight:900!important;padding:8px 6px!important;text-align:center!important;vertical-align:middle!important;line-height:1.2!important;}
+#view-mensal table{width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;background:#fff!important;}
+#view-mensal th{font-size:11px!important;font-weight:900!important;padding:8px 6px!important;text-align:center!important;vertical-align:middle!important;line-height:1.2!important;cursor:pointer!important;}
 #view-mensal td{padding:8px 6px!important;vertical-align:middle!important;font-size:12px!important;font-weight:700!important;line-height:1.35!important;color:#1e293b!important;}
 #view-mensal th:nth-child(1),#view-mensal td:nth-child(1){width:70px!important;min-width:70px!important;text-align:center!important;font-size:13px!important;font-weight:900!important;}
-#view-mensal th:nth-child(2),#view-mensal td:nth-child(2){width:340px!important;min-width:340px!important;white-space:normal!important;word-break:break-word!important;font-size:12px!important;line-height:1.35!important;}
-#view-mensal th:nth-child(3),#view-mensal td:nth-child(3){width:280px!important;min-width:280px!important;white-space:normal!important;word-break:break-word!important;font-size:12px!important;line-height:1.35!important;}
-#view-mensal th:nth-child(4),#view-mensal td:nth-child(4){width:180px!important;min-width:180px!important;}
 #view-mensal th:nth-child(5),#view-mensal td:nth-child(5){width:90px!important;min-width:90px!important;text-align:center!important;}
 #view-mensal th:nth-child(6),#view-mensal td:nth-child(6){width:95px!important;min-width:95px!important;text-align:center!important;}
 #view-mensal th:nth-child(n+7):nth-child(-n+18),#view-mensal td:nth-child(n+7):nth-child(-n+18){width:58px!important;min-width:58px!important;max-width:58px!important;text-align:center!important;padding:4px!important;}
 #view-mensal .input-mes{width:52px!important;height:34px!important;padding:2px!important;font-size:11px!important;font-weight:900!important;text-align:center!important;border-radius:10px!important;background:#f5efe6!important;border:1px solid #d6c7b4!important;color:#5b4b3a!important;}
 #view-mensal .td-mes-strong span{display:flex!important;align-items:center!important;justify-content:center!important;width:52px!important;height:34px!important;margin:auto!important;border-radius:10px!important;background:#f5efe6!important;font-size:11px!important;font-weight:900!important;color:#5b4b3a!important;}
 #view-mensal th:last-child,#view-mensal td:last-child{width:120px!important;min-width:120px!important;font-size:15px!important;font-weight:900!important;text-align:center!important;color:#000!important;}
-#view-mensal th:nth-child(11),#view-mensal td:nth-child(11){background:#fff7cc!important;border-left:2px solid #facc15!important;border-right:2px solid #facc15!important;}
-#view-mensal th:nth-child(11){font-size:14px!important;font-weight:900!important;color:#000!important;}
-#view-mensal td:nth-child(11) .input-mes,#view-mensal td:nth-child(11) span{background:#fde68a!important;color:#000!important;font-size:13px!important;font-weight:900!important;border:2px solid #f59e0b!important;}
+#view-mensal th:nth-child(12),#view-mensal td:nth-child(12){background:#dcfce7!important;border-left:3px solid #16a34a!important;border-right:3px solid #16a34a!important;}
+#view-mensal th:nth-child(12){font-size:16px!important;font-weight:1000!important;color:#000!important;}
+#view-mensal td:nth-child(12) .input-mes,#view-mensal td:nth-child(12) span{background:#86efac!important;color:#000!important;font-size:15px!important;font-weight:1000!important;border:2px solid #16a34a!important;}
+#view-mensal th:nth-child(11),#view-mensal td:nth-child(11){background:transparent!important;border:none!important;}
 #btn-ocultar{height:56px!important;padding:0 24px!important;font-size:15px!important;font-weight:900!important;border-radius:28px!important;}
 #view-mensal tr{border-bottom:1px solid #e5e7eb!important;}
 #view-mensal tbody tr:hover{background:#f8fafc!important;transition:.2s!important;}
@@ -569,5 +567,5 @@ canvas{max-width:100%!important;height:auto!important;}
 /*=========================================================
 153 MONITORAMENTO AJUSTE COLUNAS DINAMICAS
 =========================================================*/
-#view-mensal th,#view-mensal td{overflow:hidden!important;text-overflow:ellipsis!important;word-break:break-word!important;transition:all .2s ease!important;}
+#view-mensal th,#view-mensal td{overflow:hidden!important;text-overflow:ellipsis!important;word-break:break-word!important;transition:all .2s ease!important;width:auto!important;min-width:auto!important;}
 #view-mensal .td-desc{max-width:none!important;}
