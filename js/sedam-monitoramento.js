@@ -362,3 +362,29 @@ if(cel)cel.style.display='none'
 })
 })
 }
+/*=========================================================
+156 APLICAR FILTRO DATA
+=========================================================*/
+function aplicarFiltroData(){
+filtroDataInicio=document.getElementById('dataInicioMensal')?.value||''
+filtroDataFim=document.getElementById('dataFimMensal')?.value||''
+renderResumo()
+renderTable()
+renderConcluidos()
+let lista=(window.allData||[]).filter(i=>{
+let d=parseDataLocal(i.data_inicio)||parseDataLocal(i.prazo_texto)
+if(!d)return false
+if(filtroDataInicio&&d<parseDataLocal(filtroDataInicio))return false
+if(filtroDataFim&&d>parseDataLocal(filtroDataFim))return false
+return true
+})
+let totalItens=[...new Set(lista.map(i=>String(i.item||'')))].length
+let totalSubitens=lista.length
+let media=Math.round(lista.reduce((a,b)=>a+Number(getTotal(b)||0),0)/(lista.length||1))
+let topoItens=document.getElementById('topTotalItens')
+let topoSubitens=document.getElementById('topTotalSubitens')
+let totalGeral=document.getElementById('total-geral')
+if(topoItens)topoItens.innerText=totalItens
+if(topoSubitens)topoSubitens.innerText=totalSubitens
+if(totalGeral)totalGeral.innerText=media+'%'
+}
