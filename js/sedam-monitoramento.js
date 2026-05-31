@@ -37,6 +37,13 @@ return true
 if(ocultar){
 base=base.filter(i=>Number(getTotal(i)||0)<100)
 }
+if(ocultar&&base.length===0){
+let el=document.getElementById('cards-container')
+if(el){
+el.innerHTML='<div style="grid-column:1/-1;text-align:center;font-size:20px;font-weight:900;padding:40px;color:#64748b;">Nenhum item com percentual inferior a 100%.</div>'
+}
+return
+}
 base.forEach(i=>{
 let key=(modoResumo==='item')?String(i.item||''):String(i.subitem||'')
 if(!key)return
