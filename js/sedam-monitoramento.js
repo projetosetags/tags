@@ -310,3 +310,22 @@ header.style.display='none'
 topo.dataset.oculto='1'
 }
 }
+/*=========================================================
+152 TOGGLE CABECALHO MONITORAMENTO
+=========================================================*/
+window.cabecalhoMonitoramentoOculto=false
+function toggleCabecalhoMonitoramento(){
+window.cabecalhoMonitoramentoOculto=!window.cabecalhoMonitoramentoOculto
+let topo=document.querySelector('.topo-sedam-modern')
+let menu=document.querySelector('nav')
+let filtros=document.getElementById('view-mensal-filtros')
+if(window.cabecalhoMonitoramentoOculto){
+if(topo)topo.style.display='none'
+if(menu)menu.style.display='none'
+if(filtros)filtros.style.marginTop='0'
+}else{
+if(topo)topo.style.display=''
+if(menu)menu.style.display=''
+if(filtros)filtros.style.marginTop=''
+}
+}
