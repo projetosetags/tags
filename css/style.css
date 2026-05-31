@@ -563,3 +563,17 @@ canvas{max-width:100%!important;height:auto!important;}
 #dataInicio::-webkit-datetime-edit,#dataFim::-webkit-datetime-edit{font-size:18px!important;color:#000!important;font-weight:900!important;letter-spacing:.3px!important;}
 #dataInicio::-webkit-datetime-edit-fields-wrapper,#dataFim::-webkit-datetime-edit-fields-wrapper{display:flex!important;align-items:center!important;}
 #dataInicio::-webkit-calendar-picker-indicator,#dataFim::-webkit-calendar-picker-indicator{position:absolute!important;right:14px!important;width:22px!important;height:22px!important;cursor:pointer!important;opacity:1!important;filter:contrast(1.1)!important;}
+.acoes-topo-resumo{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+flex-wrap:wrap;
+width:100%;
+}
+
+.check-ocultar-resumo{
+margin-left:auto;
+font-weight:900;
+white-space:nowrap;
+}
