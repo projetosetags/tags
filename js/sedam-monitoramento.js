@@ -1,6 +1,7 @@
 /*=========================================================
 004 BOTÕES ITEM/SUBITEM MONITORAMENTO
 =========================================================*/
+window.modoResumo='subitem'
 window.modoTabela='subitem'
 
 document.getElementById('btnModoItemMensal')?.addEventListener('click',()=>{
@@ -17,6 +18,9 @@ renderTable()
 =========================================================*/
 function renderResumo(){
 let dados=window.allData||[]
+if(!window.modoResumo){
+window.modoResumo='subitem'
+}
 if(!dados||!dados.length){
 let el=document.getElementById('cards-container')
 if(el)el.innerHTML=''
