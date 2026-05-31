@@ -319,14 +319,14 @@ window.cabecalhoMonitoramentoOculto=!window.cabecalhoMonitoramentoOculto
 let topo=document.querySelector('.topo-sedam-modern')
 let menu=document.querySelector('nav')
 let filtros=document.getElementById('view-mensal-filtros')
-if(window.cabecalhoMonitoramentoOculto){
-if(topo)topo.style.display='none'
-if(menu)menu.style.display='none'
-if(filtros)filtros.style.marginTop='0'
-}else{
-if(topo)topo.style.display=''
-if(menu)menu.style.display=''
-if(filtros)filtros.style.marginTop=''
+if(topo)topo.style.display=window.cabecalhoMonitoramentoOculto?'none':'flex'
+if(menu)menu.style.display=window.cabecalhoMonitoramentoOculto?'none':'grid'
+if(filtros)filtros.style.position=window.cabecalhoMonitoramentoOculto?'sticky':''
+if(filtros)filtros.style.top=window.cabecalhoMonitoramentoOculto?'0':''
+if(filtros)filtros.style.zIndex=window.cabecalhoMonitoramentoOculto?'999':''
+let btn=document.getElementById('btnOcultarCabecalho')
+if(btn){
+btn.innerText=window.cabecalhoMonitoramentoOculto?'MOSTRAR CABEÇALHO':'OCULTAR CABEÇALHO'
 }
 }
 /*=========================================================
