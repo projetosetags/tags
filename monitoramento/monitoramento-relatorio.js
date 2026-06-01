@@ -1403,15 +1403,6 @@ assunto='Regularização Fundiária, Gestão Patrimonial, Governança Institucio
 if(origem==='QUEIMADAS'){
 assunto='Avaliação das ações de prevenção e combate às queimadas e Monitoramento Ambiental, Queimadas, Governança Climática e Respostas Institucionais – Exercício 2026.'
 }
-let relatorOptions=`
-<option>Conselheiro Edilson de Sousa Silva</option>
-<option>Conselheiro Francisco Carvalho da Silva</option>
-<option>Conselheiro José Euler Potyguara Pereira de Mello</option>
-<option>Conselheiro Wilber Carlos dos Santos Coimbra</option>
-<option>Conselheiro Paulo Curi Neto</option>
-<option>Conselheiro-Substituto Francisco Júnior Ferreira da Silva</option>
-<option>Conselheiro-Substituto Omar Pires Dias</option>
-`
 let tabelaOrigem='monitoramento_itens'
 if(origem==='SEDAM'){
 tabelaOrigem='deliberacoes'
