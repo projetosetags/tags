@@ -1470,14 +1470,47 @@ data=(data||[])
 
 let processo=
 monitoramentoInfo?.processo||
-'00000/20XX-TCE-RO'
+document.getElementById('processoMonitoramento')?.value||
+document.getElementById('processo')?.value||
+'-'
 
 let relator=
 monitoramentoInfo?.relator||
-'Não informado'
+document.getElementById('relatorMonitoramento')?.value||
+document.getElementById('relator')?.value||
+'-'
+
+let auditor=
+monitoramentoInfo?.auditor||
+monitoramentoInfo?.auditor_responsavel||
+document.getElementById('auditorMonitoramento')?.value||
+document.getElementById('auditor')?.value||
+'-'
+
+let acordao=
+monitoramentoInfo?.acordao||
+document.getElementById('acordaoMonitoramento')?.value||
+document.getElementById('acordao')?.value||
+'-'
+
+let criticidade=
+monitoramentoInfo?.criticidade||
+document.getElementById('criticidadeMonitoramento')?.value||
+document.getElementById('criticidade')?.value||
+'-'
+
+let descricaoMonitoramento=
+monitoramentoInfo?.descricao||
+monitoramentoInfo?.descricao_origem||
+document.getElementById('descricaoMonitoramento')?.value||
+document.getElementById('descricao')?.value||
+'-'
 
 let assuntosMonitoramento=
 monitoramentoInfo?.assuntos||
+monitoramentoInfo?.assunto||
+document.getElementById('assuntoMonitoramento')?.value||
+document.getElementById('assunto')?.value||
 assunto
 
 function parseSubitemPlano(s){
