@@ -1403,28 +1403,6 @@ assunto='Regularização Fundiária, Gestão Patrimonial, Governança Institucio
 if(origem==='QUEIMADAS'){
 assunto='Avaliação das ações de prevenção e combate às queimadas e Monitoramento Ambiental, Queimadas, Governança Climática e Respostas Institucionais – Exercício 2026.'
 }
-
-let unidade=
-monitoramentoInfo?.orgao||
-monitoramentoInfo?.unidade||
-''
-
-if(!unidade){
-
-if(origem==='SEDAM'){
-unidade='Secretaria de Estado do Desenvolvimento Ambiental - SEDAM'
-}
-
-if(origem==='SEPAT'){
-unidade='Secretaria de Estado de Patrimônio e Regularização Fundiária - SEPAT'
-}
-
-if(origem==='QUEIMADAS'){
-unidade='Governo do Estado, Municípios e Órgãos Envolvidos nas Ações de Queimadas'
-}
-
-}
-
 let relatorOptions=`
 <option>Conselheiro Edilson de Sousa Silva</option>
 <option>Conselheiro Francisco Carvalho da Silva</option>
@@ -1434,35 +1412,40 @@ let relatorOptions=`
 <option>Conselheiro-Substituto Francisco Júnior Ferreira da Silva</option>
 <option>Conselheiro-Substituto Omar Pires Dias</option>
 `
-
 let tabelaOrigem='monitoramento_itens'
-
 if(origem==='SEDAM'){
 tabelaOrigem='deliberacoes'
 }
-
 if(origem==='SEPAT'){
 tabelaOrigem='sepat_deliberacoes'
 }
-
 let monitoramentoInfo=null
-
 if(MONITORAMENTO_ATUAL){
-
 let{data:monitoramentoData,error:monitoramentoError}=await client
 .from('monitoramentos')
 .select('*')
 .eq('id',MONITORAMENTO_ATUAL)
 .single()
-
 if(monitoramentoError){
 console.log(monitoramentoError)
 }
-
 monitoramentoInfo=monitoramentoData||null
-
 }
-
+let unidade=
+monitoramentoInfo?.orgao||
+monitoramentoInfo?.unidade||
+''
+if(!unidade){
+if(origem==='SEDAM'){
+unidade='Secretaria de Estado do Desenvolvimento Ambiental - SEDAM'
+}
+if(origem==='SEPAT'){
+unidade='Secretaria de Estado de Patrimônio e Regularização Fundiária - SEPAT'
+}
+if(origem==='QUEIMADAS'){
+unidade='Governo do Estado, Municípios e Órgãos Envolvidos nas Ações de Queimadas'
+}
+}
 let{data,error}=await client
 .from(tabelaOrigem)
 .select('*')
@@ -1756,7 +1739,7 @@ ${assuntosMonitoramento}
 RESPONSÁVEL(IS) PELOS ÓRGÃOS/ENTIDADES:
 </td>
 <td style="border:1px solid #000;padding:10px;">
-XXXXX - CPF n.***.xxx.xxx-** – Prefeito Municipal ou Secretário de Estado
+${unidade}
 </td>
 </tr>
 
