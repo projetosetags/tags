@@ -1404,7 +1404,12 @@ if(origem==='QUEIMADAS'){
 assunto='Avaliação das ações de prevenção e combate às queimadas e Monitoramento Ambiental, Queimadas, Governança Climática e Respostas Institucionais – Exercício 2026.'
 }
 
-let unidade=''
+let unidade=
+monitoramentoInfo?.orgao||
+monitoramentoInfo?.unidade||
+''
+
+if(!unidade){
 
 if(origem==='SEDAM'){
 unidade='Secretaria de Estado do Desenvolvimento Ambiental - SEDAM'
@@ -1416,6 +1421,8 @@ unidade='Secretaria de Estado de Patrimônio e Regularização Fundiária - SEPA
 
 if(origem==='QUEIMADAS'){
 unidade='Governo do Estado, Municípios e Órgãos Envolvidos nas Ações de Queimadas'
+}
+
 }
 
 let relatorOptions=`
@@ -1754,22 +1761,28 @@ XXXXX - CPF n.***.xxx.xxx-** – Prefeito Municipal ou Secretário de Estado
 </tr>
 
 <tr>
-<td style="border:1px solid #000;padding:10px;font-weight:700;">
-RELATOR:
-</td>
-<td style="border:1px solid #000;padding:10px;">
-<input
-value="${relator}"
-style="
-width:100%;
-padding:8px 12px;
-border:1px solid #000;
-border-radius:6px;
-font-weight:700;
-font-size:12px;
-box-sizing:border-box;
-">
-</td>
+<td style="border:1px solid #000;padding:10px;font-weight:700;">RELATOR:</td>
+<td style="border:1px solid #000;padding:10px;">${relator}</td>
+</tr>
+
+<tr>
+<td style="border:1px solid #000;padding:10px;font-weight:700;">AUDITOR:</td>
+<td style="border:1px solid #000;padding:10px;">${auditor}</td>
+</tr>
+
+<tr>
+<td style="border:1px solid #000;padding:10px;font-weight:700;">ACÓRDÃO:</td>
+<td style="border:1px solid #000;padding:10px;">${acordao}</td>
+</tr>
+
+<tr>
+<td style="border:1px solid #000;padding:10px;font-weight:700;">CRITICIDADE:</td>
+<td style="border:1px solid #000;padding:10px;">${criticidade}</td>
+</tr>
+
+<tr>
+<td style="border:1px solid #000;padding:10px;font-weight:700;">DESCRIÇÃO:</td>
+<td style="border:1px solid #000;padding:10px;line-height:1.6;">${descricaoMonitoramento}</td>
 </tr>
 
 </table>
