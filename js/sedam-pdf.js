@@ -278,14 +278,18 @@ let estilos={
 let indice=4
 mesesAtivos.forEach(()=>{
 estilos[indice]={
-cellWidth:8,
-halign:'center'
+cellWidth:10,
+halign:'center',
+fontSize:7,
+fontStyle:'bold'
 }
 indice++
 })
 estilos[indice]={
-cellWidth:12,
-halign:'center'
+cellWidth:14,
+halign:'center',
+fontSize:7,
+fontStyle:'bold'
 }
 return estilos
 })(),
