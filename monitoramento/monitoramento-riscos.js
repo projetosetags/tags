@@ -253,17 +253,17 @@ risco='MÉDIO'
 }
 
 html+=`
-<div class="card-monitoramento">
+<div class="card-monitoramento" style="color:#000;">
 
 <div class="card-monitoramento-topo">
 
 <div>
 
-<div class="monitoramento-titulo">
+<div class="monitoramento-titulo" style="color:#000!important;">
 ITEM ${i.item||'-'} • ${i.subitem||'-'}
 </div>
 
-<div class="monitoramento-subtitulo">
+<div class="monitoramento-subtitulo" style="color:#000!important;">
 ${i.deliberacao||'-'}
 </div>
 
@@ -279,7 +279,7 @@ RISCO ${risco}
 <div class="progress-monitoramento-bar" style="width:${percentual}%"></div>
 </div>
 
-<div style="margin-top:10px;font-size:13px;">
+<div style="margin-top:10px;font-size:13px;color:#000!important;">
 Percentual de atendimento:
 <b>${percentual}%</b>
 </div>
