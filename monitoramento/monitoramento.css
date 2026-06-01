@@ -1286,11 +1286,8 @@ textarea::placeholder,input::placeholder{color:#6b7280!important}
 textarea.input-inline-monitoramento{width:100%;padding:10px;font-size:12px;line-height:1.5;border-radius:12px;resize:vertical;box-sizing:border-box;}
 select.input-inline-monitoramento{width:100%;font-size:11px;line-height:1.2;}
 
-#listaRiscos .card-monitoramento,
-#listaRiscos .monitoramento-titulo,
-#listaRiscos .monitoramento-subtitulo,
-#listaRiscos .card-monitoramento div,
-#listaRiscos .card-monitoramento span,
-#listaRiscos .card-monitoramento b{
-color:#000!important;
-}
+#listaRiscos .monitoramento-titulo{color:#000!important;}
+#listaRiscos .monitoramento-subtitulo{color:#000!important;}
+#listaRiscos .card-monitoramento{color:#000!important;}
+#listaRiscos .card-monitoramento *{color:#000!important;}
+#listaRiscos .badge-status{color:#fff!important;}
