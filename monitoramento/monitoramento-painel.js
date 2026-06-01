@@ -665,27 +665,17 @@ html+=`
 
 <div style="grid-column:span 2;">
 <b>Relator</b>
-<select
-class="input-inline-monitoramento"
+<select class="input-inline-monitoramento"
 style="font-size:11px;"
 onchange="alterarCampoMonitoramento(${m.id},'relator',this.value)">
-
 <option value="">Selecione</option>
-
 <option value="Conselheiro Edilson de Sousa Silva" ${(m.relator||'')==='Conselheiro Edilson de Sousa Silva'?'selected':''}>Conselheiro Edilson de Sousa Silva</option>
-
 <option value="Conselheiro Francisco Carvalho da Silva" ${(m.relator||'')==='Conselheiro Francisco Carvalho da Silva'?'selected':''}>Conselheiro Francisco Carvalho da Silva</option>
-
 <option value="Conselheiro José Euler Potyguara Pereira de Mello" ${(m.relator||'')==='Conselheiro José Euler Potyguara Pereira de Mello'?'selected':''}>Conselheiro José Euler Potyguara Pereira de Mello</option>
-
 <option value="Conselheiro Wilber Carlos dos Santos Coimbra" ${(m.relator||'')==='Conselheiro Wilber Carlos dos Santos Coimbra'?'selected':''}>Conselheiro Wilber Carlos dos Santos Coimbra</option>
-
 <option value="Conselheiro Paulo Curi Neto" ${(m.relator||'')==='Conselheiro Paulo Curi Neto'?'selected':''}>Conselheiro Paulo Curi Neto</option>
-
 <option value="Conselheiro-Substituto Francisco Júnior Ferreira da Silva" ${(m.relator||'')==='Conselheiro-Substituto Francisco Júnior Ferreira da Silva'?'selected':''}>Conselheiro-Substituto Francisco Júnior Ferreira da Silva</option>
-
 <option value="Conselheiro-Substituto Omar Pires Dias" ${(m.relator||'')==='Conselheiro-Substituto Omar Pires Dias'?'selected':''}>Conselheiro-Substituto Omar Pires Dias</option>
-
 </select>
 </div>
 <div style="grid-column:1/-1;">
