@@ -663,7 +663,7 @@ html+=`
 <input class="input-inline-monitoramento" value="${m.processo||''}" oninput="alterarCampoMonitoramento(${m.id},'processo',this.value)">
 </div>
 
-<div style="grid-column:span 2;">
+<div style="grid-column:1/-1;">
 <b>Relator</b>
 <select class="input-inline-monitoramento"
 style="font-size:11px;"
@@ -696,8 +696,8 @@ oninput="alterarCampoMonitoramento(${m.id},'assuntos',this.value)"
 >${m.assuntos||''}</textarea>
 
 </div>
-<div>
-<b>Auditor</b>
+<div style="grid-column:1/-1;">
+<b>Auditor Responsável</b>
 <input class="input-inline-monitoramento" value="${m.auditor_responsavel||''}" oninput="alterarCampoMonitoramento(${m.id},'auditor_responsavel',this.value)">
 </div>
 
@@ -710,7 +710,7 @@ oninput="alterarCampoMonitoramento(${m.id},'assuntos',this.value)"
 </select>
 </div>
 
-<div>
+<div style="grid-column:1/-1;">
 <b>Acórdão</b>
 <textarea class="input-inline-monitoramento" style="min-height:70px;font-size:12px;line-height:1.4;resize:vertical;" oninput="alterarCampoMonitoramento(${m.id},'acordao',this.value)">${m.acordao||''}</textarea>
 </div>
