@@ -424,103 +424,58 @@ color:#111;
 
 <div class="box-evidencias-check">
 
-<label class="item-check-evidencia">
-<input
-type="checkbox"
-value="OFÍCIO"
-${checks.includes('OFÍCIO')?'checked':''}>
-OFÍCIO
-</label>
+<label class="item-check-evidencia"><input type="checkbox" value="RELATÓRIO" ${checks.includes('RELATÓRIO')?'checked':''}>RELATÓRIO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="DIAGNÓSTICO" ${checks.includes('DIAGNÓSTICO')?'checked':''}>DIAGNÓSTICO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="PLANO DE AÇÃO" ${checks.includes('PLANO DE AÇÃO')?'checked':''}>PLANO AÇÃO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="PLANEJAMENTO" ${checks.includes('PLANEJAMENTO')?'checked':''}>PLANEJAMENTO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="MONITORAMENTO" ${checks.includes('MONITORAMENTO')?'checked':''}>MONITORAMENTO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="PARECER TÉCNICO" ${checks.includes('PARECER TÉCNICO')?'checked':''}>PARECER</label>
+<label class="item-check-evidencia"><input type="checkbox" value="NOTA TÉCNICA" ${checks.includes('NOTA TÉCNICA')?'checked':''}>NOTA TÉCNICA</label>
+<label class="item-check-evidencia"><input type="checkbox" value="ESTUDO TÉCNICO" ${checks.includes('ESTUDO TÉCNICO')?'checked':''}>ESTUDO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="CHECKLIST" ${checks.includes('CHECKLIST')?'checked':''}>CHECKLIST</label>
+<label class="item-check-evidencia"><input type="checkbox" value="INSPEÇÃO" ${checks.includes('INSPEÇÃO')?'checked':''}>INSPEÇÃO</label>
 
-<label class="item-check-evidencia">
-<input
-type="checkbox"
-value="RELATÓRIO"
-${checks.includes('RELATÓRIO')?'checked':''}>
-RELATÓRIO
-</label>
+<label class="item-check-evidencia"><input type="checkbox" value="ATA DE REUNIÃO" ${checks.includes('ATA DE REUNIÃO')?'checked':''}>ATA</label>
+<label class="item-check-evidencia"><input type="checkbox" value="LISTA DE PRESENÇA" ${checks.includes('LISTA DE PRESENÇA')?'checked':''}>PRESENÇA</label>
+<label class="item-check-evidencia"><input type="checkbox" value="REGISTRO FOTOGRÁFICO" ${checks.includes('REGISTRO FOTOGRÁFICO')?'checked':''}>FOTOS</label>
+<label class="item-check-evidencia"><input type="checkbox" value="APRESENTAÇÃO" ${checks.includes('APRESENTAÇÃO')?'checked':''}>APRESENTAÇÃO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="CERTIFICADO" ${checks.includes('CERTIFICADO')?'checked':''}>CERTIFICADO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="CAPACITAÇÃO" ${checks.includes('CAPACITAÇÃO')?'checked':''}>CAPACITAÇÃO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="TREINAMENTO" ${checks.includes('TREINAMENTO')?'checked':''}>TREINAMENTO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="OFÍCIO" ${checks.includes('OFÍCIO')?'checked':''}>OFÍCIO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="MEMORANDO" ${checks.includes('MEMORANDO')?'checked':''}>MEMORANDO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="DESPACHO" ${checks.includes('DESPACHO')?'checked':''}>DESPACHO</label>
 
-<label class="item-check-evidencia">
-<input
-type="checkbox"
-value="ATA"
-${checks.includes('ATA')?'checked':''}>
-ATA
-</label>
+<label class="item-check-evidencia"><input type="checkbox" value="PORTARIA" ${checks.includes('PORTARIA')?'checked':''}>PORTARIA</label>
+<label class="item-check-evidencia"><input type="checkbox" value="DECRETO" ${checks.includes('DECRETO')?'checked':''}>DECRETO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="INSTRUÇÃO NORMATIVA" ${checks.includes('INSTRUÇÃO NORMATIVA')?'checked':''}>INSTRUÇÃO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="REGIMENTO" ${checks.includes('REGIMENTO')?'checked':''}>REGIMENTO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="ATO NORMATIVO" ${checks.includes('ATO NORMATIVO')?'checked':''}>ATO NORM.</label>
+<label class="item-check-evidencia"><input type="checkbox" value="MINUTA" ${checks.includes('MINUTA')?'checked':''}>MINUTA</label>
+<label class="item-check-evidencia"><input type="checkbox" value="ACORDO / ACT" ${checks.includes('ACORDO / ACT')?'checked':''}>ACT</label>
+<label class="item-check-evidencia"><input type="checkbox" value="TERMO" ${checks.includes('TERMO')?'checked':''}>TERMO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="PARCERIA" ${checks.includes('PARCERIA')?'checked':''}>PARCERIA</label>
+<label class="item-check-evidencia"><input type="checkbox" value="PROCESSO SEI" ${checks.includes('PROCESSO SEI')?'checked':''}>SEI</label>
 
-<label class="item-check-evidencia">
-<input
-type="checkbox"
-value="SEI"
-${checks.includes('SEI')?'checked':''}>
-SEI
-</label>
-
-<label class="item-check-evidencia">
-<input
-type="checkbox"
-value="DESPACHO"
-${checks.includes('DESPACHO')?'checked':''}>
-DESPACHO
-</label>
-
-<label class="item-check-evidencia">
-<input
-type="checkbox"
-value="PORTARIA"
-${checks.includes('PORTARIA')?'checked':''}>
-PORTARIA
-</label>
-
-<label class="item-check-evidencia">
-<input
-type="checkbox"
-value="PRINT SISTEMA"
-${checks.includes('PRINT SISTEMA')?'checked':''}>
-PRINT SISTEMA
-</label>
-
-<label class="item-check-evidencia">
-<input
-type="checkbox"
-value="CHECKLIST"
-${checks.includes('CHECKLIST')?'checked':''}>
-CHECKLIST
-</label>
-
-<label class="item-check-evidencia">
-<input
-type="checkbox"
-value="PARECER"
-${checks.includes('PARECER')?'checked':''}>
-PARECER
-</label>
-
-<label class="item-check-evidencia">
-<input
-type="checkbox"
-value="MEMORANDO"
-${checks.includes('MEMORANDO')?'checked':''}>
-MEMORANDO
-</label>
-
-<label class="item-check-evidencia">
-<input
-type="checkbox"
-value="INSPEÇÃO"
-${checks.includes('INSPEÇÃO')?'checked':''}>
-INSPEÇÃO
-</label>
-
-<label class="item-check-evidencia">
-<input
-type="checkbox"
-value="FOTO"
-${checks.includes('FOTO')?'checked':''}>
-FOTO
-</label>
+<label class="item-check-evidencia"><input type="checkbox" value="SISTEMA" ${checks.includes('SISTEMA')?'checked':''}>SISTEMA</label>
+<label class="item-check-evidencia"><input type="checkbox" value="PLATAFORMA DIGITAL" ${checks.includes('PLATAFORMA DIGITAL')?'checked':''}>PLATAFORMA</label>
+<label class="item-check-evidencia"><input type="checkbox" value="GEOPORTAL" ${checks.includes('GEOPORTAL')?'checked':''}>GEOPORTAL</label>
+<label class="item-check-evidencia"><input type="checkbox" value="BANCO DE DADOS" ${checks.includes('BANCO DE DADOS')?'checked':''}>BANCO DADOS</label>
+<label class="item-check-evidencia"><input type="checkbox" value="PAINEL / DASHBOARD" ${checks.includes('PAINEL / DASHBOARD')?'checked':''}>DASHBOARD</label>
+<label class="item-check-evidencia"><input type="checkbox" value="API / INTEGRAÇÃO" ${checks.includes('API / INTEGRAÇÃO')?'checked':''}>API</label>
+<label class="item-check-evidencia"><input type="checkbox" value="MANUAL" ${checks.includes('MANUAL')?'checked':''}>MANUAL</label>
+<label class="item-check-evidencia"><input type="checkbox" value="CARTILHA" ${checks.includes('CARTILHA')?'checked':''}>CARTILHA</label>
+<label class="item-check-evidencia"><input type="checkbox" value="VÍDEO" ${checks.includes('VÍDEO')?'checked':''}>VÍDEO</label>
+<label class="item-check-evidencia"><input type="checkbox" value="OUTRO" ${checks.includes('OUTRO')?'checked':''}>OUTRO</label>
 
 </div>
+
+<input
+type="text"
+id="evidenciaExtra_${i.id}"
+class="evidencia-extra"
+placeholder="Outra evidência não listada..."
+>
 
 ${!i.evidencia_upload?`
 <div class="alerta-upload">
@@ -647,7 +602,7 @@ let linha=document.querySelector(
 )
 
 let checks=[]
-
+let evidenciaExtra=document.getElementById(`evidenciaExtra_${id}`)?.value?.trim()||''
 if(linha){
 
 linha
@@ -672,7 +627,7 @@ btn.innerHTML='SALVANDO...'
 let payload={
 
 evidencia:texto,
-evidencias_check:checks,
+evidencias_check:evidenciaExtra?[...checks,evidenciaExtra]:checks,
 evidencia_usuario:
 USER_MONITORAMENTO?.username||'-',
 
