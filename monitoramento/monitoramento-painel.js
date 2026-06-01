@@ -663,9 +663,30 @@ html+=`
 <input class="input-inline-monitoramento" value="${m.processo||''}" oninput="alterarCampoMonitoramento(${m.id},'processo',this.value)">
 </div>
 
-<div>
+<div style="grid-column:span 2;">
 <b>Relator</b>
-<input class="input-inline-monitoramento" value="${m.relator||''}" oninput="alterarCampoMonitoramento(${m.id},'relator',this.value)">
+<select
+class="input-inline-monitoramento"
+style="font-size:11px;"
+onchange="alterarCampoMonitoramento(${m.id},'relator',this.value)">
+
+<option value="">Selecione</option>
+
+<option value="Conselheiro Edilson de Sousa Silva" ${(m.relator||'')==='Conselheiro Edilson de Sousa Silva'?'selected':''}>Conselheiro Edilson de Sousa Silva</option>
+
+<option value="Conselheiro Francisco Carvalho da Silva" ${(m.relator||'')==='Conselheiro Francisco Carvalho da Silva'?'selected':''}>Conselheiro Francisco Carvalho da Silva</option>
+
+<option value="Conselheiro José Euler Potyguara Pereira de Mello" ${(m.relator||'')==='Conselheiro José Euler Potyguara Pereira de Mello'?'selected':''}>Conselheiro José Euler Potyguara Pereira de Mello</option>
+
+<option value="Conselheiro Wilber Carlos dos Santos Coimbra" ${(m.relator||'')==='Conselheiro Wilber Carlos dos Santos Coimbra'?'selected':''}>Conselheiro Wilber Carlos dos Santos Coimbra</option>
+
+<option value="Conselheiro Paulo Curi Neto" ${(m.relator||'')==='Conselheiro Paulo Curi Neto'?'selected':''}>Conselheiro Paulo Curi Neto</option>
+
+<option value="Conselheiro-Substituto Francisco Júnior Ferreira da Silva" ${(m.relator||'')==='Conselheiro-Substituto Francisco Júnior Ferreira da Silva'?'selected':''}>Conselheiro-Substituto Francisco Júnior Ferreira da Silva</option>
+
+<option value="Conselheiro-Substituto Omar Pires Dias" ${(m.relator||'')==='Conselheiro-Substituto Omar Pires Dias'?'selected':''}>Conselheiro-Substituto Omar Pires Dias</option>
+
+</select>
 </div>
 <div style="grid-column:1/-1;">
 <b>Assunto(s)</b>
@@ -701,12 +722,12 @@ oninput="alterarCampoMonitoramento(${m.id},'assuntos',this.value)"
 
 <div>
 <b>Acórdão</b>
-<input class="input-inline-monitoramento" value="${m.acordao||''}" oninput="alterarCampoMonitoramento(${m.id},'acordao',this.value)">
+<textarea class="input-inline-monitoramento" style="min-height:70px;font-size:12px;line-height:1.4;resize:vertical;" oninput="alterarCampoMonitoramento(${m.id},'acordao',this.value)">${m.acordao||''}</textarea>
 </div>
 
-<div>
+<div style="grid-column:span 2;">
 <b>Descrição</b>
-<input class="input-inline-monitoramento" value="${m.descricao_origem||''}" oninput="alterarCampoMonitoramento(${m.id},'descricao_origem',this.value)">
+<textarea class="input-inline-monitoramento" style="min-height:120px;font-size:12px;line-height:1.5;resize:vertical;" oninput="alterarCampoMonitoramento(${m.id},'descricao_origem',this.value)">${m.descricao_origem||''}</textarea>
 </div>
 
 </div>
