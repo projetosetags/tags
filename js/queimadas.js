@@ -288,3 +288,18 @@ ods:[...new Set(ods)],
 riscos:[...new Set(riscos)]
 }
 }
+/*=========================================================
+999 QUEIMADAS INIT
+=========================================================*/
+document.addEventListener('DOMContentLoaded',async()=>{
+console.log('QUEIMADAS INICIADO')
+if(typeof renderDashboardCHAP==='function')await renderDashboardCHAP()
+if(typeof renderCadeiaValor==='function')await renderCadeiaValor()
+if(typeof renderTeoriaMudanca==='function')await renderTeoriaMudanca()
+if(typeof renderMatrizRisco5x5==='function')await renderMatrizRisco5x5()
+if(typeof renderGantt==='function')await renderGantt()
+if(typeof renderODS==='function')await renderODS()
+if(typeof calcularImpacto==='function')await calcularImpacto()
+if(typeof renderHeatMap==='function')await renderHeatMap()
+if(typeof renderMonitoramento4D==='function')await renderMonitoramento4D()
+})
