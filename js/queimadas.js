@@ -289,10 +289,43 @@ riscos:[...new Set(riscos)]
 }
 }
 /*=========================================================
+014 QUEIMADAS FUNCTION CARREGARKPISEXECUTIVOS
+=========================================================*/
+async function carregarKPIsExecutivos(){
+let {data,error}=await client
+.from('queimadas_monitoramento')
+.select('*')
+if(error){
+console.log(error)
+return
+}
+let municipios=new Set()
+let focos=0
+let riscos=0
+let soma=0
+data.forEach(i=>{
+if(i.municipio)municipios.add(i.municipio)
+soma+=Number(i.percentual||0)
+if(Number(i.percentual||0)<50)riscos++
+if(Number(i.percentual||0)>0)focos++
+})
+let media=data.length?Math.round(soma/data.length):0
+let el1=document.getElementById('kpiMunicipios')
+let el2=document.getElementById('kpiFocos')
+let el3=document.getElementById('kpiRiscos')
+let el4=document.getElementById('kpiExecucao')
+if(el1)el1.innerText=municipios.size
+if(el2)el2.innerText=focos
+if(el3)el3.innerText=riscos
+if(el4)el4.innerText=media+'%'
+}
+
+/*=========================================================
 999 QUEIMADAS INIT
 =========================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
 console.log('QUEIMADAS INICIADO')
+if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
 if(typeof renderDashboardCHAP==='function')await renderDashboardCHAP()
 if(typeof renderCadeiaValor==='function')await renderCadeiaValor()
 if(typeof renderTeoriaMudanca==='function')await renderTeoriaMudanca()
