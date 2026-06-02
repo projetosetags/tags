@@ -319,6 +319,26 @@ if(el2)el2.innerText=focos
 if(el3)el3.innerText=riscos
 if(el4)el4.innerText=media+'%'
 }
+/*=========================================================
+015 QUEIMADAS FUNCTION RENDERPLANOUNIFICADO
+=========================================================*/
+function renderPlanoUnificado(){
+let box=document.getElementById('painelPlanoUnificado')
+if(!box)return
+box.innerHTML=`
+<ul>
+<li>Fiscalização Ambiental</li>
+<li>Prevenção às Queimadas</li>
+<li>Resposta Operacional</li>
+<li>Monitoramento de Focos de Calor</li>
+<li>Capacitação de Brigadistas</li>
+<li>Monitoramento de Municípios Prioritários</li>
+<li>Acompanhamento Orçamentário</li>
+<li>Monitoramento CEPCIF</li>
+<li>OVR 2026</li>
+<li>POTIF 2026</li>
+</ul>`
+}
 
 /*=========================================================
 999 QUEIMADAS INIT
@@ -335,4 +355,5 @@ if(typeof renderODS==='function')await renderODS()
 if(typeof calcularImpacto==='function')await calcularImpacto()
 if(typeof renderHeatMap==='function')await renderHeatMap()
 if(typeof renderMonitoramento4D==='function')await renderMonitoramento4D()
+if(typeof renderPlanoUnificado==='function')renderPlanoUnificado()
 })
