@@ -1,51 +1,111 @@
-<!--=========================================================
-004 ABA TEORIA DA MUDANÇA
-=========================================================-->
-<div id="painelTeoriaMudanca"></div>
-<!--=========================================================
-005 ABA DASHBOARD CHAP
-=========================================================-->
-<div id="painelCHAP"></div>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Monitoramento Inteligente de Queimadas</title>
 <link rel="stylesheet" href="css/queimadas.css?v=1">
-<button onclick="switchTab('queimadas')" class="tab-btn">
-🔥 QUEIMADAS
-</button>
-<!--=========================================================
-090 ABA QUEIMADAS
-=========================================================-->
-<div id="tab-queimadas" class="tab-view hidden">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
 
-<div class="titulo-painel">
+<!--=========================================================
+001 CABECALHO
+=========================================================-->
+<div class="titulo-queimadas">
 🔥 MONITORAMENTO INTELIGENTE DE QUEIMADAS
 </div>
 
+<!--=========================================================
+002 DASHBOARD CHAP
+=========================================================-->
 <div id="painelCHAP"></div>
 
+<!--=========================================================
+003 CADEIA DE VALOR
+=========================================================-->
 <div id="painelCadeiaValor"></div>
 
+<!--=========================================================
+004 TEORIA DA MUDANÇA
+=========================================================-->
 <div id="painelTeoriaMudanca"></div>
 
+<!--=========================================================
+005 MATRIZ DE RISCOS
+=========================================================-->
 <div id="painelRiscos"></div>
 
+<!--=========================================================
+006 GANTT
+=========================================================-->
 <div id="painelGantt"></div>
 
+<!--=========================================================
+007 ODS
+=========================================================-->
 <div id="painelODS"></div>
 
+<!--=========================================================
+008 IMPACTO
+=========================================================-->
 <div id="painelImpacto"></div>
 
+<!--=========================================================
+009 HEATMAP
+=========================================================-->
 <div id="painelHeatMap"></div>
 
+<!--=========================================================
+010 MONITORAMENTO 4D
+=========================================================-->
 <div id="painel4D"></div>
 
-</div>
-if(tab==='queimadas'){
-renderCadeiaValor()
-renderGantt()
-renderMatrizRisco5x5()
-renderTeoriaMudanca()
-renderDashboardCHAP()
-renderODS()
-calcularImpacto()
-renderHeatMap()
-renderMonitoramento4D()
+<script src="js/supabase.js"></script>
+<script src="js/queimadas.js?v=1"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded',async()=>{
+
+if(typeof renderCadeiaValor==='function'){
+await renderCadeiaValor()
 }
+
+if(typeof renderGantt==='function'){
+await renderGantt()
+}
+
+if(typeof renderMatrizRisco5x5==='function'){
+await renderMatrizRisco5x5()
+}
+
+if(typeof renderTeoriaMudanca==='function'){
+await renderTeoriaMudanca()
+}
+
+if(typeof renderDashboardCHAP==='function'){
+await renderDashboardCHAP()
+}
+
+if(typeof renderODS==='function'){
+await renderODS()
+}
+
+if(typeof calcularImpacto==='function'){
+await calcularImpacto()
+}
+
+if(typeof renderHeatMap==='function'){
+await renderHeatMap()
+}
+
+if(typeof renderMonitoramento4D==='function'){
+await renderMonitoramento4D()
+}
+
+})
+</script>
+
+</body>
+</html>
