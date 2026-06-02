@@ -6,3 +6,46 @@
 005 ABA DASHBOARD CHAP
 =========================================================-->
 <div id="painelCHAP"></div>
+<link rel="stylesheet" href="css/queimadas.css?v=1">
+<button onclick="switchTab('queimadas')" class="tab-btn">
+🔥 QUEIMADAS
+</button>
+<!--=========================================================
+090 ABA QUEIMADAS
+=========================================================-->
+<div id="tab-queimadas" class="tab-view hidden">
+
+<div class="titulo-painel">
+🔥 MONITORAMENTO INTELIGENTE DE QUEIMADAS
+</div>
+
+<div id="painelCHAP"></div>
+
+<div id="painelCadeiaValor"></div>
+
+<div id="painelTeoriaMudanca"></div>
+
+<div id="painelRiscos"></div>
+
+<div id="painelGantt"></div>
+
+<div id="painelODS"></div>
+
+<div id="painelImpacto"></div>
+
+<div id="painelHeatMap"></div>
+
+<div id="painel4D"></div>
+
+</div>
+if(tab==='queimadas'){
+renderCadeiaValor()
+renderGantt()
+renderMatrizRisco5x5()
+renderTeoriaMudanca()
+renderDashboardCHAP()
+renderODS()
+calcularImpacto()
+renderHeatMap()
+renderMonitoramento4D()
+}
