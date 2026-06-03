@@ -5,13 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Monitoramento Inteligente de Queimadas</title>
 <link rel="stylesheet" href="css/queimadas.css?v=1">
-<script src="../config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
 <script>
-const client=supabase.createClient(window.S_URL,window.S_KEY)
+const client=supabase.createClient(
+window.S_URL,
+window.S_KEY
+)
 </script>
-<script src="../js/queimadas.js?v=1"></script>
+<script src="../js/queimadas.js?v=2"></script>
 </head>
 <body>
 <div class="titulo-queimadas">🔥 MONITORAMENTO INTELIGENTE DE QUEIMADAS</div>
