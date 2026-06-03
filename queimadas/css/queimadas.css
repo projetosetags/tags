@@ -133,3 +133,15 @@ overflow:hidden;
 font-size:12px;
 font-weight:700;
 }
+.legendaMapa{
+display:flex;
+gap:20px;
+padding:10px;
+font-weight:700;
+justify-content:center;
+flex-wrap:wrap;
+}
+.legendaCritico{color:#dc2626}
+.legendaAlto{color:#f97316}
+.legendaModerado{color:#facc15}
+.legendaBaixo{color:#16a34a}
