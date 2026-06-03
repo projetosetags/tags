@@ -4,11 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Monitoramento Inteligente de Queimadas</title>
+<!--=========================================================
+001 CSS
+=========================================================-->
 <link rel="stylesheet" href="css/queimadas.css?v=1">
+<!--=========================================================
+002 CONFIG
+=========================================================-->
+<script src="../config.js"></script>
+<!--=========================================================
+003 CHARTJS
+=========================================================-->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!--=========================================================
+004 SUPABASE SDK
+=========================================================-->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase.js"></script>
-<script src="js/queimadas.js?v=1"></script>
+<!--=========================================================
+005 CLIENT SUPABASE
+=========================================================-->
+<script>
+const client=supabase.createClient(window.S_URL,window.S_KEY)
+</script>
+<!--=========================================================
+006 QUEIMADAS JS
+=========================================================-->
+<script src="../js/queimadas.js?v=1"></script>
 </head>
 <body>
 
