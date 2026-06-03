@@ -588,27 +588,151 @@ box.innerHTML=html
 }
 
 /*=========================================================
-030 QUEIMADAS FUNCTION RENDERAUDITORIACONCOMITANTE
+045 QUEIMADAS FUNCTION RENDERAUDITORIA
 =========================================================*/
 async function renderAuditoriaConcomitante(){
+
 let box=document.getElementById('painelAuditoria')
 if(!box)return
-let {data,error}=await client.from('queimadas_monitoramento').select('*')
-if(error){
-console.log(error)
-return
-}
-let atrasados=data.filter(i=>Number(i.percentual||0)<50)
-let html=''
-atrasados.forEach(i=>{
-html+=`
-<div class="heat-vermelho">
-${i.item||'-'}<br>
-${i.subitem||'-'}<br>
-${i.percentual||0}%
-</div>`
-})
-box.innerHTML=html||'<div class="heat-verde">Nenhum achado crítico.</div>'
+
+let {data:evidencias}=await client
+.from('queimadas_evidencias')
+.select('*')
+
+let {data:riscos}=await client
+.from('queimadas_riscos')
+.select('*')
+
+let {data:heat}=await client
+.from('queimadas_heatmap')
+.select('*')
+
+let semEvidencia=(evidencias||[])
+.filter(i=>
+!i.evidencia||
+String(i.evidencia).trim()===''
+).length
+
+let riscosSemTratamento=(riscos||[])
+.filter(i=>
+!i.tratamento||
+String(i.tratamento).trim()===''
+).length
+
+let municipiosCriticos=(heat||[])
+.filter(i=>
+i.classificacao==='CRÍTICO'
+).length
+
+let municipiosAlto=(heat||[])
+.filter(i=>
+i.classificacao==='ALTO'
+).length
+
+let topRiscos=(riscos||[])
+.sort((a,b)=>
+Number(b.nivel_risco||0)-
+Number(a.nivel_risco||0)
+)
+.slice(0,10)
+
+box.innerHTML=`
+
+<div class="chap-grid">
+
+<div class="chap-card">
+<div class="chap-num">
+${semEvidencia}
+</div>
+<div class="chap-label">
+SEM EVIDÊNCIAS
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+${riscosSemTratamento}
+</div>
+<div class="chap-label">
+SEM TRATAMENTO
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+${municipiosCriticos}
+</div>
+<div class="chap-label">
+CRÍTICOS
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+${municipiosAlto}
+</div>
+<div class="chap-label">
+ALTO RISCO
+</div>
+</div>
+
+</div>
+
+<div class="card-executivo">
+
+<h2>
+TOP 10 RISCOS
+</h2>
+
+${topRiscos.map(i=>`
+
+<div style="
+display:flex;
+justify-content:space-between;
+padding:8px;
+border-bottom:1px solid #ddd;
+">
+
+<span>
+${i.risco}
+</span>
+
+<b>
+${i.nivel_risco}
+</b>
+
+</div>
+
+`).join('')}
+
+</div>
+
+<div class="card-executivo">
+
+<h2>
+ACHADOS AUTOMÁTICOS
+</h2>
+
+<div style="padding:10px">
+
+${semEvidencia>0
+?'🚨 Existem evidências pendentes.<br>'
+:'✅ Evidências apresentadas.<br>'}
+
+${riscosSemTratamento>0
+?'🚨 Existem riscos sem tratamento definido.<br>'
+:'✅ Riscos tratados.<br>'}
+
+${municipiosCriticos>0
+?'🚨 Existem municípios críticos sob monitoramento.<br>'
+:'✅ Nenhum município crítico.<br>'}
+
+</div>
+
+</div>
+
+`
+
 }
 /*=========================================================
 031 QUEIMADAS FUNCTION GERARPDFEXECUTIVOTCERO
@@ -688,31 +812,64 @@ let html=`
 baixarWordQueimadas('relatorio_executivo_tcero',html)
 }
 /*=========================================================
+/*=========================================================
 036 QUEIMADAS FUNCTION RENDERMAPAMUNICIPIOS
 =========================================================*/
 async function renderMapaMunicipios(){
+
 let box=document.getElementById('painelMapaMunicipios')
 if(!box)return
-let {data,error}=await client.from('queimadas_municipios').select('*').order('municipio')
+
+let {data,error}=await client
+.from('queimadas_heatmap')
+.select('*')
+.order('criticidade',{ascending:false})
+
 if(error){
 console.log(error)
 return
 }
-let html='<div class="heatmap-grid">'
-data.forEach(i=>{
-let classe='heat-verde'
-if(String(i.prioridade||'').toUpperCase()==='ALTA')classe='heat-vermelho'
-else if(String(i.prioridade||'').toUpperCase()==='MÉDIA')classe='heat-laranja'
-else if(String(i.prioridade||'').toUpperCase()==='BAIXA')classe='heat-amarelo'
-html+=`
-<div class="${classe}">
-<b>${i.municipio||'-'}</b><br>
-Risco: ${i.risco||'-'}<br>
-Focos: ${i.focos_calor||0}
-</div>`
-})
-html+='</div>'
-box.innerHTML=html
+
+box.innerHTML=`
+
+<div class="mapa-grid">
+
+${(data||[]).map(i=>{
+
+let classe='mapa-baixo'
+
+if(i.classificacao==='MODERADO'){
+classe='mapa-moderado'
+}
+
+if(i.classificacao==='ALTO'){
+classe='mapa-alto'
+}
+
+if(i.classificacao==='CRÍTICO'){
+classe='mapa-critico'
+}
+
+return `
+
+<div class="municipio-mapa ${classe}">
+
+${i.municipio}
+
+<br>
+
+${i.criticidade}
+
+</div>
+
+`
+
+}).join('')}
+
+</div>
+
+`
+
 }
 /*=========================================================
 037 QUEIMADAS FUNCTION RENDERACOESSEDAM
@@ -1994,5 +2151,8 @@ await renderExecucaoOrcamentaria()
 await renderCEPCIF()
 await renderOVRPOTIF()
 await renderEvidencias()
+if(typeof renderAuditoriaConcomitante==='function')
 await renderAuditoriaConcomitante()
+if(typeof renderDashboardConselheiro==='function')
+await renderDashboardConselheiro()067
 })
