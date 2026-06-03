@@ -510,6 +510,38 @@ html+='</div>'
 box.innerHTML=html
 }
 /*=========================================================
+017A QUEIMADAS FUNCTION RENDERCEPCIFAVANCADO
+=========================================================*/
+async function renderCEPCIFAvancado(){
+let box=document.getElementById('painelCEPCIF')
+if(!box)return
+let {data=[]}=await client.from('queimadas_monitoramento').select('*')
+let total=data.length
+let concluidos=data.filter(i=>Number(i.percentual||0)>=100).length
+let andamento=data.filter(i=>Number(i.percentual||0)>0&&Number(i.percentual||0)<100).length
+let pendentes=data.filter(i=>Number(i.percentual||0)<=0).length
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card">
+<div class="chap-num">${total}</div>
+<div class="chap-label">AÇÕES CEPCIF</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${concluidos}</div>
+<div class="chap-label">CONCLUÍDAS</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${andamento}</div>
+<div class="chap-label">EM ANDAMENTO</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${pendentes}</div>
+<div class="chap-label">PENDENTES</div>
+</div>
+</div>`
+}
+
+/*=========================================================
 018 QUEIMADAS FUNCTION RENDERMONITORAMENTO4D
 =========================================================*/
 async function renderMonitoramento4D(){
@@ -538,6 +570,32 @@ html+=`
 box.innerHTML=html
 }
 /*=========================================================
+018A QUEIMADAS FUNCTION RENDERPOTIFAVANCADO
+=========================================================*/
+async function renderPOTIFAvancado(){
+let box=document.getElementById('painelOVRPOTIF')
+if(!box)return
+let {data=[]}=await client.from('queimadas_acoes_cbm').select('*')
+let total=data.length
+let executadas=data.filter(i=>String(i.status||'').toUpperCase()==='CONCLUÍDO').length
+let percentual=total?Math.round((executadas/total)*100):0
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card">
+<div class="chap-num">${total}</div>
+<div class="chap-label">AÇÕES POTIF</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${executadas}</div>
+<div class="chap-label">EXECUTADAS</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${percentual}%</div>
+<div class="chap-label">EXECUÇÃO</div>
+</div>
+</div>`
+}
+/*=========================================================
 019 QUEIMADAS FUNCTION RENDERODS
 =========================================================*/
 async function renderODS(){
@@ -550,6 +608,28 @@ html+='<div class="ods-card ods15">ODS 15<br>VIDA TERRESTRE</div>'
 html+='<div class="ods-card ods16">ODS 16<br>INSTITUIÇÕES EFICAZES</div>'
 html+='</div>'
 box.innerHTML=html
+}
+/*=========================================================
+019A QUEIMADAS FUNCTION RENDERUCSPRESIDENTE
+=========================================================*/
+async function renderUCsPresidente(){
+let box=document.getElementById('painelUCsPresidente')
+if(!box)return
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card">
+<div class="chap-num">27</div>
+<div class="chap-label">UC ESTADUAIS</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">100%</div>
+<div class="chap-label">MONITORADAS</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">SEDAM</div>
+<div class="chap-label">RESPONSÁVEL</div>
+</div>
+</div>`
 }
 /*=========================================================
 020 QUEIMADAS FUNCTION CALCULARIMPACTO
@@ -573,6 +653,19 @@ box.innerHTML=`
 <div class="impacto-box">
 <div class="impacto-score">${impacto}</div>
 <div class="impacto-label">ÍNDICE DE IMPACTO AO CIDADÃO</div>
+</div>`
+}
+/*=========================================================
+020A QUEIMADAS FUNCTION RENDERIRIQESTADUAL
+=========================================================*/
+async function renderIRIQEstadual(){
+let box=document.getElementById('painelIRIQEstadual')
+if(!box)return
+let iriq=await calcularIRIQ()
+box.innerHTML=`
+<div class="impacto-box">
+<div class="impacto-score">${iriq}</div>
+<div class="impacto-label">ÍNDICE DE RISCO INTEGRADO DE QUEIMADAS</div>
 </div>`
 }
 /*=========================================================
@@ -600,6 +693,32 @@ html+=`
 </div>`
 })
 box.innerHTML=html
+}
+/*=========================================================
+021A QUEIMADAS FUNCTION RENDERSITUACAOESTRATEGICA
+=========================================================*/
+async function renderSituacaoEstrategica(){
+let box=document.getElementById('painelSalaSituacaoEstadual')
+if(!box)return
+let {data=[]}=await client.from('queimadas_heatmap').select('*')
+let criticos=data.filter(i=>i.classificacao==='CRÍTICO').length
+let alto=data.filter(i=>i.classificacao==='ALTO').length
+let moderado=data.filter(i=>i.classificacao==='MODERADO').length
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card">
+<div class="chap-num">${criticos}</div>
+<div class="chap-label">CRÍTICOS</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${alto}</div>
+<div class="chap-label">ALTO RISCO</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${moderado}</div>
+<div class="chap-label">MODERADO</div>
+</div>
+</div>`
 }
 /*=========================================================
 022 QUEIMADAS FUNCTION MATRIZRISCO5X5AVANCADA
@@ -1613,19 +1732,19 @@ document.querySelectorAll('.abaQueimadas')
 .forEach(x=>x.classList.add('hidden'))
 
 if(nome==='executivo'){
-
-document.getElementById('abaExecutivo')
-?.classList.remove('hidden')
-
+document.getElementById('abaExecutivo')?.classList.remove('hidden')
 if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
-await renderKPIsExecutivos()
+if(typeof renderKPIsExecutivos==='function')await renderKPIsExecutivos()
 if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
 if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
-
 if(typeof renderTopRiscos==='function')await renderTopRiscos()
 if(typeof renderTopIAChap==='function')await renderTopIAChap()
 if(typeof renderAlertas==='function')await renderAlertas()
-
+if(typeof renderIRIQEstadual==='function')await renderIRIQEstadual()
+if(typeof renderPainelFocosINPE==='function')await renderPainelFocosINPE()
+if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadual()
+if(typeof renderIndicadoresEstrategicos==='function')await renderIndicadoresEstrategicos()
+if(typeof renderPainelUCs==='function')await renderPainelUCs()
 }
 
 if(nome==='planejamento'){
@@ -1648,6 +1767,8 @@ await renderGovernanca()
 await renderMonitoramento4D()
 await renderExecucaoFisica()
 await renderExecucaoFinanceira()
+await renderCEPCIFAvancado()
+await renderPOTIFAvancado()
 await renderEvidencias()
 }
 if(nome==='analise'){
@@ -1682,10 +1803,11 @@ if(nome==='presidente'){
 document.getElementById('abaPresidente')?.classList.remove('hidden')
 await renderPresidente()
 await renderDashboardPresidente()
+await renderIRIQEstadual()
 await renderPlanosMunicipais()
 await renderIndicadoresPresidente()
-await renderPainelUCs()
-await renderSalaSituacaoEstadual()
+await renderUCsPresidente()
+await renderSituacaoEstrategica()
 }
 if(nome==='conselheiro'){
 document.getElementById('abaConselheiro')?.classList.remove('hidden')
