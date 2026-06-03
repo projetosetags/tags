@@ -339,6 +339,214 @@ box.innerHTML=`
 <li>POTIF 2026</li>
 </ul>`
 }
+/*=========================================================
+016 QUEIMADAS FUNCTION RENDERMUNICIPIOSPRIORITARIOS
+=========================================================*/
+async function renderMunicipiosPrioritarios(){
+let box=document.getElementById('painelMunicipiosPrioritarios')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_municipios')
+.select('*')
+.order('prioridade',{ascending:true})
+if(error){
+console.log(error)
+return
+}
+let html='<div class="heatmap-grid">'
+data.forEach(m=>{
+let classe='heat-verde'
+if(m.prioridade==='ALTA')classe='heat-vermelho'
+else if(m.prioridade==='MÉDIA')classe='heat-laranja'
+else if(m.prioridade==='BAIXA')classe='heat-amarelo'
+html+=`
+<div class="${classe}">
+<b>${m.municipio||'-'}</b><br>
+Risco: ${m.risco||'-'}<br>
+Focos: ${m.focos_calor||0}
+</div>`
+})
+html+='</div>'
+box.innerHTML=html
+}
+/*=========================================================
+017 QUEIMADAS FUNCTION RENDERHEATMAPEXECUTIVO
+=========================================================*/
+async function renderHeatMapExecutivo(){
+let box=document.getElementById('painelHeatMapExecutivo')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_monitoramento')
+.select('*')
+if(error){
+console.log(error)
+return
+}
+let html='<div class="heatmap-grid">'
+data.forEach(i=>{
+let p=Number(i.percentual||0)
+let classe='heat-vermelho'
+if(p>=80)classe='heat-verde'
+else if(p>=60)classe='heat-amarelo'
+else if(p>=40)classe='heat-laranja'
+html+=`
+<div class="${classe}">
+${i.item||'-'}<br>
+${p}%
+</div>`
+})
+html+='</div>'
+box.innerHTML=html
+}
+/*=========================================================
+018 QUEIMADAS FUNCTION RENDERMONITORAMENTO4D
+=========================================================*/
+async function renderMonitoramento4D(){
+let box=document.getElementById('painelMonitoramento4D')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_monitoramento_4d')
+.select('*')
+if(error){
+console.log(error)
+return
+}
+let html=''
+data.forEach(i=>{
+html+=`
+<div class="monitor4d-card">
+<div><b>${i.municipio||'-'}</b></div>
+<div class="monitor4d-grid">
+<div class="monitor4d-kpi execucao">Execução<br>${i.execucao||0}%</div>
+<div class="monitor4d-kpi resultado">Resultado<br>${i.resultado||0}%</div>
+<div class="monitor4d-kpi impacto">Impacto<br>${i.impacto||0}%</div>
+<div class="monitor4d-kpi risco">Risco<br>${i.risco||0}%</div>
+</div>
+</div>`
+})
+box.innerHTML=html
+}
+/*=========================================================
+019 QUEIMADAS FUNCTION RENDERODS
+=========================================================*/
+async function renderODS(){
+let box=document.getElementById('painelODS')
+if(!box)return
+let html=''
+html+='<div class="ods-grid">'
+html+='<div class="ods-card ods13">ODS 13<br>AÇÃO CONTRA A MUDANÇA GLOBAL DO CLIMA</div>'
+html+='<div class="ods-card ods15">ODS 15<br>VIDA TERRESTRE</div>'
+html+='<div class="ods-card ods16">ODS 16<br>INSTITUIÇÕES EFICAZES</div>'
+html+='</div>'
+box.innerHTML=html
+}
+/*=========================================================
+020 QUEIMADAS FUNCTION CALCULARIMPACTO
+=========================================================*/
+async function calcularImpacto(){
+let box=document.getElementById('painelImpacto')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_monitoramento')
+.select('*')
+if(error){
+console.log(error)
+return
+}
+let soma=0
+data.forEach(i=>{
+soma+=Number(i.percentual||0)
+})
+let impacto=data.length?Math.round(soma/data.length):0
+box.innerHTML=`
+<div class="impacto-box">
+<div class="impacto-score">${impacto}</div>
+<div class="impacto-label">ÍNDICE DE IMPACTO AO CIDADÃO</div>
+</div>`
+}
+/*=========================================================
+021 QUEIMADAS FUNCTION GRAFICOGANTTEXECUTIVO
+=========================================================*/
+async function graficoGanttExecutivo(){
+let box=document.getElementById('painelGanttExecutivo')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_marcos_gantt')
+.select('*')
+.order('data_inicio',{ascending:true})
+if(error){
+console.log(error)
+return
+}
+let html=''
+data.forEach(i=>{
+html+=`
+<div class="gantt-row">
+<div class="gantt-titulo">${i.titulo||'-'}</div>
+<div class="gantt-area">
+<div class="gantt-bar andamento">${i.percentual||0}%</div>
+</div>
+</div>`
+})
+box.innerHTML=html
+}
+/*=========================================================
+022 QUEIMADAS FUNCTION MATRIZRISCO5X5AVANCADA
+=========================================================*/
+async function matrizRisco5x5Avancada(){
+let box=document.getElementById('painelRiscoAvancado')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_riscos')
+.select('*')
+if(error){
+console.log(error)
+return
+}
+let criticos=data.filter(i=>(Number(i.nivel_risco||0)>=20))
+let html='<div class="heatmap-grid">'
+criticos.forEach(i=>{
+html+=`
+<div class="heat-vermelho">
+🔥 ${i.fonte_calor||'-'}<br>
+${i.risco||'-'}<br>
+Nível ${i.nivel_risco||0}
+</div>`
+})
+html+='</div>'
+box.innerHTML=html
+}
+/*=========================================================
+023 QUEIMADAS FUNCTION IACHAPANALISAR
+=========================================================*/
+async function iaChapAnalisar(){
+let box=document.getElementById('painelIAChap')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_chap')
+.select('*')
+if(error){
+console.log(error)
+return
+}
+let html=''
+data.forEach(i=>{
+let score=Math.round(
+(
+Number(i.conhecimento||0)+
+Number(i.habilidade||0)+
+Number(i.atitude||0)+
+Number(i.proposito||0)
+)/4
+)
+html+=`
+<div class="chap-card">
+<div class="chap-num">${score}%</div>
+<div class="chap-label">${i.municipio||'-'}</div>
+</div>`
+})
+box.innerHTML=html
+}
 
 /*=========================================================
 999 QUEIMADAS INIT
@@ -356,4 +564,12 @@ if(typeof calcularImpacto==='function')await calcularImpacto()
 if(typeof renderHeatMap==='function')await renderHeatMap()
 if(typeof renderMonitoramento4D==='function')await renderMonitoramento4D()
 if(typeof renderPlanoUnificado==='function')renderPlanoUnificado()
+if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
+if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
+if(typeof renderMonitoramento4D==='function')await renderMonitoramento4D()
+if(typeof renderODS==='function')await renderODS()
+if(typeof calcularImpacto==='function')await calcularImpacto()
+if(typeof graficoGanttExecutivo==='function')await graficoGanttExecutivo()
+if(typeof matrizRisco5x5Avancada==='function')await matrizRisco5x5Avancada()
+if(typeof iaChapAnalisar==='function')await iaChapAnalisar()
 })
