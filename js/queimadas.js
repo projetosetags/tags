@@ -1477,37 +1477,140 @@ return `
 /*=========================================================
 998 QUEIMADAS FUNCTION MOSTRAR ABA
 =========================================================*/
-function mostrarAbaQueimadas(nome){
+async function mostrarAbaQueimadas(nome){
+
 localStorage.setItem(
 'abaQueimadas',
 nome
 )
+
 document.querySelectorAll('.abaQueimadas')
 .forEach(x=>x.classList.add('hidden'))
+
 if(nome==='executivo'){
+
 document.getElementById('abaExecutivo')
 ?.classList.remove('hidden')
+
+if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
+if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
+if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
+if(typeof renderTopCriticos==='function')await renderTopCriticos()
+if(typeof renderTopRiscos==='function')await renderTopRiscos()
+if(typeof renderTopIAChap==='function')await renderTopIAChap()
+if(typeof renderAlertas==='function')await renderAlertas()
+
 }
+
 if(nome==='planejamento'){
+
 document.getElementById('abaPlanejamento')
 ?.classList.remove('hidden')
+
+if(typeof renderPlanoUnificado==='function')await renderPlanoUnificado()
+if(typeof renderCadeiaValor==='function')await renderCadeiaValor()
+if(typeof renderTeoriaMudanca==='function')await renderTeoriaMudanca()
+if(typeof renderGantt==='function')await renderGantt()
+if(typeof renderODS==='function')await renderODS()
+
 }
+
 if(nome==='monitoramento'){
+
 document.getElementById('abaMonitoramento')
 ?.classList.remove('hidden')
+
+if(typeof renderMonitoramento4D==='function')await renderMonitoramento4D()
+if(typeof renderStatusGeral==='function')await renderStatusGeral()
+if(typeof renderGovernanca==='function')await renderGovernanca()
+if(typeof renderAcoesSedam==='function')await renderAcoesSedam()
+if(typeof renderAcoesCBM==='function')await renderAcoesCBM()
+if(typeof renderAcoesTCERO==='function')await renderAcoesTCERO()
+if(typeof renderEvidencias==='function')await renderEvidencias()
+
 }
+
 if(nome==='analise'){
+
 document.getElementById('abaAnalise')
 ?.classList.remove('hidden')
+
+if(typeof renderDashboardCHAP==='function')await renderDashboardCHAP()
+if(typeof renderMatrizRisco5x5==='function')await renderMatrizRisco5x5()
+if(typeof calcularImpacto==='function')await calcularImpacto()
+if(typeof iaChapAnalisar==='function')await iaChapAnalisar()
+if(typeof renderRankingIMC==='function')await renderRankingIMC()
+
 }
+
 if(nome==='relatorios'){
+
 document.getElementById('abaRelatorios')
 ?.classList.remove('hidden')
+
+if(typeof renderPainelFocosINPE==='function')
+await renderPainelFocosINPE()
+
+if(typeof renderGraficoFocosHistorico==='function')
+await renderGraficoFocosHistorico()
+
+if(typeof renderGraficoEvolucaoMensal==='function')
+await renderGraficoEvolucaoMensal()
+
 }
+
 if(nome==='situacao'){
+
 document.getElementById('abaSituacao')
 ?.classList.remove('hidden')
+
+if(typeof renderSalaSituacao==='function')
+await renderSalaSituacao()
+
+if(typeof renderSalaSituacaoEstadual==='function')
+await renderSalaSituacaoEstadual()
+
 }
+
+if(nome==='presidente'){
+
+document.getElementById('abaPresidente')
+?.classList.remove('hidden')
+
+if(typeof renderDashboardPresidente==='function')
+await renderDashboardPresidente()
+
+if(typeof renderPlanosMunicipais==='function')
+await renderPlanosMunicipais()
+
+if(typeof renderPainelUCs==='function')
+await renderPainelUCs()
+
+if(typeof renderIndicadoresEstrategicos==='function')
+await renderIndicadoresEstrategicos()
+
+}
+
+if(nome==='conselheiro'){
+
+document.getElementById('abaConselheiro')
+?.classList.remove('hidden')
+
+if(typeof renderDashboardConselheiro==='function')
+await renderDashboardConselheiro()
+
+}
+
+if(nome==='auditor'){
+
+document.getElementById('abaAuditor')
+?.classList.remove('hidden')
+
+if(typeof renderAuditoriaConcomitante==='function')
+await renderAuditoriaConcomitante()
+
+}
+
 }
 /*=========================================================
 028 QUEIMADAS FUNCTION RENDERTOPCRITICOS
@@ -2531,6 +2634,7 @@ await renderRankingIMC()
 999 QUEIMADAS INIT
 =========================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
+
 let abaSalva=
 localStorage.getItem(
 'abaQueimadas'
@@ -2539,61 +2643,14 @@ localStorage.getItem(
 mostrarAbaQueimadas(
 abaSalva
 )
-if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
-if(typeof renderPlanoUnificado==='function')await renderPlanoUnificado()
-if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
-if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
-if(typeof renderMonitoramento4D==='function')await renderMonitoramento4D()
-if(typeof renderDashboardCHAP==='function')await renderDashboardCHAP()
-if(typeof renderCadeiaValor==='function')await renderCadeiaValor()
-if(typeof renderTeoriaMudanca==='function')await renderTeoriaMudanca()
-if(typeof renderMatrizRisco5x5==='function')await renderMatrizRisco5x5()
-if(typeof renderGantt==='function')await renderGantt()
-if(typeof renderODS==='function')await renderODS()
-if(typeof calcularImpacto==='function')await calcularImpacto()
-if(typeof iaChapAnalisar==='function')await iaChapAnalisar()
-if(typeof renderTopCriticos==='function')await renderTopCriticos()
-if(typeof renderTopRiscos==='function')await renderTopRiscos()
-if(typeof renderTopIAChap==='function')await renderTopIAChap()
-if(typeof renderAlertas==='function')await renderAlertas()
-await renderStatusGeral()
-if(typeof renderRankingIMC==='function')
-await renderRankingIMC()
-await renderTopRiscos()
-if(typeof renderSalaSituacao==='function')
-await renderSalaSituacao()
-if(typeof renderDashboardPresidente==='function')
-await renderDashboardPresidente()
-if(typeof renderPlanosMunicipais==='function')
-await renderPlanosMunicipais()
+
+if(typeof renderMapaMunicipios==='function')
 await renderMapaMunicipios()
-await renderGraficoFocosCalor()
-await renderGraficoEvolucaoMensal()
-await renderGovernanca()
-await renderAcoesSedam()
-await renderAcoesCBM()
-await renderAcoesTCERO()
-await renderExecucaoOrcamentaria()
-await renderCEPCIF()
-await renderOVRPOTIF()
-await renderEvidencias()
-if(typeof renderAuditoriaConcomitante==='function')
-await renderAuditoriaConcomitante()
-if(typeof renderDashboardConselheiro==='function')
-await renderDashboardConselheiro()
+
 if(typeof renderGeoJSONRO==='function')
 await renderGeoJSONRO()
+
 if(typeof renderUCs==='function')
 await renderUCs()
-if(typeof renderPainelUCs==='function')
-await renderPainelUCs()
 
-if(typeof renderPainelFocosINPE==='function')
-await renderPainelFocosINPE()
-if(typeof renderGraficoFocosHistorico==='function')
-await renderGraficoFocosHistorico()
-if(typeof renderIndicadoresEstrategicos==='function')
-await renderIndicadoresEstrategicos()
-if(typeof renderSalaSituacaoEstadual==='function')
-await renderSalaSituacaoEstadual()
 })
