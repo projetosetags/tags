@@ -1502,39 +1502,28 @@ if(typeof renderRankingIMC==='function')await renderRankingIMC()
 }
 
 if(nome==='relatorios'){
-
 document.getElementById('abaRelatorios')
 ?.classList.remove('hidden')
-
 if(typeof renderPainelFocosINPE==='function')
 await renderPainelFocosINPE()
-
 if(typeof renderGraficoFocosHistorico==='function')
 await renderGraficoFocosHistorico()
-
 if(typeof renderGraficoEvolucaoMensal==='function')
 await renderGraficoEvolucaoMensal()
-
+if(typeof renderGraficoTopFocos==='function')
+await renderGraficoTopFocos()
 }
-
 if(nome==='situacao'){
-
 document.getElementById('abaSituacao')
 ?.classList.remove('hidden')
-
 if(typeof renderSalaSituacao==='function')
 await renderSalaSituacao()
-
 if(typeof renderSalaSituacaoEstadual==='function')
 await renderSalaSituacaoEstadual()
-
 }
-
 if(nome==='presidente'){
-
 document.getElementById('abaPresidente')
 ?.classList.remove('hidden')
-
 if(typeof renderDashboardPresidente==='function')
 await renderDashboardPresidente()
 if(typeof renderGraficoGovernanca==='function')
@@ -2308,8 +2297,57 @@ border-bottom:1px solid #ddd;
 </div>
 
 `
-
 }
+/*=========================================================
+111 QUEIMADAS FUNCTION RENDERGRAFICOTOPFOCOS
+=========================================================*/
+async function renderGraficoTopFocos(){
+
+let canvas=document.getElementById('graficoTopFocos')
+if(!canvas)return
+
+let {data=[]}=await client
+.from('queimadas_focos')
+.select('*')
+
+let mapa={}
+
+data.forEach(i=>{
+let mun=i.municipio||'SEM MUNICÍPIO'
+if(!mapa[mun])mapa[mun]=0
+mapa[mun]+=Number(i.focos||0)
+})
+
+let top10=Object.entries(mapa)
+.map(([municipio,focos])=>({municipio,focos}))
+.sort((a,b)=>b.focos-a.focos)
+.slice(0,10)
+
+if(window.chartTopFocos)
+window.chartTopFocos.destroy()
+
+window.chartTopFocos=new Chart(canvas,{
+type:'bar',
+data:{
+labels:top10.map(i=>i.municipio),
+datasets:[{
+label:'Focos de Calor',
+data:top10.map(i=>i.focos)
+}]
+},
+options:{
+indexAxis:'y',
+responsive:true,
+maintainAspectRatio:false,
+plugins:{
+legend:{
+display:false
+}
+}
+}
+})
+}
+
 /*=========================================================
 074 QUEIMADAS FUNCTION RENDERGRAFICOFOCOSHISTORICO
 =========================================================*/
