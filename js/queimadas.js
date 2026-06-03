@@ -547,29 +547,167 @@ html+=`
 })
 box.innerHTML=html
 }
+/*=========================================================
+024 QUEIMADAS FUNCTION RENDERGOVERNANCA
+=========================================================*/
+async function renderGovernanca(){
+let box=document.getElementById('painelGovernanca')
+if(!box)return
+let {data,error}=await client.from('queimadas_monitoramento').select('*')
+if(error){
+console.log(error)
+return
+}
+let total=data.length||0
+let concluidos=data.filter(i=>Number(i.percentual||0)>=100).length
+let andamento=data.filter(i=>Number(i.percentual||0)>0&&Number(i.percentual||0)<100).length
+let pendentes=data.filter(i=>Number(i.percentual||0)<=0).length
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card"><div class="chap-num">${total}</div><div class="chap-label">AÇÕES</div></div>
+<div class="chap-card"><div class="chap-num">${concluidos}</div><div class="chap-label">CONCLUÍDAS</div></div>
+<div class="chap-card"><div class="chap-num">${andamento}</div><div class="chap-label">EM ANDAMENTO</div></div>
+<div class="chap-card"><div class="chap-num">${pendentes}</div><div class="chap-label">PENDENTES</div></div>
+</div>`
+}
 
+/*=========================================================
+025 QUEIMADAS FUNCTION RENDEREXECUCAOORCAMENTARIA
+=========================================================*/
+async function renderExecucaoOrcamentaria(){
+let box=document.getElementById('painelOrcamento')
+if(!box)return
+box.innerHTML=`
+<div class="impacto-box">
+<div class="impacto-score">EM IMPLANTAÇÃO</div>
+<div class="impacto-label">EXECUÇÃO ORÇAMENTÁRIA</div>
+</div>`
+}
+
+/*=========================================================
+026 QUEIMADAS FUNCTION RENDERFOCOSCALOR
+=========================================================*/
+async function renderFocosCalor(){
+let box=document.getElementById('painelFocosCalor')
+if(!box)return
+let {data,error}=await client.from('queimadas_fontes_calor').select('*')
+if(error){
+console.log(error)
+return
+}
+let html='<div class="heatmap-grid">'
+data.forEach(i=>{
+html+=`
+<div class="heat-vermelho">
+🔥 ${i.municipio||'-'}<br>
+${i.fonte_calor||'-'}
+</div>`
+})
+html+='</div>'
+box.innerHTML=html
+}
+
+/*=========================================================
+027 QUEIMADAS FUNCTION RENDERCEPCIF
+=========================================================*/
+function renderCEPCIF(){
+let box=document.getElementById('painelCEPCIF')
+if(!box)return
+box.innerHTML=`
+<div class="card-executivo">
+<b>CEPCIF</b><br>
+Comitê Estadual de Prevenção e Combate aos Incêndios Florestais.<br>
+Monitoramento integrado das ações de prevenção, fiscalização, mitigação e resposta.
+</div>`
+}
+
+/*=========================================================
+028 QUEIMADAS FUNCTION RENDEROVRPOTIF
+=========================================================*/
+function renderOVRPOTIF(){
+let box=document.getElementById('painelOVRPOTIF')
+if(!box)return
+box.innerHTML=`
+<div class="card-executivo">
+<b>OVR 2026</b><br>
+Operação Verde Rondônia.<br><br>
+<b>POTIF 2026</b><br>
+Plano Operacional de Temporada de Incêndios Florestais.
+</div>`
+}
+
+/*=========================================================
+029 QUEIMADAS FUNCTION RENDEREVIDENCIAS
+=========================================================*/
+async function renderEvidencias(){
+let box=document.getElementById('painelEvidencias')
+if(!box)return
+let {data,error}=await client.from('queimadas_evidencias').select('*').order('created_at',{ascending:false})
+if(error){
+console.log(error)
+return
+}
+let html=''
+data.forEach(i=>{
+html+=`
+<div class="monitor4d-card">
+<b>${i.municipio||'-'}</b><br>
+${i.descricao||'-'}<br>
+Status: ${i.status||'-'}
+</div>`
+})
+box.innerHTML=html
+}
+
+/*=========================================================
+030 QUEIMADAS FUNCTION RENDERAUDITORIACONCOMITANTE
+=========================================================*/
+async function renderAuditoriaConcomitante(){
+let box=document.getElementById('painelAuditoria')
+if(!box)return
+let {data,error}=await client.from('queimadas_monitoramento').select('*')
+if(error){
+console.log(error)
+return
+}
+let atrasados=data.filter(i=>Number(i.percentual||0)<50)
+let html=''
+atrasados.forEach(i=>{
+html+=`
+<div class="heat-vermelho">
+${i.item||'-'}<br>
+${i.subitem||'-'}<br>
+${i.percentual||0}%
+</div>`
+})
+box.innerHTML=html||'<div class="heat-verde">Nenhum achado crítico.</div>'
+}
 /*=========================================================
 999 QUEIMADAS INIT
 =========================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
 console.log('QUEIMADAS INICIADO')
 if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
-if(typeof renderDashboardCHAP==='function')await renderDashboardCHAP()
-if(typeof renderCadeiaValor==='function')await renderCadeiaValor()
-if(typeof renderTeoriaMudanca==='function')await renderTeoriaMudanca()
-if(typeof renderMatrizRisco5x5==='function')await renderMatrizRisco5x5()
-if(typeof renderGantt==='function')await renderGantt()
-if(typeof renderODS==='function')await renderODS()
-if(typeof calcularImpacto==='function')await calcularImpacto()
-if(typeof renderHeatMap==='function')await renderHeatMap()
-if(typeof renderMonitoramento4D==='function')await renderMonitoramento4D()
 if(typeof renderPlanoUnificado==='function')renderPlanoUnificado()
 if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
-if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
-if(typeof renderMonitoramento4D==='function')await renderMonitoramento4D()
+if(typeof renderDashboardCHAP==='function')await renderDashboardCHAP()
+if(typeof iaChapAnalisar==='function')await iaChapAnalisar()
+if(typeof renderCadeiaValor==='function')await renderCadeiaValor()
+if(typeof renderTeoriaMudanca==='function')await renderTeoriaMudanca()
 if(typeof renderODS==='function')await renderODS()
 if(typeof calcularImpacto==='function')await calcularImpacto()
-if(typeof graficoGanttExecutivo==='function')await graficoGanttExecutivo()
+if(typeof renderMatrizRisco5x5==='function')await renderMatrizRisco5x5()
 if(typeof matrizRisco5x5Avancada==='function')await matrizRisco5x5Avancada()
-if(typeof iaChapAnalisar==='function')await iaChapAnalisar()
+if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
+if(typeof renderGantt==='function')await renderGantt()
+if(typeof graficoGanttExecutivo==='function')await graficoGanttExecutivo()
+if(typeof renderMonitoramento4D==='function')await renderMonitoramento4D()
+if(typeof renderGovernanca==='function')await renderGovernanca()
+if(typeof renderExecucaoOrcamentaria==='function')await renderExecucaoOrcamentaria()
+if(typeof renderFocosCalor==='function')await renderFocosCalor()
+if(typeof renderCEPCIF==='function')await renderCEPCIF()
+if(typeof renderOVRPOTIF==='function')await renderOVRPOTIF()
+if(typeof renderEvidencias==='function')await renderEvidencias()
+if(typeof renderAuditoriaConcomitante==='function')await renderAuditoriaConcomitante()
 })
+
