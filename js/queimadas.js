@@ -1036,7 +1036,7 @@ maintainAspectRatio:false
 =========================================================*/
 async function renderDashboardPresidente(){
 
-let box=document.getElementById('painelPresidente')
+let box=document.getElementById('painelGeral')
 if(!box)return
 
 let {data:heat=[]}=await client
@@ -1157,7 +1157,7 @@ display:true
 =========================================================*/
 async function renderDashboardConselheiro(){
 
-let box=document.getElementById('painelConselheiro')
+let box=document.getElementById('painelRelator')
 if(!box)return
 
 let {data:heat}=await client
