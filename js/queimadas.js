@@ -281,6 +281,113 @@ box.innerHTML=`
 </ul>`
 }
 /*=========================================================
+015A QUEIMADAS FUNCTION RENDERPLANOSEDAM
+=========================================================*/
+async function renderPlanoSEDAM(){
+let box=document.getElementById('painelPlanoSEDAM')
+if(!box)return
+box.innerHTML=`
+<div class="cadeia-card">
+<div class="cadeia-item">PLANO DE AÇÃO SEDAM 2026</div>
+<div class="cadeia-flow">
+<div class="cadeia-box cadeia-insumo">🌳 PREVENÇÃO</div>
+<div class="cadeia-box cadeia-atividade">🚔 FISCALIZAÇÃO</div>
+<div class="cadeia-box cadeia-produto">🔥 COMBATE</div>
+<div class="cadeia-box cadeia-resultado">📈 REDUÇÃO</div>
+<div class="cadeia-box cadeia-impacto">🌎 IMPACTO</div>
+<div class="cadeia-box cadeia-beneficio">👨‍👩‍👧‍👦 CIDADÃO</div>
+</div>
+</div>`
+}
+/*=========================================================
+015B QUEIMADAS FUNCTION RENDERPLANOCBM
+=========================================================*/
+async function renderPlanoCBM(){
+let box=document.getElementById('painelPlanoCBM')
+if(!box)return
+box.innerHTML=`
+<div class="cadeia-card">
+<div class="cadeia-item">POTIF 2026 - CORPO DE BOMBEIROS</div>
+<div class="cadeia-flow">
+<div class="cadeia-box cadeia-insumo">🚒 BRIGADAS</div>
+<div class="cadeia-box cadeia-atividade">🧯 COMBATE</div>
+<div class="cadeia-box cadeia-produto">🔥 CONTROLE</div>
+<div class="cadeia-box cadeia-resultado">📉 REDUÇÃO</div>
+<div class="cadeia-box cadeia-impacto">🌳 PRESERVAÇÃO</div>
+<div class="cadeia-box cadeia-beneficio">👨‍👩‍👧‍👦 SEGURANÇA</div>
+</div>
+</div>`
+}
+/*=========================================================
+015C QUEIMADAS FUNCTION RENDERMARCOS
+=========================================================*/
+async function renderMarcos(){
+let box=document.getElementById('painelMarcos')
+if(!box)return
+let {data,error}=await client.from('queimadas_marcos').select('*').order('data_inicio',{ascending:true})
+if(error){
+console.log(error)
+box.innerHTML='Erro ao carregar.'
+return
+}
+let html=''
+;(data||[]).forEach(i=>{
+html+=`
+<div class="monitor4d-card">
+<b>${i.titulo||'-'}</b><br>
+Início: ${i.data_inicio||'-'}<br>
+Fim: ${i.data_fim||'-'}<br>
+Status: ${i.status||'-'}
+</div>`
+})
+box.innerHTML=html
+}
+/*=========================================================
+015D QUEIMADAS FUNCTION RENDEREXECUCAOFISICA
+=========================================================*/
+async function renderExecucaoFisica(){
+let box=document.getElementById('painelExecucaoFisica')
+if(!box)return
+let {data,error}=await client.from('queimadas_monitoramento').select('*')
+if(error){
+console.log(error)
+return
+}
+let total=(data||[]).length
+let soma=0
+;(data||[]).forEach(i=>{
+soma+=Number(i.percentual||0)
+})
+let media=total?Math.round(soma/total):0
+box.innerHTML=`
+<div class="impacto-box">
+<div class="impacto-score">${media}%</div>
+<div class="impacto-label">EXECUÇÃO FÍSICA MÉDIA</div>
+</div>`
+}
+/*=========================================================
+015E QUEIMADAS FUNCTION RENDEREXECUCAOFINANCEIRA
+=========================================================*/
+async function renderExecucaoFinanceira(){
+let box=document.getElementById('painelExecucaoFinanceira')
+if(!box)return
+let {data,error}=await client.from('queimadas_monitoramento').select('*')
+if(error){
+console.log(error)
+return
+}
+let total=0
+;(data||[]).forEach(i=>{
+total+=Number(i.valor_executado||i.valor||0)
+})
+box.innerHTML=`
+<div class="impacto-box">
+<div class="impacto-score">R$ ${formatarNumero(total)}</div>
+<div class="impacto-label">EXECUÇÃO FINANCEIRA</div>
+</div>`
+}
+
+/*=========================================================
 016 QUEIMADAS FUNCTION RENDERMUNICIPIOSPRIORITARIOS
 =========================================================*/
 async function renderMunicipiosPrioritarios(){
@@ -1470,100 +1577,75 @@ if(typeof renderAlertas==='function')await renderAlertas()
 }
 
 if(nome==='planejamento'){
-
-document.getElementById('abaPlanejamento')
-?.classList.remove('hidden')
-
-if(typeof renderPlanoUnificado==='function')await renderPlanoUnificado()
-if(typeof renderCadeiaValor==='function')await renderCadeiaValor()
-if(typeof renderTeoriaMudanca==='function')await renderTeoriaMudanca()
-if(typeof renderGantt==='function')await renderGantt()
-if(typeof renderODS==='function')await renderODS()
-
+document.getElementById('abaPlanejamento')?.classList.remove('hidden')
+await renderPlanoUnificado()
+await renderPlanoSEDAM()
+await renderPlanoCBM()
+await renderCadeiaValor()
+await renderTeoriaMudanca()
+await renderODS()
+await renderGantt()
+await renderMarcos()
 }
-
 if(nome==='monitoramento'){
-
-document.getElementById('abaMonitoramento')
-?.classList.remove('hidden')
-
-if(typeof renderMonitoramento4D==='function')await renderMonitoramento4D()
-if(typeof renderStatusGeral==='function')await renderStatusGeral()
-if(typeof renderGovernanca==='function')await renderGovernanca()
-if(typeof renderAcoesSedam==='function')await renderAcoesSedam()
-if(typeof renderAcoesCBM==='function')await renderAcoesCBM()
-if(typeof renderAcoesTCERO==='function')await renderAcoesTCERO()
-if(typeof renderEvidencias==='function')await renderEvidencias()
-
+document.getElementById('abaMonitoramento')?.classList.remove('hidden')
+await renderAcoesSedam()
+await renderAcoesCBM()
+await renderAcoesTCERO()
+await renderGovernanca()
+await renderMonitoramento4D()
+await renderExecucaoFisica()
+await renderExecucaoFinanceira()
+await renderEvidencias()
 }
-
 if(nome==='analise'){
-
-document.getElementById('abaAnalise')
-?.classList.remove('hidden')
-
-if(typeof renderDashboardCHAP==='function')await renderDashboardCHAP()
-if(typeof renderMatrizRisco5x5==='function')await renderMatrizRisco5x5()
-if(typeof calcularImpacto==='function')await calcularImpacto()
-if(typeof iaChapAnalisar==='function')await iaChapAnalisar()
-if(typeof renderRankingIMC==='function')await renderRankingIMC()
-
+document.getElementById('abaAnalise')?.classList.remove('hidden')
+await renderDashboardCHAP()
+await renderMatrizRisco5x5()
+await matrizRisco5x5Avancada()
+await iaChapAnalisar()
+await iaPreverRiscos()
+await iaPriorizarMunicipios()
+await iaGerarRelatorio()
+await iaSugerirAcoes()
+await calcularImpacto()
 }
-
 if(nome==='relatorios'){
-document.getElementById('abaRelatorios')
-?.classList.remove('hidden')
-
-if(typeof renderGraficoFocosHistorico==='function')
-await renderGraficoFocosHistorico()
-if(typeof renderGraficoEvolucaoMensal==='function')
-await renderGraficoEvolucaoMensal()
-if(typeof renderGraficoTopFocos==='function')
+document.getElementById('abaRelatorios')?.classList.remove('hidden')
 await renderGraficoTopFocos()
+await renderGraficoFocosHistorico()
+await renderGraficoEvolucaoMensal()
+await renderGraficoGovernanca()
 }
 if(nome==='situacao'){
-document.getElementById('abaSituacao')
-?.classList.remove('hidden')
-if(typeof renderSalaSituacao==='function')
-await renderSalaSituacao()
-
+document.getElementById('abaSituacao')?.classList.remove('hidden')
+await renderTopCriticos()
+await renderTopRiscos()
+await renderMunicipiosSemEvidencias()
+await renderTopIAChap()
+await renderAlertas()
+await renderSalaSituacaoEstadual()
 }
 if(nome==='presidente'){
-document.getElementById('abaPresidente')
-?.classList.remove('hidden')
-if(typeof renderDashboardPresidente==='function')
+document.getElementById('abaPresidente')?.classList.remove('hidden')
+await renderPresidente()
 await renderDashboardPresidente()
-if(typeof renderGraficoGovernanca==='function')
-await renderGraficoGovernanca()
-if(typeof renderPlanosMunicipais==='function')
 await renderPlanosMunicipais()
-
-if(typeof renderPainelUCs==='function')
+await renderIndicadoresPresidente()
 await renderPainelUCs()
-
-if(typeof renderIndicadoresEstrategicos==='function')
-await renderIndicadoresEstrategicos()
-
+await renderSalaSituacaoEstadual()
 }
-
 if(nome==='conselheiro'){
-
-document.getElementById('abaConselheiro')
-?.classList.remove('hidden')
-
-if(typeof renderDashboardConselheiro==='function')
+document.getElementById('abaConselheiro')?.classList.remove('hidden')
 await renderDashboardConselheiro()
-
+await renderTopMunicipios()
+await renderTopRiscos()
 }
-
 if(nome==='auditor'){
-
-document.getElementById('abaAuditor')
-?.classList.remove('hidden')
-
-if(typeof renderAuditoriaConcomitante==='function')
+document.getElementById('abaAuditor')?.classList.remove('hidden')
 await renderAuditoriaConcomitante()
-
+await renderMunicipiosSemEvidencias()
+await renderTopRiscos()
 }
 
 }
@@ -2511,6 +2593,34 @@ box.innerHTML=`
 `
 
 }
+/*=========================================================
+075A QUEIMADAS FUNCTION RENDERINDICADORESPRESIDENTE
+=========================================================*/
+async function renderIndicadoresPresidente(){
+let box=document.getElementById('painelIndicadoresPresidente')
+if(!box)return
+let {data:heat=[]}=await client.from('queimadas_heatmap').select('*')
+let {data:focos=[]}=await client.from('queimadas_focos').select('*')
+let totalFocos=focos.reduce((s,i)=>s+Number(i.focos||0),0)
+let criticos=heat.filter(i=>i.classificacao==='CRÍTICO').length
+let alto=heat.filter(i=>i.classificacao==='ALTO').length
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card">
+<div class="chap-num">${formatarNumero(totalFocos)}</div>
+<div class="chap-label">FOCOS ACUMULADOS</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${criticos}</div>
+<div class="chap-label">CRÍTICOS</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${alto}</div>
+<div class="chap-label">ALTO RISCO</div>
+</div>
+</div>`
+}
+
 /*=========================================================
 076 QUEIMADAS FUNCTION RENDERSALASITUACAOESTADUAL
 =========================================================*/
