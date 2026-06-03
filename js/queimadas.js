@@ -943,7 +943,9 @@ maintainAspectRatio:false
 =========================================================*/
 async function renderGraficoEvolucaoMensal(){
 
-let canvas=document.getElementById('graficoEvolucaoMensal')
+let canvas=document.getElementById(
+'graficoEvolucaoMensal'
+)
 
 if(!canvas)return
 
@@ -956,49 +958,49 @@ console.log(error)
 return
 }
 
-let meses=[
-'JAN','FEV','MAR','ABR','MAI','JUN',
-'JUL','AGO','SET','OUT','NOV','DEZ'
-]
+let concluidos=(data||[])
+.filter(i=>
+String(i.status||'')
+.toUpperCase()
+.includes('CONCLU')
+).length
 
-let valores=new Array(12).fill(0)
+let andamento=(data||[])
+.filter(i=>
+String(i.status||'')
+.toUpperCase()
+.includes('ANDAMENTO')
+).length
 
-;(data||[]).forEach(i=>{
-
-valores[0]+=Number(i.jan||0)
-valores[1]+=Number(i.fev||0)
-valores[2]+=Number(i.mar||0)
-valores[3]+=Number(i.abr||0)
-valores[4]+=Number(i.mai||0)
-valores[5]+=Number(i.jun||0)
-valores[6]+=Number(i.jul||0)
-valores[7]+=Number(i.ago||0)
-valores[8]+=Number(i.set||0)
-valores[9]+=Number(i.out||0)
-valores[10]+=Number(i.nov||0)
-valores[11]+=Number(i.dez||0)
-
-})
+let atrasados=(data||[])
+.filter(i=>
+String(i.status||'')
+.toUpperCase()
+.includes('ATRAS')
+).length
 
 if(window.chartEvolucaoMensal){
-
 window.chartEvolucaoMensal.destroy()
-
 }
 
 window.chartEvolucaoMensal=
 new Chart(canvas,{
 
-type:'line',
+type:'bar',
 
 data:{
-labels:meses,
+labels:[
+'CONCLUÍDOS',
+'ANDAMENTO',
+'ATRASADOS'
+],
 datasets:[{
-label:'Execução',
-data:valores,
-borderWidth:3,
-fill:false,
-tension:0.3
+label:'Quantidade',
+data:[
+concluidos,
+andamento,
+atrasados
+]
 }]
 },
 
@@ -2301,7 +2303,14 @@ RESPONSÁVEL
 =========================================================*/
 async function renderPainelFocosINPE(){
 
-let box=document.getElementById('painelFocosINPE')
+let box=
+document.getElementById(
+'painelFocosCalor'
+)
+||
+document.getElementById(
+'painelFocosINPE'
+)
 if(!box)return
 
 let {data}=await client
@@ -2330,10 +2339,10 @@ FOCOS DE CALOR
 
 <div class="chap-card">
 <div class="chap-num">
-${top10.length}
+${(data||[]).length}
 </div>
 <div class="chap-label">
-MUNICÍPIOS MONITORADOS
+REGISTROS INPE
 </div>
 </div>
 
