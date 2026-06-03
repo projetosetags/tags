@@ -1478,6 +1478,10 @@ return `
 998 QUEIMADAS FUNCTION MOSTRAR ABA
 =========================================================*/
 function mostrarAbaQueimadas(nome){
+localStorage.setItem(
+'abaQueimadas',
+nome
+)
 document.querySelectorAll('.abaQueimadas')
 .forEach(x=>x.classList.add('hidden'))
 if(nome==='executivo'){
@@ -2527,7 +2531,14 @@ await renderRankingIMC()
 999 QUEIMADAS INIT
 =========================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
-mostrarAbaQueimadas('executivo')
+let abaSalva=
+localStorage.getItem(
+'abaQueimadas'
+)||'executivo'
+
+mostrarAbaQueimadas(
+abaSalva
+)
 if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
 if(typeof renderPlanoUnificado==='function')await renderPlanoUnificado()
 if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
