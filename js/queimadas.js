@@ -2626,7 +2626,16 @@ ${altos>5
 `
 
 }
-
+/*=========================================================
+133 QUEIMADAS FUNCTION ABRIR ABA CARD
+=========================================================*/
+function abrirCardQueimadas(aba){
+mostrarAbaQueimadas(aba)
+window.scrollTo({
+top:0,
+behavior:'smooth'
+})
+}
 async function recalcularIMC(){
 await calcularIMC()
 await renderRankingIMC()
