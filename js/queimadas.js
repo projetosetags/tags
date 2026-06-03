@@ -1,4 +1,10 @@
 /*=========================================================
+000 CHART DATALABELS
+=========================================================*/
+if(typeof ChartDataLabels!=='undefined'){
+Chart.register(ChartDataLabels)
+}
+/*=========================================================
 000 FORMATADORES GERAIS
 =========================================================*/
 function formatarNumero(v){
@@ -1117,7 +1123,6 @@ async function renderGraficoGovernanca(){
 let canvas=document.getElementById('graficoGovernanca')
 if(!canvas)return
 if(window.chartGovernanca)window.chartGovernanca.destroy()
-Chart.register(ChartDataLabels)
 let {data:sedam=[]}=await client.from('queimadas_acoes_sedam').select('*')
 let {data:cbm=[]}=await client.from('queimadas_acoes_cbm').select('*')
 let {data:tce=[]}=await client.from('queimadas_monitoramento').select('*')
@@ -1130,15 +1135,7 @@ data:[
 tce.length,
 sedam.length,
 cbm.length
-],
-datalabels:{
-color:'#ffffff',
-font:{
-weight:'bold',
-size:18
-},
-formatter:v=>v
-}
+]
 }]
 },
 options:{
@@ -1153,7 +1150,12 @@ tooltip:{
 enabled:true
 },
 datalabels:{
-display:true
+color:'#ffffff',
+font:{
+weight:'bold',
+size:18
+},
+formatter:v=>v
 }
 }
 }
