@@ -1187,34 +1187,95 @@ if(nome==='relatorios'){
 document.getElementById('abaRelatorios')
 ?.classList.remove('hidden')
 }
+if(nome==='situacao'){
+document.getElementById('abaSituacao')
+?.classList.remove('hidden')
+}
 }
 /*=========================================================
 028 QUEIMADAS FUNCTION RENDERTOPCRITICOS
 =========================================================*/
 async function renderTopCriticos(){
-
 let box=document.getElementById('painelTopCriticos')
 if(!box)return
-
 let {data,error}=await client
 .from('queimadas_municipios')
 .select('*')
 .order('focos_calor',{ascending:false})
 .limit(10)
-
 if(error){
 console.log(error)
 return
 }
-
-box.innerHTML=data.map(i=>`
+box.innerHTML=(data||[]).map(i=>`
 <div class="linha-queimadas">
-🔥 ${i.municipio}
- | ${i.focos_calor||0} focos
- | ${i.risco||'-'}
+🔥 <b>${i.municipio||'-'}</b>
+ | Focos: ${i.focos_calor||0}
+ | Risco: ${i.risco||'-'}
 </div>
 `).join('')
-
+}
+/*=========================================================
+040 QUEIMADAS FUNCTION RENDERTOPRISCOS
+=========================================================*/
+async function renderTopRiscos(){
+let box=document.getElementById('painelTopRiscos')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_riscos')
+.select('*')
+.order('nivel_risco',{ascending:false})
+.limit(10)
+if(error){
+console.log(error)
+return
+}
+box.innerHTML=(data||[]).map(i=>`
+<div class="linha-risco">
+⚠ <b>${i.municipio||'-'}</b>
+ | ${i.risco||'-'}
+ | Nível ${i.nivel_risco||0}
+</div>
+`).join('')
+}
+/*=========================================================
+041 QUEIMADAS FUNCTION RENDERTOPIACHAP
+=========================================================*/
+async function renderTopIAChap(){
+let box=document.getElementById('painelTopIAChap')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_chap')
+.select('*')
+.order('resultado',{ascending:false})
+.limit(10)
+if(error){
+console.log(error)
+return
+}
+box.innerHTML=(data||[]).map(i=>`
+<div class="linha-queimadas">
+🤖 <b>${i.municipio||'-'}</b>
+ | Score: ${i.resultado||0}
+</div>
+`).join('')
+}
+/*=========================================================
+042 QUEIMADAS FUNCTION RENDERALERTAS
+=========================================================*/
+async function renderAlertas(){
+let box=document.getElementById('painelAlertas')
+if(!box)return
+let {data}=await client
+.from('queimadas_municipios')
+.select('*')
+.order('focos_calor',{ascending:false})
+.limit(5)
+box.innerHTML=(data||[]).map(i=>`
+<div class="alerta-vermelho">
+🚨 ${i.municipio} possui ${i.focos_calor||0} focos de calor.
+</div>
+`).join('')
 }
 
 /*=========================================================
@@ -1235,4 +1296,8 @@ if(typeof renderGantt==='function')await renderGantt()
 if(typeof renderODS==='function')await renderODS()
 if(typeof calcularImpacto==='function')await calcularImpacto()
 if(typeof iaChapAnalisar==='function')await iaChapAnalisar()
+if(typeof renderTopCriticos==='function')await renderTopCriticos()
+if(typeof renderTopRiscos==='function')await renderTopRiscos()
+if(typeof renderTopIAChap==='function')await renderTopIAChap()
+if(typeof renderAlertas==='function')await renderAlertas()
 })
