@@ -1460,7 +1460,7 @@ document.getElementById('abaExecutivo')
 if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
 if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
 if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
-if(typeof renderTopCriticos==='function')await renderTopCriticos()
+
 if(typeof renderTopRiscos==='function')await renderTopRiscos()
 if(typeof renderTopIAChap==='function')await renderTopIAChap()
 if(typeof renderAlertas==='function')await renderAlertas()
@@ -1511,8 +1511,7 @@ if(typeof renderRankingIMC==='function')await renderRankingIMC()
 if(nome==='relatorios'){
 document.getElementById('abaRelatorios')
 ?.classList.remove('hidden')
-if(typeof renderPainelFocosINPE==='function')
-await renderPainelFocosINPE()
+
 if(typeof renderGraficoFocosHistorico==='function')
 await renderGraficoFocosHistorico()
 if(typeof renderGraficoEvolucaoMensal==='function')
@@ -1525,8 +1524,7 @@ document.getElementById('abaSituacao')
 ?.classList.remove('hidden')
 if(typeof renderSalaSituacao==='function')
 await renderSalaSituacao()
-if(typeof renderSalaSituacaoEstadual==='function')
-await renderSalaSituacaoEstadual()
+
 }
 if(nome==='presidente'){
 document.getElementById('abaPresidente')
