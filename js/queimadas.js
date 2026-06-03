@@ -1014,211 +1014,71 @@ maintainAspectRatio:false
 }
 
 /*=========================================================
-043 QUEIMADAS FUNCTION RENDERDASHBOARDPRESIDENTE
+104 QUEIMADAS FUNCTION RENDERDASHBOARDPRESIDENTE
 =========================================================*/
 async function renderDashboardPresidente(){
 
 let box=document.getElementById('painelPresidente')
 if(!box)return
 
-let {data:heat}=await client
+let {data:heat=[]}=await client
 .from('queimadas_heatmap')
 .select('*')
 
-let {data:municipios}=await client
-.from('queimadas_municipios')
+let {data:sedam=[]}=await client
+.from('queimadas_acoes_sedam')
 .select('*')
 
-let {data:impacto}=await client
-.from('queimadas_impacto')
+let {data:cbm=[]}=await client
+.from('queimadas_acoes_cbm')
 .select('*')
 
-let criticos=(heat||[])
-.filter(i=>i.classificacao==='CRÍTICO')
-.length
-
-let altos=(heat||[])
-.filter(i=>i.classificacao==='ALTO')
-.length
-
-let focos=(heat||[])
-.reduce((s,i)=>s+Number(i.focos||0),0)
-
-let populacaoExposta=0
-let areaRisco=0
-
-;(heat||[]).forEach(h=>{
-
-let m=(municipios||[])
-.find(x=>x.municipio===h.municipio)
-
-if(!m)return
-
-if(
-h.classificacao==='CRÍTICO'||
-h.classificacao==='ALTO'
-){
-
-populacaoExposta+=Number(m.populacao||0)
-areaRisco+=Number(m.area_km2||0)
-
-}
-
-})
-
-let municipiosComPlano=22
-let municipiosSemPlano=17
-
-let top10=(heat||[])
-.sort((a,b)=>b.criticidade-a.criticidade)
-.slice(0,10)
-
-let iriq=0
-
-if((heat||[]).length){
-
-iriq=
-Math.round(
-
-(heat||[])
-.reduce(
-(s,i)=>s+Number(i.criticidade||0),
+let focos=heat.reduce(
+(s,i)=>s+Number(i.focos||0),
 0
 )
-/(heat||[]).length
 
-)
+let criticos=heat.filter(i=>
+i.classificacao==='CRÍTICO'
+).length
 
-}
-
-let semaforo='🟢 BAIXO'
-
-if(iriq>=80){
-semaforo='🔴 CRÍTICO'
-}else
-if(iriq>=50){
-semaforo='🟡 ATENÇÃO'
-}
+let alto=heat.filter(i=>
+i.classificacao==='ALTO'
+).length
 
 box.innerHTML=`
 
 <div class="chap-grid">
 
 <div class="chap-card">
-<div class="chap-num">${iriq}</div>
-<div class="chap-label">
-IRIQ ESTADUAL
-</div>
+<div class="chap-num">${focos}</div>
+<div class="chap-label">FOCOS DE CALOR</div>
 </div>
 
 <div class="chap-card">
-<div class="chap-num">
-${criticos}
-</div>
-<div class="chap-label">
-CRÍTICOS
-</div>
+<div class="chap-num">${criticos}</div>
+<div class="chap-label">MUNICÍPIOS CRÍTICOS</div>
 </div>
 
 <div class="chap-card">
-<div class="chap-num">
-${altos}
-</div>
-<div class="chap-label">
-ALTO RISCO
-</div>
+<div class="chap-num">${alto}</div>
+<div class="chap-label">ALTO RISCO</div>
 </div>
 
 <div class="chap-card">
-<div class="chap-num">
-${focos}
-</div>
-<div class="chap-label">
-FOCOS DE CALOR
-</div>
+<div class="chap-num">EXECUÇÃO</div>
+<div class="chap-label">TCE-RO</div>
 </div>
 
 <div class="chap-card">
-<div class="chap-num">
-${Math.round(populacaoExposta).toLocaleString('pt-BR')}
-</div>
-<div class="chap-label">
-POPULAÇÃO EXPOSTA
-</div>
+<div class="chap-num">PENDENTE</div>
+<div class="chap-label">SEDAM</div>
 </div>
 
 <div class="chap-card">
-<div class="chap-num">
-${Math.round(areaRisco).toLocaleString('pt-BR')}
+<div class="chap-num">PLANEJADO</div>
+<div class="chap-label">CBMRO</div>
 </div>
-<div class="chap-label">
-KM² SOB RISCO
-</div>
-</div>
-
-<div class="chap-card">
-<div class="chap-num">
-${municipiosComPlano}
-</div>
-<div class="chap-label">
-COM PLANO
-</div>
-</div>
-
-<div class="chap-card">
-<div class="chap-num">
-${municipiosSemPlano}
-</div>
-<div class="chap-label">
-SEM PLANO
-</div>
-</div>
-
-</div>
-
-<div class="card-executivo">
-
-<h2>
-SEMAFORIZAÇÃO ESTADUAL
-</h2>
-
-<div style="
-font-size:28px;
-font-weight:700;
-text-align:center;
-padding:20px;
-">
-${semaforo}
-</div>
-
-</div>
-
-<div class="card-executivo">
-
-<h2>
-TOP 10 MUNICÍPIOS CRÍTICOS
-</h2>
-
-${top10.map(i=>`
-
-<div style="
-display:flex;
-justify-content:space-between;
-padding:8px;
-border-bottom:1px solid #ddd;
-">
-
-<span>
-${i.municipio}
-</span>
-
-<b>
-${i.criticidade}
-</b>
-
-</div>
-
-`).join('')}
 
 </div>
 
