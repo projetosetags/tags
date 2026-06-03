@@ -271,31 +271,49 @@ box.innerHTML=`
 016 QUEIMADAS FUNCTION RENDERMUNICIPIOSPRIORITARIOS
 =========================================================*/
 async function renderMunicipiosPrioritarios(){
+
 let box=document.getElementById('painelMunicipiosPrioritarios')
 if(!box)return
+
 let {data,error}=await client
-.from('queimadas_municipios')
+.from('queimadas_heatmap')
 .select('*')
-.order('prioridade',{ascending:true})
+.order('criticidade',{ascending:false})
+.limit(10)
+
 if(error){
 console.log(error)
 return
 }
+
 let html='<div class="heatmap-grid">'
-data.forEach(m=>{
+
+;(data||[]).forEach(m=>{
+
 let classe='heat-verde'
-if(m.prioridade==='ALTA')classe='heat-vermelho'
-else if(m.prioridade==='MÉDIA')classe='heat-laranja'
-else if(m.prioridade==='BAIXA')classe='heat-amarelo'
+
+if(Number(m.criticidade||0)>=100){
+classe='heat-vermelho'
+}else if(Number(m.criticidade||0)>=80){
+classe='heat-laranja'
+}else if(Number(m.criticidade||0)>=50){
+classe='heat-amarelo'
+}
+
 html+=`
 <div class="${classe}">
 <b>${m.municipio||'-'}</b><br>
-Risco: ${m.risco||'-'}<br>
-Focos: ${m.focos_calor||0}
+Classificação: ${m.classificacao||'-'}<br>
+Criticidade: ${m.criticidade||0}<br>
+Focos: ${m.focos||0}<br>
+Risco: ${m.risco||0}
 </div>`
 })
+
 html+='</div>'
+
 box.innerHTML=html
+
 }
 /*=========================================================
 017 QUEIMADAS FUNCTION RENDERHEATMAPEXECUTIVO
@@ -1085,7 +1103,34 @@ box.innerHTML=`
 `
 
 }
-
+/*=========================================================
+105 QUEIMADAS FUNCTION RENDERGRAFICOGOVERNANCA
+=========================================================*/
+async function renderGraficoGovernanca(){
+let canvas=document.getElementById('graficoGovernanca')
+if(!canvas)return
+if(window.chartGovernanca)window.chartGovernanca.destroy()
+let {data:sedam=[]}=await client.from('queimadas_acoes_sedam').select('*')
+let {data:cbm=[]}=await client.from('queimadas_acoes_cbm').select('*')
+let {data:tce=[]}=await client.from('queimadas_monitoramento').select('*')
+window.chartGovernanca=new Chart(canvas,{
+type:'doughnut',
+data:{
+labels:['TCE-RO','SEDAM','CBMRO'],
+datasets:[{
+data:[
+tce.length,
+sedam.length,
+cbm.length
+]
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false
+}
+})
+}
 /*=========================================================
 044 QUEIMADAS FUNCTION RENDERDASHBOARDCONSELHEIRO
 =========================================================*/
@@ -1471,7 +1516,8 @@ document.getElementById('abaPresidente')
 
 if(typeof renderDashboardPresidente==='function')
 await renderDashboardPresidente()
-
+if(typeof renderGraficoGovernanca==='function')
+await renderGraficoGovernanca()
 if(typeof renderPlanosMunicipais==='function')
 await renderPlanosMunicipais()
 
