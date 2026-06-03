@@ -824,9 +824,15 @@ window.mapaQueimadasRO.remove()
 }
 
 let mapa=L.map('mapaRO').setView([-10.9,-63.3],7)
-
 window.mapaQueimadasRO=mapa
-
+window.camadasControle=
+L.control.layers(
+{},
+{},
+{
+collapsed:false
+}
+).addTo(mapa)
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 {
@@ -842,9 +848,7 @@ if(error){
 console.log(error)
 return
 }
-
 const coordenadas=MUNICIPIOS_RO
-
 ;(data||[]).forEach(m=>{
 
 let coord=coordenadas[m.municipio]
@@ -2117,7 +2121,552 @@ ${semPlano.join(' • ')}
 `
 
 }
+/*=========================================================
+071 QUEIMADAS FUNCTION RENDERGEOJSONRO
+=========================================================*/
+async function renderGeoJSONRO(){
 
+if(!window.mapaQueimadasRO)return
+
+let resp=await fetch('assets/geojson/municipios-ro.geojson')
+
+let geojson=await resp.json()
+
+let {data:heat}=await client
+.from('queimadas_heatmap')
+.select('*')
+
+function normalizar(txt){
+return String(txt||'')
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.replace(/'/g,'')
+.toUpperCase()
+.trim()
+}
+
+function obterMunicipio(nome){
+
+return (heat||[])
+.find(m=>
+normalizar(m.municipio)===
+normalizar(nome)
+)
+
+}
+
+function obterCor(nome){
+
+let m=obterMunicipio(nome)
+
+if(!m)return '#94a3b8'
+
+if(m.classificacao==='CRÍTICO')return '#dc2626'
+
+if(m.classificacao==='ALTO')return '#f97316'
+
+if(m.classificacao==='MODERADO')return '#facc15'
+
+return '#16a34a'
+
+}
+
+window.layerMunicipios=L.geoJSON(geojson,{
+
+style:function(feature){
+
+let nome=
+feature.properties.NM_MUN||
+feature.properties.nome||
+feature.properties.name||
+''
+
+return{
+fillColor:obterCor(nome),
+weight:1,
+opacity:1,
+color:'#ffffff',
+fillOpacity:0.75
+}
+
+},
+
+onEachFeature:function(feature,layer){
+
+let nome=
+feature.properties.NM_MUN||
+feature.properties.nome||
+feature.properties.name||
+''
+
+let m=obterMunicipio(nome)
+
+layer.bindPopup(`
+<b>${nome}</b><br>
+Criticidade: ${m?.criticidade||0}<br>
+Focos: ${m?.focos||0}<br>
+Risco: ${m?.risco||0}<br>
+Classificação: ${m?.classificacao||'BAIXO'}
+`)
+
+}
+
+})
+
+window.layerMunicipios.addTo(
+window.mapaQueimadasRO
+)
+window.camadasControle.addOverlay(
+window.layerMunicipios,
+'Municípios'
+)
+}
+/*=========================================================
+072 QUEIMADAS FUNCTION RENDERUCS
+=========================================================*/
+async function renderUCs(){
+
+if(!window.mapaQueimadasRO)return
+
+try{
+
+let resp=await fetch(
+'assets/geojson/ucs-ro.geojson'
+)
+
+let geojson=await resp.json()
+
+window.layerUC=L.geoJSON(
+geojson,
+{
+style:function(){
+return{
+color:'#006400',
+weight:2,
+fillColor:'#22c55e',
+fillOpacity:0.25
+}
+},
+onEachFeature:function(feature,layer){
+
+let nome=
+feature.properties.nome||
+feature.properties.NOME||
+feature.properties.name||
+'UC'
+
+layer.bindPopup(`
+<b>UNIDADE DE CONSERVAÇÃO</b><br>
+${nome}
+`)
+}
+}
+)
+
+window.layerUC.addTo(
+window.mapaQueimadasRO
+)
+
+window.camadasControle.addOverlay(
+window.layerUC,
+'Unidades de Conservação'
+)
+
+}catch(e){
+
+console.log(
+'UCs não carregadas',
+e
+)
+
+}
+
+}
+/*=========================================================
+072 QUEIMADAS FUNCTION RENDERPAINELUCS
+=========================================================*/
+async function renderPainelUCs(){
+
+let box=document.getElementById('painelUCs')
+if(!box)return
+
+box.innerHTML=`
+<div class="chap-grid">
+
+<div class="chap-card">
+<div class="chap-num">
+27
+</div>
+<div class="chap-label">
+UC ESTADUAIS
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+100%
+</div>
+<div class="chap-label">
+MONITORADAS
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+SEDAM
+</div>
+<div class="chap-label">
+RESPONSÁVEL
+</div>
+</div>
+
+</div>
+`
+}
+/*=========================================================
+073 QUEIMADAS FUNCTION RENDERPAINELFOCOSINPE
+=========================================================*/
+async function renderPainelFocosINPE(){
+
+let box=document.getElementById('painelFocosINPE')
+if(!box)return
+
+let {data}=await client
+.from('queimadas_focos')
+.select('*')
+
+let total=(data||[])
+.reduce((s,i)=>s+Number(i.focos||0),0)
+
+let top10=[...(data||[])]
+.sort((a,b)=>Number(b.focos||0)-Number(a.focos||0))
+.slice(0,10)
+
+box.innerHTML=`
+
+<div class="chap-grid">
+
+<div class="chap-card">
+<div class="chap-num">
+${total}
+</div>
+<div class="chap-label">
+FOCOS DE CALOR
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+${top10.length}
+</div>
+<div class="chap-label">
+MUNICÍPIOS MONITORADOS
+</div>
+</div>
+
+</div>
+
+<div class="card-executivo">
+
+<h2>
+TOP FOCOS DE CALOR
+</h2>
+
+${top10.map(i=>`
+
+<div style="
+display:flex;
+justify-content:space-between;
+padding:6px;
+border-bottom:1px solid #ddd;
+">
+
+<span>${i.municipio}</span>
+
+<b>${i.focos}</b>
+
+</div>
+
+`).join('')}
+
+</div>
+
+`
+
+}
+/*=========================================================
+074 QUEIMADAS FUNCTION RENDERGRAFICOFOCOSHISTORICO
+=========================================================*/
+async function renderGraficoFocosHistorico(){
+
+let canvas=document.getElementById('graficoFocosHistorico')
+if(!canvas)return
+
+let {data,error}=await client
+.from('queimadas_focos')
+.select('*')
+.order('data_referencia',{ascending:true})
+
+if(error){
+console.log(error)
+return
+}
+
+let mapa={}
+
+;(data||[]).forEach(i=>{
+
+let dataRef=new Date(i.data_referencia)
+
+let chave=
+String(dataRef.getMonth()+1)
+.padStart(2,'0')
++'/'+
+dataRef.getFullYear()
+
+if(!mapa[chave]){
+mapa[chave]=0
+}
+
+mapa[chave]+=Number(i.focos||0)
+
+})
+
+let labels=Object.keys(mapa)
+
+let valores=Object.values(mapa)
+
+if(window.chartFocosHistorico){
+window.chartFocosHistorico.destroy()
+}
+
+window.chartFocosHistorico=
+new Chart(canvas,{
+
+type:'line',
+
+data:{
+labels,
+datasets:[
+{
+label:'Focos de Calor',
+data:valores,
+borderWidth:3,
+tension:0.3,
+fill:false
+}
+]
+},
+
+options:{
+responsive:true,
+maintainAspectRatio:false,
+plugins:{
+legend:{
+display:true
+}
+},
+scales:{
+y:{
+beginAtZero:true
+}
+}
+}
+
+})
+
+}
+/*=========================================================
+075 QUEIMADAS FUNCTION RENDERINDICADORESESTRATEGICOS
+=========================================================*/
+async function renderIndicadoresEstrategicos(){
+
+let box=document.getElementById('painelIndicadoresEstrategicos')
+if(!box)return
+
+let {data:focos}=await client
+.from('queimadas_focos')
+.select('*')
+
+let {data:heat}=await client
+.from('queimadas_heatmap')
+.select('*')
+
+let totalFocos=(focos||[])
+.reduce((s,i)=>s+Number(i.focos||0),0)
+
+let mediaCriticidade=0
+
+if((heat||[]).length){
+
+mediaCriticidade=
+Math.round(
+
+(heat||[])
+.reduce(
+(s,i)=>s+Number(i.criticidade||0),
+0
+)
+/(heat||[]).length
+
+)
+
+}
+
+let municipiosCriticos=(heat||[])
+.filter(i=>i.classificacao==='CRÍTICO')
+.length
+
+let municipiosAlto=(heat||[])
+.filter(i=>i.classificacao==='ALTO')
+.length
+
+box.innerHTML=`
+
+<div class="chap-grid">
+
+<div class="chap-card">
+<div class="chap-num">${totalFocos}</div>
+<div class="chap-label">FOCOS ACUMULADOS</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${mediaCriticidade}</div>
+<div class="chap-label">IRIQ MÉDIO</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${municipiosCriticos}</div>
+<div class="chap-label">CRÍTICOS</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${municipiosAlto}</div>
+<div class="chap-label">ALTO RISCO</div>
+</div>
+
+</div>
+
+`
+
+}
+/*=========================================================
+076 QUEIMADAS FUNCTION RENDERSALASITUACAOESTADUAL
+=========================================================*/
+async function renderSalaSituacaoEstadual(){
+
+let box=document.getElementById('painelSalaSituacaoEstadual')
+if(!box)return
+
+let {data:heat}=await client
+.from('queimadas_heatmap')
+.select('*')
+
+let {data:focos}=await client
+.from('queimadas_focos')
+.select('*')
+
+let criticos=(heat||[])
+.filter(i=>i.classificacao==='CRÍTICO')
+.length
+
+let altos=(heat||[])
+.filter(i=>i.classificacao==='ALTO')
+.length
+
+let focosTotal=(focos||[])
+.reduce(
+(s,i)=>s+Number(i.focos||0),
+0
+)
+
+let top10=[...(heat||[])]
+.sort((a,b)=>b.criticidade-a.criticidade)
+.slice(0,10)
+
+box.innerHTML=`
+
+<div class="chap-grid">
+
+<div class="chap-card">
+<div class="chap-num">${focosTotal}</div>
+<div class="chap-label">
+FOCOS ACUMULADOS
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${criticos}</div>
+<div class="chap-label">
+CRÍTICOS
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${altos}</div>
+<div class="chap-label">
+ALTO RISCO
+</div>
+</div>
+
+</div>
+
+<div class="card-executivo">
+
+<h2>
+TOP 10 MUNICÍPIOS
+</h2>
+
+${top10.map(i=>`
+
+<div style="
+display:flex;
+justify-content:space-between;
+padding:6px;
+border-bottom:1px solid #ddd;
+">
+
+<span>
+${i.municipio}
+</span>
+
+<b>
+${i.criticidade}
+</b>
+
+</div>
+
+`).join('')}
+
+</div>
+
+<div class="card-executivo">
+
+<h2>
+ALERTAS AUTOMÁTICOS
+</h2>
+
+<div style="padding:10px">
+
+${criticos>0
+?'🚨 Existem municípios críticos.<br>'
+:'✅ Sem municípios críticos.<br>'}
+
+${focosTotal>500
+?'🔥 Quantidade elevada de focos detectados.<br>'
+:'✅ Focos sob controle.<br>'}
+
+${altos>5
+?'⚠ Diversos municípios em alto risco.<br>'
+:'✅ Risco controlado.<br>'}
+
+</div>
+
+</div>
+
+`
+
+}
 
 /*=========================================================
 999 QUEIMADAS INIT
@@ -2167,5 +2716,22 @@ await renderEvidencias()
 if(typeof renderAuditoriaConcomitante==='function')
 await renderAuditoriaConcomitante()
 if(typeof renderDashboardConselheiro==='function')
-await renderDashboardConselheiro()067
+await renderDashboardConselheiro()
+if(typeof renderGeoJSONRO==='function')
+await renderGeoJSONRO()
+if(typeof renderUCs==='function')
+await renderUCs()
+if(typeof renderPainelUCs==='function')
+await renderPainelUCs()
+if(typeof renderFocosINPE==='function')
+await renderFocosINPE()
+
+if(typeof renderPainelFocosINPE==='function')
+await renderPainelFocosINPE()
+if(typeof renderGraficoFocosHistorico==='function')
+await renderGraficoFocosHistorico()
+if(typeof renderIndicadoresEstrategicos==='function')
+await renderIndicadoresEstrategicos()
+if(typeof renderSalaSituacaoEstadual==='function')
+await renderSalaSituacaoEstadual()
 })
