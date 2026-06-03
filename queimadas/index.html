@@ -4,388 +4,81 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Monitoramento Inteligente de Queimadas</title>
-<!--=========================================================
-001 CSS
-=========================================================-->
 <link rel="stylesheet" href="css/queimadas.css?v=1">
-<!--=========================================================
-002 CONFIG
-=========================================================-->
 <script src="../config.js"></script>
-<!--=========================================================
-003 CHARTJS
-=========================================================-->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!--=========================================================
-004 SUPABASE SDK
-=========================================================-->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!--=========================================================
-005 CLIENT SUPABASE
-=========================================================-->
 <script>
 const client=supabase.createClient(window.S_URL,window.S_KEY)
 </script>
-<!--=========================================================
-006 QUEIMADAS JS
-=========================================================-->
 <script src="../js/queimadas.js?v=1"></script>
 </head>
 <body>
-
-<!--=========================================================
-001 CABECALHO
-=========================================================-->
-<div class="titulo-queimadas">
-🔥 MONITORAMENTO INTELIGENTE DE QUEIMADAS
-</div>
-<!--=========================================================
-011 DASHBOARD EXECUTIVO
-=========================================================-->
+<div class="titulo-queimadas">🔥 MONITORAMENTO INTELIGENTE DE QUEIMADAS</div>
 <div class="chap-grid">
-<div class="chap-card">
-<div class="chap-num" id="kpiMunicipios">0</div>
-<div class="chap-label">MUNICÍPIOS</div>
+<div class="chap-card"><div class="chap-num" id="kpiMunicipios">0</div><div class="chap-label">MUNICÍPIOS</div></div>
+<div class="chap-card"><div class="chap-num" id="kpiFocos">0</div><div class="chap-label">FOCOS DE CALOR</div></div>
+<div class="chap-card"><div class="chap-num" id="kpiRiscos">0</div><div class="chap-label">RISCOS CRÍTICOS</div></div>
+<div class="chap-card"><div class="chap-num" id="kpiExecucao">0%</div><div class="chap-label">EXECUÇÃO</div></div>
 </div>
-<div class="chap-card">
-<div class="chap-num" id="kpiFocos">0</div>
-<div class="chap-label">FOCOS DE CALOR</div>
-</div>
-<div class="chap-card">
-<div class="chap-num" id="kpiRiscos">0</div>
-<div class="chap-label">RISCOS CRÍTICOS</div>
-</div>
-<div class="chap-card">
-<div class="chap-num" id="kpiExecucao">0%</div>
-<div class="chap-label">EXECUÇÃO</div>
-</div>
-</div>
-<!--=========================================================
-012 PLANO UNIFICADO TCE-RO
-=========================================================-->
-<div class="card-executivo">
-<h2>PLANO UNIFICADO TCE-RO</h2>
-<div id="painelPlanoUnificado"></div>
-</div>
-<!--=========================================================
-013 MUNICÍPIOS PRIORITÁRIOS
-=========================================================-->
-<div class="card-executivo">
-<h2>MUNICÍPIOS PRIORITÁRIOS</h2>
-<div id="painelMunicipiosPrioritarios"></div>
-</div>
-<!--=========================================================
-014 HEATMAP EXECUTIVO
-=========================================================-->
-<div class="card-executivo">
-<h2>HEATMAP EXECUTIVO</h2>
-<div id="painelHeatMapExecutivo"></div>
-</div>
-<!--=========================================================
-015 MONITORAMENTO 4D
-=========================================================-->
-<div class="card-executivo">
-<h2>MONITORAMENTO 4D</h2>
-<div id="painelMonitoramento4D"></div>
-</div>
-<!--=========================================================
-016 ODS
-=========================================================-->
-<div class="card-executivo">
-<h2>OBJETIVOS DE DESENVOLVIMENTO SUSTENTÁVEL</h2>
-<div id="painelODS"></div>
-</div>
-<!--=========================================================
-017 IMPACTO
-=========================================================-->
-<div class="card-executivo">
-<h2>IMPACTO AO CIDADÃO</h2>
-<div id="painelImpacto"></div>
-</div>
-<!--=========================================================
-018 GANTT EXECUTIVO
-=========================================================-->
-<div class="card-executivo">
-<h2>CRONOGRAMA EXECUTIVO</h2>
-<div id="painelGanttExecutivo"></div>
-</div>
-<!--=========================================================
-019 MATRIZ DE RISCO AVANÇADA
-=========================================================-->
-<div class="card-executivo">
-<h2>MATRIZ DE RISCO 5X5</h2>
-<div id="painelRiscoAvancado"></div>
-</div>
-<!--=========================================================
-020 IA CHAP
-=========================================================-->
-<div class="card-executivo">
-<h2>IA CHAP</h2>
-<div id="painelIAChap"></div>
-</div>
-<!--=========================================================
-021 DASHBOARD CHAP
-=========================================================-->
-<div class="card-executivo">
-<h2>DASHBOARD CHAP</h2>
-<div id="painelCHAP"></div>
-</div>
-
-<!--=========================================================
-022 CADEIA DE VALOR
-=========================================================-->
-<div class="card-executivo">
-<h2>CADEIA DE VALOR</h2>
-<div id="painelCadeiaValor"></div>
-</div>
-
-<!--=========================================================
-023 TEORIA DA MUDANÇA
-=========================================================-->
-<div class="card-executivo">
-<h2>TEORIA DA MUDANÇA</h2>
-<div id="painelTeoriaMudanca"></div>
-</div>
-
-<!--=========================================================
-024 MATRIZ DE RISCOS OPERACIONAIS
-=========================================================-->
-<div class="card-executivo">
-<h2>RISCOS OPERACIONAIS</h2>
-<div id="painelRiscos"></div>
-</div>
-<!--=========================================================
-025 GANTT DETALHADO
-=========================================================-->
-<div class="card-executivo">
-<h2>GANTT DETALHADO</h2>
-<div id="painelGantt"></div>
-</div>
-<!--=========================================================
-026 RELATÓRIOS EXECUTIVOS
-=========================================================-->
+<div class="card-executivo"><h2>MAPA E STATUS MUNICIPAL</h2><div id="painelMapaMunicipios"></div></div>
+<div class="card-executivo"><h2>MUNICÍPIOS PRIORITÁRIOS</h2><div id="painelMunicipiosPrioritarios"></div></div>
+<div class="card-executivo"><h2>HEATMAP EXECUTIVO</h2><div id="painelHeatMapExecutivo"></div></div>
+<div class="card-executivo"><h2>SALA DE SITUAÇÃO</h2><div id="painelSalaSituacao"></div></div>
+<div class="card-executivo"><h2>STATUS GERAL</h2><div id="painelStatusGeral"></div></div>
+<div class="card-executivo"><h2>PLANO UNIFICADO TCE-RO</h2><div id="painelPlanoUnificado"></div></div>
+<div class="card-executivo"><h2>CADEIA DE VALOR</h2><div id="painelCadeiaValor"></div></div>
+<div class="card-executivo"><h2>TEORIA DA MUDANÇA</h2><div id="painelTeoriaMudanca"></div></div>
+<div class="card-executivo"><h2>OBJETIVOS DE DESENVOLVIMENTO SUSTENTÁVEL</h2><div id="painelODS"></div></div>
+<div class="card-executivo"><h2>IMPACTO AO CIDADÃO</h2><div id="painelImpacto"></div></div>
+<div class="card-executivo"><h2>CRONOGRAMA EXECUTIVO</h2><div id="painelGanttExecutivo"></div></div>
+<div class="card-executivo"><h2>GANTT DETALHADO</h2><div id="painelGantt"></div></div>
+<div class="card-executivo"><h2>MATRIZ DE RISCO 5X5</h2><div id="painelRiscoAvancado"></div></div>
+<div class="card-executivo"><h2>RISCOS OPERACIONAIS</h2><div id="painelRiscos"></div></div>
+<div class="card-executivo"><h2>IA PREVISÃO DE RISCO</h2><div id="painelIARiscos"></div></div>
+<div class="card-executivo"><h2>IA PRIORIZAÇÃO DE MUNICÍPIOS</h2><div id="painelIAPriorizacao"></div></div>
+<div class="card-executivo"><h2>AÇÕES SEDAM</h2><div id="painelAcoesSedam"></div></div>
+<div class="card-executivo"><h2>AÇÕES CORPO DE BOMBEIROS</h2><div id="painelAcoesCBM"></div></div>
+<div class="card-executivo"><h2>AÇÕES TCE-RO</h2><div id="painelAcoesTCERO"></div></div>
+<div class="card-executivo"><h2>EXECUÇÃO ORÇAMENTÁRIA</h2><div id="painelOrcamento"></div></div>
+<div class="card-executivo"><h2>DASHBOARD CHAP</h2><div id="painelCHAP"></div></div>
+<div class="card-executivo"><h2>IA CHAP</h2><div id="painelIAChap"></div></div>
+<div class="card-executivo"><h2>MONITORAMENTO 4D</h2><div id="painelMonitoramento4D"></div></div>
+<div class="card-executivo"><h2>EVIDÊNCIAS</h2><div id="painelEvidencias"></div></div>
+<div class="card-executivo"><h2>AUDITORIA CONCOMITANTE</h2><div id="painelAuditoria"></div></div>
+<div class="card-executivo"><h2>GOVERNANÇA</h2><div id="painelGovernanca"></div></div>
+<div class="card-executivo"><h2>CEPCIF</h2><div id="painelCEPCIF"></div></div>
+<div class="card-executivo"><h2>OVR / POTIF</h2><div id="painelOVRPOTIF"></div></div>
+<div class="card-executivo"><h2>FOCOS DE CALOR</h2><div id="painelFocosCalor"></div></div>
+<div class="card-executivo"><h2>FOCOS DE CALOR</h2><canvas id="graficoFocosCalor"></canvas></div>
+<div class="card-executivo"><h2>EVOLUÇÃO MENSAL</h2><canvas id="graficoEvolucaoMensal"></canvas></div>
+<div class="card-executivo"><h2>DASHBOARD PRESIDENTE</h2><div id="painelPresidente"></div></div>
+<div class="card-executivo"><h2>DASHBOARD CONSELHEIRO</h2><div id="painelConselheiro"></div></div>
+<div class="card-executivo"><h2>IA RELATÓRIO AUTOMÁTICO</h2><div id="painelIARelatorio"></div></div>
+<div class="card-executivo"><h2>IA SUGESTÕES</h2><div id="painelIASugestoes"></div></div>
 <div class="card-executivo">
 <h2>RELATÓRIOS EXECUTIVOS</h2>
 <div id="painelRelatorios"></div>
-<button onclick="gerarPDFExecutivoTCERO()" class="btn-pdf">
-📄 RELATÓRIO EXECUTIVO
-</button>
-<button onclick="gerarWordExecutivoTCERO()" class="btn-pdf btn-word">
-📝 RELATÓRIO WORD
-</button>
+<button onclick="gerarPDFExecutivoTCERO()" class="btn-pdf">📄 RELATÓRIO EXECUTIVO</button>
+<button onclick="gerarWordExecutivoTCERO()" class="btn-pdf btn-word">📝 RELATÓRIO WORD</button>
+<button onclick="pdfCompletoQueimadas()" class="btn-pdf">📄 PDF COMPLETO</button>
 </div>
-<!--=========================================================
-027 EVIDÊNCIAS
-=========================================================-->
-<div class="card-executivo">
-<h2>EVIDÊNCIAS</h2>
-<div id="painelEvidencias"></div>
-</div>
-<!--=========================================================
-028 AUDITORIA CONCOMITANTE
-=========================================================-->
-<div class="card-executivo">
-<h2>AUDITORIA CONCOMITANTE</h2>
-<div id="painelAuditoria"></div>
-</div>
-<!--=========================================================
-029 GOVERNANÇA
-=========================================================-->
-<div class="card-executivo">
-<h2>GOVERNANÇA</h2>
-<div id="painelGovernanca"></div>
-</div>
-<!--=========================================================
-030 EXECUÇÃO ORÇAMENTÁRIA
-=========================================================-->
-<div class="card-executivo">
-<h2>EXECUÇÃO ORÇAMENTÁRIA</h2>
-<div id="painelOrcamento"></div>
-</div>
-<!--=========================================================
-031 FOCOS DE CALOR
-=========================================================-->
-<div class="card-executivo">
-<h2>FOCOS DE CALOR</h2>
-<div id="painelFocosCalor"></div>
-</div>
-<!--=========================================================
-032 CEPCIF
-=========================================================-->
-<div class="card-executivo">
-<h2>CEPCIF</h2>
-<div id="painelCEPCIF"></div>
-</div>
-<!--=========================================================
-033 OVR/POTIF
-=========================================================-->
-<div class="card-executivo">
-<h2>OVR / POTIF</h2>
-<div id="painelOVRPOTIF"></div>
-</div>
-<!--=========================================================
-034 EVIDÊNCIAS
-=========================================================-->
-<div class="card-executivo">
-<h2>EVIDÊNCIAS</h2>
-<div id="painelEvidencias"></div>
-</div>
-<!--=========================================================
-035 AUDITORIA CONCOMITANTE
-=========================================================-->
-<div class="card-executivo">
-<h2>AUDITORIA CONCOMITANTE</h2>
-<div id="painelAuditoria"></div>
-</div>
-<!--=========================================================
-036 MAPA E STATUS MUNICIPAL
-=========================================================-->
-<div class="card-executivo">
-<h2>MAPA E STATUS MUNICIPAL</h2>
-<div id="painelMapaMunicipios"></div>
-</div>
-<!--=========================================================
-037 AÇÕES SEDAM
-=========================================================-->
-<div class="card-executivo">
-<h2>AÇÕES SEDAM</h2>
-<div id="painelAcoesSedam"></div>
-</div>
-<!--=========================================================
-038 AÇÕES CORPO DE BOMBEIROS
-=========================================================-->
-<div class="card-executivo">
-<h2>AÇÕES CORPO DE BOMBEIROS</h2>
-<div id="painelAcoesCBM"></div>
-</div>
-<!--=========================================================
-039 AÇÕES TCE-RO
-=========================================================-->
-<div class="card-executivo">
-<h2>AÇÕES TCE-RO</h2>
-<div id="painelAcoesTCERO"></div>
-</div>
-<!--=========================================================
-040 STATUS GERAL
-=========================================================-->
-<div class="card-executivo">
-<h2>STATUS GERAL</h2>
-<div id="painelStatusGeral"></div>
-</div>
-<!--=========================================================
-041 GRÁFICO FOCOS DE CALOR
-=========================================================-->
-<div class="card-executivo">
-<h2>FOCOS DE CALOR</h2>
-<canvas id="graficoFocosCalor"></canvas>
-</div>
-<!--=========================================================
-042 EVOLUÇÃO MENSAL
-=========================================================-->
-<div class="card-executivo">
-<h2>EVOLUÇÃO MENSAL</h2>
-<canvas id="graficoEvolucaoMensal"></canvas>
-</div>
-<!--=========================================================
-043 DASHBOARD PRESIDENTE
-=========================================================-->
-<div class="card-executivo">
-<h2>DASHBOARD PRESIDENTE</h2>
-<div id="painelPresidente"></div>
-</div>
-<!--=========================================================
-044 DASHBOARD CONSELHEIRO
-=========================================================-->
-<div class="card-executivo">
-<h2>DASHBOARD CONSELHEIRO</h2>
-<div id="painelConselheiro"></div>
-</div>
-<!--=========================================================
-045 SALA DE SITUAÇÃO
-=========================================================-->
-<div class="card-executivo">
-<h2>SALA DE SITUAÇÃO</h2>
-<div id="painelSalaSituacao"></div>
-</div>
-<!--=========================================================
-046 IA PREVISÃO DE RISCO
-=========================================================-->
-<div class="card-executivo">
-<h2>IA PREVISÃO DE RISCO</h2>
-<div id="painelIARiscos"></div>
-</div>
-<!--=========================================================
-047 IA PRIORIZAÇÃO
-=========================================================-->
-<div class="card-executivo">
-<h2>IA PRIORIZAÇÃO DE MUNICÍPIOS</h2>
-<div id="painelIAPriorizacao"></div>
-</div>
-<!--=========================================================
-048 IA RELATÓRIO
-=========================================================-->
-<div class="card-executivo">
-<h2>IA RELATÓRIO AUTOMÁTICO</h2>
-<div id="painelIARelatorio"></div>
-</div>
-<!--=========================================================
-049 IA SUGESTÕES
-=========================================================-->
-<div class="card-executivo">
-<h2>IA SUGESTÕES</h2>
-<div id="painelIASugestoes"></div>
-</div>
-<!--=========================================================
-050 PDF COMPLETO
-=========================================================-->
-<div class="card-executivo">
-<h2>PDF COMPLETO</h2>
-<button onclick="pdfCompletoQueimadas()" class="btn-pdf">
-📄 PDF COMPLETO
-</button>
-</div>
-
 <script>
 document.addEventListener('DOMContentLoaded',async()=>{
-
-if(typeof renderCadeiaValor==='function'){
-await renderCadeiaValor()
-}
-
-if(typeof renderGantt==='function'){
-await renderGantt()
-}
-
-if(typeof renderMatrizRisco5x5==='function'){
-await renderMatrizRisco5x5()
-}
-
-if(typeof renderTeoriaMudanca==='function'){
-await renderTeoriaMudanca()
-}
-
-if(typeof renderDashboardCHAP==='function'){
-await renderDashboardCHAP()
-}
-
-if(typeof renderODS==='function'){
-await renderODS()
-}
-
-if(typeof calcularImpacto==='function'){
-await calcularImpacto()
-}
-
-if(typeof renderHeatMap==='function'){
-await renderHeatMap()
-}
-
-if(typeof renderMonitoramento4D==='function'){
-await renderMonitoramento4D()
-}
-
+if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
+if(typeof renderPlanoUnificado==='function')await renderPlanoUnificado()
+if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
+if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
+if(typeof renderMonitoramento4D==='function')await renderMonitoramento4D()
+if(typeof renderDashboardCHAP==='function')await renderDashboardCHAP()
+if(typeof renderCadeiaValor==='function')await renderCadeiaValor()
+if(typeof renderTeoriaMudanca==='function')await renderTeoriaMudanca()
+if(typeof renderMatrizRisco5x5==='function')await renderMatrizRisco5x5()
+if(typeof renderGantt==='function')await renderGantt()
+if(typeof renderODS==='function')await renderODS()
+if(typeof calcularImpacto==='function')await calcularImpacto()
+if(typeof iaChapAnalisar==='function')await iaChapAnalisar()
 })
 </script>
-
 </body>
 </html>
