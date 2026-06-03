@@ -881,6 +881,10 @@ let {data:municipios}=await client
 .from('queimadas_municipios')
 .select('*')
 
+let {data:impacto}=await client
+.from('queimadas_impacto')
+.select('*')
+
 let criticos=(heat||[])
 .filter(i=>i.classificacao==='CRÍTICO')
 .length
@@ -893,6 +897,7 @@ let focos=(heat||[])
 .reduce((s,i)=>s+Number(i.focos||0),0)
 
 let populacaoExposta=0
+let areaRisco=0
 
 ;(heat||[]).forEach(h=>{
 
@@ -901,43 +906,124 @@ let m=(municipios||[])
 
 if(!m)return
 
-if(h.classificacao==='CRÍTICO'){
+if(
+h.classificacao==='CRÍTICO'||
+h.classificacao==='ALTO'
+){
+
 populacaoExposta+=Number(m.populacao||0)
-}else
-if(h.classificacao==='ALTO'){
-populacaoExposta+=Number(m.populacao||0)*0.75
+areaRisco+=Number(m.area_km2||0)
+
 }
 
 })
 
+let municipiosComPlano=22
+let municipiosSemPlano=17
+
 let top10=(heat||[])
 .sort((a,b)=>b.criticidade-a.criticidade)
 .slice(0,10)
+
+let iriq=0
+
+if((heat||[]).length){
+
+iriq=
+Math.round(
+
+(heat||[])
+.reduce(
+(s,i)=>s+Number(i.criticidade||0),
+0
+)
+/(heat||[]).length
+
+)
+
+}
+
+let semaforo='🟢 BAIXO'
+
+if(iriq>=80){
+semaforo='🔴 CRÍTICO'
+}else
+if(iriq>=50){
+semaforo='🟡 ATENÇÃO'
+}
 
 box.innerHTML=`
 
 <div class="chap-grid">
 
 <div class="chap-card">
-<div class="chap-num">${criticos}</div>
-<div class="chap-label">CRÍTICOS</div>
+<div class="chap-num">${iriq}</div>
+<div class="chap-label">
+IRIQ ESTADUAL
+</div>
 </div>
 
 <div class="chap-card">
-<div class="chap-num">${altos}</div>
-<div class="chap-label">ALTO RISCO</div>
+<div class="chap-num">
+${criticos}
+</div>
+<div class="chap-label">
+CRÍTICOS
+</div>
 </div>
 
 <div class="chap-card">
-<div class="chap-num">${focos}</div>
-<div class="chap-label">FOCOS</div>
+<div class="chap-num">
+${altos}
+</div>
+<div class="chap-label">
+ALTO RISCO
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+${focos}
+</div>
+<div class="chap-label">
+FOCOS DE CALOR
+</div>
 </div>
 
 <div class="chap-card">
 <div class="chap-num">
 ${Math.round(populacaoExposta).toLocaleString('pt-BR')}
 </div>
-<div class="chap-label">POPULAÇÃO EXPOSTA</div>
+<div class="chap-label">
+POPULAÇÃO EXPOSTA
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+${Math.round(areaRisco).toLocaleString('pt-BR')}
+</div>
+<div class="chap-label">
+KM² SOB RISCO
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+${municipiosComPlano}
+</div>
+<div class="chap-label">
+COM PLANO
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+${municipiosSemPlano}
+</div>
+<div class="chap-label">
+SEM PLANO
+</div>
 </div>
 
 </div>
@@ -945,7 +1031,24 @@ ${Math.round(populacaoExposta).toLocaleString('pt-BR')}
 <div class="card-executivo">
 
 <h2>
-TOP 10 MUNICÍPIOS PRIORITÁRIOS
+SEMAFORIZAÇÃO ESTADUAL
+</h2>
+
+<div style="
+font-size:28px;
+font-weight:700;
+text-align:center;
+padding:20px;
+">
+${semaforo}
+</div>
+
+</div>
+
+<div class="card-executivo">
+
+<h2>
+TOP 10 MUNICÍPIOS CRÍTICOS
 </h2>
 
 ${top10.map(i=>`
@@ -953,7 +1056,7 @@ ${top10.map(i=>`
 <div style="
 display:flex;
 justify-content:space-between;
-padding:6px;
+padding:8px;
 border-bottom:1px solid #ddd;
 ">
 
@@ -972,6 +1075,7 @@ ${i.criticidade}
 </div>
 
 `
+
 }
 
 /*=========================================================
