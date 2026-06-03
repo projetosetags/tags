@@ -414,9 +414,10 @@ POPULAÇÃO EXPOSTA
 </div>
 
 <div class="chap-card">
-<div class="chap-num">${area}</div>
-<div class="chap-label">
-ÁREA SOB RISCO
+<div class="chap-num">${formatarNumero(area)} m²</div>
+<div class="chap-label">ÁREA SOB RISCO</div>
+<div style="font-size:11px;color:#64748b">
+${(area/1000000000).toFixed(2)} bilhões de m²
 </div>
 </div>
 
@@ -436,49 +437,52 @@ IRIQ ESTADUAL
 016 QUEIMADAS FUNCTION RENDERMUNICIPIOSPRIORITARIOS
 =========================================================*/
 async function renderMunicipiosPrioritarios(){
-
 let box=document.getElementById('painelMunicipiosPrioritarios')
 if(!box)return
-
 let {data,error}=await client
 .from('queimadas_heatmap')
 .select('*')
-.order('criticidade',{ascending:false})
-.limit(10)
-
 if(error){
 console.log(error)
 return
 }
-
+let lista=[...(data||[])]
+.sort((a,b)=>{
+let c1=Number(b.criticidade||0)-Number(a.criticidade||0)
+if(c1!==0)return c1
+let c2=Number(b.focos||0)-Number(a.focos||0)
+if(c2!==0)return c2
+return Number(b.risco||0)-Number(a.risco||0)
+})
+.slice(0,10)
 let html='<div class="heatmap-grid">'
-
-;(data||[]).forEach(m=>{
-
+lista.forEach((m,idx)=>{
 let classe='heat-verde'
-
-if(Number(m.criticidade||0)>=100){
+if((m.classificacao||'').toUpperCase().includes('CRÍTICO')){
 classe='heat-vermelho'
-}else if(Number(m.criticidade||0)>=80){
+}else if((m.classificacao||'').toUpperCase().includes('ALTO')){
 classe='heat-laranja'
-}else if(Number(m.criticidade||0)>=50){
+}else if((m.classificacao||'').toUpperCase().includes('MODERADO')){
 classe='heat-amarelo'
 }
-
 html+=`
 <div class="${classe}">
-<b>${m.municipio||'-'}</b><br>
-Classificação: ${m.classificacao||'-'}<br>
-Criticidade: ${m.criticidade||0}<br>
-Focos: ${m.focos||0}<br>
-Risco: ${m.risco||0}
+<div class="heat-ranking">
+${idx+1}
+</div>
+<div class="heat-municipio">
+${m.municipio||'-'}
+</div>
+<div class="heat-info">
+<b>Classificação:</b> ${m.classificacao||'-'}<br>
+<b>Criticidade:</b> ${formatarNumero(m.criticidade||0)}<br>
+<b>Focos:</b> ${formatarNumero(m.focos||0)}<br>
+<b>IRIQ:</b> ${formatarNumero(m.risco||0)}
+</div>
 </div>`
 })
-
 html+='</div>'
-
 box.innerHTML=html
-
 }
 /*=========================================================
 017 QUEIMADAS FUNCTION RENDERHEATMAPEXECUTIVO
@@ -665,7 +669,36 @@ let iriq=await calcularIRIQ()
 box.innerHTML=`
 <div class="impacto-box">
 <div class="impacto-score">${iriq}</div>
-<div class="impacto-label">ÍNDICE DE RISCO INTEGRADO DE QUEIMADAS</div>
+<div class="impacto-label">
+ÍNDICE DE RISCO INTEGRADO DE QUEIMADAS
+</div>
+<div style="margin-top:10px;font-size:12px;line-height:18px;color:#475569">
+O IRIQ considera focos de calor, histórico de queimadas, cobertura vegetal, uso do solo, clima e vulnerabilidade ambiental.
+</div>
+<div style="margin-top:8px;font-size:11px">
+🟢 0-10 Baixo<br>
+🟡 10-20 Moderado<br>
+🟠 20-30 Alto<br>
+🔴 Acima de 30 Crítico
+</div>
+</div>`
+}
+/*=========================================================
+020B QUEIMADAS FUNCTION RENDERLEGENDAHEATMAP
+=========================================================*/
+function renderLegendaHeatmap(){
+let box=document.getElementById('painelLegendaHeatmap')
+if(!box)return
+box.innerHTML=`
+<div class="cardExecutivo">
+<h2>LEGENDA DO HEATMAP ESTADUAL</h2>
+<div class="heat-vermelho">CRÍTICO (30-50)</div>
+<div class="heat-laranja">ALTO (20-30)</div>
+<div class="heat-amarelo">MODERADO (10-20)</div>
+<div class="heat-verde">BAIXO (0-10)</div>
+<p style="margin-top:10px">
+Classificação baseada no IRIQ Municipal.
+</p>
 </div>`
 }
 /*=========================================================
