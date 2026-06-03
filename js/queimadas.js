@@ -955,14 +955,109 @@ maintainAspectRatio:false
 043 QUEIMADAS FUNCTION RENDERDASHBOARDPRESIDENTE
 =========================================================*/
 async function renderDashboardPresidente(){
+
 let box=document.getElementById('painelPresidente')
 if(!box)return
+
+let {data:heat}=await client
+.from('queimadas_heatmap')
+.select('*')
+
+let {data:municipios}=await client
+.from('queimadas_municipios')
+.select('*')
+
+let criticos=(heat||[])
+.filter(i=>i.classificacao==='CRÍTICO')
+.length
+
+let altos=(heat||[])
+.filter(i=>i.classificacao==='ALTO')
+.length
+
+let focos=(heat||[])
+.reduce((s,i)=>s+Number(i.focos||0),0)
+
+let populacaoExposta=0
+
+;(heat||[]).forEach(h=>{
+
+let m=(municipios||[])
+.find(x=>x.municipio===h.municipio)
+
+if(!m)return
+
+if(h.classificacao==='CRÍTICO'){
+populacaoExposta+=Number(m.populacao||0)
+}else
+if(h.classificacao==='ALTO'){
+populacaoExposta+=Number(m.populacao||0)*0.75
+}
+
+})
+
+let top10=(heat||[])
+.sort((a,b)=>b.criticidade-a.criticidade)
+.slice(0,10)
+
 box.innerHTML=`
+
 <div class="chap-grid">
-<div class="chap-card"><div class="chap-num">SEDAM</div><div class="chap-label">MONITORADA</div></div>
-<div class="chap-card"><div class="chap-num">CBMRO</div><div class="chap-label">MONITORADO</div></div>
-<div class="chap-card"><div class="chap-num">TCE-RO</div><div class="chap-label">SUPERVISÃO</div></div>
-</div>`
+
+<div class="chap-card">
+<div class="chap-num">${criticos}</div>
+<div class="chap-label">CRÍTICOS</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${altos}</div>
+<div class="chap-label">ALTO RISCO</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${focos}</div>
+<div class="chap-label">FOCOS</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+${Math.round(populacaoExposta).toLocaleString('pt-BR')}
+</div>
+<div class="chap-label">POPULAÇÃO EXPOSTA</div>
+</div>
+
+</div>
+
+<div class="card-executivo">
+
+<h2>
+TOP 10 MUNICÍPIOS PRIORITÁRIOS
+</h2>
+
+${top10.map(i=>`
+
+<div style="
+display:flex;
+justify-content:space-between;
+padding:6px;
+border-bottom:1px solid #ddd;
+">
+
+<span>
+${i.municipio}
+</span>
+
+<b>
+${i.criticidade}
+</b>
+
+</div>
+
+`).join('')}
+
+</div>
+
+`
 }
 
 /*=========================================================
@@ -1710,4 +1805,6 @@ await renderRankingIMC()
 await renderTopMunicipios()
 if(typeof renderSalaSituacao==='function')
 await renderSalaSituacao()
+if(typeof renderDashboardPresidente==='function')
+await renderDashboardPresidente()
 })
