@@ -29,8 +29,8 @@ window.S_KEY
 <button onclick="mostrarAbaQueimadas('monitoramento')">🔥 MONITORAMENTO</button>
 <button onclick="mostrarAbaQueimadas('analise')">🤖 IA E RISCOS</button>
 <button onclick="mostrarAbaQueimadas('relatorios')">📄 RELATÓRIOS</button>
+<button onclick="mostrarAbaQueimadas('situacao')">🚨 SALA DE SITUAÇÃO</button>
 </div>
-
 <!--=========================================================
 010 ABA EXECUTIVO
 =========================================================-->
@@ -116,6 +116,36 @@ window.S_KEY
 <button onclick="pdfCompletoQueimadas()" class="btn-pdf">📄 PDF COMPLETO</button>
 </div>
 </div>
+ <!--=========================================================
+060 ABA SALA DE SITUAÇÃO
+=========================================================-->
+<div id="abaSituacao" class="abaQueimadas hidden">
+
+<div class="card-executivo">
+<h2>TOP 10 MUNICÍPIOS CRÍTICOS</h2>
+<div id="painelTopCriticos"></div>
+</div>
+
+<div class="card-executivo">
+<h2>TOP 10 MAIORES RISCOS</h2>
+<div id="painelTopRiscos"></div>
+</div>
+
+<div class="card-executivo">
+<h2>TOP 10 SEM EVIDÊNCIAS</h2>
+<div id="painelSemEvidencias"></div>
+</div>
+
+<div class="card-executivo">
+<h2>TOP 10 IA-CHAP</h2>
+<div id="painelTopIAChap"></div>
+</div>
+
+<div class="card-executivo">
+<h2>ALERTAS IMEDIATOS</h2>
+<div id="painelAlertas"></div>
+</div>
+</div> 
   
 <script>
 document.addEventListener('DOMContentLoaded',async()=>{
