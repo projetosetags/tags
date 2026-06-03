@@ -979,37 +979,23 @@ box.innerHTML=`
 }
 
 /*=========================================================
-045 QUEIMADAS FUNCTION RENDERSALASITUACAO
+056 SALA DE SITUACAO
 =========================================================*/
 async function renderSalaSituacao(){
-
 let box=document.getElementById('painelSalaSituacao')
 if(!box)return
-
-let {data}=await client
-.from('queimadas_municipios')
+let {data,error}=await client
+.from('queimadas_sala_situacao')
 .select('*')
-.order('focos_calor',{ascending:false})
-.limit(3)
-
-let html=''
-
-data.forEach(i=>{
-
-html+=`
-<div class="alertaCritico">
-🚨 ${i.municipio}
-<br>
-Focos: ${i.focos_calor}
-<br>
-Risco: ${i.risco}
+.order('criticidade',{ascending:false})
+if(error)return
+box.innerHTML=(data||[]).map(i=>`
+<div class="chap-card">
+<div class="chap-num">${i.criticidade}</div>
+<div class="chap-label">${i.municipio}</div>
+<div style="font-size:11px;font-weight:700">${i.classificacao}</div>
 </div>
-`
-
-})
-
-box.innerHTML=html
-
+`).join('')
 }
 
 /*=========================================================
@@ -1716,11 +1702,12 @@ if(typeof renderTopCriticos==='function')await renderTopCriticos()
 if(typeof renderTopRiscos==='function')await renderTopRiscos()
 if(typeof renderTopIAChap==='function')await renderTopIAChap()
 if(typeof renderAlertas==='function')await renderAlertas()
-await renderSalaSituacao()
 await renderStatusGeral()
 await renderTopMunicipios()
 await renderTopRiscos()
 await calcularIMC()
 await renderRankingIMC()
 await renderTopMunicipios()
+if(typeof renderSalaSituacao==='function')
+await renderSalaSituacao()
 })
