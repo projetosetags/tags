@@ -1329,24 +1329,116 @@ box.innerHTML=(data||[]).map(i=>`
 }
 
 
+/*=========================================================
+036 QUEIMADAS FUNCTION RENDERTOPMUNICIPIOS
+=========================================================*/
 async function renderTopMunicipios(){
 
-let box=document.getElementById('painelTopMunicipios')
+let box=document.getElementById(
+'painelTopMunicipios'
+)
+
 if(!box)return
 
 let {data}=await client
-.from('queimadas_municipios')
+.from('queimadas_indice_municipal')
 .select('*')
-.order('focos_calor',{ascending:false})
+.order('indice_final',{ascending:false})
 .limit(10)
 
-box.innerHTML=data.map(i=>`
-<div>
-${i.municipio}
+box.innerHTML=(data||[])
+.map(i=>`
+<div class="linha-ranking">
+<b>${i.municipio}</b>
 -
-${i.focos_calor} focos
+IMC ${Number(i.indice_final||0).toFixed(1)}
+-
+${i.classificacao}
 </div>
-`).join('')
+`)
+.join('')
+}
+/*=========================================================
+034 QUEIMADAS FUNCTION CALCULARIMC
+=========================================================*/
+async function calcularIMC(){
+
+let {data:municipios}=await client
+.from('queimadas_municipios')
+.select('*')
+
+let {data:riscos}=await client
+.from('queimadas_riscos')
+.select('*')
+
+let {data:chap}=await client
+.from('queimadas_chap')
+.select('*')
+
+let {data:impactos}=await client
+.from('queimadas_impacto')
+.select('*')
+
+for(let m of (municipios||[])){
+
+let focos=Number(m.focos_calor||0)
+
+let riscoMunicipio=(riscos||[])
+.filter(r=>r.municipio===m.municipio)
+
+let riscoScore=Math.max(
+...(riscoMunicipio.map(r=>
+Number(r.nivel_risco||0)
+)),
+0
+)
+
+let chapMunicipio=(chap||[])
+.find(c=>c.municipio===m.municipio)
+
+let chapScore=
+Number(chapMunicipio?.resultado||0)
+
+let impactoMunicipio=(impactos||[])
+.find(i=>i.municipio===m.municipio)
+
+let impactoScore=
+Number(impactoMunicipio?.indice_impacto||0)
+
+let indice=
+
+(focos*0.40)+
+(riscoScore*0.20)+
+(chapScore*0.25)+
+(impactoScore*0.15)
+
+let classe='BAIXO'
+
+if(indice>=80){
+classe='CRÍTICO'
+}else
+if(indice>=60){
+classe='ALTO'
+}else
+if(indice>=40){
+classe='MODERADO'
+}
+
+await client
+.from('queimadas_indice_municipal')
+.upsert({
+municipio:m.municipio,
+focos_score:focos,
+risco_score:riscoScore,
+chap_score:chapScore,
+impacto_score:impactoScore,
+indice_final:indice,
+classificacao:classe
+},{
+onConflict:'municipio'
+})
+
+}
 
 }
 
@@ -1377,4 +1469,6 @@ await renderSalaSituacao()
 await renderStatusGeral()
 await renderTopMunicipios()
 await renderTopRiscos()
+await calcularIMC()
+await renderTopMunicipios()
 })
