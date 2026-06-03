@@ -1553,7 +1553,29 @@ ${i.classificacao||'BAIXO'}
 .join('')
 
 }
+/*=========================================================
+051 QUEIMADAS FUNCTION CALCULARPOPULACAOEXPOSTA
+=========================================================*/
+async function calcularPopulacaoExposta(){
 
+let {data,error}=await client
+.from('queimadas_municipios')
+.select('*')
+
+if(error){
+console.log(error)
+return 0
+}
+
+return (data||[])
+.filter(i=>
+String(i.risco||'').toUpperCase()==='CRÍTICO'
+)
+.reduce((s,i)=>
+s+Number(i.populacao||0)
+,0)
+
+}
 
 /*=========================================================
 999 QUEIMADAS INIT
