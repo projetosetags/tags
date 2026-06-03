@@ -843,24 +843,7 @@ console.log(error)
 return
 }
 
-const coordenadas={
-
-'Porto Velho':[-8.7608,-63.8999],
-'Nova Mamoré':[-10.4061,-65.3295],
-'Candeias do Jamari':[-8.7856,-63.7000],
-'Buritis':[-10.2086,-63.8320],
-'Guajará-Mirim':[-10.7889,-65.3291],
-'Cujubim':[-9.3606,-62.5846],
-'Ariquemes':[-9.9133,-63.0408],
-'Costa Marques':[-12.4367,-64.2283],
-'São Francisco do Guaporé':[-12.0524,-63.5676],
-'Machadinho D\'Oeste':[-9.4438,-61.9811],
-'Ji-Paraná':[-10.8777,-61.9322],
-'Cacoal':[-11.4386,-61.4429],
-'Jaru':[-10.4388,-62.4660],
-'Vilhena':[-12.7406,-60.1458]
-
-}
+const coordenadas=MUNICIPIOS_RO
 
 ;(data||[]).forEach(m=>{
 
