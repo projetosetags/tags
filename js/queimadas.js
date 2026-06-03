@@ -158,93 +158,7 @@ html+=`
 })
 box.innerHTML=html
 }
-/*=========================================================
-005 QUEIMADAS FUNCTION RENDERDASHBOARDCHAP
-=========================================================*/
-async function renderDashboardCHAP(){
-let box=document.getElementById('painelCHAP')
-if(!box)return
-let {data,error}=await client
-.from('queimadas_cadeia_valor')
-.select('*')
-if(error){
-console.log(error)
-return
-}
-let conhecimento=0
-let habilidade=0
-let atitude=0
-let proposito=0
-data.forEach(i=>{
-if(i.insumo)conhecimento+=25
-if(i.atividade)habilidade+=25
-if(i.produto)atitude+=25
-if(i.impacto)proposito+=25
-})
-let total=Math.max(data.length,1)
-conhecimento=Math.round(conhecimento/total)
-habilidade=Math.round(habilidade/total)
-atitude=Math.round(atitude/total)
-proposito=Math.round(proposito/total)
-let score=Math.round((conhecimento+habilidade+atitude+proposito)/4)
-box.innerHTML=`
-<div class="chap-grid">
-<div class="chap-card">
-<div class="chap-num">${score}%</div>
-<div class="chap-label">CHAP MÉDIO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${conhecimento}%</div>
-<div class="chap-label">CONHECIMENTO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${habilidade}%</div>
-<div class="chap-label">HABILIDADE</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${atitude}%</div>
-<div class="chap-label">ATITUDE</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${proposito}%</div>
-<div class="chap-label">PROPÓSITO</div>
-</div>
-</div>
-<canvas id="graficoCHAP" height="120"></canvas>`
-let ctx=document.getElementById('graficoCHAP')
-if(!ctx)return
-new Chart(ctx,{
-type:'radar',
-data:{
-labels:['Conhecimento','Habilidade','Atitude','Propósito'],
-datasets:[{
-label:'Score CHAP',
-data:[
-conhecimento,
-habilidade,
-atitude,
-proposito
-],
-fill:true
-}]
-},
-options:{
-responsive:true,
-maintainAspectRatio:false,
-plugins:{
-legend:{
-display:true
-}
-},
-scales:{
-r:{
-beginAtZero:true,
-max:100
-}
-}
-}
-})
-}
+
 /*=========================================================
 006 QUEIMADAS FUNCTION ANALISARCHAPIA
 =========================================================*/
@@ -1393,20 +1307,13 @@ if(!box)return
 
 let {data}=await client
 .from('queimadas_ia_chap')
-.select(`
-prioridade,
-risco_previsto,
-acao_recomendada,
-queimadas_chap(
-municipio
-)
-`)
+.select('*')
 .limit(10)
 
 box.innerHTML=(data||[])
 .map(i=>`
 <div class="linha-queimadas">
-🤖 ${i.queimadas_chap?.municipio||'-'}
+🤖 ID CHAP ${i.chap_id||'-'}
  | ${i.risco_previsto||'-'}
  | ${i.prioridade||'-'}
 </div>
@@ -1574,26 +1481,7 @@ box.innerHTML=lista.map(i=>`
 </div>
 `).join('')
 }
-/*=========================================================
-045 QUEIMADAS FUNCTION CALCULARIRIQ
-=========================================================*/
-async function calcularIRIQ(){
 
-let {data}=await client
-.from('queimadas_indice_municipal')
-.select('*')
-
-if(!data?.length)return 0
-
-let valor=
-data.reduce(
-(s,i)=>s+Number(i.indice_final||0),
-0
-)/data.length
-
-return Number(valor.toFixed(2))
-
-}
 /*=========================================================
 046 QUEIMADAS FUNCTION RENDERPRESIDENTE
 =========================================================*/
@@ -1648,29 +1536,7 @@ ${i.classificacao||'BAIXO'}
 .join('')
 
 }
-/*=========================================================
-051 QUEIMADAS FUNCTION CALCULARPOPULACAOEXPOSTA
-=========================================================*/
-async function calcularPopulacaoExposta(){
 
-let {data,error}=await client
-.from('queimadas_municipios')
-.select('*')
-
-if(error){
-console.log(error)
-return 0
-}
-
-return (data||[])
-.filter(i=>
-String(i.risco||'').toUpperCase()==='CRÍTICO'
-)
-.reduce((s,i)=>
-s+Number(i.populacao||0)
-,0)
-
-}
 /*=========================================================
 057 CALCULAR POPULAÇÃO EXPOSTA
 =========================================================*/
@@ -1889,14 +1755,27 @@ if(typeof renderTopRiscos==='function')await renderTopRiscos()
 if(typeof renderTopIAChap==='function')await renderTopIAChap()
 if(typeof renderAlertas==='function')await renderAlertas()
 await renderStatusGeral()
-await renderTopMunicipios()
-await renderTopRiscos()
 await calcularIMC()
+if(typeof renderRankingIMC==='function')
 await renderRankingIMC()
-await renderTopMunicipios()
+await renderTopRiscos()
 if(typeof renderSalaSituacao==='function')
 await renderSalaSituacao()
 if(typeof renderDashboardPresidente==='function')
 await renderDashboardPresidente()
+if(typeof renderPlanosMunicipais==='function')
 await renderPlanosMunicipais()
+await renderMapaMunicipios()
+await renderFocosCalor()
+await renderGraficoFocosCalor()
+await renderGraficoEvolucaoMensal()
+await renderGovernanca()
+await renderAcoesSedam()
+await renderAcoesCBM()
+await renderAcoesTCERO()
+await renderExecucaoOrcamentaria()
+await renderCEPCIF()
+await renderOVRPOTIF()
+await renderEvidencias()
+await renderAuditoriaConcomitante()
 })
