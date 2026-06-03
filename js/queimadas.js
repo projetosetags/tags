@@ -513,29 +513,6 @@ box.innerHTML=`
 }
 
 /*=========================================================
-026 QUEIMADAS FUNCTION RENDERFOCOSCALOR
-=========================================================*/
-async function renderFocosCalor(){
-let box=document.getElementById('painelFocosCalor')
-if(!box)return
-let {data,error}=await client.from('queimadas_fontes_calor').select('*')
-if(error){
-console.log(error)
-return
-}
-let html='<div class="heatmap-grid">'
-data.forEach(i=>{
-html+=`
-<div class="heat-vermelho">
-🔥 ${i.municipio||'-'}<br>
-${i.fonte_calor||'-'}
-</div>`
-})
-html+='</div>'
-box.innerHTML=html
-}
-
-/*=========================================================
 027 QUEIMADAS FUNCTION RENDERCEPCIF
 =========================================================*/
 function renderCEPCIF(){
@@ -927,42 +904,7 @@ return
 }
 box.innerHTML=`<div class="impacto-box"><div class="impacto-score">${data.length}</div><div class="impacto-label">AÇÕES MONITORADAS</div></div>`
 }
-/*=========================================================
-040 QUEIMADAS FUNCTION RENDERSTATUSGERAL
-=========================================================*/
-async function renderStatusGeral(){
-let box=document.getElementById('painelStatusGeral')
-if(!box)return
-let {data,error}=await client.from('queimadas_monitoramento').select('*')
-if(error){
-console.log(error)
-return
-}
-let verde=0
-let amarelo=0
-let vermelho=0
-data.forEach(i=>{
-let p=Number(i.percentual||0)
-if(p>=80)verde++
-else if(p>=50)amarelo++
-else vermelho++
-})
-box.innerHTML=`
-<div class="chap-grid">
-<div class="chap-card">
-<div class="chap-num">${verde}</div>
-<div class="chap-label">🟢 EXECUTADO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${amarelo}</div>
-<div class="chap-label">🟡 ANDAMENTO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${vermelho}</div>
-<div class="chap-label">🔴 CRÍTICO</div>
-</div>
-</div>`
-}
+
 /*=========================================================
 041 QUEIMADAS FUNCTION RENDERGRAFICOFOCOSCALOR
 =========================================================*/
@@ -1453,60 +1395,7 @@ box.innerHTML=`
 async function pdfCompletoQueimadas(){
 await gerarPDFExecutivoTCERO()
 }
-/*=========================================================
-021 QUEIMADAS FUNCTION CARREGARKPISEXECUTIVOS
-=========================================================*/
-async function carregarKPIsExecutivos(){
-let {data,error}=await client
-.from('queimadas_municipios')
-.select('*')
-if(error){
-console.log(error)
-return
-}
-let municipios=data?.length||0
-let focos=(data||[]).reduce((s,i)=>s+Number(i.focos_calor||0),0)
-let riscos=(data||[]).filter(i=>
-String(i.risco||'').toUpperCase().includes('ALTO')
-).length
-let {data:mon}=await client
-.from('queimadas_monitoramento')
-.select('percentual')
-let execucao=0
-if(mon?.length){
-execucao=Math.round(
-mon.reduce((s,i)=>s+Number(i.percentual||0),0)/mon.length
-)
-}
-document.getElementById('kpiMunicipios').innerText=municipios
-document.getElementById('kpiFocos').innerText=focos
-document.getElementById('kpiRiscos').innerText=riscos
-document.getElementById('kpiExecucao').innerText=execucao+'%'
-}
-/*=========================================================
-022 QUEIMADAS FUNCTION RENDERMUNICIPIOSPRIORITARIOS
-=========================================================*/
-async function renderMunicipiosPrioritarios(){
-let box=document.getElementById('painelMunicipiosPrioritarios')
-if(!box)return
-let {data,error}=await client
-.from('queimadas_municipios')
-.select('*')
-.order('focos_calor',{ascending:false})
-.limit(10)
-if(error){
-console.log(error)
-return
-}
-box.innerHTML=(data||[]).map(i=>`
-<div class="linha-queimadas">
-<b>${i.municipio}</b> |
-Focos: ${i.focos_calor||0} |
-Risco: ${i.risco||'-'} |
-Prioridade: ${i.prioridade||'-'}
-</div>
-`).join('')
-}
+
 /*=========================================================
 023 QUEIMADAS FUNCTION RENDERSTATUSGERAL
 =========================================================*/
@@ -1584,32 +1473,6 @@ return `
 </div>`
 }).join('')
 }
-/*=========================================================
-025 QUEIMADAS FUNCTION RENDERMATRIZRISCO5X5
-=========================================================*/
-async function renderMatrizRisco5x5(){
-let box=document.getElementById('painelRiscoAvancado')
-if(!box)return
-let {data,error}=await client
-.from('queimadas_riscos')
-.select('*')
-.order('nivel_risco',{ascending:false})
-if(error){
-console.log(error)
-return
-}
-box.innerHTML=(data||[]).map(i=>`
-<div class="linha-risco">
-<b>${i.risco}</b>
-| Município: ${i.municipio||'-'}
-| Prob.: ${i.probabilidade||0}
-| Impacto: ${i.impacto||0}
-| Nível: ${i.nivel_risco||0}
-</div>
-`).join('')
-}
-
-
 
 /*=========================================================
 998 QUEIMADAS FUNCTION MOSTRAR ABA
@@ -2655,6 +2518,11 @@ ${altos>5
 
 }
 
+async function recalcularIMC(){
+await calcularIMC()
+await renderRankingIMC()
+}
+
 /*=========================================================
 999 QUEIMADAS INIT
 =========================================================*/
@@ -2678,7 +2546,6 @@ if(typeof renderTopRiscos==='function')await renderTopRiscos()
 if(typeof renderTopIAChap==='function')await renderTopIAChap()
 if(typeof renderAlertas==='function')await renderAlertas()
 await renderStatusGeral()
-await calcularIMC()
 if(typeof renderRankingIMC==='function')
 await renderRankingIMC()
 await renderTopRiscos()
@@ -2689,7 +2556,6 @@ await renderDashboardPresidente()
 if(typeof renderPlanosMunicipais==='function')
 await renderPlanosMunicipais()
 await renderMapaMunicipios()
-await renderFocosCalor()
 await renderGraficoFocosCalor()
 await renderGraficoEvolucaoMensal()
 await renderGovernanca()
