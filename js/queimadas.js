@@ -318,6 +318,20 @@ if(el1)el1.innerText=municipios.size
 if(el2)el2.innerText=focos
 if(el3)el3.innerText=riscos
 if(el4)el4.innerText=media+'%'
+let pop=await calcularPopulacaoExposta()
+let area=await calcularAreaRisco()
+let iriq=await calcularIRIQ()
+
+let k1=document.getElementById('kpiPopulacaoExposta')
+if(k1)k1.innerText=
+pop.toLocaleString('pt-BR')
+
+let k2=document.getElementById('kpiAreaRisco')
+if(k2)k2.innerText=
+area+' km²'
+
+let k3=document.getElementById('kpiIRIQ')
+if(k3)k3.innerText=iriq
 }
 /*=========================================================
 015 QUEIMADAS FUNCTION RENDERPLANOUNIFICADO
@@ -1574,6 +1588,109 @@ String(i.risco||'').toUpperCase()==='CRÍTICO'
 .reduce((s,i)=>
 s+Number(i.populacao||0)
 ,0)
+
+}
+/*=========================================================
+057 CALCULAR POPULAÇÃO EXPOSTA
+=========================================================*/
+async function calcularPopulacaoExposta(){
+
+let {data,error}=await client
+.from('queimadas_municipios')
+.select('*')
+
+if(error)return 0
+
+let total=0
+
+data.forEach(m=>{
+
+let risco=String(m.risco||'').toUpperCase()
+
+let peso=0
+
+if(risco==='CRÍTICO')peso=1
+else if(risco==='ALTO')peso=0.75
+else if(risco==='MODERADO')peso=0.50
+else peso=0.25
+
+total+=Number(m.populacao||0)*peso
+
+})
+
+return Math.round(total)
+
+}
+/*=========================================================
+057 CALCULAR ÁREA SOB RISCO
+=========================================================*/
+async function calcularAreaRisco(){
+
+let {data,error}=await client
+.from('queimadas_municipios')
+.select('*')
+
+if(error)return 0
+
+let total=0
+
+data.forEach(m=>{
+
+let risco=String(m.risco||'').toUpperCase()
+
+let peso=0
+
+if(risco==='CRÍTICO')peso=1
+else if(risco==='ALTO')peso=0.75
+else if(risco==='MODERADO')peso=0.50
+else peso=0.25
+
+total+=Number(m.area_km2||0)*peso
+
+})
+
+return total.toFixed(0)
+
+}
+/*=========================================================
+057 CALCULAR IRIQ
+=========================================================*/
+async function calcularIRIQ(){
+
+let {data:riscos}=await client
+.from('queimadas_riscos')
+.select('*')
+
+let {data:chap}=await client
+.from('queimadas_chap')
+.select('*')
+
+let totalRisco=0
+let totalChap=0
+
+;(riscos||[]).forEach(r=>{
+totalRisco+=Number(r.nivel_risco||0)
+})
+
+;(chap||[]).forEach(c=>{
+totalChap+=Number(c.resultado||0)
+})
+
+let mediaRisco=
+(riscos||[]).length
+?totalRisco/(riscos||[]).length
+:0
+
+let mediaChap=
+(chap||[]).length
+?totalChap/(chap||[]).length
+:0
+
+let iriq=
+(mediaRisco*0.60)+
+(mediaChap*0.40)
+
+return iriq.toFixed(1)
 
 }
 
