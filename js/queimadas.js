@@ -1774,6 +1774,97 @@ let iriq=
 return iriq.toFixed(1)
 
 }
+/*=========================================================
+058 QUEIMADAS FUNCTION RENDERPLANOSMUNICIPAIS
+=========================================================*/
+async function renderPlanosMunicipais(){
+
+let box=document.getElementById('painelPlanosMunicipais')
+if(!box)return
+
+let comPlano=[
+'Ariquemes',
+'Cacoal',
+'Candeias do Jamari',
+'Castanheiras',
+'Colorado do Oeste',
+'Corumbiara',
+'Cujubim',
+'Governador Jorge Teixeira',
+'Guajará-Mirim',
+'Ji-Paraná',
+'Machadinho D\'Oeste',
+'Nova Mamoré',
+'Nova União',
+'Novo Horizonte do Oeste',
+'Ouro Preto do Oeste',
+'Presidente Médici',
+'Rolim de Moura',
+'Seringueiras',
+'Teixeirópolis',
+'Theobroma',
+'Vale do Anari',
+'Vilhena'
+]
+
+let semPlano=[
+'Alto Paraíso',
+'Alvorada D\'Oeste',
+'Buritis',
+'Cabixi',
+'Chupinguaia',
+'Costa Marques',
+'Itapuã do Oeste',
+'Ministro Andreazza',
+'Mirante da Serra',
+'Monte Negro',
+'Nova Brasilândia D\'Oeste',
+'Parecis',
+'Pimenteiras do Oeste',
+'São Felipe do Oeste',
+'São Francisco do Guaporé',
+'São Miguel do Guaporé',
+'Vale do Paraíso'
+]
+
+box.innerHTML=`
+
+<div class="chap-grid">
+
+<div class="chap-card">
+<div class="chap-num">${comPlano.length}</div>
+<div class="chap-label">COM PLANO</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${semPlano.length}</div>
+<div class="chap-label">SEM EVIDÊNCIA</div>
+</div>
+
+</div>
+
+<div style="margin-top:15px">
+
+<h3 style="color:#15803d">
+✅ MUNICÍPIOS COM PLANO
+</h3>
+
+${comPlano.join(' • ')}
+
+<hr style="margin:15px 0">
+
+<h3 style="color:#dc2626">
+🚨 MUNICÍPIOS SEM EVIDÊNCIA DE PLANO
+</h3>
+
+${semPlano.join(' • ')}
+
+</div>
+
+`
+
+}
+
 
 /*=========================================================
 999 QUEIMADAS INIT
@@ -1807,4 +1898,5 @@ if(typeof renderSalaSituacao==='function')
 await renderSalaSituacao()
 if(typeof renderDashboardPresidente==='function')
 await renderDashboardPresidente()
+await renderPlanosMunicipais()
 })
