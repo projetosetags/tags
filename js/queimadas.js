@@ -87,7 +87,10 @@ box.innerHTML=html
 003 QUEIMADAS FUNCTION RENDERMATRIZRISCO5X5
 =========================================================*/
 async function renderMatrizRisco5x5(){
-let box=document.getElementById('painelRiscos')
+let box=
+document.getElementById('painelMatriz5x5')
+||
+document.getElementById('painelRiscos')
 if(!box)return
 let {data,error}=await client
 .from('queimadas_riscos')
@@ -386,7 +389,49 @@ box.innerHTML=`
 <div class="impacto-label">EXECUÇÃO FINANCEIRA</div>
 </div>`
 }
+/*=========================================================
+015F QUEIMADAS FUNCTION RENDERKPISEXECUTIVOS
+=========================================================*/
+async function renderKPIsExecutivos(){
 
+let box=document.getElementById('painelKPIs')
+
+if(!box)return
+
+let pop=await calcularPopulacaoExposta()
+let area=await calcularAreaRisco()
+let iriq=await calcularIRIQ()
+
+box.innerHTML=`
+
+<div class="chap-grid">
+
+<div class="chap-card">
+<div class="chap-num">${formatarNumero(pop)}</div>
+<div class="chap-label">
+POPULAÇÃO EXPOSTA
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${area}</div>
+<div class="chap-label">
+ÁREA SOB RISCO
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${iriq}</div>
+<div class="chap-label">
+IRIQ ESTADUAL
+</div>
+</div>
+
+</div>
+
+`
+
+}
 /*=========================================================
 016 QUEIMADAS FUNCTION RENDERMUNICIPIOSPRIORITARIOS
 =========================================================*/
@@ -931,7 +976,10 @@ baixarWordQueimadas('relatorio_executivo_tcero',html)
 =========================================================*/
 async function renderMapaMunicipios(){
 
-let div=document.getElementById('mapaRO')
+let div=
+document.getElementById('mapaRO')
+||
+document.getElementById('mapaROEstadual')
 if(!div)return
 
 if(window.mapaQueimadasRO){
@@ -1227,7 +1275,10 @@ box.innerHTML=`
 105 QUEIMADAS FUNCTION RENDERGRAFICOGOVERNANCA
 =========================================================*/
 async function renderGraficoGovernanca(){
-let canvas=document.getElementById('graficoGovernanca')
+let canvas=
+document.getElementById('graficoGovernanca')
+||
+document.getElementById('graficoGovernancaRelatorio')
 if(!canvas)return
 if(window.chartGovernanca)window.chartGovernanca.destroy()
 let {data:sedam=[]}=await client.from('queimadas_acoes_sedam').select('*')
@@ -1567,6 +1618,7 @@ document.getElementById('abaExecutivo')
 ?.classList.remove('hidden')
 
 if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
+await renderKPIsExecutivos()
 if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
 if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
 
@@ -2392,7 +2444,11 @@ border-bottom:1px solid #ddd;
 =========================================================*/
 async function renderGraficoTopFocos(){
 
-let canvas=document.getElementById('graficoTopFocos')
+let canvas=
+document.getElementById('graficoTopFocosExecutivo')
+||
+document.getElementById('graficoTopFocosRelatorio')
+
 if(!canvas)return
 
 let {data=[]}=await client
@@ -2412,8 +2468,9 @@ let top10=Object.entries(mapa)
 .sort((a,b)=>b.focos-a.focos)
 .slice(0,10)
 
-if(window.chartTopFocos)
+if(window.chartTopFocos){
 window.chartTopFocos.destroy()
+}
 
 window.chartTopFocos=new Chart(canvas,{
 type:'bar',
@@ -2429,12 +2486,11 @@ indexAxis:'y',
 responsive:true,
 maintainAspectRatio:false,
 plugins:{
-legend:{
-display:false
-}
+legend:{display:false}
 }
 }
 })
+
 }
 
 /*=========================================================
@@ -2442,7 +2498,10 @@ display:false
 =========================================================*/
 async function renderGraficoFocosHistorico(){
 
-let canvas=document.getElementById('graficoFocosHistorico')
+let canvas=
+document.getElementById('graficoFocosHistorico')
+||
+document.getElementById('graficoEvolucaoMensalRelatorio')
 if(!canvas)return
 
 let {data,error}=await client
