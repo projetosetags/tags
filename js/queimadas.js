@@ -2433,7 +2433,7 @@ new Chart(canvas,{
 type:'line',
 
 data:{
-labels,
+labels:labels,
 datasets:[
 {
 label:'Focos de Calor',
@@ -2710,8 +2710,6 @@ if(typeof renderUCs==='function')
 await renderUCs()
 if(typeof renderPainelUCs==='function')
 await renderPainelUCs()
-if(typeof renderFocosINPE==='function')
-await renderFocosINPE()
 
 if(typeof renderPainelFocosINPE==='function')
 await renderPainelFocosINPE()
