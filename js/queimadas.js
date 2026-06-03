@@ -1032,6 +1032,17 @@ async function pdfCompletoQueimadas(){
 await gerarPDFExecutivoTCERO()
 }
 /*=========================================================
+998 QUEIMADAS FUNCTION MOSTRAR ABA
+=========================================================*/
+function mostrarAbaQueimadas(nome){
+document.querySelectorAll('.abaQueimadas').forEach(x=>x.classList.add('hidden'))
+if(nome==='executivo')document.getElementById('abaExecutivo')?.classList.remove('hidden')
+if(nome==='planejamento')document.getElementById('abaPlanejamento')?.classList.remove('hidden')
+if(nome==='monitoramento')document.getElementById('abaMonitoramento')?.classList.remove('hidden')
+if(nome==='analise')document.getElementById('abaAnalise')?.classList.remove('hidden')
+if(nome==='relatorios')document.getElementById('abaRelatorios')?.classList.remove('hidden')
+}
+/*=========================================================
 999 QUEIMADAS INIT
 =========================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
@@ -1055,4 +1066,5 @@ if(typeof renderMapaMunicipios==='function')await renderMapaMunicipios()
 if(typeof renderGraficoFocosCalor==='function')await renderGraficoFocosCalor()
 if(typeof renderGraficoEvolucaoMensal==='function')await renderGraficoEvolucaoMensal()
 if(typeof renderDashboardCHAP==='function')await renderDashboardCHAP()
+mostrarAbaQueimadas('executivo')
 })
