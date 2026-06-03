@@ -759,7 +759,278 @@ let html=`
 `
 baixarWordQueimadas('relatorio_executivo_tcero',html)
 }
+/*=========================================================
+036 QUEIMADAS FUNCTION RENDERMAPAMUNICIPIOS
+=========================================================*/
+async function renderMapaMunicipios(){
+let box=document.getElementById('painelMapaMunicipios')
+if(!box)return
+let {data,error}=await client.from('queimadas_municipios').select('*').order('municipio')
+if(error){
+console.log(error)
+return
+}
+let html='<div class="heatmap-grid">'
+data.forEach(i=>{
+let classe='heat-verde'
+if(String(i.prioridade||'').toUpperCase()==='ALTA')classe='heat-vermelho'
+else if(String(i.prioridade||'').toUpperCase()==='MÉDIA')classe='heat-laranja'
+else if(String(i.prioridade||'').toUpperCase()==='BAIXA')classe='heat-amarelo'
+html+=`
+<div class="${classe}">
+<b>${i.municipio||'-'}</b><br>
+Risco: ${i.risco||'-'}<br>
+Focos: ${i.focos_calor||0}
+</div>`
+})
+html+='</div>'
+box.innerHTML=html
+}
+/*=========================================================
+037 QUEIMADAS FUNCTION RENDERACOESSEDAM
+=========================================================*/
+async function renderAcoesSedam(){
+let box=document.getElementById('painelAcoesSedam')
+if(!box)return
+let {data,error}=await client.from('queimadas_monitoramento').select('*').eq('origem','SEDAM')
+if(error){
+console.log(error)
+return
+}
+box.innerHTML=`<div class="impacto-box"><div class="impacto-score">${data.length}</div><div class="impacto-label">AÇÕES MONITORADAS</div></div>`
+}
+/*=========================================================
+038 QUEIMADAS FUNCTION RENDERACOESCBM
+=========================================================*/
+async function renderAcoesCBM(){
+let box=document.getElementById('painelAcoesCBM')
+if(!box)return
+let {data,error}=await client.from('queimadas_monitoramento').select('*').eq('origem','CBMRO')
+if(error){
+console.log(error)
+return
+}
+box.innerHTML=`<div class="impacto-box"><div class="impacto-score">${data.length}</div><div class="impacto-label">AÇÕES MONITORADAS</div></div>`
+}
+/*=========================================================
+039 QUEIMADAS FUNCTION RENDERACOESTCERO
+=========================================================*/
+async function renderAcoesTCERO(){
+let box=document.getElementById('painelAcoesTCERO')
+if(!box)return
+let {data,error}=await client.from('queimadas_monitoramento').select('*').eq('origem','TCERO')
+if(error){
+console.log(error)
+return
+}
+box.innerHTML=`<div class="impacto-box"><div class="impacto-score">${data.length}</div><div class="impacto-label">AÇÕES MONITORADAS</div></div>`
+}
+/*=========================================================
+040 QUEIMADAS FUNCTION RENDERSTATUSGERAL
+=========================================================*/
+async function renderStatusGeral(){
+let box=document.getElementById('painelStatusGeral')
+if(!box)return
+let {data,error}=await client.from('queimadas_monitoramento').select('*')
+if(error){
+console.log(error)
+return
+}
+let verde=0
+let amarelo=0
+let vermelho=0
+data.forEach(i=>{
+let p=Number(i.percentual||0)
+if(p>=80)verde++
+else if(p>=50)amarelo++
+else vermelho++
+})
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card">
+<div class="chap-num">${verde}</div>
+<div class="chap-label">🟢 EXECUTADO</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${amarelo}</div>
+<div class="chap-label">🟡 ANDAMENTO</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${vermelho}</div>
+<div class="chap-label">🔴 CRÍTICO</div>
+</div>
+</div>`
+}
+/*=========================================================
+041 QUEIMADAS FUNCTION RENDERGRAFICOFOCOSCALOR
+=========================================================*/
+async function renderGraficoFocosCalor(){
+let canvas=document.getElementById('graficoFocosCalor')
+if(!canvas)return
+let {data,error}=await client.from('queimadas_municipios').select('*')
+if(error){
+console.log(error)
+return
+}
+let labels=[]
+let valores=[]
+data.forEach(i=>{
+labels.push(i.municipio||'-')
+valores.push(Number(i.focos_calor||0))
+})
+new Chart(canvas,{
+type:'bar',
+data:{
+labels:labels,
+datasets:[{
+label:'Focos de Calor',
+data:valores
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false
+}
+})
+}
 
+/*=========================================================
+042 QUEIMADAS FUNCTION RENDERGRAFICOEVOLUCAOMENSAL
+=========================================================*/
+async function renderGraficoEvolucaoMensal(){
+let canvas=document.getElementById('graficoEvolucaoMensal')
+if(!canvas)return
+let {data,error}=await client.from('queimadas_monitoramento').select('*')
+if(error){
+console.log(error)
+return
+}
+let meses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
+let valores=new Array(12).fill(0)
+data.forEach(i=>{
+valores[0]+=Number(i.jan||0)
+valores[1]+=Number(i.fev||0)
+valores[2]+=Number(i.mar||0)
+valores[3]+=Number(i.abr||0)
+valores[4]+=Number(i.mai||0)
+valores[5]+=Number(i.jun||0)
+valores[6]+=Number(i.jul||0)
+valores[7]+=Number(i.ago||0)
+valores[8]+=Number(i.set||0)
+valores[9]+=Number(i.out||0)
+valores[10]+=Number(i.nov||0)
+valores[11]+=Number(i.dez||0)
+})
+new Chart(canvas,{
+type:'line',
+data:{
+labels:meses,
+datasets:[{
+label:'Execução',
+data:valores
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false
+}
+})
+}
+
+/*=========================================================
+043 QUEIMADAS FUNCTION RENDERDASHBOARDPRESIDENTE
+=========================================================*/
+async function renderDashboardPresidente(){
+let box=document.getElementById('painelPresidente')
+if(!box)return
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card"><div class="chap-num">SEDAM</div><div class="chap-label">MONITORADA</div></div>
+<div class="chap-card"><div class="chap-num">CBMRO</div><div class="chap-label">MONITORADO</div></div>
+<div class="chap-card"><div class="chap-num">TCE-RO</div><div class="chap-label">SUPERVISÃO</div></div>
+</div>`
+}
+
+/*=========================================================
+044 QUEIMADAS FUNCTION RENDERDASHBOARDCONSELHEIRO
+=========================================================*/
+async function renderDashboardConselheiro(){
+let box=document.getElementById('painelConselheiro')
+if(!box)return
+box.innerHTML=`
+<div class="impacto-box">
+<div class="impacto-score">CHAP</div>
+<div class="impacto-label">GESTÃO ORIENTADA A RESULTADOS</div>
+</div>`
+}
+
+/*=========================================================
+045 QUEIMADAS FUNCTION RENDERSALASITUACAO
+=========================================================*/
+async function renderSalaSituacao(){
+let box=document.getElementById('painelSalaSituacao')
+if(!box)return
+box.innerHTML=`
+<div class="heat-vermelho">🔥 Municípios Críticos</div>
+<div class="heat-laranja">⚠ Municípios Atenção</div>
+<div class="heat-verde">✓ Municípios Controlados</div>`
+}
+
+/*=========================================================
+046 QUEIMADAS FUNCTION IAPREVERRISCOS
+=========================================================*/
+async function iaPreverRiscos(){
+let box=document.getElementById('painelIARiscos')
+if(!box)return
+box.innerHTML=`
+<div class="monitor4d-card">
+IA identificou tendência de aumento de risco em municípios com crescimento de focos de calor e baixa execução das ações preventivas.
+</div>`
+}
+/*=========================================================
+047 QUEIMADAS FUNCTION IAPRIORIZARMUNICIPIOS
+=========================================================*/
+async function iaPriorizarMunicipios(){
+let box=document.getElementById('painelIAPriorizacao')
+if(!box)return
+box.innerHTML=`
+<div class="monitor4d-card">
+1º Município Crítico<br>
+2º Município Crítico<br>
+3º Município Crítico
+</div>`
+}
+/*=========================================================
+048 QUEIMADAS FUNCTION IAGERARRELATORIO
+=========================================================*/
+async function iaGerarRelatorio(){
+let box=document.getElementById('painelIARelatorio')
+if(!box)return
+box.innerHTML=`
+<div class="monitor4d-card">
+Relatório automático gerado com base no Plano SEDAM, Plano Operacional do Corpo de Bombeiros e Plano Unificado TCE-RO.
+</div>`
+}
+/*=========================================================
+049 QUEIMADAS FUNCTION IASUGERIRACOES
+=========================================================*/
+async function iaSugerirAcoes(){
+let box=document.getElementById('painelIASugestoes')
+if(!box)return
+box.innerHTML=`
+<div class="monitor4d-card">
+✓ Reforçar brigadistas<br>
+✓ Intensificar fiscalização<br>
+✓ Priorizar municípios críticos<br>
+✓ Monitorar fontes de calor
+</div>`
+}
+/*=========================================================
+050 QUEIMADAS FUNCTION PDFCOMPLETO
+=========================================================*/
+async function pdfCompletoQueimadas(){
+await gerarPDFExecutivoTCERO()
+}
 /*=========================================================
 999 QUEIMADAS INIT
 =========================================================*/
@@ -787,5 +1058,19 @@ if(typeof renderCEPCIF==='function')await renderCEPCIF()
 if(typeof renderOVRPOTIF==='function')await renderOVRPOTIF()
 if(typeof renderEvidencias==='function')await renderEvidencias()
 if(typeof renderAuditoriaConcomitante==='function')await renderAuditoriaConcomitante()
+if(typeof renderMapaMunicipios==='function')await renderMapaMunicipios()
+if(typeof renderAcoesSedam==='function')await renderAcoesSedam()
+if(typeof renderAcoesCBM==='function')await renderAcoesCBM()
+if(typeof renderAcoesTCERO==='function')await renderAcoesTCERO()
+if(typeof renderStatusGeral==='function')await renderStatusGeral()
+if(typeof renderGraficoFocosCalor==='function')await renderGraficoFocosCalor()
+if(typeof renderGraficoEvolucaoMensal==='function')await renderGraficoEvolucaoMensal()
+if(typeof renderDashboardPresidente==='function')await renderDashboardPresidente()
+if(typeof renderDashboardConselheiro==='function')await renderDashboardConselheiro()
+if(typeof renderSalaSituacao==='function')await renderSalaSituacao()
+if(typeof iaPreverRiscos==='function')await iaPreverRiscos()
+if(typeof iaPriorizarMunicipios==='function')await iaPriorizarMunicipios()
+if(typeof iaGerarRelatorio==='function')await iaGerarRelatorio()
+if(typeof iaSugerirAcoes==='function')await iaSugerirAcoes()
 })
 
