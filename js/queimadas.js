@@ -1189,6 +1189,35 @@ document.getElementById('abaRelatorios')
 }
 }
 /*=========================================================
+028 QUEIMADAS FUNCTION RENDERTOPCRITICOS
+=========================================================*/
+async function renderTopCriticos(){
+
+let box=document.getElementById('painelTopCriticos')
+if(!box)return
+
+let {data,error}=await client
+.from('queimadas_municipios')
+.select('*')
+.order('focos_calor',{ascending:false})
+.limit(10)
+
+if(error){
+console.log(error)
+return
+}
+
+box.innerHTML=data.map(i=>`
+<div class="linha-queimadas">
+🔥 ${i.municipio}
+ | ${i.focos_calor||0} focos
+ | ${i.risco||'-'}
+</div>
+`).join('')
+
+}
+
+/*=========================================================
 999 QUEIMADAS INIT
 =========================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
