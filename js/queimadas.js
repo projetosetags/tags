@@ -2225,17 +2225,12 @@ window.layerMunicipios,
 072 QUEIMADAS FUNCTION RENDERUCS
 =========================================================*/
 async function renderUCs(){
-
 if(!window.mapaQueimadasRO)return
-
 try{
-
 let resp=await fetch(
 'assets/geojson/ucs-ro.geojson'
 )
-
 let geojson=await resp.json()
-
 window.layerUC=L.geoJSON(
 geojson,
 {
@@ -2248,13 +2243,11 @@ fillOpacity:0.25
 }
 },
 onEachFeature:function(feature,layer){
-
 let nome=
 feature.properties.nome||
 feature.properties.NOME||
 feature.properties.name||
 'UC'
-
 layer.bindPopup(`
 <b>UNIDADE DE CONSERVAÇÃO</b><br>
 ${nome}
@@ -2262,25 +2255,19 @@ ${nome}
 }
 }
 )
-
 window.layerUC.addTo(
 window.mapaQueimadasRO
 )
-
 window.camadasControle.addOverlay(
 window.layerUC,
 'Unidades de Conservação'
 )
-
 }catch(e){
-
 console.log(
 'UCs não carregadas',
 e
 )
-
 }
-
 }
 /*=========================================================
 072 QUEIMADAS FUNCTION RENDERPAINELUCS
