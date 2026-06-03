@@ -1035,36 +1035,45 @@ await gerarPDFExecutivoTCERO()
 998 QUEIMADAS FUNCTION MOSTRAR ABA
 =========================================================*/
 function mostrarAbaQueimadas(nome){
-document.querySelectorAll('.abaQueimadas').forEach(x=>x.classList.add('hidden'))
-if(nome==='executivo')document.getElementById('abaExecutivo')?.classList.remove('hidden')
-if(nome==='planejamento')document.getElementById('abaPlanejamento')?.classList.remove('hidden')
-if(nome==='monitoramento')document.getElementById('abaMonitoramento')?.classList.remove('hidden')
-if(nome==='analise')document.getElementById('abaAnalise')?.classList.remove('hidden')
-if(nome==='relatorios')document.getElementById('abaRelatorios')?.classList.remove('hidden')
+document.querySelectorAll('.abaQueimadas')
+.forEach(x=>x.classList.add('hidden'))
+if(nome==='executivo'){
+document.getElementById('abaExecutivo')
+?.classList.remove('hidden')
+}
+if(nome==='planejamento'){
+document.getElementById('abaPlanejamento')
+?.classList.remove('hidden')
+}
+if(nome==='monitoramento'){
+document.getElementById('abaMonitoramento')
+?.classList.remove('hidden')
+}
+if(nome==='analise'){
+document.getElementById('abaAnalise')
+?.classList.remove('hidden')
+}
+if(nome==='relatorios'){
+document.getElementById('abaRelatorios')
+?.classList.remove('hidden')
+}
 }
 /*=========================================================
 999 QUEIMADAS INIT
 =========================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
-console.log('QUEIMADAS INICIADO')
+mostrarAbaQueimadas('executivo')
 if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
-if(typeof renderPlanoUnificado==='function')renderPlanoUnificado()
+if(typeof renderPlanoUnificado==='function')await renderPlanoUnificado()
 if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
 if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
-if(typeof renderSalaSituacao==='function')await renderSalaSituacao()
-if(typeof renderStatusGeral==='function')await renderStatusGeral()
-if(typeof renderGovernanca==='function')await renderGovernanca()
-if(typeof renderODS==='function')await renderODS()
-if(typeof calcularImpacto==='function')await calcularImpacto()
 if(typeof renderMonitoramento4D==='function')await renderMonitoramento4D()
+if(typeof renderDashboardCHAP==='function')await renderDashboardCHAP()
 if(typeof renderCadeiaValor==='function')await renderCadeiaValor()
 if(typeof renderTeoriaMudanca==='function')await renderTeoriaMudanca()
-if(typeof graficoGanttExecutivo==='function')await graficoGanttExecutivo()
 if(typeof renderMatrizRisco5x5==='function')await renderMatrizRisco5x5()
-if(typeof matrizRisco5x5Avancada==='function')await matrizRisco5x5Avancada()
-if(typeof renderMapaMunicipios==='function')await renderMapaMunicipios()
-if(typeof renderGraficoFocosCalor==='function')await renderGraficoFocosCalor()
-if(typeof renderGraficoEvolucaoMensal==='function')await renderGraficoEvolucaoMensal()
-if(typeof renderDashboardCHAP==='function')await renderDashboardCHAP()
-mostrarAbaQueimadas('executivo')
+if(typeof renderGantt==='function')await renderGantt()
+if(typeof renderODS==='function')await renderODS()
+if(typeof calcularImpacto==='function')await calcularImpacto()
+if(typeof iaChapAnalisar==='function')await iaChapAnalisar()
 })
