@@ -1032,6 +1032,136 @@ async function pdfCompletoQueimadas(){
 await gerarPDFExecutivoTCERO()
 }
 /*=========================================================
+021 QUEIMADAS FUNCTION CARREGARKPISEXECUTIVOS
+=========================================================*/
+async function carregarKPIsExecutivos(){
+let {data,error}=await client
+.from('queimadas_municipios')
+.select('*')
+if(error){
+console.log(error)
+return
+}
+let municipios=data?.length||0
+let focos=(data||[]).reduce((s,i)=>s+Number(i.focos_calor||0),0)
+let riscos=(data||[]).filter(i=>
+String(i.risco||'').toUpperCase().includes('ALTO')
+).length
+let {data:mon}=await client
+.from('queimadas_monitoramento')
+.select('percentual')
+let execucao=0
+if(mon?.length){
+execucao=Math.round(
+mon.reduce((s,i)=>s+Number(i.percentual||0),0)/mon.length
+)
+}
+document.getElementById('kpiMunicipios').innerText=municipios
+document.getElementById('kpiFocos').innerText=focos
+document.getElementById('kpiRiscos').innerText=riscos
+document.getElementById('kpiExecucao').innerText=execucao+'%'
+}
+/*=========================================================
+022 QUEIMADAS FUNCTION RENDERMUNICIPIOSPRIORITARIOS
+=========================================================*/
+async function renderMunicipiosPrioritarios(){
+let box=document.getElementById('painelMunicipiosPrioritarios')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_municipios')
+.select('*')
+.order('focos_calor',{ascending:false})
+.limit(10)
+if(error){
+console.log(error)
+return
+}
+box.innerHTML=(data||[]).map(i=>`
+<div class="linha-queimadas">
+<b>${i.municipio}</b> |
+Focos: ${i.focos_calor||0} |
+Risco: ${i.risco||'-'} |
+Prioridade: ${i.prioridade||'-'}
+</div>
+`).join('')
+}
+/*=========================================================
+023 QUEIMADAS FUNCTION RENDERSTATUSGERAL
+=========================================================*/
+async function renderStatusGeral(){
+let box=document.getElementById('painelStatusGeral')
+if(!box)return
+let {data}=await client
+.from('queimadas_monitoramento')
+.select('status')
+let concluidos=(data||[]).filter(i=>i.status==='CONCLUÍDO').length
+let andamento=(data||[]).filter(i=>i.status==='EM ANDAMENTO').length
+let pendentes=(data||[]).filter(i=>i.status==='PENDENTE').length
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card"><div class="chap-num">${concluidos}</div><div class="chap-label">CONCLUÍDOS</div></div>
+<div class="chap-card"><div class="chap-num">${andamento}</div><div class="chap-label">ANDAMENTO</div></div>
+<div class="chap-card"><div class="chap-num">${pendentes}</div><div class="chap-label">PENDENTES</div></div>
+</div>`
+}
+/*=========================================================
+024 QUEIMADAS FUNCTION RENDERDASHBOARDCHAP
+=========================================================*/
+async function renderDashboardCHAP(){
+let box=document.getElementById('painelCHAP')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_chap')
+.select('*')
+if(error){
+console.log(error)
+return
+}
+box.innerHTML=(data||[]).map(i=>{
+let score=Math.round(
+(
+Number(i.criticidade||0)+
+Number(i.historico||0)+
+Number(i.abrangencia||0)+
+Number(i.prioridade||0)+
+Number(i.resultado||0)
+)/5
+)
+return `
+<div class="chap-card">
+<div class="chap-num">${score}</div>
+<div class="chap-label">${i.municipio}</div>
+</div>`
+}).join('')
+}
+/*=========================================================
+025 QUEIMADAS FUNCTION RENDERMATRIZRISCO5X5
+=========================================================*/
+async function renderMatrizRisco5x5(){
+let box=document.getElementById('painelRiscoAvancado')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_riscos')
+.select('*')
+.order('nivel_risco',{ascending:false})
+if(error){
+console.log(error)
+return
+}
+box.innerHTML=(data||[]).map(i=>`
+<div class="linha-risco">
+<b>${i.risco}</b>
+| Município: ${i.municipio||'-'}
+| Prob.: ${i.probabilidade||0}
+| Impacto: ${i.impacto||0}
+| Nível: ${i.nivel_risco||0}
+</div>
+`).join('')
+}
+
+
+
+/*=========================================================
 998 QUEIMADAS FUNCTION MOSTRAR ABA
 =========================================================*/
 function mostrarAbaQueimadas(nome){
