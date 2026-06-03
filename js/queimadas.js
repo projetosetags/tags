@@ -2645,23 +2645,12 @@ maximumFractionDigits:2
 999 QUEIMADAS INIT
 =========================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
-
-let abaSalva=
-localStorage.getItem(
-'abaQueimadas'
-)||'executivo'
-
-mostrarAbaQueimadas(
-abaSalva
-)
-
+let abaSalva=localStorage.getItem('abaQueimadas')||'executivo'
+mostrarAbaQueimadas(abaSalva)
 if(typeof renderMapaMunicipios==='function')
 await renderMapaMunicipios()
-
 if(typeof renderGeoJSONRO==='function')
 await renderGeoJSONRO()
-
 if(typeof renderUCs==='function')
 await renderUCs()
-
 })
