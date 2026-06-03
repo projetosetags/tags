@@ -2247,8 +2247,15 @@ let {data}=await client
 let total=(data||[])
 .reduce((s,i)=>s+Number(i.focos||0),0)
 
-let top10=[...(data||[])]
-.sort((a,b)=>Number(b.focos||0)-Number(a.focos||0))
+let mapa={}
+;(data||[]).forEach(i=>{
+let mun=i.municipio||'SEM MUNICÍPIO'
+if(!mapa[mun])mapa[mun]=0
+mapa[mun]+=Number(i.focos||0)
+})
+let top10=Object.entries(mapa)
+.map(([municipio,focos])=>({municipio,focos}))
+.sort((a,b)=>b.focos-a.focos)
 .slice(0,10)
 
 box.innerHTML=`
