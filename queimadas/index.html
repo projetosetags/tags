@@ -40,18 +40,25 @@ window.S_KEY
 <button onclick="recalcularIMC()">RECALCULAR IRIQ</button>
 </div>
 <!--=========================================================
-010 ABA EXECUTIVO
+010 ABA EXECUTIVO     - MAPA
 =========================================================-->
-<div id="abaExecutivo" class="abaQueimadas">
-
-<div class="chap-grid">
-<div class="chap-card"><div class="chap-num" id="kpiMunicipios">0</div><div class="chap-label">MUNICÍPIOS</div></div>
-<div class="chap-card"><div class="chap-num" id="kpiRiscos">0</div><div class="chap-label">RISCOS CRÍTICOS</div></div>
-<div class="chap-card"><div class="chap-num" id="kpiExecucao">0%</div><div class="chap-label">EXECUÇÃO</div></div>
-</div>
 <div class="card-executivo">
-<h2>PLANOS MUNICIPAIS</h2>
-<div id="painelPlanosMunicipais"></div>
+<h2>MAPA E STATUS MUNICIPAL</h2>
+<div id="painelMapaMunicipios">
+<div id="mapaRO" style="height:650px;border-radius:12px;"></div>
+</div>
+</div>
+<!-- LEGENDA -->
+<div class="legendaMapa">
+<span class="legendaCritico">■ CRÍTICO</span>
+<span class="legendaAlto">■ ALTO</span>
+<span class="legendaModerado">■ MODERADO</span>
+<span class="legendaBaixo">■ BAIXO</span>
+</div>
+<!-- MUNICÍPIOS -->
+<div class="card-executivo">
+<h2>MUNICÍPIOS PRIORITÁRIOS</h2>
+<div id="painelMunicipiosPrioritarios"></div>
 </div>
 <div class="card-executivo">
 <h2>TOP 10 MUNICÍPIOS CRÍTICOS</h2>
@@ -61,90 +68,49 @@ window.S_KEY
 <h2>TOP 10 MAIORES RISCOS</h2>
 <div id="painelTopRiscos"></div>
 </div>
-<div class="chap-card">
-<div class="chap-num" id="kpiPopulacaoExposta">0</div>
-<div class="chap-label">POPULAÇÃO EXPOSTA</div>
+<!-- HEATMAP -->
+<div class="card-executivo">
+<h2>HEATMAP EXECUTIVO</h2>
+<div id="painelHeatMapExecutivo"></div>
 </div>
-<div class="chap-card">
-<div class="chap-num" id="kpiAreaRisco">0 km²</div>
-<div class="chap-label">ÁREA SOB RISCO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num" id="kpiIRIQ">0</div>
-<div class="chap-label">IRIQ</div>
-</div>
-<div class="card-executivo"><h2>MAPA E STATUS MUNICIPAL</h2>
-<div id="painelMapaMunicipios">
-<div id="mapaRO" style="height:650px;border-radius:12px;"></div>
-</div>
+<!-- UCS -->
 <div class="card-executivo">
 <h2>UNIDADES DE CONSERVAÇÃO</h2>
 <div id="painelUCs"></div>
 </div>
+<!-- FOCOS -->
 <div class="card-executivo">
-<h2>FOCOS INPE</h2>
-<div id="painelFocosINPE"></div>
+<h2>FOCOS DE CALOR - TOP 10</h2>
+<div style="height:500px">
+<canvas id="graficoTopFocos"></canvas>
 </div>
-<div class="card">
-<h2>FOCOS DE CALOR</h2>
-<div id="painelFocosINPE"></div>
+</div>
+<div class="card-executivo">
+<h2>EVOLUÇÃO DOS FOCOS DE CALOR</h2>
 <div style="height:350px">
 <canvas id="graficoFocosHistorico"></canvas>
 </div>
 </div>
+<!-- INDICADORES -->
 <div class="card-executivo">
 <h2>INDICADORES ESTRATÉGICOS</h2>
 <div id="painelIndicadoresEstrategicos"></div>
 </div>
+<!-- SALA ESTADUAL -->
 <div class="card-executivo">
 <h2>SALA DE SITUAÇÃO ESTADUAL</h2>
-<div id="painelSalaSituacao">
 <div id="painelSalaSituacaoEstadual"></div>
 </div>
+<!-- STATUS -->
+<div class="card-executivo">
+<h2>STATUS GERAL</h2>
+<div id="painelStatusGeral"></div>
 </div>
-</div>
-<div class="legendaMapa">
-<span class="legendaCritico">■ CRÍTICO</span>
-<span class="legendaAlto">■ ALTO</span>
-<span class="legendaModerado">■ MODERADO</span>
-<span class="legendaBaixo">■ BAIXO</span>
-</div>
-<div class="card-executivo"><h2>MUNICÍPIOS PRIORITÁRIOS</h2><div id="painelMunicipiosPrioritarios"></div></div>
-<div class="card-executivo"><h2>HEATMAP EXECUTIVO</h2><div id="painelHeatMapExecutivo"></div></div>
-<div class="card-executivo"><h2>SALA DE SITUAÇÃO</h2><div id="painelSalaSituacao"></div></div>
-<div class="card-executivo"><h2>STATUS GERAL</h2><div id="painelStatusGeral"></div></div>
 
-</div>
-<!--=========================================================
-060 ABA SALA DE SITUAÇÃO
-=========================================================-->
-<div id="abaSituacao" class="abaQueimadas hidden">
-<div class="card-executivo">
-<h2>TOP 10 MUNICÍPIOS CRÍTICOS</h2>
-<div id="painelTopCriticos"></div>
-</div>
-<div class="card-executivo">
-<h2>TOP 10 MAIORES RISCOS</h2>
-<div id="painelTopRiscos"></div>
-</div>
-<div class="card-executivo">
-<h2>TOP 10 SEM EVIDÊNCIAS</h2>
-<div id="painelSemEvidencias"></div>
-</div>
-<div class="card-executivo">
-<h2>TOP 10 IA-CHAP</h2>
-<div id="painelTopIAChap"></div>
-</div>
-<div class="card-executivo">
-<h2>ALERTAS IMEDIATOS</h2>
-<div id="painelAlertas"></div>
-</div>
-</div>
 <!--=========================================================
 020 ABA PLANEJAMENTO
 =========================================================-->
 <div id="abaPlanejamento" class="abaQueimadas hidden">
-
 <div class="card-executivo"><h2>PLANO UNIFICADO TCE-RO</h2><div id="painelPlanoUnificado"></div></div>
 <div class="card-executivo"><h2>CADEIA DE VALOR</h2><div id="painelCadeiaValor"></div></div>
 <div class="card-executivo"><h2>TEORIA DA MUDANÇA</h2><div id="painelTeoriaMudanca"></div></div>
@@ -152,9 +118,7 @@ window.S_KEY
 <div class="card-executivo"><h2>IMPACTO AO CIDADÃO</h2><div id="painelImpacto"></div></div>
 <div class="card-executivo"><h2>CRONOGRAMA EXECUTIVO</h2><div id="painelGanttExecutivo"></div></div>
 <div class="card-executivo"><h2>GANTT DETALHADO</h2><div id="painelGantt"></div></div>
-
 </div>
-
 <!--=========================================================
 030 ABA MONITORAMENTO
 =========================================================-->
@@ -170,14 +134,12 @@ window.S_KEY
 <div class="card-executivo"><h2>MONITORAMENTO 4D</h2><div id="painelMonitoramento4D"></div></div>
 <div class="card-executivo"><h2>EVIDÊNCIAS</h2><div id="painelEvidencias"></div></div>
 <div class="card-executivo"><h2>AUDITORIA CONCOMITANTE</h2><div id="painelAuditoria"></div></div>
-
 </div>
 
 <!--=========================================================
 040 ABA IA E RISCOS
 =========================================================-->
 <div id="abaAnalise" class="abaQueimadas hidden">
-
 <div class="card-executivo"><h2>MATRIZ DE RISCO 5X5</h2><div id="painelRiscoAvancado"></div></div>
 <div class="card-executivo"><h2>RISCOS OPERACIONAIS</h2><div id="painelRiscos"></div></div>
 <div class="card-executivo"><h2>DASHBOARD CHAP</h2><div id="painelCHAP"></div></div>
@@ -186,27 +148,37 @@ window.S_KEY
 <div class="card-executivo"><h2>IA PRIORIZAÇÃO DE MUNICÍPIOS</h2><div id="painelIAPriorizacao"></div></div>
 <div class="card-executivo"><h2>IA RELATÓRIO AUTOMÁTICO</h2><div id="painelIARelatorio"></div></div>
 <div class="card-executivo"><h2>IA SUGESTÕES</h2><div id="painelIASugestoes"></div></div>
-
 </div>
 <!--=========================================================
 050 ABA RELATÓRIOS
 =========================================================-->
 <div id="abaRelatorios" class="abaQueimadas hidden">
-<div class="card-executivo"><h2>FOCOS DE CALOR</h2><div id="painelFocosCalor"></div></div>
+<div class="card-executivo">
+<h2>FOCOS DE CALOR</h2>
+<div style="height:500px">
+<canvas id="graficoTopFocos"></canvas>
+</div>
+</div>
 <div class="card-executivo">
 <h2>STATUS DAS AÇÕES MONITORADAS</h2>
-<div style="position:relative;height:350px;">
+<div style="height:350px">
 <canvas id="graficoEvolucaoMensal"></canvas>
 </div>
 </div>
-<div class="card-executivo"><h2>DASHBOARD PRESIDENTE</h2><div class="card-executivo">
+<div class="card-executivo">
+<h2>DASHBOARD GERAL</h2>
+<div id="painelGeral"></div>
+</div>
+<div class="card-executivo">
 <h2>GOVERNANÇA DAS AÇÕES</h2>
 <div style="height:350px">
 <canvas id="graficoGovernanca"></canvas>
 </div>
 </div>
+<div class="card-executivo">
+<h2>DASHBOARD RELATOR</h2>
+<div id="painelRelator"></div>
 </div>
-<div class="card-executivo"><h2>DASHBOARD CONSELHEIRO</h2><div id="painelConselheiro"></div></div>
 <div class="card-executivo">
 <h2>RELATÓRIOS EXECUTIVOS</h2>
 <div id="painelRelatorios"></div>
