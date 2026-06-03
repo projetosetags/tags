@@ -968,12 +968,34 @@ box.innerHTML=`
 045 QUEIMADAS FUNCTION RENDERSALASITUACAO
 =========================================================*/
 async function renderSalaSituacao(){
+
 let box=document.getElementById('painelSalaSituacao')
 if(!box)return
-box.innerHTML=`
-<div class="heat-vermelho">🔥 Municípios Críticos</div>
-<div class="heat-laranja">⚠ Municípios Atenção</div>
-<div class="heat-verde">✓ Municípios Controlados</div>`
+
+let {data}=await client
+.from('queimadas_municipios')
+.select('*')
+.order('focos_calor',{ascending:false})
+.limit(3)
+
+let html=''
+
+data.forEach(i=>{
+
+html+=`
+<div class="alertaCritico">
+🚨 ${i.municipio}
+<br>
+Focos: ${i.focos_calor}
+<br>
+Risco: ${i.risco}
+</div>
+`
+
+})
+
+box.innerHTML=html
+
 }
 
 /*=========================================================
@@ -1089,20 +1111,48 @@ Prioridade: ${i.prioridade||'-'}
 023 QUEIMADAS FUNCTION RENDERSTATUSGERAL
 =========================================================*/
 async function renderStatusGeral(){
+
 let box=document.getElementById('painelStatusGeral')
 if(!box)return
+
 let {data}=await client
 .from('queimadas_monitoramento')
-.select('status')
-let concluidos=(data||[]).filter(i=>i.status==='CONCLUÍDO').length
-let andamento=(data||[]).filter(i=>i.status==='EM ANDAMENTO').length
-let pendentes=(data||[]).filter(i=>i.status==='PENDENTE').length
+.select('*')
+
+let executado=0
+let andamento=0
+let critico=0
+
+data.forEach(i=>{
+
+if(Number(i.percentual||0)>=80){
+executado++
+}else
+if(Number(i.percentual||0)>=20){
+andamento++
+}else{
+critico++
+}
+
+})
+
 box.innerHTML=`
 <div class="chap-grid">
-<div class="chap-card"><div class="chap-num">${concluidos}</div><div class="chap-label">CONCLUÍDOS</div></div>
-<div class="chap-card"><div class="chap-num">${andamento}</div><div class="chap-label">ANDAMENTO</div></div>
-<div class="chap-card"><div class="chap-num">${pendentes}</div><div class="chap-label">PENDENTES</div></div>
-</div>`
+<div class="chap-card">
+<div class="chap-num">${executado}</div>
+<div class="chap-label">EXECUTADO</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${andamento}</div>
+<div class="chap-label">EM ANDAMENTO</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${critico}</div>
+<div class="chap-label">CRÍTICO</div>
+</div>
+</div>
+`
+
 }
 /*=========================================================
 024 QUEIMADAS FUNCTION RENDERDASHBOARDCHAP
@@ -1219,24 +1269,24 @@ box.innerHTML=(data||[]).map(i=>`
 040 QUEIMADAS FUNCTION RENDERTOPRISCOS
 =========================================================*/
 async function renderTopRiscos(){
+
 let box=document.getElementById('painelTopRiscos')
 if(!box)return
-let {data,error}=await client
+
+let {data}=await client
 .from('queimadas_riscos')
 .select('*')
 .order('nivel_risco',{ascending:false})
 .limit(10)
-if(error){
-console.log(error)
-return
-}
-box.innerHTML=(data||[]).map(i=>`
-<div class="linha-risco">
-⚠ <b>${i.municipio||'-'}</b>
- | ${i.risco||'-'}
- | Nível ${i.nivel_risco||0}
+
+box.innerHTML=data.map(i=>`
+<div>
+${i.risco}
+-
+Nível ${i.nivel_risco}
 </div>
 `).join('')
+
 }
 /*=========================================================
 041 QUEIMADAS FUNCTION RENDERTOPIACHAP
@@ -1278,6 +1328,29 @@ box.innerHTML=(data||[]).map(i=>`
 `).join('')
 }
 
+
+async function renderTopMunicipios(){
+
+let box=document.getElementById('painelTopMunicipios')
+if(!box)return
+
+let {data}=await client
+.from('queimadas_municipios')
+.select('*')
+.order('focos_calor',{ascending:false})
+.limit(10)
+
+box.innerHTML=data.map(i=>`
+<div>
+${i.municipio}
+-
+${i.focos_calor} focos
+</div>
+`).join('')
+
+}
+
+
 /*=========================================================
 999 QUEIMADAS INIT
 =========================================================*/
@@ -1300,4 +1373,8 @@ if(typeof renderTopCriticos==='function')await renderTopCriticos()
 if(typeof renderTopRiscos==='function')await renderTopRiscos()
 if(typeof renderTopIAChap==='function')await renderTopIAChap()
 if(typeof renderAlertas==='function')await renderAlertas()
+await renderSalaSituacao()
+await renderStatusGeral()
+await renderTopMunicipios()
+await renderTopRiscos()
 })
