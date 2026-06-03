@@ -1289,26 +1289,35 @@ Nível ${i.nivel_risco}
 
 }
 /*=========================================================
-041 QUEIMADAS FUNCTION RENDERTOPIACHAP
+047 QUEIMADAS FUNCTION RENDERTOPIACHAP
 =========================================================*/
 async function renderTopIAChap(){
+
 let box=document.getElementById('painelTopIAChap')
 if(!box)return
-let {data,error}=await client
-.from('queimadas_chap')
-.select('*')
-.order('resultado',{ascending:false})
+
+let {data}=await client
+.from('queimadas_ia_chap')
+.select(`
+prioridade,
+risco_previsto,
+acao_recomendada,
+queimadas_chap(
+municipio
+)
+`)
 .limit(10)
-if(error){
-console.log(error)
-return
-}
-box.innerHTML=(data||[]).map(i=>`
+
+box.innerHTML=(data||[])
+.map(i=>`
 <div class="linha-queimadas">
-🤖 <b>${i.municipio||'-'}</b>
- | Score: ${i.resultado||0}
+🤖 ${i.queimadas_chap?.municipio||'-'}
+ | ${i.risco_previsto||'-'}
+ | ${i.prioridade||'-'}
 </div>
-`).join('')
+`)
+.join('')
+
 }
 /*=========================================================
 042 QUEIMADAS FUNCTION RENDERALERTAS
@@ -1413,15 +1422,19 @@ let indice=
 (impactoScore*0.15)
 
 let classe='BAIXO'
+let semaforo='🟢'
 
 if(indice>=80){
 classe='CRÍTICO'
+semaforo='🔴'
 }else
 if(indice>=60){
 classe='ALTO'
+semaforo='🟡'
 }else
 if(indice>=40){
 classe='MODERADO'
+semaforo='🟡'
 }
 
 await client
@@ -1432,13 +1445,112 @@ focos_score:focos,
 risco_score:riscoScore,
 chap_score:chapScore,
 impacto_score:impactoScore,
-indice_final:indice,
-classificacao:classe
+indice_final:Number(indice.toFixed(2)),
+classificacao:classe,
+semaforo:semaforo
 },{
 onConflict:'municipio'
 })
 
 }
+
+}
+/*=========================================================
+044 QUEIMADAS FUNCTION RENDERMUNICIPIOSSEMEVIDENCIAS
+=========================================================*/
+async function renderMunicipiosSemEvidencias(){
+let box=document.getElementById('painelSemEvidencias')
+if(!box)return
+let {data:municipios}=await client
+.from('queimadas_municipios')
+.select('municipio')
+let {data:evidencias}=await client
+.from('queimadas_evidencias')
+.select('municipio')
+let lista=(municipios||[])
+.filter(m=>
+!(evidencias||[])
+.some(e=>e.municipio===m.municipio)
+)
+.slice(0,10)
+box.innerHTML=lista.map(i=>`
+<div class="alerta-vermelho">
+⚠ ${i.municipio}
+</div>
+`).join('')
+}
+/*=========================================================
+045 QUEIMADAS FUNCTION CALCULARIRIQ
+=========================================================*/
+async function calcularIRIQ(){
+
+let {data}=await client
+.from('queimadas_indice_municipal')
+.select('*')
+
+if(!data?.length)return 0
+
+let valor=
+data.reduce(
+(s,i)=>s+Number(i.indice_final||0),
+0
+)/data.length
+
+return Number(valor.toFixed(2))
+
+}
+/*=========================================================
+046 QUEIMADAS FUNCTION RENDERPRESIDENTE
+=========================================================*/
+async function renderPresidente(){
+
+let box=document.getElementById('painelPresidente')
+if(!box)return
+
+let iriq=await calcularIRIQ()
+
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card">
+<div class="chap-num">${iriq}</div>
+<div class="chap-label">
+IRIQ ESTADUAL
+</div>
+</div>
+</div>
+`
+}
+/*=========================================================
+048 QUEIMADAS FUNCTION RENDERRANKINGIMC
+=========================================================*/
+async function renderRankingIMC(){
+
+let box=document.getElementById('painelTopMunicipios')
+if(!box)return
+
+let {data,error}=await client
+.from('queimadas_indice_municipal')
+.select('*')
+.order('indice_final',{ascending:false})
+.limit(10)
+
+if(error){
+console.log(error)
+return
+}
+
+box.innerHTML=(data||[])
+.map(i=>`
+<div class="linha-ranking">
+${i.semaforo||'🟢'}
+<b>${i.municipio}</b>
+-
+IMC ${Number(i.indice_final||0).toFixed(1)}
+-
+${i.classificacao||'BAIXO'}
+</div>
+`)
+.join('')
 
 }
 
@@ -1470,5 +1582,6 @@ await renderStatusGeral()
 await renderTopMunicipios()
 await renderTopRiscos()
 await calcularIMC()
+await renderRankingIMC()
 await renderTopMunicipios()
 })
