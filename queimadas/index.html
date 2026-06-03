@@ -17,6 +17,8 @@ window.S_KEY
 </script>
 <script src="../js/municipios-ro.js"></script>
 <script src="../js/queimadas.js?v=2"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
 <div class="titulo-queimadas">🔥 MONITORAMENTO INTELIGENTE DE QUEIMADAS</div>
@@ -70,7 +72,9 @@ window.S_KEY
 <div class="chap-num" id="kpiIRIQ">0</div>
 <div class="chap-label">IRIQ</div>
 </div>
-<div class="card-executivo"><h2>MAPA E STATUS MUNICIPAL</h2><div id="painelMapaMunicipios"></div></div>
+<div class="card-executivo"><h2>MAPA E STATUS MUNICIPAL</h2><div id="painelMapaMunicipios">
+<div id="mapaRO" style="height:650px;border-radius:12px;"></div>
+</div></div>
 <div class="card-executivo"><h2>MUNICÍPIOS PRIORITÁRIOS</h2><div id="painelMunicipiosPrioritarios"></div></div>
 <div class="card-executivo"><h2>HEATMAP EXECUTIVO</h2><div id="painelHeatMapExecutivo"></div></div>
 <div class="card-executivo"><h2>SALA DE SITUAÇÃO</h2><div id="painelSalaSituacao"></div></div>
