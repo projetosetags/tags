@@ -2095,17 +2095,20 @@ ${semPlano.join(' • ')}
 071 QUEIMADAS FUNCTION RENDERGEOJSONRO
 =========================================================*/
 async function renderGeoJSONRO(){
-
 if(!window.mapaQueimadasRO)return
-
 let resp=await fetch('assets/geojson/municipios-ro.geojson')
-
+if(!resp.ok){
+console.log('Erro ao carregar UCs')
+return
+}
 let geojson=await resp.json()
-
+console.log(
+'UCs carregadas:',
+geojson.features?.length||0
+)
 let {data:heat}=await client
 .from('queimadas_heatmap')
 .select('*')
-
 function normalizar(txt){
 return String(txt||'')
 .normalize('NFD')
@@ -2114,43 +2117,28 @@ return String(txt||'')
 .toUpperCase()
 .trim()
 }
-
 function obterMunicipio(nome){
-
 return (heat||[])
 .find(m=>
 normalizar(m.municipio)===
 normalizar(nome)
 )
-
 }
-
 function obterCor(nome){
-
 let m=obterMunicipio(nome)
-
 if(!m)return '#94a3b8'
-
 if(m.classificacao==='CRÍTICO')return '#dc2626'
-
 if(m.classificacao==='ALTO')return '#f97316'
-
 if(m.classificacao==='MODERADO')return '#facc15'
-
 return '#16a34a'
-
 }
-
 window.layerMunicipios=L.geoJSON(geojson,{
-
 style:function(feature){
-
 let nome=
 feature.properties.NM_MUN||
 feature.properties.nome||
 feature.properties.name||
 ''
-
 return{
 fillColor:obterCor(nome),
 weight:1,
@@ -2158,19 +2146,14 @@ opacity:1,
 color:'#ffffff',
 fillOpacity:0.75
 }
-
 },
-
 onEachFeature:function(feature,layer){
-
 let nome=
 feature.properties.NM_MUN||
 feature.properties.nome||
 feature.properties.name||
 ''
-
 let m=obterMunicipio(nome)
-
 layer.bindPopup(`
 <b>${nome}</b><br>
 Criticidade: ${m?.criticidade||0}<br>
@@ -2178,11 +2161,8 @@ Focos: ${m?.focos||0}<br>
 Risco: ${m?.risco||0}<br>
 Classificação: ${m?.classificacao||'BAIXO'}
 `)
-
 }
-
 })
-
 window.layerMunicipios.addTo(
 window.mapaQueimadasRO
 )
