@@ -123,3 +123,13 @@ background:#f97316;
 .mapa-critico{
 background:#dc2626;
 }
+#mapaRO{
+width:100%;
+height:650px;
+border-radius:12px;
+overflow:hidden;
+}
+.leaflet-popup-content{
+font-size:12px;
+font-weight:700;
+}
