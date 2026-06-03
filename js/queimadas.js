@@ -812,63 +812,93 @@ let html=`
 baixarWordQueimadas('relatorio_executivo_tcero',html)
 }
 /*=========================================================
-/*=========================================================
 036 QUEIMADAS FUNCTION RENDERMAPAMUNICIPIOS
 =========================================================*/
 async function renderMapaMunicipios(){
 
-let box=document.getElementById('painelMapaMunicipios')
-if(!box)return
+let div=document.getElementById('mapaRO')
+if(!div)return
+
+if(window.mapaQueimadasRO){
+window.mapaQueimadasRO.remove()
+}
+
+let mapa=L.map('mapaRO').setView([-10.9,-63.3],7)
+
+window.mapaQueimadasRO=mapa
+
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+attribution:'OpenStreetMap'
+}
+).addTo(mapa)
 
 let {data,error}=await client
 .from('queimadas_heatmap')
 .select('*')
-.order('criticidade',{ascending:false})
 
 if(error){
 console.log(error)
 return
 }
 
-box.innerHTML=`
+const coordenadas={
 
-<div class="mapa-grid">
+'Porto Velho':[-8.7608,-63.8999],
+'Nova Mamoré':[-10.4061,-65.3295],
+'Candeias do Jamari':[-8.7856,-63.7000],
+'Buritis':[-10.2086,-63.8320],
+'Guajará-Mirim':[-10.7889,-65.3291],
+'Cujubim':[-9.3606,-62.5846],
+'Ariquemes':[-9.9133,-63.0408],
+'Costa Marques':[-12.4367,-64.2283],
+'São Francisco do Guaporé':[-12.0524,-63.5676],
+'Machadinho D\'Oeste':[-9.4438,-61.9811],
+'Ji-Paraná':[-10.8777,-61.9322],
+'Cacoal':[-11.4386,-61.4429],
+'Jaru':[-10.4388,-62.4660],
+'Vilhena':[-12.7406,-60.1458]
 
-${(data||[]).map(i=>{
-
-let classe='mapa-baixo'
-
-if(i.classificacao==='MODERADO'){
-classe='mapa-moderado'
 }
 
-if(i.classificacao==='ALTO'){
-classe='mapa-alto'
+;(data||[]).forEach(m=>{
+
+let coord=coordenadas[m.municipio]
+
+if(!coord)return
+
+let cor='green'
+
+if(m.classificacao==='MODERADO'){
+cor='yellow'
 }
 
-if(i.classificacao==='CRÍTICO'){
-classe='mapa-critico'
+if(m.classificacao==='ALTO'){
+cor='orange'
 }
 
-return `
+if(m.classificacao==='CRÍTICO'){
+cor='red'
+}
 
-<div class="municipio-mapa ${classe}">
+L.circleMarker(coord,{
+radius:12,
+fillColor:cor,
+color:'#000',
+weight:1,
+opacity:1,
+fillOpacity:0.8
+})
+.addTo(mapa)
+.bindPopup(`
+<b>${m.municipio}</b><br>
+Criticidade: ${m.criticidade}<br>
+Focos: ${m.focos}<br>
+Classificação: ${m.classificacao}
+`)
 
-${i.municipio}
-
-<br>
-
-${i.criticidade}
-
-</div>
-
-`
-
-}).join('')}
-
-</div>
-
-`
+})
 
 }
 /*=========================================================
