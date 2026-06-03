@@ -976,25 +976,25 @@ console.log(error)
 return
 }
 
-let concluidos=(data||[])
+let execucao=(data||[])
 .filter(i=>
 String(i.status||'')
 .toUpperCase()
-.includes('CONCLU')
+.includes('EXECU')
 ).length
 
-let andamento=(data||[])
+let pendente=(data||[])
 .filter(i=>
 String(i.status||'')
 .toUpperCase()
-.includes('ANDAMENTO')
+.includes('PEND')
 ).length
 
-let atrasados=(data||[])
+let planejado=(data||[])
 .filter(i=>
 String(i.status||'')
 .toUpperCase()
-.includes('ATRAS')
+.includes('PLANE')
 ).length
 
 if(window.chartEvolucaoMensal){
@@ -1008,16 +1008,16 @@ type:'bar',
 
 data:{
 labels:[
-'CONCLUÍDOS',
-'ANDAMENTO',
-'ATRASADOS'
+'EM EXECUÇÃO',
+'PENDENTE',
+'PLANEJADO'
 ],
 datasets:[{
 label:'Quantidade',
 data:[
-concluidos,
-andamento,
-atrasados
+execucao,
+pendente,
+planejado
 ]
 }]
 },
@@ -1110,6 +1110,7 @@ async function renderGraficoGovernanca(){
 let canvas=document.getElementById('graficoGovernanca')
 if(!canvas)return
 if(window.chartGovernanca)window.chartGovernanca.destroy()
+Chart.register(ChartDataLabels)
 let {data:sedam=[]}=await client.from('queimadas_acoes_sedam').select('*')
 let {data:cbm=[]}=await client.from('queimadas_acoes_cbm').select('*')
 let {data:tce=[]}=await client.from('queimadas_monitoramento').select('*')
@@ -1122,12 +1123,32 @@ data:[
 tce.length,
 sedam.length,
 cbm.length
-]
+],
+datalabels:{
+color:'#ffffff',
+font:{
+weight:'bold',
+size:18
+},
+formatter:v=>v
+}
 }]
 },
 options:{
 responsive:true,
-maintainAspectRatio:false
+maintainAspectRatio:false,
+plugins:{
+legend:{
+display:true,
+position:'top'
+},
+tooltip:{
+enabled:true
+},
+datalabels:{
+display:true
+}
+}
 }
 })
 }
