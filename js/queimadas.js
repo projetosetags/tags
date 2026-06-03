@@ -1,4 +1,11 @@
 /*=========================================================
+000 FORMATADORES GERAIS
+=========================================================*/
+function formatarNumero(v){
+let n=Number(v||0)
+return n.toLocaleString('pt-BR')
+}
+/*=========================================================
 001 QUEIMADAS FUNCTION RENDERCADEIAVALOR
 =========================================================*/
 async function renderCadeiaValor(){
@@ -510,7 +517,7 @@ let andamento=data.filter(i=>Number(i.percentual||0)>0&&Number(i.percentual||0)<
 let pendentes=data.filter(i=>Number(i.percentual||0)<=0).length
 box.innerHTML=`
 <div class="chap-grid">
-<div class="chap-card"><div class="chap-num">${total}</div><div class="chap-label">AÇÕES</div></div>
+<div class="chap-card"><div class="chap-num">${formatarNumero(total)}</div><div class="chap-label">AÇÕES</div></div>
 <div class="chap-card"><div class="chap-num">${concluidos}</div><div class="chap-label">CONCLUÍDAS</div></div>
 <div class="chap-card"><div class="chap-num">${andamento}</div><div class="chap-label">EM ANDAMENTO</div></div>
 <div class="chap-card"><div class="chap-num">${pendentes}</div><div class="chap-label">PENDENTES</div></div>
@@ -1069,17 +1076,17 @@ box.innerHTML=`
 <div class="chap-grid">
 
 <div class="chap-card">
-<div class="chap-num">${focos}</div>
+<div class="chap-num">${formatarNumero(focos)}</div>
 <div class="chap-label">FOCOS DE CALOR</div>
 </div>
 
 <div class="chap-card">
-<div class="chap-num">${criticos}</div>
+<div class="chap-num">${formatarNumero(criticos)}</div>
 <div class="chap-label">MUNICÍPIOS CRÍTICOS</div>
 </div>
 
 <div class="chap-card">
-<div class="chap-num">${alto}</div>
+<div class="chap-num">${formatarNumero(alto)}</div>
 <div class="chap-label">ALTO RISCO</div>
 </div>
 
@@ -2288,7 +2295,7 @@ border-bottom:1px solid #ddd;
 
 <span>${i.municipio}</span>
 
-<b>${i.focos}</b>
+<b>${formatarNumero(i.focos)}</b>
 
 </div>
 
@@ -2625,6 +2632,15 @@ ${altos>5
 async function recalcularIMC(){
 await calcularIMC()
 await renderRankingIMC()
+}
+
+function formatarArea(v){
+return Number(v||0)
+.toLocaleString('pt-BR',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+})
++' km²'
 }
 
 /*=========================================================
