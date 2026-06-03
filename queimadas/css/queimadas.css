@@ -56,11 +56,17 @@ body{overflow-x:hidden}
 /*=========================================================
 010 HEATMAP
 =========================================================*/
-.heatmap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.heat-verde{background:#16a34a;color:#fff;padding:14px;border-radius:14px;font-weight:800}
-.heat-amarelo{background:#facc15;color:#000;padding:14px;border-radius:14px;font-weight:800}
-.heat-laranja{background:#f97316;color:#fff;padding:14px;border-radius:14px;font-weight:800}
-.heat-vermelho{background:#dc2626;color:#fff;padding:14px;border-radius:14px;font-weight:800}
+.heatmap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+.heat-verde,.heat-amarelo,.heat-laranja,.heat-vermelho{padding:14px;border-radius:14px;font-weight:800;min-height:165px;position:relative;box-shadow:0 4px 12px rgba(0,0,0,.10);transition:.2s;overflow:hidden}
+.heat-verde:hover,.heat-amarelo:hover,.heat-laranja:hover,.heat-vermelho:hover{transform:translateY(-2px)}
+.heat-verde{background:#16a34a;color:#fff}
+.heat-amarelo{background:#facc15;color:#000}
+.heat-laranja{background:#f97316;color:#fff}
+.heat-vermelho{background:#dc2626;color:#fff}
+.heat-ranking{position:absolute;top:8px;left:8px;width:32px;height:32px;border-radius:50%;background:#fff;color:#dc2626;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.20)}
+.heat-municipio{font-size:18px;font-weight:900;color:#000;margin-top:32px;margin-bottom:8px;line-height:20px}
+.heat-info{font-size:12px;line-height:18px}
+.heatmap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 /*=========================================================
 011 MATRIZ 5X5
 =========================================================*/
