@@ -2200,6 +2200,12 @@ try{
 let resp=await fetch(
 'assets/geojson/ucs-ro.geojson'
 )
+if(!resp.ok){
+console.log(
+'GeoJSON UCs não encontrado'
+)
+return
+}
 let geojson=await resp.json()
 window.layerUC=L.geoJSON(
 geojson,
