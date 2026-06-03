@@ -942,16 +942,29 @@ maintainAspectRatio:false
 042 QUEIMADAS FUNCTION RENDERGRAFICOEVOLUCAOMENSAL
 =========================================================*/
 async function renderGraficoEvolucaoMensal(){
+
 let canvas=document.getElementById('graficoEvolucaoMensal')
+
 if(!canvas)return
-let {data,error}=await client.from('queimadas_monitoramento').select('*')
+
+let {data,error}=await client
+.from('queimadas_monitoramento')
+.select('*')
+
 if(error){
 console.log(error)
 return
 }
-let meses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
+
+let meses=[
+'JAN','FEV','MAR','ABR','MAI','JUN',
+'JUL','AGO','SET','OUT','NOV','DEZ'
+]
+
 let valores=new Array(12).fill(0)
-data.forEach(i=>{
+
+;(data||[]).forEach(i=>{
+
 valores[0]+=Number(i.jan||0)
 valores[1]+=Number(i.fev||0)
 valores[2]+=Number(i.mar||0)
@@ -964,21 +977,38 @@ valores[8]+=Number(i.set||0)
 valores[9]+=Number(i.out||0)
 valores[10]+=Number(i.nov||0)
 valores[11]+=Number(i.dez||0)
+
 })
+
+if(window.chartEvolucaoMensal){
+
+window.chartEvolucaoMensal.destroy()
+
+}
+
+window.chartEvolucaoMensal=
 new Chart(canvas,{
+
 type:'line',
+
 data:{
 labels:meses,
 datasets:[{
 label:'Execução',
-data:valores
+data:valores,
+borderWidth:3,
+fill:false,
+tension:0.3
 }]
 },
+
 options:{
 responsive:true,
 maintainAspectRatio:false
 }
+
 })
+
 }
 
 /*=========================================================
