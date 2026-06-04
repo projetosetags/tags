@@ -50,18 +50,17 @@ if(typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels)}
 <div id="painelKPIs"></div>
 <div class="cardExecutivo">
 <h2>MAPA DE RONDÔNIA - RISCO DE QUEIMADAS</h2>
-<div class="exec-mapa-grid">
-<div>
+<button class="btnOcultarMapa" onclick="toggleMapaRO()">👁 OCULTAR / EXIBIR MAPA</button>
+<div id="boxMapaRO">
 <div id="mapaRO"></div>
+</div>
 <div class="fonte-card">
 Fonte: OpenStreetMap • INPE • Sedam • Base Municipal RO
 </div>
 </div>
-<div class="exec-lateral">
-<div id="painelIRIQEstadual"></div>
-<div id="painelLegendaHeatmap"></div>
-</div>
-</div>
+<div class="cardExecutivo">
+<h2>IRIQ ESTADUAL E HEATMAP ESTADUAL</h2>
+<div id="painelIRIQHeatmapUnificado"></div>
 </div>
 <div class="cardExecutivo">
 <h2>HEATMAP ESTADUAL - QUANTIDADE DE MUNICÍPIOS POR CLASSE DE RISCO</h2>
