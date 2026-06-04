@@ -166,3 +166,14 @@ body{overflow-x:hidden}
 .exec-duplo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
 @media(max-width:1200px){.exec-mapa-grid{grid-template-columns:1fr}.exec-duplo{grid-template-columns:1fr}}
 .heat-azul{background:#2563eb;color:#fff;padding:14px;border-radius:14px;font-weight:800;min-height:165px;position:relative;box-shadow:0 4px 12px rgba(0,0,0,.10)}
+
+.gantt-header{display:grid;grid-template-columns:320px repeat(12,1fr);gap:4px;font-weight:900;margin-bottom:12px;text-align:center}
+.gantt-linha{display:grid;grid-template-columns:320px repeat(12,1fr);gap:4px;margin-bottom:10px;align-items:center}
+.gantt-nome{font-weight:800;padding:10px}
+.gantt-barra{height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff}
+.gantt-barra.azul{background:#2563eb}
+.gantt-barra.verde{background:#16a34a}
+.gantt-barra.vermelho{background:#dc2626}
+.gantt-barra.laranja{background:#f97316}
+.gantt-header div{background:#e2e8f0;padding:8px;border-radius:6px}
+.gantt-linha:hover{background:#f8fafc;border-radius:10px}
