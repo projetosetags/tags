@@ -215,3 +215,15 @@ body{overflow-x:hidden}
 .responsavel-plano{display:block;margin-top:4px;font-size:10px;color:#64748b}
 .status-plano{display:block;margin-top:4px;font-size:10px;font-weight:900;color:#475569}
 
+.tabelaMunicipios{width:100%;border-collapse:collapse;font-size:12px}
+.tabelaMunicipios th{background:#0f172a;color:#fff;padding:10px;text-align:left}
+.tabelaMunicipios td{padding:8px;border-bottom:1px solid #e2e8f0;vertical-align:top}
+.tabelaMunicipios tr:hover{background:#f8fafc}
+
+.exec-legenda-municipal{display:flex;gap:20px;flex-wrap:wrap;margin-top:10px;font-weight:700}
+.leg-verde{color:#16a34a}
+.leg-amarelo{color:#ca8a04}
+.leg-vermelho{color:#dc2626}
+.filtroMapaMunicipal{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.btnMapaMunicipal{background:#0f172a;color:#fff;border:none;padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer}
+.btnMapaMunicipal:hover{opacity:.9}
