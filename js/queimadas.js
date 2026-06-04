@@ -2068,6 +2068,7 @@ document.getElementById('abaExecutivo')?.classList.remove('hidden')
 if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
 if(typeof renderKPIsExecutivos==='function')await renderKPIsExecutivos()
 await renderMunicipiosOficio()
+await renderMunicipiosSemResposta()
 if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
 if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
 if(typeof renderTopRiscos==='function')await renderTopRiscos()
@@ -3356,6 +3357,39 @@ box.innerHTML=`
 
 </div>
 `
+}
+/*=========================================================
+081 QUEIMADAS FUNCTION RENDERMUNICIPIOSSEMRESPOSTA
+=========================================================*/
+async function renderMunicipiosSemResposta(){
+let box=document.getElementById('painelMunicipiosSemResposta')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+.eq('classificacao_cor','VERMELHO')
+.order('municipio')
+if(error){
+console.log(error)
+return
+}
+let html='<div class="heatmap-grid">'
+;(data||[]).forEach(i=>{
+html+=`
+<div class="heat-vermelho">
+<div class="heat-municipio">${i.municipio||'-'}</div>
+<div class="heat-info">
+Situação: SEM RESPOSTA<br>
+Ofício: ${i.nroficioenviadotcero||'-'}<br>
+Envio: ${i.dataenviodoc||'-'}
+</div>
+<div class="fonte-card">
+Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
+</div>
+</div>`
+})
+html+='</div>'
+box.innerHTML=html
 }
 /*=========================================================
 999 QUEIMADAS INIT
