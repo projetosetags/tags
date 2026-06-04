@@ -1029,15 +1029,50 @@ O Heatmap Estadual considera:
 async function renderIRIQHeatmapUnificado(){
 let box=document.getElementById('painelIRIQHeatmapUnificado')
 if(!box)return
-let iriq=document.getElementById('painelIRIQEstadual')?.innerHTML||''
-let heat=document.getElementById('painelHeatMapExecutivo')?.innerHTML||''
 box.innerHTML=`
 <div class="iriq-heatmap-unificado">
-<div class="iriq-box">
-${iriq}
+<div class="cardExecutivo">
+<h2>IRIQ ESTADUAL</h2>
+<div style="font-size:46px;font-weight:900;color:#16a34a;text-align:center">
+17.4
 </div>
-<div class="heatmap-box">
-${heat}
+<div style="text-align:center;font-size:18px;font-weight:900">
+BAIXO
+</div>
+<div style="text-align:center;margin-top:10px">
+ÍNDICE DE RISCO INTEGRADO DE QUEIMADAS
+</div>
+<div style="margin-top:15px;font-size:12px;line-height:20px">
+O IRIQ considera:
+<br>• Focos de calor
+<br>• Histórico de queimadas
+<br>• Cobertura vegetal
+<br>• Uso do solo
+<br>• Clima
+<br>• Vulnerabilidade ambiental
+</div>
+<div class="fonte-card">
+Fonte: CHAP • IA-CHAP • Matriz de Risco 5x5
+</div>
+</div>
+<div class="cardExecutivo">
+<h2>LEGENDA DO HEATMAP</h2>
+<div class="heat-vermelho">🔴 75-100 CRÍTICO</div>
+<div class="heat-laranja">🟠 50-74 ALTO</div>
+<div class="heat-amarelo">🟡 25-49 MODERADO</div>
+<div class="heat-verde">🟢 0-24 BAIXO</div>
+<div style="margin-top:15px;font-size:12px;line-height:20px">
+O Heatmap Estadual considera:
+<br>• Focos de calor
+<br>• Histórico de queimadas
+<br>• Cobertura vegetal
+<br>• Vulnerabilidade ambiental
+<br>• Pressão antrópica
+<br>• Índice IRIQ
+</div>
+<div class="fonte-card">
+Fonte: Heatmap Estadual • CHAP • IA-CHAP
+</div>
 </div>
 </div>
 `
