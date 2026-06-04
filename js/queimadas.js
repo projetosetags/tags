@@ -26,6 +26,10 @@ console.log(error)
 box.innerHTML='Erro ao carregar.'
 return
 }
+if(!data||!data.length){
+box.innerHTML='<div class="chap-card">Tabela queimadas_cadeia_valor sem registros.</div>'
+return
+}
 let html=''
 data.forEach(i=>{
 html+=`
@@ -60,6 +64,10 @@ let {data,error}=await client
 .order('data_inicio',{ascending:true})
 if(error){
 console.log(error)
+return
+}
+if(!data||!data.length){
+box.innerHTML='<div class="chap-card">Tabela queimadas_marcos sem registros.</div>'
 return
 }
 let inicio=new Date()
@@ -150,6 +158,10 @@ let {data,error}=await client
 if(error){
 console.log(error)
 box.innerHTML='Erro ao carregar.'
+return
+}
+if(!data||!data.length){
+box.innerHTML='<div class="chap-card">Tabela queimadas_cadeia_valor sem registros.</div>'
 return
 }
 let html=''
@@ -332,6 +344,10 @@ let {data,error}=await client.from('queimadas_marcos').select('*').order('data_i
 if(error){
 console.log(error)
 box.innerHTML='Erro ao carregar.'
+return
+}
+if(!data||!data.length){
+box.innerHTML='<div class="chap-card">Tabela queimadas_marcos sem registros.</div>'
 return
 }
 let html=''
