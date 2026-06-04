@@ -2077,23 +2077,20 @@ if(typeof renderIndicadoresEstrategicos==='function')await renderIndicadoresEstr
 if(typeof renderPainelUCs==='function')await renderPainelUCs()
 }
 if(nome==='planejamento'){
-document.getElementById('abaPlanejamento')?.classList.remove('hidden')
+document.getElementById('abaPlanejamento')
+?.classList.remove('hidden')
 await renderPlanoUnificado()
 await renderPlanoSEDAM()
 await renderPlanoCBM()
 await renderCadeiaValor()
 await renderTeoriaMudanca()
 await renderODS()
-await renderGantt()
-await renderMarcos()
-}
-if(nome==='ods'){
-document.getElementById('abaODS')?.classList.remove('hidden')
-await renderODS()
 await renderODSEvidencias()
 await renderGraficoRadarODS()
 await renderODSMaturidade()
 await renderODSExplicacaoIA()
+await renderGantt()
+await renderMarcos()
 }
 if(nome==='monitoramento'){
 document.getElementById('abaMonitoramento')?.classList.remove('hidden')
