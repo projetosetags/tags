@@ -61,12 +61,16 @@ box.innerHTML=`
 async function renderGantt(){
 let box=document.getElementById('painelGantt')
 if(!box)return
-let {data,error}=await client.from('queimadas_planejamento').select('*').order('inicio',{ascending:true})
+let {data,error}=await client
+.from('queimadas_planejamento')
+.select('*')
+.order('inicio',{ascending:true})
 if(error){
 console.log(error)
 box.innerHTML='Erro ao carregar cronograma.'
 return
 }
+let mesAtual=new Date().getMonth()+1
 let meses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
 let html=''
 html+='<div class="gantt-header">'
@@ -74,22 +78,31 @@ html+='<div>AÇÃO</div>'
 meses.forEach(m=>html+=`<div>${m}</div>`)
 html+='</div>'
 ;(data||[]).forEach(i=>{
-let ini=new Date(i.inicio)
-let fim=new Date(i.fim)
-let mi=ini.getMonth()+1
-let mf=fim.getMonth()+1
+let ini=i.inicio?new Date(i.inicio):null
+let fim=i.fim?new Date(i.fim):null
+let mi=ini?(ini.getMonth()+1):1
+let mf=fim?(fim.getMonth()+1):12
+let status=String(i.status||'').toUpperCase()
+if(status==='CONTÍNUO'){
+mi=1
+mf=12
+}
+if(status==='EXECUÇÃO'){
+mi=mesAtual
+mf=12
+}
 html+='<div class="gantt-linha">'
-html+=`<div class="gantt-nome">${i.acao}<br><span class="gantt-responsavel">${i.responsavel||''}</span></div>`
+html+=`<div class="gantt-nome">${i.acao||'-'}<br><span class="gantt-responsavel">${i.responsavel||''}</span></div>`
 for(let m=1;m<=12;m++){
 if(m>=mi&&m<=mf){
-html+=`<div class="gantt-barra" style="background:${i.cor||'#2563eb'}">${m===mi?(i.status||''):''}</div>`
+html+=`<div class="gantt-barra" style="background:${i.cor||'#2563eb'}">${m===mf?(i.status||''):''}</div>`
 }else{
 html+='<div class="gantt-vazio"></div>'
 }
 }
 html+='</div>'
 })
-html+='<div class="fonte-card">Fonte: Tabela queimadas_planejamento • SEDAM • CBMRO</div>'
+html+='<div class="fonte-card">Fonte: Tabela queimadas_planejamento • SEDAM • CBMRO • TCERO • Municípios</div>'
 box.innerHTML=html
 }
 /*=========================================================
@@ -1009,34 +1022,9 @@ O Heatmap Estadual considera:
 </p>
 </div>`
 }
+
 /*=========================================================
-021 QUEIMADAS FUNCTION GRAFICOGANTTEXECUTIVO
-=========================================================*/
-async function graficoGanttExecutivo(){
-let box=document.getElementById('painelGanttExecutivo')
-if(!box)return
-let {data,error}=await client
-.from('queimadas_marcos_gantt')
-.select('*')
-.order('data_inicio',{ascending:true})
-if(error){
-console.log(error)
-return
-}
-let html=''
-data.forEach(i=>{
-html+=`
-<div class="gantt-row">
-<div class="gantt-titulo">${i.titulo||'-'}</div>
-<div class="gantt-area">
-<div class="gantt-bar andamento">${i.percentual||0}%</div>
-</div>
-</div>`
-})
-box.innerHTML=html
-}
-/*=========================================================
-021A QUEIMADAS FUNCTION RENDERSITUACAOESTRATEGICA
+021 QUEIMADAS FUNCTION RENDERSITUACAOESTRATEGICA
 =========================================================*/
 async function renderSituacaoEstrategica(){
 let box=document.getElementById('painelSalaSituacaoEstadual')
