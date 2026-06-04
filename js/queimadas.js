@@ -785,6 +785,98 @@ origem:'IA-CHAP AVANÇADO'
 }).eq('ods','ODS 17')
 }
 /*=========================================================
+020 QUEIMADAS FUNCTION RENDERODSEVIDENCIAS
+=========================================================*/
+async function renderODSEvidencias(){
+let box=document.getElementById('painelODSEvidencias')
+if(!box)return
+let {data}=await client.from('queimadas_ods').select('*').order('peso',{ascending:false})
+let html='<div class="cardExecutivo"><h2>ODS X EVIDÊNCIAS E ADERÊNCIA</h2><div class="ods-executivo-grid">'
+;(data||[]).forEach(o=>{
+html+=`
+<div class="ods-executivo-card" style="border-left-color:${o.cor||'#2563eb'}">
+<div class="ods-score">${Number(o.peso||0).toFixed(0)}%</div>
+<div class="ods-titulo">${o.ods}</div>
+<div class="ods-meta">${o.descricao||''}</div>
+<div class="ods-ia">${o.justificativa||''}</div>
+<div class="fonte-card">Fonte: IA-CHAP • Agenda 2030</div>
+</div>`
+})
+html+='</div></div>'
+box.innerHTML=html
+}
+/*=========================================================
+021 QUEIMADAS FUNCTION RENDERGRAFICORADARODS
+=========================================================*/
+async function renderGraficoRadarODS(){
+let canvas=document.getElementById('graficoRadarODS')
+if(!canvas)return
+let {data}=await client.from('queimadas_ods').select('*').order('peso',{ascending:false})
+let labels=(data||[]).map(i=>i.ods)
+let valores=(data||[]).map(i=>Number(i.peso||0))
+if(window.graficoRadarODSInstance){
+window.graficoRadarODSInstance.destroy()
+}
+window.graficoRadarODSInstance=new Chart(canvas,{
+type:'radar',
+data:{
+labels:labels,
+datasets:[{
+label:'Aderência Agenda 2030',
+data:valores,
+fill:true
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+scales:{
+r:{
+beginAtZero:true,
+max:100
+}
+}
+}
+})
+}
+/*=========================================================
+022 QUEIMADAS FUNCTION RENDERODSMATURIDADE
+=========================================================*/
+async function renderODSMaturidade(){
+let box=document.getElementById('painelODSMaturidade')
+if(!box)return
+let {data}=await client.from('queimadas_ods').select('*')
+let media=(data||[]).reduce((s,i)=>s+Number(i.peso||0),0)/Math.max((data||[]).length,1)
+let nivel='INICIAL'
+if(media>=80)nivel='OTIMIZADO'
+else if(media>=60)nivel='GERENCIADO'
+else if(media>=40)nivel='ESTRUTURADO'
+box.innerHTML=`
+<div class="cardExecutivo">
+<h2>MATURIDADE ODS</h2>
+<div class="chap-num">${media.toFixed(1)}%</div>
+<div class="chap-label">${nivel}</div>
+<div class="fonte-card">Fonte: IA-CHAP • Agenda 2030</div>
+</div>`
+}
+/*=========================================================
+023 QUEIMADAS FUNCTION RENDERODSEXPLICACAOIA
+=========================================================*/
+async function renderODSExplicacaoIA(){
+let box=document.getElementById('painelODSExplicacaoIA')
+if(!box)return
+let {data}=await client.from('queimadas_ods').select('*').order('peso',{ascending:false}).limit(1)
+let ods=data?.[0]
+box.innerHTML=`
+<div class="cardExecutivo">
+<h2>ANÁLISE IA-CHAP</h2>
+<p>A ODS mais aderente ao Projeto QUEIMADAS 2026 é <b>${ods?.ods||'-'}</b>, com aderência de <b>${Number(ods?.peso||0).toFixed(0)}%</b>.</p>
+<p>${ods?.justificativa||''}</p>
+<div class="fonte-card">Fonte: IA-CHAP • Agenda 2030 • Monitoramento Integrado</div>
+</div>`
+}
+
+/*=========================================================
 0200 QUEIMADAS FUNCTION RENDERUCSPRESIDENTE
 =========================================================*/
 async function renderUCsPresidente(){
@@ -1984,7 +2076,6 @@ if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadu
 if(typeof renderIndicadoresEstrategicos==='function')await renderIndicadoresEstrategicos()
 if(typeof renderPainelUCs==='function')await renderPainelUCs()
 }
-
 if(nome==='planejamento'){
 document.getElementById('abaPlanejamento')?.classList.remove('hidden')
 await renderPlanoUnificado()
@@ -1995,6 +2086,14 @@ await renderTeoriaMudanca()
 await renderODS()
 await renderGantt()
 await renderMarcos()
+}
+if(nome==='ods'){
+document.getElementById('abaODS')?.classList.remove('hidden')
+await renderODS()
+await renderODSEvidencias()
+await renderGraficoRadarODS()
+await renderODSMaturidade()
+await renderODSExplicacaoIA()
 }
 if(nome==='monitoramento'){
 document.getElementById('abaMonitoramento')?.classList.remove('hidden')
