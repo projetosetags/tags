@@ -177,3 +177,15 @@ body{overflow-x:hidden}
 .gantt-barra.laranja{background:#f97316}
 .gantt-header div{background:#e2e8f0;padding:8px;border-radius:6px}
 .gantt-linha:hover{background:#f8fafc;border-radius:10px}
+
+.ranking-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
+.ranking-card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px;position:relative;min-height:150px}
+.ranking-posicao{position:absolute;top:6px;left:6px;background:#dc2626;color:#fff;width:22px;height:22px;border-radius:4px;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.ranking-municipio{font-size:15px;font-weight:900;color:#0f172a;margin-top:18px;margin-bottom:10px;line-height:18px}
+.ranking-info{font-size:12px;color:#334155;margin-bottom:4px}
+@media(max-width:1400px){.ranking-grid{grid-template-columns:repeat(5,1fr)}}
+@media(max-width:900px){.ranking-grid{grid-template-columns:repeat(2,1fr)}}
+
+.alerta-ranking{display:flex;align-items:center;background:#ef4444;color:#fff;padding:8px 12px;border-radius:8px;margin-bottom:6px}
+.alerta-numero{background:#fff;color:#dc2626;width:26px;height:26px;border-radius:6px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-right:10px}
+.alerta-texto{font-size:12px;line-height:16px}
