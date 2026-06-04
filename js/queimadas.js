@@ -2217,6 +2217,7 @@ if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
 if(typeof renderKPIsMunicipais==='function')await renderKPIsMunicipais()
 if(typeof renderSituacaoGeralMunicipios==='function')await renderSituacaoGeralMunicipios()
+if(typeof renderCadastroMunicipiosResumo==='function')await renderCadastroMunicipiosResumo()
 if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
 if(typeof renderDilacoesPrazo==='function')await renderDilacoesPrazo()
 if(typeof renderSemResposta==='function')await renderSemResposta()
@@ -4214,5 +4215,29 @@ html+=`
 html+='</tbody>'
 html+='</table>'
 html+='</div>'
+box.innerHTML=html
+}
+/*=========================================================
+099A QUEIMADAS FUNCTION RESUMO CADASTRO MUNICIPAL
+=========================================================*/
+async function renderCadastroMunicipiosResumo(){
+let box=document.getElementById('painelCadastroMunicipiosResumo')
+if(!box)return
+let {data,error}=await client.from('queimadas_municipios_oficio').select('*').order('municipio')
+if(error){
+console.log(error)
+return
+}
+let html='<div style="overflow:auto"><table class="tabelaMunicipios">'
+html+='<thead><tr><th>Município</th><th>Situação</th><th>Documento</th></tr></thead><tbody>'
+;(data||[]).forEach(i=>{
+html+=`
+<tr>
+<td>${i.municipio||'-'}</td>
+<td>${i.classificacao_ia||'-'}</td>
+<td>${i.lnumerodocenviado||i.llnumerodocenviado||'-'}</td>
+</tr>`
+})
+html+='</tbody></table></div>'
 box.innerHTML=html
 }
