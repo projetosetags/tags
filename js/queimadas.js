@@ -520,7 +520,7 @@ ${m.classificacao||'-'}
 html+=`
 </div>
 <div class="fonte-card">
-Fonte: Heatmap Estadual • IRIQ • Focos de Calor
+Fonte: Heatmap Estadual • IRIQ • Focos de Calor-Tabela queimadas_heatmap • Classificação Municipal de Risco
 </div>`
 box.innerHTML=html
 }
