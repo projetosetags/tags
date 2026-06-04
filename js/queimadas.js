@@ -250,6 +250,7 @@ if(el3)el3.innerText=riscos
 if(el4)el4.innerText=media+'%'
 let pop=await calcularPopulacaoExposta()
 let area=await calcularAreaRisco()
+let areaKm2=(Number(area||0)/1000000).toFixed(2)
 let iriq=await calcularIRIQ()
 
 let k1=document.getElementById('kpiPopulacaoExposta')
@@ -401,7 +402,18 @@ if(!box)return
 let pop=await calcularPopulacaoExposta()
 let area=await calcularAreaRisco()
 let iriq=await calcularIRIQ()
-
+let cor='#16a34a'
+let faixa='BAIXO'
+if(iriq>=30){
+cor='#dc2626'
+faixa='CRÍTICO'
+}else if(iriq>=20){
+cor='#f97316'
+faixa='ALTO'
+}else if(iriq>=10){
+cor='#facc15'
+faixa='MODERADO'
+}
 box.innerHTML=`
 
 <div class="chap-grid">
@@ -414,10 +426,10 @@ POPULAÇÃO EXPOSTA
 </div>
 
 <div class="chap-card">
-<div class="chap-num">${formatarNumero(area)} m²</div>
-<div class="chap-label">ÁREA SOB RISCO</div>
+<div class="chap-num">${(Number(area||0)/1000000).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+<div class="chap-label">KM² SOB RISCO</div>
 <div style="font-size:11px;color:#64748b">
-${(area/1000000000).toFixed(2)} bilhões de m²
+${formatarNumero(area)} m²
 </div>
 </div>
 
@@ -666,9 +678,32 @@ async function renderIRIQEstadual(){
 let box=document.getElementById('painelIRIQEstadual')
 if(!box)return
 let iriq=await calcularIRIQ()
+let cor='#16a34a'
+let faixa='BAIXO'
+
+if(Number(iriq)>=75){
+cor='#dc2626'
+faixa='CRÍTICO'
+}else if(Number(iriq)>=50){
+cor='#f97316'
+faixa='ALTO'
+}else if(Number(iriq)>=25){
+cor='#facc15'
+faixa='MODERADO'
+}
 box.innerHTML=`
 <div class="impacto-box">
-<div class="impacto-score">${iriq}</div>
+<div class="impacto-score" style="color:${cor}">
+${iriq}
+</div>
+<div style="
+font-size:18px;
+font-weight:900;
+color:${cor};
+margin-top:10px;
+">
+${faixa}
+</div>
 <div class="impacto-label">
 ÍNDICE DE RISCO INTEGRADO DE QUEIMADAS
 </div>
@@ -676,10 +711,13 @@ box.innerHTML=`
 O IRIQ considera focos de calor, histórico de queimadas, cobertura vegetal, uso do solo, clima e vulnerabilidade ambiental.
 </div>
 <div style="margin-top:8px;font-size:11px">
-🟢 0-10 Baixo<br>
-🟡 10-20 Moderado<br>
-🟠 20-30 Alto<br>
-🔴 Acima de 30 Crítico
+🟢 0-24 Baixo
+<br>
+🟡 25-49 Moderado
+<br>
+🟠 50-74 Alto
+<br>
+🔴 75-100 Crítico
 </div>
 </div>`
 }
@@ -696,8 +734,14 @@ box.innerHTML=`
 <div class="heat-laranja">ALTO (20-30)</div>
 <div class="heat-amarelo">MODERADO (10-20)</div>
 <div class="heat-verde">BAIXO (0-10)</div>
-<p style="margin-top:10px">
-Classificação baseada no IRIQ Municipal.
+<p style="margin-top:10px;line-height:22px">
+O Heatmap Estadual considera:
+<br>• Focos de calor
+<br>• Histórico de queimadas
+<br>• Cobertura vegetal
+<br>• Vulnerabilidade ambiental
+<br>• Pressão antrópica
+<br>• Índice IRIQ
 </p>
 </div>`
 }
@@ -1927,23 +1971,46 @@ box.innerHTML=(data||[])
 
 }
 /*=========================================================
-042 QUEIMADAS FUNCTION RENDERALERTAS
+037 QUEIMADAS FUNCTION RENDERALERTAS
 =========================================================*/
 async function renderAlertas(){
 let box=document.getElementById('painelAlertas')
 if(!box)return
-let {data}=await client
-.from('queimadas_municipios')
+let {data,error}=await client
+.from('queimadas_heatmap')
 .select('*')
-.order('focos_calor',{ascending:false})
-.limit(5)
-box.innerHTML=(data||[]).map(i=>`
-<div class="alerta-vermelho">
-🚨 ${i.municipio} possui ${i.focos_calor||0} focos de calor.
-</div>
-`).join('')
+if(error){
+console.log(error)
+box.innerHTML='Erro ao carregar alertas.'
+return
 }
-
+let lista=[...(data||[])]
+.sort((a,b)=>{
+let c1=Number(b.criticidade||0)-Number(a.criticidade||0)
+if(c1!==0)return c1
+let c2=Number(b.focos||0)-Number(a.focos||0)
+if(c2!==0)return c2
+return Number(b.risco||0)-Number(a.risco||0)
+})
+.slice(0,5)
+box.innerHTML=`
+<div class="cardExecutivo">
+<h2>ALERTAS AUTOMÁTICOS</h2>
+${lista.map((i,idx)=>`
+<div class="alerta-vermelho">
+🔥 ${idx+1}º ${i.municipio||'-'}
+<br>
+Classificação: ${i.classificacao||'-'}
+<br>
+Criticidade: ${Number(i.criticidade||0).toLocaleString('pt-BR')}
+<br>
+Focos: ${Number(i.focos||0).toLocaleString('pt-BR')}
+<br>
+IRIQ: ${Number(i.risco||0).toLocaleString('pt-BR')}
+</div>
+`).join('')}
+</div>`
+}
 
 /*=========================================================
 036 QUEIMADAS FUNCTION RENDERTOPMUNICIPIOS
@@ -2241,6 +2308,9 @@ let mediaChap=
 let iriq=
 (mediaRisco*0.60)+
 (mediaChap*0.40)
+
+if(iriq>100)iriq=100
+if(iriq<0)iriq=0
 
 return iriq.toFixed(1)
 
@@ -2737,75 +2807,81 @@ beginAtZero:true
 075 QUEIMADAS FUNCTION RENDERINDICADORESESTRATEGICOS
 =========================================================*/
 async function renderIndicadoresEstrategicos(){
-
 let box=document.getElementById('painelIndicadoresEstrategicos')
 if(!box)return
-
 let {data:focos}=await client
 .from('queimadas_focos')
 .select('*')
-
 let {data:heat}=await client
 .from('queimadas_heatmap')
 .select('*')
-
 let totalFocos=(focos||[])
 .reduce((s,i)=>s+Number(i.focos||0),0)
+let iriqMedio=await calcularIRIQ()
+let faixaIRIQ='BAIXO'
+let corIRIQ='#16a34a'
 
-let mediaCriticidade=0
-
-if((heat||[]).length){
-
-mediaCriticidade=
-Math.round(
-
-(heat||[])
-.reduce(
-(s,i)=>s+Number(i.criticidade||0),
-0
-)
-/(heat||[]).length
-
-)
-
+if(Number(iriqMedio)>=75){
+faixaIRIQ='CRÍTICO'
+corIRIQ='#dc2626'
+}else if(Number(iriqMedio)>=50){
+faixaIRIQ='ALTO'
+corIRIQ='#f97316'
+}else if(Number(iriqMedio)>=25){
+faixaIRIQ='MODERADO'
+corIRIQ='#facc15'
 }
-
 let municipiosCriticos=(heat||[])
 .filter(i=>i.classificacao==='CRÍTICO')
 .length
-
 let municipiosAlto=(heat||[])
 .filter(i=>i.classificacao==='ALTO')
 .length
-
+let hoje=new Date().toLocaleDateString('pt-BR')
 box.innerHTML=`
-
 <div class="chap-grid">
-
 <div class="chap-card">
-<div class="chap-num">${totalFocos}</div>
+<div class="chap-num">${Number(totalFocos||0).toLocaleString('pt-BR')}</div>
 <div class="chap-label">FOCOS ACUMULADOS</div>
+<div style="font-size:11px;margin-top:6px;color:#64748b">
+Período analisado
 </div>
-
+<div style="font-size:11px;font-weight:700">
+01/01/2026 até ${hoje}
+</div>
+</div>
 <div class="chap-card">
-<div class="chap-num">${mediaCriticidade}</div>
-<div class="chap-label">IRIQ MÉDIO</div>
+<div class="chap-num" style="color:${corIRIQ}">
+${iriqMedio}
 </div>
-
+<div class="chap-label">
+IRIQ MÉDIO ESTADUAL
+</div>
+<div style="
+font-size:13px;
+font-weight:900;
+color:${corIRIQ};
+margin-top:6px;
+">
+${faixaIRIQ}
+</div>
+<div style="
+font-size:11px;
+margin-top:6px;
+color:#64748b;
+">
+60% Risco + 40% CHAP
+</div>
+</div>
 <div class="chap-card">
 <div class="chap-num">${municipiosCriticos}</div>
 <div class="chap-label">CRÍTICOS</div>
 </div>
-
 <div class="chap-card">
 <div class="chap-num">${municipiosAlto}</div>
 <div class="chap-label">ALTO RISCO</div>
 </div>
-
-</div>
-
-`
-
+</div>`
 }
 /*=========================================================
 075A QUEIMADAS FUNCTION RENDERINDICADORESPRESIDENTE
