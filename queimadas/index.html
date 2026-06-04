@@ -41,8 +41,9 @@ if(typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels)}
 <button onclick="mostrarAbaQueimadas('monitoramento')">🔥 MONITORAMENTO</button>
 <button onclick="mostrarAbaQueimadas('analise')">🤖 IA E RISCOS</button>
 <button onclick="mostrarAbaQueimadas('mapa')">🗺 MAPA ESTADUAL</button>
+<button onclick="mostrarAbaQueimadas('cadastroMunicipal')">🏛️ CADASTRO MUNICIPAL</button>
 <button onclick="mostrarAbaQueimadas('situacao')">🚨 SALA DE SITUAÇÃO</button>
-<button onclick="mostrarAbaQueimadas('presidente')">🏛 PRESIDÊNCIA</button>
+<button onclick="mostrarAbaQueimadas('presidente')">🏛 GERAL</button>
 <button onclick="mostrarAbaQueimadas('conselheiro')">⚖ RELATOR</button>
 <button onclick="mostrarAbaQueimadas('auditor')">📑 AUDITORIA</button>
 <button onclick="mostrarAbaQueimadas('relatorios')">📄 RELATÓRIOS</button>
@@ -143,7 +144,33 @@ EXECUTIVO MUNICIPAL
 
 <div class="cardExecutivo">
 <h2>MAPA MUNICIPAL DE RONDÔNIA</h2>
+<div class="filtroMapaMunicipal">
+<button onclick="filtrarMapaMunicipal('TODOS')" class="btnMapaMunicipal">
+TODOS
+</button>
+<button onclick="filtrarMapaMunicipal('VERDE')" class="btnMapaMunicipal">
+🟢 PLANOS
+</button>
+<button onclick="filtrarMapaMunicipal('AMARELO')" class="btnMapaMunicipal">
+🟡 DILAÇÃO
+</button>
+<button onclick="filtrarMapaMunicipal('VERMELHO')" class="btnMapaMunicipal">
+🔴 SEM RESPOSTA
+</button>
+</div>
 <div id="mapaMunicipalRO" style="height:650px"></div>
+<div class="exec-legenda-municipal">
+<div class="leg-verde">
+🟢 Plano de Ação Apresentado
+</div>
+<div class="leg-amarelo">
+🟡 Dilação de Prazo
+</div>
+<div class="leg-vermelho">
+🔴 Sem Resposta
+</div>
+
+</div>
 <div class="fonte-card">
 Fonte: Ofício Circular n.16/2026/GABPRES/TCERO • Municípios de Rondônia
 </div>
@@ -191,9 +218,27 @@ onkeyup="renderTabelaMunicipios()"
 <div id="painelTabelaMunicipios"></div>
 </div>
 </section>
-  
 <!--=========================================================
-002 PLANEJAMENTO
+003 CADASTRO MUNICIPAL
+=========================================================-->
+<section id="abaCadastroMunicipal" class="abaQueimadas hidden">
+<div class="painelTitulo">
+CADASTRO MUNICIPAL
+</div>
+<div class="cardExecutivo">
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+<input
+type="text"
+id="pesquisaCadastroMunicipio"
+placeholder="Pesquisar município..."
+onkeyup="renderCadastroMunicipios()"
+>
+</div>
+<div id="painelCadastroMunicipios"></div>
+</div>
+</section>
+<!--=========================================================
+004 PLANEJAMENTO
 =========================================================-->
 <section id="abaPlanejamento" class="abaQueimadas hidden">
 <div class="painelTitulo">PLANEJAMENTO ESTRATÉGICO</div>
@@ -222,7 +267,7 @@ onkeyup="renderTabelaMunicipios()"
 <div class="cardExecutivo"><h2>MARCOS ESTRATÉGICOS</h2><div id="painelMarcos"></div></div>
 </section>
 <!--=========================================================
-003 MONITORAMENTO
+005 MONITORAMENTO
 =========================================================-->
 <section id="abaMonitoramento" class="abaQueimadas hidden">
 <div class="painelTitulo">MONITORAMENTO</div>
@@ -236,7 +281,7 @@ onkeyup="renderTabelaMunicipios()"
 <div class="cardExecutivo"><h2>EVIDÊNCIAS</h2><div id="painelEvidencias"></div></div>
 </section>
 <!--=========================================================
-004 IA E RISCOS
+006 IA E RISCOS
 =========================================================-->
 <section id="abaAnalise" class="abaQueimadas hidden">
 <div class="painelTitulo">IA E RISCOS</div>
@@ -249,7 +294,7 @@ onkeyup="renderTabelaMunicipios()"
 <div class="cardExecutivo"><h2>SUGESTÕES AUTOMÁTICAS</h2><div id="painelIASugestoes"></div></div>
 </section>
 <!--=========================================================
-005 MAPA ESTADUAL
+007 MAPA ESTADUAL
 =========================================================-->
 <section id="abaMapa" class="abaQueimadas hidden">
 <div class="painelTitulo">MAPA ESTADUAL</div>
@@ -262,7 +307,7 @@ onkeyup="renderTabelaMunicipios()"
 <div class="cardExecutivo"><h2>TERRAS INDÍGENAS</h2><div id="painelTIMapa"></div></div>
 </section>
 <!--=========================================================
-006 SALA DE SITUAÇÃO
+008 SALA DE SITUAÇÃO
 =========================================================-->
 <section id="abaSituacao" class="abaQueimadas hidden">
 <div class="painelTitulo">SALA DE SITUAÇÃO</div>
@@ -274,10 +319,10 @@ onkeyup="renderTabelaMunicipios()"
 <div id="painelSalaSituacaoEstadual"></div>
 </section>
 <!--=========================================================
-007 PRESIDÊNCIA
+009 GERAL
 =========================================================-->
 <section id="abaPresidente" class="abaQueimadas hidden">
-<div class="painelTitulo">PRESIDÊNCIA</div>
+<div class="painelTitulo">GERAL</div>
 <div id="painelPresidente"></div>
 <div id="painelIRIQEstadual"></div>
 <div id="painelPlanosMunicipais"></div>
@@ -285,7 +330,7 @@ onkeyup="renderTabelaMunicipios()"
 <div id="painelIndicadoresPresidente"></div>
 </section>
 <!--=========================================================
-008 RELATOR
+010 RELATOR
 =========================================================-->
 <section id="abaConselheiro" class="abaQueimadas hidden">
 <div class="painelTitulo">RELATOR</div>
@@ -295,14 +340,14 @@ onkeyup="renderTabelaMunicipios()"
 <div id="painelTopMunicipios"></div>
 </section>
 <!--=========================================================
-009 AUDITORIA
+011 AUDITORIA
 =========================================================-->
 <section id="abaAuditor" class="abaQueimadas hidden">
 <div class="painelTitulo">AUDITORIA CONCOMITANTE</div>
 <div id="painelAuditoria"></div>
 </section>
 <!--=========================================================
-010 RELATÓRIOS
+012 RELATÓRIOS
 =========================================================-->
 <section id="abaRelatorios" class="abaQueimadas hidden">
 <div class="painelTitulo">RELATÓRIOS</div>
