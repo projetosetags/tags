@@ -18,39 +18,33 @@ async function renderCadeiaValor(){
 let box=document.getElementById('painelCadeiaValor')
 if(!box)return
 let {data,error}=await client
-.from('queimadas_cadeia_valor')
+.from('queimadas_monitoramento')
 .select('*')
-.order('item',{ascending:true})
 if(error){
 console.log(error)
 box.innerHTML='Erro ao carregar.'
 return
 }
-if(!data||!data.length){
-box.innerHTML='<div class="chap-card">Tabela queimadas_cadeia_valor sem registros.</div>'
-return
-}
-let html=''
-data.forEach(i=>{
-html+=`
+let total=(data||[]).length
+let andamento=(data||[]).filter(i=>Number(i.percentual||0)>0).length
+let concluidos=(data||[]).filter(i=>Number(i.percentual||0)>=100).length
+box.innerHTML=`
 <div class="cadeia-card">
-<div class="cadeia-item">${i.item||'-'}</div>
+<div class="cadeia-item">CADEIA DE VALOR DO PLANO DE AÇÃO</div>
 <div class="cadeia-flow">
-<div class="cadeia-box cadeia-insumo">📥<br>${i.insumo||'-'}</div>
+<div class="cadeia-box cadeia-insumo">📥<br>Recursos Humanos<br>Equipamentos<br>Sistemas</div>
 <div class="cadeia-seta">➜</div>
-<div class="cadeia-box cadeia-atividade">⚙️<br>${i.atividade||'-'}</div>
+<div class="cadeia-box cadeia-atividade">⚙️<br>${total}<br>Ações Planejadas</div>
 <div class="cadeia-seta">➜</div>
-<div class="cadeia-box cadeia-produto">📦<br>${i.produto||'-'}</div>
+<div class="cadeia-box cadeia-produto">📦<br>${andamento}<br>Ações Executadas</div>
 <div class="cadeia-seta">➜</div>
-<div class="cadeia-box cadeia-resultado">📈<br>${i.resultado||'-'}</div>
+<div class="cadeia-box cadeia-resultado">📈<br>${concluidos}<br>Resultados Entregues</div>
 <div class="cadeia-seta">➜</div>
-<div class="cadeia-box cadeia-impacto">🎯<br>${i.impacto||'-'}</div>
+<div class="cadeia-box cadeia-impacto">🎯<br>Redução das Queimadas</div>
 <div class="cadeia-seta">➜</div>
-<div class="cadeia-box cadeia-beneficio">👨‍👩‍👧‍👦<br>${i.beneficio||'-'}</div>
+<div class="cadeia-box cadeia-beneficio">👨‍👩‍👧‍👦<br>Proteção Ambiental</div>
 </div>
 </div>`
-})
-box.innerHTML=html
 }
 /*=========================================================
 002 QUEIMADAS FUNCTION RENDERGANTT
@@ -58,38 +52,23 @@ box.innerHTML=html
 async function renderGantt(){
 let box=document.getElementById('painelGantt')
 if(!box)return
-let {data,error}=await client
-.from('queimadas_marcos')
-.select('*')
-.order('data_inicio',{ascending:true})
-if(error){
-console.log(error)
-return
-}
-if(!data||!data.length){
-box.innerHTML='<div class="chap-card">Tabela queimadas_marcos sem registros.</div>'
-return
-}
-let inicio=new Date()
-inicio.setMonth(0)
-inicio.setDate(1)
-let html=''
-data.forEach(m=>{
-let d1=new Date(m.data_inicio)
-let d2=new Date(m.data_fim)
-let diasInicio=Math.floor((d1-inicio)/86400000)
-let diasFim=Math.floor((d2-d1)/86400000)
-html+=`
+box.innerHTML=`
 <div class="gantt-row">
-<div class="gantt-titulo">${m.titulo}</div>
-<div class="gantt-area">
-<div class="gantt-bar" style="left:${diasInicio}px;width:${diasFim}px;background:${m.cor||'#2563eb'};">
-${m.status||''}
+<div class="gantt-titulo">Planejamento</div>
+<div class="gantt-area"><div class="gantt-bar" style="width:20%;background:#2563eb">JAN-MAR</div></div>
 </div>
+<div class="gantt-row">
+<div class="gantt-titulo">Prevenção</div>
+<div class="gantt-area"><div class="gantt-bar" style="width:45%;background:#16a34a">ABR-JUN</div></div>
 </div>
+<div class="gantt-row">
+<div class="gantt-titulo">Período Crítico</div>
+<div class="gantt-area"><div class="gantt-bar" style="width:80%;background:#dc2626">JUL-OUT</div></div>
+</div>
+<div class="gantt-row">
+<div class="gantt-titulo">Avaliação Final</div>
+<div class="gantt-area"><div class="gantt-bar" style="width:100%;background:#f97316">NOV-DEZ</div></div>
 </div>`
-})
-box.innerHTML=html
 }
 /*=========================================================
 003 QUEIMADAS FUNCTION RENDERMATRIZRISCO5X5
@@ -151,40 +130,28 @@ box.innerHTML=html
 async function renderTeoriaMudanca(){
 let box=document.getElementById('painelTeoriaMudanca')
 if(!box)return
-let {data,error}=await client
-.from('queimadas_cadeia_valor')
+let {data=[]}=await client
+.from('queimadas_monitoramento')
 .select('*')
-.order('item',{ascending:true})
-if(error){
-console.log(error)
-box.innerHTML='Erro ao carregar.'
-return
-}
-if(!data||!data.length){
-box.innerHTML='<div class="chap-card">Tabela queimadas_cadeia_valor sem registros.</div>'
-return
-}
-let html=''
-data.forEach(i=>{
-html+=`
+let total=data.length
+let concluidos=data.filter(i=>Number(i.percentual||0)>=100).length
+box.innerHTML=`
 <div class="tdm-card">
-<div class="tdm-titulo">${i.item||'-'} - ${i.subitem||''}</div>
+<div class="tdm-titulo">TEORIA DA MUDANÇA - QUEIMADAS 2026</div>
 <div class="tdm-flow">
-<div class="tdm-box tdm-problema">🚨<br>${i.insumo||'Problema não informado'}</div>
+<div class="tdm-box tdm-problema">🚨<br>Queimadas e Incêndios Florestais</div>
 <div class="tdm-seta">↓</div>
-<div class="tdm-box tdm-causa">🔍<br>${i.atividade||'Causa não informada'}</div>
+<div class="tdm-box tdm-causa">🔍<br>Pressão Antrópica<br>Estiagem</div>
 <div class="tdm-seta">↓</div>
-<div class="tdm-box tdm-acao">⚙️<br>${i.produto||'Ação não informada'}</div>
+<div class="tdm-box tdm-acao">⚙️<br>${total}<br>Ações Planejadas</div>
 <div class="tdm-seta">↓</div>
-<div class="tdm-box tdm-resultado">📈<br>${i.resultado||'Resultado não informado'}</div>
+<div class="tdm-box tdm-resultado">📈<br>${concluidos}<br>Entregas Concluídas</div>
 <div class="tdm-seta">↓</div>
-<div class="tdm-box tdm-impacto">🎯<br>${i.impacto||'Impacto não informado'}</div>
+<div class="tdm-box tdm-impacto">🎯<br>Redução de Riscos</div>
 <div class="tdm-seta">↓</div>
-<div class="tdm-box tdm-beneficio">👨‍👩‍👧‍👦<br>${i.beneficio||'Benefício não informado'}</div>
+<div class="tdm-box tdm-beneficio">👨‍👩‍👧‍👦<br>Proteção da População e das UCs</div>
 </div>
 </div>`
-})
-box.innerHTML=html
 }
 
 /*=========================================================
@@ -340,27 +307,27 @@ box.innerHTML=`
 async function renderMarcos(){
 let box=document.getElementById('painelMarcos')
 if(!box)return
-let {data,error}=await client.from('queimadas_marcos').select('*').order('data_inicio',{ascending:true})
-if(error){
-console.log(error)
-box.innerHTML='Erro ao carregar.'
-return
-}
-if(!data||!data.length){
-box.innerHTML='<div class="chap-card">Tabela queimadas_marcos sem registros.</div>'
-return
-}
-let html=''
-;(data||[]).forEach(i=>{
-html+=`
+box.innerHTML=`
 <div class="monitor4d-card">
-<b>${i.titulo||'-'}</b><br>
-Início: ${i.data_inicio||'-'}<br>
-Fim: ${i.data_fim||'-'}<br>
-Status: ${i.status||'-'}
+<b>JANEIRO A MARÇO</b><br>
+Planejamento Estratégico<br>
+Status: Concluído
+</div>
+<div class="monitor4d-card">
+<b>ABRIL A JUNHO</b><br>
+Prevenção e Fiscalização<br>
+Status: Em Execução
+</div>
+<div class="monitor4d-card">
+<b>JULHO A OUTUBRO</b><br>
+Período Crítico de Estiagem<br>
+Status: Planejado
+</div>
+<div class="monitor4d-card">
+<b>NOVEMBRO A DEZEMBRO</b><br>
+Avaliação Final e Relatório<br>
+Status: Planejado
 </div>`
-})
-box.innerHTML=html
 }
 /*=========================================================
 015D QUEIMADAS FUNCTION RENDEREXECUCAOFISICA
