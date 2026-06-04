@@ -828,6 +828,7 @@ html+=`
 html+='</div></div>'
 box.innerHTML=html
 }
+
 /*=========================================================
 021 QUEIMADAS FUNCTION RENDERGRAFICORADARODS
 =========================================================*/
@@ -1021,6 +1022,25 @@ O Heatmap Estadual considera:
 <br>• Índice IRIQ
 </p>
 </div>`
+}
+/*=========================================================
+020C QUEIMADAS FUNCTION RENDERIRIQHEATMAPUNIFICADO
+=========================================================*/
+async function renderIRIQHeatmapUnificado(){
+let box=document.getElementById('painelIRIQHeatmapUnificado')
+if(!box)return
+let iriq=document.getElementById('painelIRIQEstadual')?.innerHTML||''
+let heat=document.getElementById('painelHeatMapExecutivo')?.innerHTML||''
+box.innerHTML=`
+<div class="iriq-heatmap-unificado">
+<div class="iriq-box">
+${iriq}
+</div>
+<div class="heatmap-box">
+${heat}
+</div>
+</div>
+`
 }
 
 /*=========================================================
@@ -2069,6 +2089,7 @@ if(nome==='executivo'){
 document.getElementById('abaExecutivo')?.classList.remove('hidden')
 if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
 if(typeof renderKPIsExecutivos==='function')await renderKPIsExecutivos()
+if(typeof renderIRIQHeatmapUnificado==='function')await renderIRIQHeatmapUnificado()
 if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
 if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
 if(typeof renderTopRiscos==='function')await renderTopRiscos()
@@ -4144,3 +4165,14 @@ await renderGeoJSONRO()
 if(typeof renderUCs==='function')
 await renderUCs()
 })
+/*=========================================================
+999 TOGGLE MAPA RO
+=========================================================*/
+function toggleMapaRO(){
+let box=document.getElementById('boxMapaRO')
+if(!box)return
+box.style.display=
+box.style.display==='none'
+?'block'
+:'none'
+}
