@@ -2048,10 +2048,21 @@ return `
 }
 
 /*=========================================================
-998 QUEIMADAS FUNCTION MOSTRAR ABA
+998 QUEIMADAS FUNCTION MOSTRAR ABA ATIVA E OCULTA
 =========================================================*/
 async function mostrarAbaQueimadas(nome){
 localStorage.setItem('abaQueimadas',nome)
+document.querySelectorAll('.btnAbaQueimadas').forEach(x=>x.classList.remove('btnAbaAtiva'))
+if(nome==='executivo')document.getElementById('btnAbaExecutivo')?.classList.add('btnAbaAtiva')
+if(nome==='executivomunicipal')document.getElementById('btnAbaExecutivoMunicipal')?.classList.add('btnAbaAtiva')
+if(nome==='planejamento')document.getElementById('btnAbaPlanejamento')?.classList.add('btnAbaAtiva')
+if(nome==='monitoramento')document.getElementById('btnAbaMonitoramento')?.classList.add('btnAbaAtiva')
+if(nome==='analise')document.getElementById('btnAbaAnalise')?.classList.add('btnAbaAtiva')
+if(nome==='situacao')document.getElementById('btnAbaSituacao')?.classList.add('btnAbaAtiva')
+if(nome==='presidente')document.getElementById('btnAbaPresidente')?.classList.add('btnAbaAtiva')
+if(nome==='conselheiro')document.getElementById('btnAbaConselheiro')?.classList.add('btnAbaAtiva')
+if(nome==='auditor')document.getElementById('btnAbaAuditor')?.classList.add('btnAbaAtiva')
+if(nome==='relatorios')document.getElementById('btnAbaRelatorios')?.classList.add('btnAbaAtiva')
 document.querySelectorAll('.abaQueimadas').forEach(x=>x.classList.add('hidden'))
 
 if(nome==='executivo'){
