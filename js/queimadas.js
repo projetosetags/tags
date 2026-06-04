@@ -973,6 +973,7 @@ O IRIQ considera focos de calor, histórico de queimadas, cobertura vegetal, uso
 <div class="fonte-card">
 Fonte: CHAP • IA-CHAP • Matriz de Risco 5x5
 </div>
+</div>`
 }
 /*=========================================================
 020B QUEIMADAS FUNCTION RENDERLEGENDAHEATMAP
