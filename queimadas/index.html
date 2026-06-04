@@ -20,11 +20,8 @@ if(typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels)}
 <script src="../js/queimadas.js?v=2026"></script>
 </head>
 <body>
-
 <div class="layoutPrincipal">
-
 <header class="topoSistema">
-
 <div class="topoEsquerda">
 <div class="logoFogo">🔥</div>
 <div>
@@ -32,39 +29,24 @@ if(typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels)}
 <p>Monitoramento Inteligente • TCE-RO • SEDAM • CBMRO</p>
 </div>
 </div>
-
 <div class="topoDireita">
 <button onclick="gerarPDFExecutivoTCERO()">PDF EXECUTIVO</button>
 <button onclick="gerarWordExecutivoTCERO()">WORD EXECUTIVO</button>
 <button onclick="pdfCompletoQueimadas()">PDF COMPLETO</button>
 </div>
-
 </header>
-
 <nav class="menuQueimadas">
-
 <button onclick="mostrarAbaQueimadas('executivo')">📊 EXECUTIVO</button>
-
 <button onclick="mostrarAbaQueimadas('planejamento')">📋 PLANEJAMENTO</button>
-
 <button onclick="mostrarAbaQueimadas('monitoramento')">🔥 MONITORAMENTO</button>
-
 <button onclick="mostrarAbaQueimadas('analise')">🤖 IA E RISCOS</button>
-
 <button onclick="mostrarAbaQueimadas('mapa')">🗺 MAPA ESTADUAL</button>
-
 <button onclick="mostrarAbaQueimadas('situacao')">🚨 SALA DE SITUAÇÃO</button>
-
 <button onclick="mostrarAbaQueimadas('presidente')">🏛 PRESIDÊNCIA</button>
-
 <button onclick="mostrarAbaQueimadas('conselheiro')">⚖ RELATOR</button>
-
 <button onclick="mostrarAbaQueimadas('auditor')">📑 AUDITORIA</button>
-
 <button onclick="mostrarAbaQueimadas('relatorios')">📄 RELATÓRIOS</button>
-
 </nav>
-
 <!--=========================================================
 001 EXECUTIVO
 =========================================================-->
@@ -115,193 +97,135 @@ Fonte: OpenStreetMap • INPE • Sedam • Base Municipal RO
 </div>
 </div>
 </section>
-
 <!--=========================================================
 002 PLANEJAMENTO
 =========================================================-->
-
 <section id="abaPlanejamento" class="abaQueimadas hidden">
-
 <div class="painelTitulo">PLANEJAMENTO ESTRATÉGICO</div>
-
 <div class="cardExecutivo"><h2>PLANO UNIFICADO</h2><div id="painelPlanoUnificado"></div></div>
-
 <div class="cardExecutivo"><h2>PLANO SEDAM</h2><div id="painelPlanoSEDAM"></div></div>
-
 <div class="cardExecutivo"><h2>PLANO CBMRO</h2><div id="painelPlanoCBM"></div></div>
-
 <div class="cardExecutivo"><h2>CADEIA DE VALOR</h2><div id="painelCadeiaValor"></div></div>
-
 <div class="cardExecutivo"><h2>TEORIA DA MUDANÇA</h2><div id="painelTeoriaMudanca"></div></div>
-
 <div class="cardExecutivo"><h2>ODS</h2><div id="painelODS"></div></div>
-
+<div class="cardExecutivo">
+<div id="painelODSEvidencias"></div>
+</div>
+<div class="cardExecutivo">
+<h2>RADAR DE ADERÊNCIA À AGENDA 2030</h2>
+<div style="height:500px">
+<canvas id="graficoRadarODS"></canvas>
+</div>
+</div>
+<div class="cardExecutivo">
+<div id="painelODSMaturidade"></div>
+</div>
+<div class="cardExecutivo">
+<div id="painelODSExplicacaoIA"></div>
+</div>
 <div class="cardExecutivo"><h2>CRONOGRAMA GANTT</h2><div id="painelGantt"></div></div>
-
 <div class="cardExecutivo"><h2>MARCOS ESTRATÉGICOS</h2><div id="painelMarcos"></div></div>
-
 </section>
-
 <!--=========================================================
 003 MONITORAMENTO
 =========================================================-->
-
 <section id="abaMonitoramento" class="abaQueimadas hidden">
-
 <div class="painelTitulo">MONITORAMENTO</div>
-
 <div class="cardExecutivo"><h2>AÇÕES SEDAM</h2><div id="painelAcoesSedam"></div></div>
-
 <div class="cardExecutivo"><h2>AÇÕES CBMRO</h2><div id="painelAcoesCBM"></div></div>
-
 <div class="cardExecutivo"><h2>AÇÕES TCE-RO</h2><div id="painelAcoesTCERO"></div></div>
-
 <div class="cardExecutivo"><h2>GOVERNANÇA</h2><div id="painelGovernanca"></div></div>
-
 <div class="cardExecutivo"><h2>MONITORAMENTO 4D</h2><div id="painelMonitoramento4D"></div></div>
-
 <div class="cardExecutivo"><h2>EXECUÇÃO FÍSICA</h2><div id="painelExecucaoFisica"></div></div>
-
 <div class="cardExecutivo"><h2>EXECUÇÃO FINANCEIRA</h2><div id="painelExecucaoFinanceira"></div></div>
-
 <div class="cardExecutivo"><h2>EVIDÊNCIAS</h2><div id="painelEvidencias"></div></div>
-
 </section>
-
 <!--=========================================================
 004 IA E RISCOS
 =========================================================-->
-
 <section id="abaAnalise" class="abaQueimadas hidden">
-
 <div class="painelTitulo">IA E RISCOS</div>
-
 <div class="cardExecutivo"><h2>DASHBOARD CHAP</h2><div id="painelCHAP"></div></div>
-
 <div class="cardExecutivo"><h2>IA CHAP</h2><div id="painelIAChap"></div></div>
-
 <div class="cardExecutivo"><h2>MATRIZ DE RISCO 5X5</h2><div id="painelMatriz5x5"></div></div>
-
 <div class="cardExecutivo"><h2>TOP RISCOS</h2><div id="painelTopRiscos"></div></div>
-
 <div class="cardExecutivo"><h2>PREDIÇÃO DE QUEIMADAS</h2><div id="painelIARiscos"></div></div>
-
 <div class="cardExecutivo"><h2>PRIORIZAÇÃO MUNICIPAL</h2><div id="painelIAPriorizacao"></div></div>
-
 <div class="cardExecutivo"><h2>SUGESTÕES AUTOMÁTICAS</h2><div id="painelIASugestoes"></div></div>
-
 </section>
-
 <!--=========================================================
 005 MAPA ESTADUAL
 =========================================================-->
-
 <section id="abaMapa" class="abaQueimadas hidden">
-
 <div class="painelTitulo">MAPA ESTADUAL</div>
-
 <div class="cardExecutivo">
 <div id="mapaRO"></div>
 </div>
-
 <div class="cardExecutivo"><h2>CAMADAS TEMÁTICAS</h2><div id="painelCamadas"></div></div>
-
 <div class="cardExecutivo"><h2>GEOJSON MUNICÍPIOS</h2><div id="painelGeoJSON"></div></div>
-
 <div class="cardExecutivo"><h2>UNIDADES DE CONSERVAÇÃO</h2><div id="painelUCsMapa"></div></div>
-
 <div class="cardExecutivo"><h2>TERRAS INDÍGENAS</h2><div id="painelTIMapa"></div></div>
-
 </section>
-
 <!--=========================================================
 006 SALA DE SITUAÇÃO
 =========================================================-->
-
 <section id="abaSituacao" class="abaQueimadas hidden">
-
 <div class="painelTitulo">SALA DE SITUAÇÃO</div>
-
 <div id="painelTopCriticos"></div>
 <div id="painelTopRiscos"></div>
 <div id="painelSemEvidencias"></div>
 <div id="painelTopIAChap"></div>
 <div id="painelAlertas"></div>
 <div id="painelSalaSituacaoEstadual"></div>
-
 </section>
-
 <!--=========================================================
 007 PRESIDÊNCIA
 =========================================================-->
-
 <section id="abaPresidente" class="abaQueimadas hidden">
-
 <div class="painelTitulo">PRESIDÊNCIA</div>
-
 <div id="painelPresidente"></div>
 <div id="painelIRIQEstadual"></div>
 <div id="painelPlanosMunicipais"></div>
 <div id="painelUCsPresidente"></div>
 <div id="painelIndicadoresPresidente"></div>
-
 </section>
-
 <!--=========================================================
 008 RELATOR
 =========================================================-->
-
 <section id="abaConselheiro" class="abaQueimadas hidden">
-
 <div class="painelTitulo">RELATOR</div>
-
 <div id="painelRelator"></div>
 <div id="painelPendenciasSEDAM"></div>
 <div id="painelPendenciasCBM"></div>
 <div id="painelTopMunicipios"></div>
-
 </section>
-
 <!--=========================================================
 009 AUDITORIA
 =========================================================-->
-
 <section id="abaAuditor" class="abaQueimadas hidden">
-
 <div class="painelTitulo">AUDITORIA CONCOMITANTE</div>
-
 <div id="painelAuditoria"></div>
-
 </section>
-
 <!--=========================================================
 010 RELATÓRIOS
 =========================================================-->
-
 <section id="abaRelatorios" class="abaQueimadas hidden">
-
 <div class="painelTitulo">RELATÓRIOS</div>
-
 <div class="cardExecutivo">
 <button onclick="gerarPDFExecutivoTCERO()">PDF EXECUTIVO</button>
 <button onclick="gerarWordExecutivoTCERO()">WORD EXECUTIVO</button>
 <button onclick="pdfCompletoQueimadas()">PDF COMPLETO</button>
 </div>
-
 <div style="height:500px">
 <canvas id="graficoTopFocosRelatorio"></canvas>
 </div>
-
 <div style="height:500px">
 <canvas id="graficoGovernancaRelatorio"></canvas>
 </div>
-
 <div style="height:500px">
 <canvas id="graficoEvolucaoMensalRelatorio"></canvas>
 </div>
-
 </section>
-
 </div>
 
 </body>
