@@ -741,7 +741,7 @@ let box=document.getElementById('painelLegendaHeatmap')
 if(!box)return
 box.innerHTML=`
 <div class="cardExecutivo">
-<h2>LEGENDA DO HEATMAP ESTADUAL</h2>
+<h2>HEATMAP ESTADUAL - QUANTIDADE DE MUNICÍPIOS POR CLASSE DE RISCO</h2>
 <div class="heat-vermelho">CRÍTICO (30-50)</div>
 <div class="heat-laranja">ALTO (20-30)</div>
 <div class="heat-amarelo">MODERADO (10-20)</div>
@@ -2555,22 +2555,18 @@ e
 072 QUEIMADAS FUNCTION RENDERPAINELUCS
 =========================================================*/
 async function renderPainelUCs(){
-
 let box=document.getElementById('painelUCs')
 if(!box)return
-
 box.innerHTML=`
 <div class="chap-grid">
-
 <div class="chap-card">
 <div class="chap-num">
-27
+49
 </div>
 <div class="chap-label">
-UC ESTADUAIS
+UNIDADES DE CONSERVAÇÃO
 </div>
 </div>
-
 <div class="chap-card">
 <div class="chap-num">
 100%
@@ -2579,16 +2575,22 @@ UC ESTADUAIS
 MONITORADAS
 </div>
 </div>
-
 <div class="chap-card">
 <div class="chap-num">
 SEDAM
 </div>
 <div class="chap-label">
-RESPONSÁVEL
+ÓRGÃO GESTOR
 </div>
 </div>
-
+<div class="chap-card">
+<div class="chap-num">
+TCE-RO
+</div>
+<div class="chap-label">
+MONITORAMENTO
+</div>
+</div>
 </div>
 `
 }
