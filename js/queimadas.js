@@ -2220,7 +2220,7 @@ if(typeof renderSituacaoGeralMunicipios==='function')await renderSituacaoGeralMu
 if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
 if(typeof renderDilacoesPrazo==='function')await renderDilacoesPrazo()
 if(typeof renderSemResposta==='function')await renderSemResposta()
-if(typeof renderMapaMunicipal==='function')await renderMapaMunicipal()
+if(typeof renderMapaMunicipal==='function'){setTimeout(()=>{renderMapaMunicipal()},300)}
 if(typeof renderGraficoMunicipios==='function')await renderGraficoMunicipios()
 if(typeof renderEstatisticasMunicipais==='function')await renderEstatisticasMunicipais()
 if(typeof renderTabelaMunicipios==='function')await renderTabelaMunicipios()
@@ -3881,10 +3881,14 @@ box.innerHTML=html
 async function renderMapaMunicipal(){
 let box=document.getElementById('mapaMunicipalRO')
 if(!box)return
+if(!document.body.contains(box))return
+if(box.offsetWidth===0)return
+if(box.offsetHeight===0)return
 if(window.mapaMunicipalRO){
 window.mapaMunicipalRO.remove()
+window.mapaMunicipalRO=null
 }
-window.mapaMunicipalRO=L.map('mapaMunicipalRO').setView([-10.9,-63.3],7)
+window.mapaMunicipalRO=L.map(box).setView([-10.9,-63.3],7)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 attribution:'OpenStreetMap'
 }).addTo(window.mapaMunicipalRO)
