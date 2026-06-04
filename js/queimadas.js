@@ -542,26 +542,26 @@ let alto=(data||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('ALTO
 let moderado=(data||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('MODERADO')).length
 let baixo=(data||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('BAIXO')).length
 box.innerHTML=`
-<div class="heatmap-grid">
+<div class="heatmap-grid-mini">
 <div class="heat-vermelho">
-<div style="font-size:34px;font-weight:900">${critico}</div>
+<div style="font-size:26px;font-weight:900">${critico}</div>
 <div>CRÍTICO</div>
-<div>RISCO MUITO ALTO</div>
+<div>75-100</div>
 </div>
 <div class="heat-laranja">
-<div style="font-size:34px;font-weight:900">${alto}</div>
+<div style="font-size:26px;font-weight:900">${alto}</div>
 <div>ALTO</div>
-<div>RISCO ALTO</div>
+<div>50-74</div>
 </div>
 <div class="heat-amarelo">
-<div style="font-size:34px;font-weight:900">${moderado}</div>
+<div style="font-size:26px;font-weight:900">${moderado}</div>
 <div>MODERADO</div>
-<div>RISCO MODERADO</div>
+<div>25-49</div>
 </div>
 <div class="heat-verde">
-<div style="font-size:34px;font-weight:900">${baixo}</div>
+<div style="font-size:26px;font-weight:900">${baixo}</div>
 <div>BAIXO</div>
-<div>RISCO BAIXO</div>
+<div>0-24</div>
 </div>
 </div>
 <div class="fonte-card">
