@@ -641,7 +641,7 @@ let {data,error}=await client
 .from('queimadas_ods')
 .select('*')
 .eq('ativo',true)
-.order('ordem',{ascending:true})
+.order('peso',{ascending:false})
 if(error){
 console.log(error)
 box.innerHTML='Erro ao carregar ODS.'
@@ -692,6 +692,33 @@ Fonte: Agenda 2030 • ONU • IA-CHAP • Projeto QUEIMADAS 2026
 </div>`
 html+='</div>'
 box.innerHTML=html
+}
+/*=========================================================
+019A QUEIMADAS FUNCTION RECALCULARODSIA
+=========================================================*/
+async function recalcularODSIA(){
+let {data:heat}=await client.from('queimadas_heatmap').select('*')
+let {data:chap}=await client.from('queimadas_chap').select('*')
+let {data:riscos}=await client.from('queimadas_riscos').select('*')
+let {data:monitoramento}=await client.from('queimadas_monitoramento').select('*')
+let focos=(heat||[]).reduce((s,i)=>s+Number(i.focos||0),0)
+let criticidade=(heat||[]).reduce((s,i)=>s+Number(i.criticidade||0),0)
+let mediaCriticidade=(heat||[]).length?criticidade/(heat||[]).length:0
+let totalChap=(chap||[]).reduce((s,i)=>s+Number(i.resultado||0),0)
+let mediaChap=(chap||[]).length?totalChap/(chap||[]).length:0
+let totalMonitoramento=(monitoramento||[]).length
+let concluidos=(monitoramento||[]).filter(i=>Number(i.percentual||0)>=100).length
+let desempenho=totalMonitoramento?(concluidos/totalMonitoramento)*100:0
+let peso13=Math.min(100,(mediaCriticidade*0.50)+(mediaChap*0.30)+(desempenho*0.20))
+let peso15=Math.min(100,(mediaCriticidade*0.40)+(mediaChap*0.40)+(desempenho*0.20))
+let peso16=Math.min(100,(desempenho*0.70)+(mediaChap*0.30))
+let peso11=Math.min(100,(mediaCriticidade*0.60)+(desempenho*0.40))
+let peso17=Math.min(100,(desempenho*0.80)+(mediaChap*0.20))
+await client.from('queimadas_ods').update({peso:peso13}).eq('ods','ODS 13')
+await client.from('queimadas_ods').update({peso:peso15}).eq('ods','ODS 15')
+await client.from('queimadas_ods').update({peso:peso16}).eq('ods','ODS 16')
+await client.from('queimadas_ods').update({peso:peso11}).eq('ods','ODS 11')
+await client.from('queimadas_ods').update({peso:peso17}).eq('ods','ODS 17')
 }
 /*=========================================================
 019A QUEIMADAS FUNCTION RENDERUCSPRESIDENTE
