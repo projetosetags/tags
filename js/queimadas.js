@@ -2054,21 +2054,13 @@ return `
 998 QUEIMADAS FUNCTION MOSTRAR ABA
 =========================================================*/
 async function mostrarAbaQueimadas(nome){
-
-localStorage.setItem(
-'abaQueimadas',
-nome
-)
-
-document.querySelectorAll('.abaQueimadas')
-.forEach(x=>x.classList.add('hidden'))
+localStorage.setItem('abaQueimadas',nome)
+document.querySelectorAll('.abaQueimadas').forEach(x=>x.classList.add('hidden'))
 
 if(nome==='executivo'){
 document.getElementById('abaExecutivo')?.classList.remove('hidden')
 if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
 if(typeof renderKPIsExecutivos==='function')await renderKPIsExecutivos()
-await renderMunicipiosOficio()
-await renderMunicipiosSemResposta()
 if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
 if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
 if(typeof renderTopRiscos==='function')await renderTopRiscos()
@@ -2079,10 +2071,26 @@ if(typeof renderPainelFocosINPE==='function')await renderPainelFocosINPE()
 if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadual()
 if(typeof renderIndicadoresEstrategicos==='function')await renderIndicadoresEstrategicos()
 if(typeof renderPainelUCs==='function')await renderPainelUCs()
+if(typeof renderLegendaHeatmap==='function')await renderLegendaHeatmap()
+}
+
+if(nome==='executivomunicipal'){
+document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
+if(typeof renderKPIsMunicipais==='function')await renderKPIsMunicipais()
+if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
+if(typeof renderDilacoesPrazo==='function')await renderDilacoesPrazo()
+if(typeof renderSemResposta==='function')await renderSemResposta()
+if(typeof renderMapaMunicipal==='function')await renderMapaMunicipal()
+if(typeof renderGraficoMunicipios==='function')await renderGraficoMunicipios()
+if(typeof renderEstatisticasMunicipais==='function')await renderEstatisticasMunicipais()
+if(typeof renderTabelaMunicipios==='function')await renderTabelaMunicipios()
+}
+if(nome==='cadastroMunicipal'){
+document.getElementById('abaCadastroMunicipal')?.classList.remove('hidden')
+await renderCadastroMunicipios()
 }
 if(nome==='planejamento'){
-document.getElementById('abaPlanejamento')
-?.classList.remove('hidden')
+document.getElementById('abaPlanejamento')?.classList.remove('hidden')
 await renderPlanoUnificado()
 await renderPlanoSEDAM()
 await renderPlanoCBM()
@@ -2096,6 +2104,7 @@ await renderODSExplicacaoIA()
 await renderGantt()
 await renderMarcos()
 }
+
 if(nome==='monitoramento'){
 document.getElementById('abaMonitoramento')?.classList.remove('hidden')
 await renderAcoesSedam()
@@ -2109,6 +2118,7 @@ await renderCEPCIFAvancado()
 await renderPOTIFAvancado()
 await renderEvidencias()
 }
+
 if(nome==='analise'){
 document.getElementById('abaAnalise')?.classList.remove('hidden')
 await renderDashboardCHAP()
@@ -2121,6 +2131,7 @@ await iaGerarRelatorio()
 await iaSugerirAcoes()
 await calcularImpacto()
 }
+
 if(nome==='relatorios'){
 document.getElementById('abaRelatorios')?.classList.remove('hidden')
 await renderGraficoTopFocos()
@@ -2128,6 +2139,7 @@ await renderGraficoFocosHistorico()
 await renderGraficoEvolucaoMensal()
 await renderGraficoGovernanca()
 }
+
 if(nome==='situacao'){
 document.getElementById('abaSituacao')?.classList.remove('hidden')
 await renderTopCriticos()
@@ -2137,6 +2149,7 @@ await renderTopIAChap()
 await renderAlertas()
 await renderSalaSituacaoEstadual()
 }
+
 if(nome==='presidente'){
 document.getElementById('abaPresidente')?.classList.remove('hidden')
 await renderPresidente()
@@ -2147,19 +2160,20 @@ await renderIndicadoresPresidente()
 await renderUCsPresidente()
 await renderSituacaoEstrategica()
 }
+
 if(nome==='conselheiro'){
 document.getElementById('abaConselheiro')?.classList.remove('hidden')
 await renderDashboardConselheiro()
 await renderTopMunicipios()
 await renderTopRiscos()
 }
+
 if(nome==='auditor'){
 document.getElementById('abaAuditor')?.classList.remove('hidden')
 await renderAuditoriaConcomitante()
 await renderMunicipiosSemEvidencias()
 await renderTopRiscos()
 }
-
 }
 /*=========================================================
 028 QUEIMADAS FUNCTION RENDERTOPCRITICOS
@@ -3391,6 +3405,724 @@ Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
 html+='</div>'
 box.innerHTML=html
 }
+/*=========================================================
+090 QUEIMADAS FUNCTION RENDERKPISMUNICIPAIS
+=========================================================*/
+async function renderKPIsMunicipais(){
+
+let box=document.getElementById('painelKPIsMunicipais')
+
+if(!box)return
+
+let {data,error}=await client
+.from('vw_queimadas_kpis_resposta')
+.select('*')
+.limit(1)
+
+if(error){
+console.log(error)
+return
+}
+
+let k=(data&&data.length)?data[0]:{}
+
+box.innerHTML=`
+
+<div class="chap-grid">
+
+<div class="chap-card">
+<div class="chap-num">
+${k.total_municipios||52}
+</div>
+<div class="chap-label">
+MUNICÍPIOS OFICIADOS
+</div>
+<div class="fonte-card">
+Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num" style="color:#16a34a">
+${k.planos_apresentados||0}
+</div>
+<div class="chap-label">
+PLANO APRESENTADO
+</div>
+<div class="fonte-card">
+Classificação Verde
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num" style="color:#facc15">
+${k.dilacao_prazo||0}
+</div>
+<div class="chap-label">
+DILAÇÃO DE PRAZO
+</div>
+<div class="fonte-card">
+Classificação Amarela
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num" style="color:#dc2626">
+${k.sem_resposta||0}
+</div>
+<div class="chap-label">
+SEM RESPOSTA
+</div>
+<div class="fonte-card">
+Classificação Vermelha
+</div>
+</div>
+
+</div>
+`
+}
+/*=========================================================
+091 QUEIMADAS FUNCTION RENDERPLANOSAPRESENTADOS
+=========================================================*/
+async function renderPlanosApresentados(){
+
+let box=document.getElementById('painelPlanosApresentados')
+
+if(!box)return
+
+let {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+.eq('classificacao_cor','VERDE')
+.order('municipio')
+
+if(error){
+console.log(error)
+return
+}
+
+let html=''
+
+;(data||[]).forEach(i=>{
+
+html+=`
+<div class="municipio-verde">
+<b>${i.municipio||'-'}</b><br>
+Documento: ${i.lnumerodocenviado||i.llnumerodocenviado||'-'}<br>
+Recebimento: ${i.ldatarecebimentodoc||'-'}
+</div>
+`
+
+})
+
+html+=`
+<div class="fonte-card">
+Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
+</div>
+`
+box.innerHTML=html
+}
+/*=========================================================
+092 QUEIMADAS FUNCTION RENDERDILACOESPRAZO
+=========================================================*/
+async function renderDilacoesPrazo(){
+
+let box=document.getElementById('painelDilacoesPrazo')
+
+if(!box)return
+
+let {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+.eq('classificacao_cor','AMARELO')
+.order('municipio')
+
+if(error){
+console.log(error)
+return
+}
+
+let html=''
+
+;(data||[]).forEach(i=>{
+
+html+=`
+<div class="municipio-amarelo">
+<b>${i.municipio||'-'}</b><br>
+Documento: ${i.lnumerodocenviado||i.llnumerodocenviado||'-'}<br>
+${i.observacao||'Dilação de prazo'}
+</div>
+`
+
+})
+
+html+=`
+<div class="fonte-card">
+Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
+</div>
+`
+box.innerHTML=html
+}
+/*=========================================================
+093 QUEIMADAS FUNCTION RENDERSEMRESPOSTA
+=========================================================*/
+async function renderSemResposta(){
+
+let box=document.getElementById('painelSemResposta')
+
+if(!box)return
+
+let {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+.eq('classificacao_cor','VERMELHO')
+.order('municipio')
+
+if(error){
+console.log(error)
+return
+}
+
+let html=''
+
+;(data||[]).forEach(i=>{
+
+html+=`
+<div class="municipio-vermelho">
+<b>${i.municipio||'-'}</b><br>
+Sem resposta registrada
+</div>
+`
+})
+html+=`
+<div class="fonte-card">
+Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
+</div>
+`
+box.innerHTML=html
+}
+/*=========================================================
+094 QUEIMADAS FUNCTION RENDERGRAFICOMUNICIPIOS
+=========================================================*/
+async function renderGraficoMunicipios(){
+
+let canvas=document.getElementById('graficoMunicipiosResposta')
+
+if(!canvas)return
+
+let {data,error}=await client
+.from('vw_queimadas_kpis_resposta')
+.select('*')
+.limit(1)
+
+if(error){
+console.log(error)
+return
+}
+
+let k=(data&&data.length)?data[0]:{}
+
+if(window.chartMunicipiosResposta){
+window.chartMunicipiosResposta.destroy()
+}
+
+window.chartMunicipiosResposta=new Chart(
+canvas,
+{
+type:'doughnut',
+data:{
+labels:[
+'Plano Apresentado',
+'Dilação de Prazo',
+'Sem Resposta'
+],
+datasets:[
+{
+data:[
+Number(k.planos_apresentados||0),
+Number(k.dilacao_prazo||0),
+Number(k.sem_resposta||0)
+],
+backgroundColor:[
+'#16a34a',
+'#facc15',
+'#dc2626'
+],
+borderWidth:2
+}
+]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+plugins:{
+legend:{
+position:'bottom'
+},
+title:{
+display:true,
+text:'Situação dos Municípios Oficiados'
+},
+datalabels:{
+color:'#000',
+font:{
+weight:'bold'
+},
+formatter:(v)=>v
+}
+}
+}
+}
+)
+
+}
+/*=========================================================
+095 QUEIMADAS FUNCTION RENDERTABELAMUNICIPIOS
+=========================================================*/
+async function renderTabelaMunicipios(){
+
+let box=document.getElementById('painelTabelaMunicipios')
+
+if(!box)return
+
+let filtro=
+document.getElementById('filtroMunicipioSituacao')
+?.value||''
+
+let busca=
+(
+document.getElementById('buscaMunicipio')
+?.value||''
+)
+.toUpperCase()
+
+let query=client
+.from('queimadas_municipios_oficio')
+.select('*')
+.order('municipio')
+
+if(filtro){
+query=query.eq('classificacao_cor',filtro)
+}
+
+let {data,error}=await query
+
+if(error){
+console.log(error)
+return
+}
+
+let lista=(data||[])
+
+if(busca){
+
+lista=lista.filter(i=>
+
+String(i.municipio||'')
+.toUpperCase()
+.includes(busca)
+
+)
+
+}
+
+let html=''
+
+html+=`
+<table class="tabelaMunicipios">
+
+<thead>
+
+<tr>
+
+<th>MUNICÍPIO</th>
+
+<th>SITUAÇÃO</th>
+
+<th>DOCUMENTO</th>
+
+<th>RECEBIMENTO</th>
+
+<th>OBSERVAÇÃO</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+`
+
+lista.forEach(i=>{
+
+let cor='#64748b'
+
+if(i.classificacao_cor==='VERDE'){
+cor='#16a34a'
+}
+
+if(i.classificacao_cor==='AMARELO'){
+cor='#facc15'
+}
+
+if(i.classificacao_cor==='VERMELHO'){
+cor='#dc2626'
+}
+
+html+=`
+
+<tr>
+
+<td>
+<b>${i.municipio||'-'}</b>
+</td>
+
+<td style="color:${cor};font-weight:900">
+${i.classificacao_ia||'-'}
+</td>
+
+<td>
+${i.lnumerodocenviado||i.llnumerodocenviado||'-'}
+</td>
+
+<td>
+${i.ldatarecebimentodoc||'-'}
+</td>
+
+<td>
+${i.observacao||'-'}
+</td>
+
+</tr>
+
+`
+
+})
+
+html+=`
+
+</tbody>
+
+</table>
+
+<div class="fonte-card">
+Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
+</div>
+`
+box.innerHTML=html
+}
+/*=========================================================
+096 QUEIMADAS FUNCTION RENDERMAPAMUNICIPAL
+=========================================================*/
+async function renderMapaMunicipal(){
+let box=document.getElementById('mapaMunicipalRO')
+if(!box)return
+if(window.mapaMunicipalRO){
+window.mapaMunicipalRO.remove()
+}
+window.mapaMunicipalRO=L.map('mapaMunicipalRO').setView([-10.9,-63.3],7)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+attribution:'OpenStreetMap'
+}).addTo(window.mapaMunicipalRO)
+let {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+.order('municipio')
+if(error){
+console.log(error)
+return
+}
+;(data||[]).forEach(i=>{
+let cor='#64748b'
+if(i.classificacao_cor==='VERDE')cor='#16a34a'
+if(i.classificacao_cor==='AMARELO')cor='#facc15'
+if(i.classificacao_cor==='VERMELHO')cor='#dc2626'
+let lat=-10.9+(Math.random()*4-2)
+let lng=-63.3+(Math.random()*6-3)
+L.circleMarker([lat,lng],{
+radius:10,
+fillColor:cor,
+color:'#fff',
+weight:2,
+fillOpacity:.9
+})
+.addTo(window.mapaMunicipalRO)
+.bindPopup(`
+<b>${i.municipio||'-'}</b><br>
+Situação: ${i.classificacao_ia||'-'}<br>
+Documento: ${i.lnumerodocenviado||i.llnumerodocenviado||'-'}<br>
+Recebimento: ${i.ldatarecebimentodoc||'-'}<br>
+${i.observacao||'-'}
+`)
+})
+}
+/*=========================================================
+096 QUEIMADAS FUNCTION RENDERMAPAMUNICIPAL
+=========================================================*/
+async function renderMapaMunicipal(){
+let box=document.getElementById('mapaMunicipalRO')
+if(!box)return
+if(window.mapaMunicipalRO){
+window.mapaMunicipalRO.remove()
+}
+window.mapaMunicipalRO=L.map('mapaMunicipalRO').setView([-10.9,-63.3],7)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+attribution:'OpenStreetMap'
+}).addTo(window.mapaMunicipalRO)
+
+let {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+
+if(error){
+console.log(error)
+return
+}
+
+let situacao={}
+;(data||[]).forEach(i=>{
+situacao[(i.municipio||'').trim().toUpperCase()]=i
+})
+
+let geo=await fetch('assets/geojson/municipios-ro.geojson')
+let geojson=await geo.json()
+
+window.layerMunicipios=L.geoJSON(geojson,{
+style:f=>{
+let nome=
+String(
+f.properties.nome||
+f.properties.NOME||
+f.properties.municipio||
+''
+)
+.trim()
+.toUpperCase()
+
+let m=situacao[nome]
+
+let cor='#94a3b8'
+
+if(m){
+if(m.classificacao_cor==='VERDE')cor='#16a34a'
+if(m.classificacao_cor==='AMARELO')cor='#facc15'
+if(m.classificacao_cor==='VERMELHO')cor='#dc2626'
+}
+
+return{
+color:'#ffffff',
+weight:1,
+fillColor:cor,
+fillOpacity:.85
+}
+},
+onEachFeature:(f,l)=>{
+
+let nome=
+String(
+f.properties.nome||
+f.properties.NOME||
+f.properties.municipio||
+''
+)
+
+let m=situacao[nome.trim().toUpperCase()]
+l.dadosMunicipio=m
+if(!m){
+l.bindPopup(`
+<b>${nome}</b><br>
+Sem classificação
+`)
+return
+}
+
+l.bindPopup(`
+<b>${m.municipio||nome}</b><br>
+Situação: ${m.classificacao_ia||'-'}<br>
+Documento: ${m.lnumerodocenviado||m.llnumerodocenviado||'-'}<br>
+Recebimento: ${m.ldatarecebimentodoc||'-'}<br>
+${m.observacao||'-'}
+`)
+}
+}).addTo(window.mapaMunicipalRO)
+
+window.mapaMunicipalRO.fitBounds(
+window.layerMunicipios.getBounds()
+)
+}
+/*=========================================================
+097 QUEIMADAS FUNCTION FILTRARMAPAMUNICIPAL
+=========================================================*/
+function filtrarMapaMunicipal(tipo){
+if(!window.layerMunicipios)return
+window.layerMunicipios.eachLayer(l=>{
+let m=l.dadosMunicipio
+if(!m){
+l.setStyle({fillOpacity:.15})
+return
+}
+if(tipo==='TODOS'){
+l.setStyle({fillOpacity:.85})
+return
+}
+if(m.classificacao_cor===tipo){
+l.setStyle({
+fillOpacity:.95,
+weight:2
+})
+}else{
+l.setStyle({
+fillOpacity:.10,
+weight:1
+})
+}
+})
+}
+/*=========================================================
+098 QUEIMADAS FUNCTION RENDERESTATISTICASMUNICIPAIS
+=========================================================*/
+async function renderEstatisticasMunicipais(){
+let box=document.getElementById('painelEstatisticasMunicipais')
+if(!box)return
+let {data,error}=await client
+.from('vw_queimadas_kpis_resposta')
+.select('*')
+.limit(1)
+if(error){
+console.log(error)
+return
+}
+let k=(data&&data.length)?data[0]:{}
+let total=Number(k.total_municipios||0)
+let planos=Number(k.planos_apresentados||0)
+let dilacoes=Number(k.dilacao_prazo||0)
+let semResposta=Number(k.sem_resposta||0)
+let pPlanos=total?((planos/total)*100).toFixed(1):0
+let pDilacoes=total?((dilacoes/total)*100).toFixed(1):0
+let pSemResposta=total?((semResposta/total)*100).toFixed(1):0
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card">
+<div class="chap-num" style="color:#16a34a">${pPlanos}%</div>
+<div class="chap-label">PLANO APRESENTADO</div>
+<div class="fonte-card">26 de 52 municípios</div>
+</div>
+<div class="chap-card">
+<div class="chap-num" style="color:#ca8a04">${pDilacoes}%</div>
+<div class="chap-label">DILAÇÃO DE PRAZO</div>
+<div class="fonte-card">6 de 52 municípios</div>
+</div>
+<div class="chap-card">
+<div class="chap-num" style="color:#dc2626">${pSemResposta}%</div>
+<div class="chap-label">SEM RESPOSTA</div>
+<div class="fonte-card">20 de 52 municípios</div>
+</div>
+</div>
+<div class="fonte-card">
+Fonte: Ofício Circular n.16/2026/GABPRES/TCERO • Respostas dos Municípios
+</div>
+`
+}
+/*=========================================================
+099 QUEIMADAS FUNCTION RENDERCADASTROMUNICIPIOS
+=========================================================*/
+async function renderCadastroMunicipios(){
+let box=document.getElementById('painelCadastroMunicipios')
+if(!box)return
+let busca=(document.getElementById('pesquisaCadastroMunicipio')?.value||'').toUpperCase()
+let {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+.order('municipio')
+if(error){
+console.log(error)
+return
+}
+let lista=(data||[])
+if(busca){
+lista=lista.filter(i=>
+String(i.municipio||'')
+.toUpperCase()
+.includes(busca)
+)
+}
+let html=''
+html+=`
+<table class="tabelaMunicipios">
+<thead>
+<tr>
+<th>MUNICÍPIO</th>
+<th>SITUAÇÃO</th>
+<th>DOCUMENTO</th>
+<th>RECEBIMENTO</th>
+<th>AÇÃO</th>
+</tr>
+</thead>
+<tbody>
+`
+lista.forEach(i=>{
+html+=`
+<tr>
+<td>${i.municipio||'-'}</td>
+<td>${i.classificacao_cor||'-'}</td>
+<td>${i.lnumerodocenviado||i.llnumerodocenviado||'-'}</td>
+<td>${i.ldatarecebimentodoc||'-'}</td>
+<td>
+<button onclick="editarMunicipio(${i.id})">
+Editar
+</button>
+</td>
+</tr>
+`
+})
+html+=`
+</tbody>
+</table>
+`
+box.innerHTML=html
+}
+/*=========================================================
+100 QUEIMADAS FUNCTION EDITARMUNICIPIO
+=========================================================*/
+async function editarMunicipio(id){
+let {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+.eq('id',id)
+.single()
+if(error||!data)return
+
+let situacao=prompt(
+'Situação:\nVERDE\nAMARELO\nVERMELHO',
+data.classificacao_cor||''
+)
+
+if(!situacao)return
+
+let documento=prompt(
+'Documento recebido:',
+data.lnumerodocenviado||''
+)
+
+let observacao=prompt(
+'Observação:',
+data.observacao||''
+)
+
+await client
+.from('queimadas_municipios_oficio')
+.update({
+classificacao_cor:situacao.toUpperCase(),
+observacao:observacao,
+lnumerodocenviado:documento,
+plano_acao:situacao.toUpperCase()==='VERDE',
+dilacao_prazo:situacao.toUpperCase()==='AMARELO',
+sem_resposta:situacao.toUpperCase()==='VERMELHO'
+})
+.eq('id',id)
+
+await renderCadastroMunicipios()
+}
+
 /*=========================================================
 999 QUEIMADAS INIT
 =========================================================*/
