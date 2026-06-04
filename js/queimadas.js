@@ -4,7 +4,7 @@
 function formatarDataBR(data){
 if(!data)return '-'
 let d=new Date(data)
-if(isNaN(d))return data
+if(isNaN(d))return String(data)
 let dia=String(d.getDate()).padStart(2,'0')
 let mes=String(d.getMonth()+1).padStart(2,'0')
 let ano=String(d.getFullYear()).slice(-2)
@@ -3549,27 +3549,19 @@ box.innerHTML=html
 090 QUEIMADAS FUNCTION RENDERKPISMUNICIPAIS
 =========================================================*/
 async function renderKPIsMunicipais(){
-
 let box=document.getElementById('painelKPIsMunicipais')
-
 if(!box)return
-
 let {data,error}=await client
 .from('vw_queimadas_kpis_resposta')
 .select('*')
 .limit(1)
-
 if(error){
 console.log(error)
 return
 }
-
 let k=(data&&data.length)?data[0]:{}
-
 box.innerHTML=`
-
 <div class="chap-grid">
-
 <div class="chap-card">
 <div class="chap-num">
 ${k.total_municipios||52}
@@ -3581,7 +3573,6 @@ MUNICÍPIOS OFICIADOS
 Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
 </div>
 </div>
-
 <div class="chap-card">
 <div class="chap-num" style="color:#16a34a">
 ${k.planos_apresentados||0}
@@ -3627,19 +3618,14 @@ Classificação Vermelha
 async function renderPlanosApresentados(){
 let box=document.getElementById('painelPlanosApresentados')
 if(!box)return
-let {data,error}=await client.from('queimadas_municipios').select('*').eq('status','VERDE').order('municipio')
+let {data,error}=await client.from('queimadas_municipios_oficio').select('*').eq('classificacao_cor','VERDE').order('municipio')
 if(error){
-box.innerHTML='Erro ao carregar.'
+console.log(error)
 return
 }
-let html='<table class="tabelaMiniMunicipios">'
-html+='<tr><th>Município</th><th>Data</th></tr>'
+let html='<table class="tabelaMiniMunicipios"><tr><th>Município</th><th>Recebimento</th></tr>'
 ;(data||[]).forEach(i=>{
-html+=`
-<tr>
-<td>${i.municipio||'-'}</td>
-<td>${formatarDataBR(i.data_recebimento)}</td>
-</tr>`
+html+=`<tr><td>${i.municipio||'-'}</td><td>${formatarDataBR(i.ldatarecebimentodoc)}</td></tr>`
 })
 html+='</table>'
 box.innerHTML=html
@@ -3650,19 +3636,14 @@ box.innerHTML=html
 async function renderDilacoesPrazo(){
 let box=document.getElementById('painelDilacoesPrazo')
 if(!box)return
-let {data,error}=await client.from('queimadas_municipios').select('*').eq('status','AMARELO').order('municipio')
+let {data,error}=await client.from('queimadas_municipios_oficio').select('*').eq('classificacao_cor','AMARELO').order('municipio')
 if(error){
-box.innerHTML='Erro ao carregar.'
+console.log(error)
 return
 }
-let html='<table class="tabelaMiniMunicipios">'
-html+='<tr><th>Município</th><th>Data</th></tr>'
+let html='<table class="tabelaMiniMunicipios"><tr><th>Município</th><th>Recebimento</th></tr>'
 ;(data||[]).forEach(i=>{
-html+=`
-<tr>
-<td>${i.municipio||'-'}</td>
-<td>${formatarDataBR(i.data_recebimento)}</td>
-</tr>`
+html+=`<tr><td>${i.municipio||'-'}</td><td>${formatarDataBR(i.ldatarecebimentodoc)}</td></tr>`
 })
 html+='</table>'
 box.innerHTML=html
@@ -3673,19 +3654,14 @@ box.innerHTML=html
 async function renderSemResposta(){
 let box=document.getElementById('painelSemResposta')
 if(!box)return
-let {data,error}=await client.from('queimadas_municipios').select('*').eq('status','VERMELHO').order('municipio')
+let {data,error}=await client.from('queimadas_municipios_oficio').select('*').eq('classificacao_cor','VERMELHO').order('municipio')
 if(error){
-box.innerHTML='Erro ao carregar.'
+console.log(error)
 return
 }
-let html='<table class="tabelaMiniMunicipios">'
-html+='<tr><th>Município</th><th>Data</th></tr>'
+let html='<table class="tabelaMiniMunicipios"><tr><th>Município</th><th>Recebimento</th></tr>'
 ;(data||[]).forEach(i=>{
-html+=`
-<tr>
-<td>${i.municipio||'-'}</td>
-<td>${formatarDataBR(i.data_recebimento)}</td>
-</tr>`
+html+=`<tr><td>${i.municipio||'-'}</td><td>${formatarDataBR(i.ldatarecebimentodoc)}</td></tr>`
 })
 html+='</table>'
 box.innerHTML=html
@@ -3898,51 +3874,6 @@ Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
 </div>
 `
 box.innerHTML=html
-}
-/*=========================================================
-096 QUEIMADAS FUNCTION RENDERMAPAMUNICIPAL
-=========================================================*/
-async function renderMapaMunicipal(){
-let box=document.getElementById('mapaMunicipalRO')
-if(!box)return
-if(window.mapaMunicipalRO){
-window.mapaMunicipalRO.remove()
-}
-window.mapaMunicipalRO=L.map('mapaMunicipalRO').setView([-10.9,-63.3],7)
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-attribution:'OpenStreetMap'
-}).addTo(window.mapaMunicipalRO)
-let {data,error}=await client
-.from('queimadas_municipios_oficio')
-.select('*')
-.order('municipio')
-if(error){
-console.log(error)
-return
-}
-;(data||[]).forEach(i=>{
-let cor='#64748b'
-if(i.classificacao_cor==='VERDE')cor='#16a34a'
-if(i.classificacao_cor==='AMARELO')cor='#facc15'
-if(i.classificacao_cor==='VERMELHO')cor='#dc2626'
-let lat=-10.9+(Math.random()*4-2)
-let lng=-63.3+(Math.random()*6-3)
-L.circleMarker([lat,lng],{
-radius:10,
-fillColor:cor,
-color:'#fff',
-weight:2,
-fillOpacity:.9
-})
-.addTo(window.mapaMunicipalRO)
-.bindPopup(`
-<b>${i.municipio||'-'}</b><br>
-Situação: ${i.classificacao_ia||'-'}<br>
-Documento: ${i.lnumerodocenviado||i.llnumerodocenviado||'-'}<br>
-Recebimento: ${i.ldatarecebimentodoc||'-'}<br>
-${i.observacao||'-'}
-`)
-})
 }
 /*=========================================================
 096 QUEIMADAS FUNCTION RENDERMAPAMUNICIPAL
@@ -4242,13 +4173,12 @@ box.style.display==='none'
 async function renderSituacaoGeralMunicipios(){
 let box=document.getElementById('painelSituacaoGeralMunicipios')
 if(!box)return
-let {data,error}=await client.from('queimadas_municipios').select('*')
+let {data,error}=await client.from('queimadas_municipios_oficio').select('*').order('municipio')
 if(error){
+console.log(error)
 box.innerHTML='Erro ao carregar.'
 return
 }
-let lista=[...(data||[])]
-lista.sort((a,b)=>(a.municipio||'').localeCompare((b.municipio||''),'pt-BR'))
 let html=''
 html+='<div style="overflow:auto">'
 html+='<table class="tabelaMunicipalExecutiva">'
@@ -4263,18 +4193,18 @@ html+='<th>Observação</th>'
 html+='</tr>'
 html+='</thead>'
 html+='<tbody>'
-lista.forEach((m,idx)=>{
+;(data||[]).forEach((i,idx)=>{
 let situacao='🔴 Sem Plano de Ação'
-if(m.status==='VERDE')situacao='🟢 Com Plano de Ação'
-if(m.status==='AMARELO')situacao='🟡 Dilação de Prazo'
+if(i.classificacao_cor==='VERDE')situacao='🟢 Com Plano de Ação'
+if(i.classificacao_cor==='AMARELO')situacao='🟡 Dilação de Prazo'
 html+=`
 <tr>
 <td>${idx+1}</td>
-<td>${m.municipio||'-'}</td>
+<td>${i.municipio||'-'}</td>
 <td>${situacao}</td>
-<td>${formatarDataBR(m.data_recebimento)}</td>
-<td>${m.documento||'-'}</td>
-<td>${m.observacao||'-'}</td>
+<td>${formatarDataBR(i.ldatarecebimentodoc)}</td>
+<td>${i.lnumerodocenviado||i.llnumerodocenviado||'-'}</td>
+<td>${i.observacao||'-'}</td>
 </tr>`
 })
 html+='</tbody>'
