@@ -494,7 +494,11 @@ ${m.classificacao||'-'}
 <div class="ranking-info">Risco: ${m.risco||0}</div>
 </div>`
 })
-html+='</div>'
+html+=`
+</div>
+<div class="fonte-card">
+Fonte: Heatmap Estadual • IRIQ • Focos de Calor
+</div>`
 box.innerHTML=html
 }
 /*=========================================================
@@ -536,6 +540,9 @@ box.innerHTML=`
 <div>BAIXO</div>
 <div>RISCO BAIXO</div>
 </div>
+</div>
+<div class="fonte-card">
+Fonte: Tabela queimadas_heatmap • Classificação Municipal de Risco
 </div>`
 }
 /*=========================================================
@@ -630,11 +637,59 @@ box.innerHTML=`
 async function renderODS(){
 let box=document.getElementById('painelODS')
 if(!box)return
+let {data,error}=await client
+.from('queimadas_ods')
+.select('*')
+.eq('ativo',true)
+.order('ordem',{ascending:true})
+if(error){
+console.log(error)
+box.innerHTML='Erro ao carregar ODS.'
+return
+}
 let html=''
+html+='<div class="cardExecutivo">'
+html+='<h2>ODS - OBJETIVOS DE DESENVOLVIMENTO SUSTENTÁVEL</h2>'
+html+='<div style="margin-bottom:12px">'
+html+='<select id="odsSelecionada" class="inputPadrao">'
+html+='<option value="">Selecione uma ODS</option>'
+;(data||[]).forEach(o=>{
+html+=`<option value="${o.id}">${o.ods} - ${o.descricao||''}</option>`
+})
+html+='</select>'
+html+='</div>'
 html+='<div class="ods-grid">'
-html+='<div class="ods-card ods13">ODS 13<br>AÇÃO CONTRA A MUDANÇA GLOBAL DO CLIMA</div>'
-html+='<div class="ods-card ods15">ODS 15<br>VIDA TERRESTRE</div>'
-html+='<div class="ods-card ods16">ODS 16<br>INSTITUIÇÕES EFICAZES</div>'
+;(data||[]).forEach((o,idx)=>{
+html+=`
+<div class="ods-card" style="border-left:8px solid ${o.cor||'#2563eb'}">
+<div style="font-size:26px;font-weight:900">
+${idx+1}º
+</div>
+<div style="font-size:16px;font-weight:900">
+${o.ods||''}
+</div>
+<div style="margin-top:6px;font-size:13px">
+${o.descricao||''}
+</div>
+<div style="margin-top:8px;font-size:12px">
+<b>Meta:</b> ${o.meta||'-'}
+</div>
+<div style="margin-top:4px;font-size:12px">
+<b>Indicador:</b> ${o.indicador||'-'}
+</div>
+<div style="margin-top:8px;font-size:14px;font-weight:900;color:${o.cor||'#2563eb'}">
+ADERÊNCIA IA: ${Number(o.peso||0).toFixed(0)}%
+</div>
+<div style="margin-top:8px;font-size:11px;color:#475569">
+${o.justificativa||''}
+</div>
+</div>`
+})
+html+='</div>'
+html+=`
+<div class="fonte-card">
+Fonte: Agenda 2030 • ONU • IA-CHAP • Projeto QUEIMADAS 2026
+</div>`
 html+='</div>'
 box.innerHTML=html
 }
@@ -732,7 +787,9 @@ O IRIQ considera focos de calor, histórico de queimadas, cobertura vegetal, uso
 <br>
 🔴 75-100 Crítico
 </div>
-</div>`
+<div class="fonte-card">
+Fonte: CHAP • IA-CHAP • Matriz de Risco 5x5
+</div>
 }
 /*=========================================================
 020B QUEIMADAS FUNCTION RENDERLEGENDAHEATMAP
@@ -2016,7 +2073,10 @@ Focos: ${i.focos} |
 IRIQ: ${i.risco}
 </div>
 </div>
-`).join('')
+`).join('')+`
+<div class="fonte-card">
+Fonte: Heatmap Estadual • IRIQ • Focos de Calor
+</div>`
 }
 
 /*=========================================================
@@ -2587,6 +2647,9 @@ MONITORAMENTO
 </div>
 </div>
 </div>
+<div class="fonte-card">
+Fonte: Cadastro Estadual de Unidades de Conservação • Sedam
+</div>
 `
 }
 /*=========================================================
@@ -2890,6 +2953,9 @@ color:#64748b;
 <div class="chap-num">${municipiosAlto}</div>
 <div class="chap-label">ALTO RISCO</div>
 </div>
+</div>
+<div class="fonte-card">
+Fonte: TCE-RO • Sedam • CBMRO • INPE
 </div>`
 }
 /*=========================================================
