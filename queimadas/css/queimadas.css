@@ -142,7 +142,7 @@ body{overflow-x:hidden}
 /*=========================================================
 018 MAPA
 =========================================================*/
-#mapaRO{width:100%;height:700px;border-radius:18px;overflow:hidden}
+#mapaRO{width:100%;height:650px;border-radius:14px;overflow:hidden}
 .leaflet-popup-content{font-size:12px;font-weight:800}
 .legendaMapa{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;padding:10px;font-weight:800}
 .legendaCritico{color:#dc2626}
@@ -161,7 +161,7 @@ body{overflow-x:hidden}
 @media(max-width:1200px){.monitor4d-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){.topoSistema{flex-direction:column;align-items:flex-start;gap:15px}.menuQueimadas button{width:100%}.monitor4d-grid{grid-template-columns:1fr}.gantt-row{flex-direction:column;align-items:flex-start}.gantt-titulo{width:100%;margin-bottom:6px}#mapaRO{height:500px}}
 
-.exec-mapa-grid{display:grid;grid-template-columns:2.2fr 1fr;gap:14px;align-items:start}
+.exec-mapa-grid{display:grid;grid-template-columns:3fr 1fr;gap:14px;align-items:start}
 .exec-lateral{display:flex;flex-direction:column;gap:12px}
 .exec-duplo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
 @media(max-width:1200px){.exec-mapa-grid{grid-template-columns:1fr}.exec-duplo{grid-template-columns:1fr}}
