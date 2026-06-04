@@ -53,22 +53,42 @@ async function renderGantt(){
 let box=document.getElementById('painelGantt')
 if(!box)return
 box.innerHTML=`
-<div class="gantt-row">
-<div class="gantt-titulo">Planejamento</div>
-<div class="gantt-area"><div class="gantt-bar" style="width:20%;background:#2563eb">JAN-MAR</div></div>
+<div class="gantt-header">
+<div></div>
+<div>JAN</div>
+<div>FEV</div>
+<div>MAR</div>
+<div>ABR</div>
+<div>MAI</div>
+<div>JUN</div>
+<div>JUL</div>
+<div>AGO</div>
+<div>SET</div>
+<div>OUT</div>
+<div>NOV</div>
+<div>DEZ</div>
 </div>
-<div class="gantt-row">
-<div class="gantt-titulo">Prevenção</div>
-<div class="gantt-area"><div class="gantt-bar" style="width:45%;background:#16a34a">ABR-JUN</div></div>
+
+<div class="gantt-linha">
+<div class="gantt-nome">Planejamento</div>
+<div class="gantt-barra azul" style="grid-column:2/5">JAN-MAR</div>
 </div>
-<div class="gantt-row">
-<div class="gantt-titulo">Período Crítico</div>
-<div class="gantt-area"><div class="gantt-bar" style="width:80%;background:#dc2626">JUL-OUT</div></div>
+
+<div class="gantt-linha">
+<div class="gantt-nome">Prevenção</div>
+<div class="gantt-barra verde" style="grid-column:5/8">ABR-JUN</div>
 </div>
-<div class="gantt-row">
-<div class="gantt-titulo">Avaliação Final</div>
-<div class="gantt-area"><div class="gantt-bar" style="width:100%;background:#f97316">NOV-DEZ</div></div>
-</div>`
+
+<div class="gantt-linha">
+<div class="gantt-nome">Período Crítico</div>
+<div class="gantt-barra vermelho" style="grid-column:8/12">JUL-OUT</div>
+</div>
+
+<div class="gantt-linha">
+<div class="gantt-nome">Avaliação Final</div>
+<div class="gantt-barra laranja" style="grid-column:12/14">NOV-DEZ</div>
+</div>
+`
 }
 /*=========================================================
 003 QUEIMADAS FUNCTION RENDERMATRIZRISCO5X5
