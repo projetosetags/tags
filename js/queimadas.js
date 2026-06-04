@@ -1,4 +1,13 @@
 /*=========================================================
+015 FORMATAR DATA BR
+=========================================================*/
+function formatarDataBR(data){
+if(!data)return '-'
+let d=new Date(data)
+if(isNaN(d))return data
+return d.toLocaleDateString('pt-BR')
+}
+/*=========================================================
 000 CHART DATALABELS
 =========================================================*/
 if(typeof ChartDataLabels!=='undefined'){
