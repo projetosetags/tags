@@ -234,3 +234,7 @@ body{overflow-x:hidden}
 .btnAbaQueimadas:hover{background:#334155}
 .btnAbaAtiva{background:#dc2626!important;color:#fff!important;box-shadow:0 0 25px rgba(220,38,38,.60);border:2px solid #facc15!important;transform:translateY(-2px)}
 .cardDestaque{border:3px solid #facc15!important;box-shadow:0 0 25px rgba(250,204,21,.35)!important}
+.boxMapaRO{width:100%}
+.btnOcultarMapa{background:#0f172a;color:#fff;border:none;padding:10px 16px;border-radius:10px;font-weight:800;cursor:pointer;margin-bottom:10px}
+.iriq-heatmap-unificado{display:grid;grid-template-columns:320px 1fr;gap:16px;align-items:stretch}
+.iriq-box,.heatmap-box{height:100%}
