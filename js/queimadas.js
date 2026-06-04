@@ -470,30 +470,22 @@ if(c2!==0)return c2
 return Number(b.risco||0)-Number(a.risco||0)
 })
 .slice(0,10)
-let html='<div class="heatmap-grid">'
+let html='<div class="ranking-grid">'
 lista.forEach((m,idx)=>{
-let classe='heat-verde'
-if((m.classificacao||'').toUpperCase().includes('CRÍTICO')){
-classe='heat-vermelho'
-}else if((m.classificacao||'').toUpperCase().includes('ALTO')){
-classe='heat-laranja'
-}else if((m.classificacao||'').toUpperCase().includes('MODERADO')){
-classe='heat-amarelo'
-}
+let cor='#f97316'
+if((m.classificacao||'').toUpperCase().includes('CRÍTICO'))cor='#dc2626'
 html+=`
-<div class="${classe}">
-<div class="heat-ranking">
-${idx+1}
+<div class="ranking-card">
+<div class="ranking-posicao">${idx+1}</div>
+<div class="ranking-municipio">${m.municipio||'-'}</div>
+<div class="ranking-info">
+Classificação:
+<span style="color:${cor};font-weight:900">
+${m.classificacao||'-'}
+</span>
 </div>
-<div class="heat-municipio">
-${m.municipio||'-'}
-</div>
-<div class="heat-info">
-<b>Classificação:</b> ${m.classificacao||'-'}<br>
-<b>Criticidade:</b> ${formatarNumero(m.criticidade||0)}<br>
-<b>Focos:</b> ${formatarNumero(m.focos||0)}<br>
-<b>IRIQ:</b> ${formatarNumero(m.risco||0)}
-</div>
+<div class="ranking-info">Focos: ${m.focos||0}</div>
+<div class="ranking-info">Risco: ${m.risco||0}</div>
 </div>`
 })
 html+='</div>'
@@ -1996,7 +1988,6 @@ let {data,error}=await client
 .select('*')
 if(error){
 console.log(error)
-box.innerHTML='Erro ao carregar alertas.'
 return
 }
 let lista=[...(data||[])]
@@ -2008,23 +1999,18 @@ if(c2!==0)return c2
 return Number(b.risco||0)-Number(a.risco||0)
 })
 .slice(0,5)
-box.innerHTML=`
-<div class="cardExecutivo">
-<h2>ALERTAS AUTOMÁTICOS</h2>
-${lista.map((i,idx)=>`
-<div class="alerta-vermelho">
-🔥 ${idx+1}º ${i.municipio||'-'}
-<br>
-Classificação: ${i.classificacao||'-'}
-<br>
-Criticidade: ${Number(i.criticidade||0).toLocaleString('pt-BR')}
-<br>
-Focos: ${Number(i.focos||0).toLocaleString('pt-BR')}
-<br>
-IRIQ: ${Number(i.risco||0).toLocaleString('pt-BR')}
+box.innerHTML=lista.map((i,idx)=>`
+<div class="alerta-ranking">
+<div class="alerta-numero">${idx+1}</div>
+<div class="alerta-texto">
+<b>${i.municipio}</b><br>
+Classificação: ${i.classificacao} |
+Criticidade: ${i.criticidade} |
+Focos: ${i.focos} |
+IRIQ: ${i.risco}
 </div>
-`).join('')}
-</div>`
+</div>
+`).join('')
 }
 
 /*=========================================================
