@@ -426,6 +426,9 @@ box.innerHTML=`
 <div class="chap-label">
 POPULAÇÃO EXPOSTA
 </div>
+<div class="fonte-card">
+Fonte: IBGE 2022 • Municípios de Rondônia
+</div>
 </div>
 
 <div class="chap-card">
@@ -434,6 +437,9 @@ POPULAÇÃO EXPOSTA
 <div style="font-size:11px;color:#64748b">
 ${formatarNumero(area)} m²
 </div>
+<div class="fonte-card">
+Fonte: Heatmap Estadual • Sedam • INPE
+</div>
 </div>
 
 <div class="chap-card">
@@ -441,12 +447,12 @@ ${formatarNumero(area)} m²
 <div class="chap-label">
 IRIQ ESTADUAL
 </div>
+<div class="fonte-card">
+Fonte: IRIQ = 60% Risco + 40% CHAP
 </div>
-
 </div>
-
+</div>
 `
-
 }
 /*=========================================================
 016 QUEIMADAS FUNCTION RENDERMUNICIPIOSPRIORITARIOS
