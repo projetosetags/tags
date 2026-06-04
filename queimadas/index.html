@@ -68,56 +68,49 @@ if(typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels)}
 <!--=========================================================
 001 EXECUTIVO
 =========================================================-->
-
 <section id="abaExecutivo" class="abaQueimadas">
-
 <div class="painelTitulo">DASHBOARD EXECUTIVO</div>
-
 <div id="painelKPIs"></div>
-
 <div class="cardExecutivo">
-<h2>MAPA DE RONDÔNIA</h2>
+<h2>MAPA DE RONDÔNIA - RISCO DE QUEIMADAS</h2>
+<div class="exec-mapa-grid">
+<div>
 <div id="mapaRO"></div>
 </div>
-
-<div class="cardExecutivo">
-<h2>HEATMAP ESTADUAL</h2>
-<div id="painelHeatMapExecutivo"></div>
+<div class="exec-lateral">
+<div id="painelIRIQEstadual"></div>
 <div id="painelLegendaHeatmap"></div>
 </div>
-
+</div>
+</div>
 <div class="cardExecutivo">
-<h2>MUNICÍPIOS PRIORITÁRIOS</h2>
+<h2>HEATMAP ESTADUAL - QUANTIDADE DE MUNICÍPIOS POR CLASSE DE RISCO</h2>
+<div id="painelHeatMapExecutivo"></div>
+</div>
+<div class="cardExecutivo">
+<h2>MUNICÍPIOS PRIORITÁRIOS - RANKING POR NÍVEL DE RISCO (IRIQ)</h2>
 <div id="painelMunicipiosPrioritarios"></div>
 </div>
-
+<div class="exec-duplo">
 <div class="cardExecutivo">
-<h2>IRIQ ESTADUAL</h2>
-<div id="painelIRIQ"></div>
+<h2>FOCOS DE CALOR - ÚLTIMOS 7 DIAS</h2>
+<div id="painelFocosINPE"></div>
 </div>
-
 <div class="cardExecutivo">
-<h2>FOCOS DE CALOR</h2>
-<div style="height:450px">
-<canvas id="graficoTopFocosExecutivo"></canvas>
+<h2>ALERTAS AUTOMÁTICOS - RANQUEAMENTO DE MUNICÍPIOS POR RISCO (IRIQ)</h2>
+<div id="painelAlertas"></div>
 </div>
 </div>
-
+<div class="exec-duplo">
 <div class="cardExecutivo">
-<h2>UNIDADES DE CONSERVAÇÃO</h2>
+<h2>UNIDADES DE CONSERVAÇÃO ESTADUAIS</h2>
 <div id="painelUCs"></div>
 </div>
-
 <div class="cardExecutivo">
 <h2>INDICADORES ESTRATÉGICOS</h2>
 <div id="painelIndicadoresEstrategicos"></div>
 </div>
-
-<div class="cardExecutivo">
-<h2>ALERTAS AUTOMÁTICOS</h2>
-<div id="painelAlertas"></div>
 </div>
-
 </section>
 
 <!--=========================================================
