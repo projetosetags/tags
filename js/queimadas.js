@@ -52,43 +52,36 @@ box.innerHTML=`
 async function renderGantt(){
 let box=document.getElementById('painelGantt')
 if(!box)return
-box.innerHTML=`
-<div class="gantt-header">
-<div></div>
-<div>JAN</div>
-<div>FEV</div>
-<div>MAR</div>
-<div>ABR</div>
-<div>MAI</div>
-<div>JUN</div>
-<div>JUL</div>
-<div>AGO</div>
-<div>SET</div>
-<div>OUT</div>
-<div>NOV</div>
-<div>DEZ</div>
-</div>
-
-<div class="gantt-linha">
-<div class="gantt-nome">Planejamento</div>
-<div class="gantt-barra azul" style="grid-column:2/5">JAN-MAR</div>
-</div>
-
-<div class="gantt-linha">
-<div class="gantt-nome">Prevenção</div>
-<div class="gantt-barra verde" style="grid-column:5/8">ABR-JUN</div>
-</div>
-
-<div class="gantt-linha">
-<div class="gantt-nome">Período Crítico</div>
-<div class="gantt-barra vermelho" style="grid-column:8/12">JUL-OUT</div>
-</div>
-
-<div class="gantt-linha">
-<div class="gantt-nome">Avaliação Final</div>
-<div class="gantt-barra laranja" style="grid-column:12/14">NOV-DEZ</div>
-</div>
-`
+let {data,error}=await client.from('queimadas_planejamento').select('*').order('inicio',{ascending:true})
+if(error){
+console.log(error)
+box.innerHTML='Erro ao carregar cronograma.'
+return
+}
+let meses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
+let html=''
+html+='<div class="gantt-header">'
+html+='<div>AÇÃO</div>'
+meses.forEach(m=>html+=`<div>${m}</div>`)
+html+='</div>'
+;(data||[]).forEach(i=>{
+let ini=new Date(i.inicio)
+let fim=new Date(i.fim)
+let mi=ini.getMonth()+1
+let mf=fim.getMonth()+1
+html+='<div class="gantt-linha">'
+html+=`<div class="gantt-nome">${i.acao}<br><span class="gantt-responsavel">${i.responsavel||''}</span></div>`
+for(let m=1;m<=12;m++){
+if(m>=mi&&m<=mf){
+html+=`<div class="gantt-barra" style="background:${i.cor||'#2563eb'}">${m===mi?(i.status||''):''}</div>`
+}else{
+html+='<div class="gantt-vazio"></div>'
+}
+}
+html+='</div>'
+})
+html+='<div class="fonte-card">Fonte: Tabela queimadas_planejamento • SEDAM • CBMRO</div>'
+box.innerHTML=html
 }
 /*=========================================================
 003 QUEIMADAS FUNCTION RENDERMATRIZRISCO5X5
@@ -289,17 +282,21 @@ box.innerHTML=`
 async function renderPlanoSEDAM(){
 let box=document.getElementById('painelPlanoSEDAM')
 if(!box)return
+let {data}=await client.from('queimadas_planejamento').select('*').eq('origem','SEDAM')
+let mapa={}
+;(data||[]).forEach(i=>{mapa[(i.acao||'').toUpperCase()]=i})
 box.innerHTML=`
 <div class="cadeia-card">
 <div class="cadeia-item">PLANO DE AÇÃO SEDAM 2026</div>
 <div class="cadeia-flow">
-<div class="cadeia-box cadeia-insumo">🌳 PREVENÇÃO</div>
-<div class="cadeia-box cadeia-atividade">🚔 FISCALIZAÇÃO</div>
-<div class="cadeia-box cadeia-produto">🔥 COMBATE</div>
-<div class="cadeia-box cadeia-resultado">📈 REDUÇÃO</div>
-<div class="cadeia-box cadeia-impacto">🌎 IMPACTO</div>
-<div class="cadeia-box cadeia-beneficio">👨‍👩‍👧‍👦 CIDADÃO</div>
+<div class="cadeia-box cadeia-insumo" style="border-top:5px solid ${mapa['PREVENÇÃO']?.cor||'#16a34a'}">🌳 PREVENÇÃO<br><span class="periodo-plano">${mapa['PREVENÇÃO']?formatarDataBR(mapa['PREVENÇÃO'].inicio)+' a '+formatarDataBR(mapa['PREVENÇÃO'].fim):'Período não informado'}</span><span class="responsavel-plano">${mapa['PREVENÇÃO']?.responsavel||''}</span><span class="status-plano">${mapa['PREVENÇÃO']?.status||''}</span></div>
+<div class="cadeia-box cadeia-atividade" style="border-top:5px solid ${mapa['FISCALIZAÇÃO']?.cor||'#2563eb'}">🚔 FISCALIZAÇÃO<br><span class="periodo-plano">${mapa['FISCALIZAÇÃO']?formatarDataBR(mapa['FISCALIZAÇÃO'].inicio)+' a '+formatarDataBR(mapa['FISCALIZAÇÃO'].fim):'Período não informado'}</span><span class="responsavel-plano">${mapa['FISCALIZAÇÃO']?.responsavel||''}</span><span class="status-plano">${mapa['FISCALIZAÇÃO']?.status||''}</span></div>
+<div class="cadeia-box cadeia-produto" style="border-top:5px solid ${mapa['COMBATE']?.cor||'#dc2626'}">🔥 COMBATE<br><span class="periodo-plano">${mapa['COMBATE']?formatarDataBR(mapa['COMBATE'].inicio)+' a '+formatarDataBR(mapa['COMBATE'].fim):'Período não informado'}</span><span class="responsavel-plano">${mapa['COMBATE']?.responsavel||''}</span><span class="status-plano">${mapa['COMBATE']?.status||''}</span></div>
+<div class="cadeia-box cadeia-resultado" style="border-top:5px solid ${mapa['REDUÇÃO']?.cor||'#f97316'}">📈 REDUÇÃO<br><span class="periodo-plano">${mapa['REDUÇÃO']?formatarDataBR(mapa['REDUÇÃO'].inicio)+' a '+formatarDataBR(mapa['REDUÇÃO'].fim):'Período não informado'}</span><span class="responsavel-plano">${mapa['REDUÇÃO']?.responsavel||''}</span><span class="status-plano">${mapa['REDUÇÃO']?.status||''}</span></div>
+<div class="cadeia-box cadeia-impacto" style="border-top:5px solid ${mapa['IMPACTO']?.cor||'#7c3aed'}">🌎 IMPACTO<br><span class="periodo-plano">${mapa['IMPACTO']?formatarDataBR(mapa['IMPACTO'].inicio)+' a '+formatarDataBR(mapa['IMPACTO'].fim):'Período não informado'}</span><span class="responsavel-plano">${mapa['IMPACTO']?.responsavel||''}</span><span class="status-plano">${mapa['IMPACTO']?.status||''}</span></div>
+<div class="cadeia-box cadeia-beneficio" style="border-top:5px solid ${mapa['CIDADÃO']?.cor||'#10b981'}">👨‍👩‍👧‍👦 CIDADÃO<br><span class="periodo-plano">${mapa['CIDADÃO']?formatarDataBR(mapa['CIDADÃO'].inicio)+' a '+formatarDataBR(mapa['CIDADÃO'].fim):'Período não informado'}</span><span class="responsavel-plano">${mapa['CIDADÃO']?.responsavel||''}</span><span class="status-plano">${mapa['CIDADÃO']?.status||''}</span></div>
 </div>
+<div class="fonte-card">Fonte: Plano de Ação SEDAM 2026 • Tabela queimadas_planejamento</div>
 </div>`
 }
 /*=========================================================
@@ -308,17 +305,21 @@ box.innerHTML=`
 async function renderPlanoCBM(){
 let box=document.getElementById('painelPlanoCBM')
 if(!box)return
+let {data}=await client.from('queimadas_planejamento').select('*').eq('origem','CBMRO')
+let mapa={}
+;(data||[]).forEach(i=>{mapa[(i.acao||'').toUpperCase()]=i})
 box.innerHTML=`
 <div class="cadeia-card">
 <div class="cadeia-item">POTIF 2026 - CORPO DE BOMBEIROS</div>
 <div class="cadeia-flow">
-<div class="cadeia-box cadeia-insumo">🚒 BRIGADAS</div>
-<div class="cadeia-box cadeia-atividade">🧯 COMBATE</div>
-<div class="cadeia-box cadeia-produto">🔥 CONTROLE</div>
-<div class="cadeia-box cadeia-resultado">📉 REDUÇÃO</div>
-<div class="cadeia-box cadeia-impacto">🌳 PRESERVAÇÃO</div>
-<div class="cadeia-box cadeia-beneficio">👨‍👩‍👧‍👦 SEGURANÇA</div>
+<div class="cadeia-box cadeia-insumo" style="border-top:5px solid ${mapa['BRIGADAS']?.cor||'#16a34a'}">🚒 BRIGADAS<br><span class="periodo-plano">${mapa['BRIGADAS']?formatarDataBR(mapa['BRIGADAS'].inicio)+' a '+formatarDataBR(mapa['BRIGADAS'].fim):'Período não informado'}</span><span class="responsavel-plano">${mapa['BRIGADAS']?.responsavel||''}</span><span class="status-plano">${mapa['BRIGADAS']?.status||''}</span></div>
+<div class="cadeia-box cadeia-atividade" style="border-top:5px solid ${mapa['COMBATE']?.cor||'#dc2626'}">🧯 COMBATE<br><span class="periodo-plano">${mapa['COMBATE']?formatarDataBR(mapa['COMBATE'].inicio)+' a '+formatarDataBR(mapa['COMBATE'].fim):'Período não informado'}</span><span class="responsavel-plano">${mapa['COMBATE']?.responsavel||''}</span><span class="status-plano">${mapa['COMBATE']?.status||''}</span></div>
+<div class="cadeia-box cadeia-produto" style="border-top:5px solid ${mapa['CONTROLE']?.cor||'#2563eb'}">🔥 CONTROLE<br><span class="periodo-plano">${mapa['CONTROLE']?formatarDataBR(mapa['CONTROLE'].inicio)+' a '+formatarDataBR(mapa['CONTROLE'].fim):'Período não informado'}</span><span class="responsavel-plano">${mapa['CONTROLE']?.responsavel||''}</span><span class="status-plano">${mapa['CONTROLE']?.status||''}</span></div>
+<div class="cadeia-box cadeia-resultado" style="border-top:5px solid ${mapa['REDUÇÃO']?.cor||'#f97316'}">📉 REDUÇÃO<br><span class="periodo-plano">${mapa['REDUÇÃO']?formatarDataBR(mapa['REDUÇÃO'].inicio)+' a '+formatarDataBR(mapa['REDUÇÃO'].fim):'Período não informado'}</span><span class="responsavel-plano">${mapa['REDUÇÃO']?.responsavel||''}</span><span class="status-plano">${mapa['REDUÇÃO']?.status||''}</span></div>
+<div class="cadeia-box cadeia-impacto" style="border-top:5px solid ${mapa['PRESERVAÇÃO']?.cor||'#22c55e'}">🌳 PRESERVAÇÃO<br><span class="periodo-plano">${mapa['PRESERVAÇÃO']?formatarDataBR(mapa['PRESERVAÇÃO'].inicio)+' a '+formatarDataBR(mapa['PRESERVAÇÃO'].fim):'Período não informado'}</span><span class="responsavel-plano">${mapa['PRESERVAÇÃO']?.responsavel||''}</span><span class="status-plano">${mapa['PRESERVAÇÃO']?.status||''}</span></div>
+<div class="cadeia-box cadeia-beneficio" style="border-top:5px solid ${mapa['SEGURANÇA']?.cor||'#14b8a6'}">👨‍👩‍👧‍👦 SEGURANÇA<br><span class="periodo-plano">${mapa['SEGURANÇA']?formatarDataBR(mapa['SEGURANÇA'].inicio)+' a '+formatarDataBR(mapa['SEGURANÇA'].fim):'Período não informado'}</span><span class="responsavel-plano">${mapa['SEGURANÇA']?.responsavel||''}</span><span class="status-plano">${mapa['SEGURANÇA']?.status||''}</span></div>
 </div>
+<div class="fonte-card">Fonte: POTIF 2026 • CBMRO • Tabela queimadas_planejamento</div>
 </div>`
 }
 /*=========================================================
@@ -2066,6 +2067,7 @@ if(nome==='executivo'){
 document.getElementById('abaExecutivo')?.classList.remove('hidden')
 if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
 if(typeof renderKPIsExecutivos==='function')await renderKPIsExecutivos()
+await renderMunicipiosOficio()
 if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
 if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
 if(typeof renderTopRiscos==='function')await renderTopRiscos()
@@ -3314,7 +3316,47 @@ maximumFractionDigits:2
 })
 +' km²'
 }
+/*=========================================================
+080 QUEIMADAS FUNCTION RENDERMUNICIPIOSOFICIO
+=========================================================*/
+async function renderMunicipiosOficio(){
+let box=document.getElementById('painelMunicipiosOficio')
+if(!box)return
+let {data:kpi}=await client
+.from('vw_queimadas_kpis_resposta')
+.select('*')
+.limit(1)
+let k=kpi&&kpi.length?kpi[0]:{}
+box.innerHTML=`
+<div class="chap-grid">
 
+<div class="chap-card">
+<div class="chap-num">${k.total_municipios||52}</div>
+<div class="chap-label">MUNICÍPIOS OFICIADOS</div>
+<div class="fonte-card">Fonte: Ofício Circular n.16/2026/GABPRES/TCERO</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num" style="color:#16a34a">${k.planos_apresentados||0}</div>
+<div class="chap-label">PLANO APRESENTADO</div>
+<div class="fonte-card">Classificação Verde</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num" style="color:#facc15">${k.dilacao_prazo||0}</div>
+<div class="chap-label">DILAÇÃO DE PRAZO</div>
+<div class="fonte-card">Classificação Amarela</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num" style="color:#dc2626">${k.sem_resposta||0}</div>
+<div class="chap-label">SEM RESPOSTA</div>
+<div class="fonte-card">Classificação Vermelha</div>
+</div>
+
+</div>
+`
+}
 /*=========================================================
 999 QUEIMADAS INIT
 =========================================================*/
