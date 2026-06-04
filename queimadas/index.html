@@ -29,24 +29,19 @@ if(typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels)}
 <p>Monitoramento Inteligente • TCE-RO • SEDAM • CBMRO</p>
 </div>
 </div>
-<div class="topoDireita">
-<button onclick="gerarPDFExecutivoTCERO()">PDF EXECUTIVO</button>
-<button onclick="gerarWordExecutivoTCERO()">WORD EXECUTIVO</button>
-<button onclick="pdfCompletoQueimadas()">PDF COMPLETO</button>
-</div>
 </header>
 <nav class="menuQueimadas">
-<button onclick="mostrarAbaQueimadas('executivo')">📊 EXECUTIVO</button>
-<button onclick="mostrarAbaQueimadas('planejamento')">📋 PLANEJAMENTO</button>
-<button onclick="mostrarAbaQueimadas('monitoramento')">🔥 MONITORAMENTO</button>
-<button onclick="mostrarAbaQueimadas('analise')">🤖 IA E RISCOS</button>
-<button onclick="mostrarAbaQueimadas('mapa')">🗺 MAPA ESTADUAL</button>
-<button onclick="mostrarAbaQueimadas('cadastroMunicipal')">🏛️ CADASTRO MUNICIPAL</button>
-<button onclick="mostrarAbaQueimadas('situacao')">🚨 SALA DE SITUAÇÃO</button>
-<button onclick="mostrarAbaQueimadas('presidente')">🏛 GERAL</button>
-<button onclick="mostrarAbaQueimadas('conselheiro')">⚖ RELATOR</button>
-<button onclick="mostrarAbaQueimadas('auditor')">📑 AUDITORIA</button>
-<button onclick="mostrarAbaQueimadas('relatorios')">📄 RELATÓRIOS</button>
+<button id="btnAbaExecutivo" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('executivo')">📊 EXECUTIVO</button>
+<button id="btnAbaPlanejamento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('planejamento')">📋 PLANEJAMENTO</button>
+<button id="btnAbaMonitoramento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('monitoramento')">🔥 MONITORAMENTO</button>
+<button id="btnAbaAnalise" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('analise')">🤖 IA E RISCOS</button>
+<button id="btnAbaMapa" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('mapa')">🗺 MAPA ESTADUAL</button>
+<button id="btnAbaCadastroMunicipal" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('cadastroMunicipal')">🏛️ CADASTRO MUNICIPAL</button>
+<button id="btnAbaSituacao" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('situacao')">🚨 SALA DE SITUAÇÃO</button>
+<button id="btnAbaPresidente" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('presidente')">🏛 GERAL</button>
+<button id="btnAbaConselheiro" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('conselheiro')">⚖ RELATOR</button>
+<button id="btnAbaAuditor" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('auditor')">📑 AUDITORIA</button>
+<button id="btnAbaRelatorios" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('relatorios')">📄 RELATÓRIOS</button>
 </nav>
 <!--=========================================================
 001 EXECUTIVO
