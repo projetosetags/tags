@@ -503,27 +503,39 @@ async function renderHeatMapExecutivo(){
 let box=document.getElementById('painelHeatMapExecutivo')
 if(!box)return
 let {data,error}=await client
-.from('queimadas_monitoramento')
+.from('queimadas_heatmap')
 .select('*')
 if(error){
 console.log(error)
 return
 }
-let html='<div class="heatmap-grid">'
-data.forEach(i=>{
-let p=Number(i.percentual||0)
-let classe='heat-vermelho'
-if(p>=80)classe='heat-verde'
-else if(p>=60)classe='heat-amarelo'
-else if(p>=40)classe='heat-laranja'
-html+=`
-<div class="${classe}">
-${i.item||'-'}<br>
-${p}%
+let critico=(data||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('CRÍTICO')).length
+let alto=(data||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('ALTO')).length
+let moderado=(data||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('MODERADO')).length
+let baixo=(data||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('BAIXO')).length
+box.innerHTML=`
+<div class="heatmap-grid">
+<div class="heat-vermelho">
+<div style="font-size:34px;font-weight:900">${critico}</div>
+<div>CRÍTICO</div>
+<div>RISCO MUITO ALTO</div>
+</div>
+<div class="heat-laranja">
+<div style="font-size:34px;font-weight:900">${alto}</div>
+<div>ALTO</div>
+<div>RISCO ALTO</div>
+</div>
+<div class="heat-amarelo">
+<div style="font-size:34px;font-weight:900">${moderado}</div>
+<div>MODERADO</div>
+<div>RISCO MODERADO</div>
+</div>
+<div class="heat-verde">
+<div style="font-size:34px;font-weight:900">${baixo}</div>
+<div>BAIXO</div>
+<div>RISCO BAIXO</div>
+</div>
 </div>`
-})
-html+='</div>'
-box.innerHTML=html
 }
 /*=========================================================
 017A QUEIMADAS FUNCTION RENDERCEPCIFAVANCADO
