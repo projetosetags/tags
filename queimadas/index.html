@@ -350,20 +350,40 @@ onkeyup="renderCadastroMunicipios()"
 012 RELATÓRIOS
 =========================================================-->
 <section id="abaRelatorios" class="abaQueimadas hidden">
-<div class="painelTitulo">RELATÓRIOS</div>
+<div class="painelTitulo">RELATÓRIOS E EXPORTAÇÕES</div>
 <div class="cardExecutivo">
-<button onclick="gerarPDFExecutivoTCERO()">PDF EXECUTIVO</button>
-<button onclick="gerarWordExecutivoTCERO()">WORD EXECUTIVO</button>
-<button onclick="pdfCompletoQueimadas()">PDF COMPLETO</button>
+<h2>RELATÓRIOS EXECUTIVOS</h2>
+<div class="gridRelatorios">
+<button onclick="gerarPDFExecutivoTCERO()">📕 PDF EXECUTIVO</button>
+<button onclick="gerarWordExecutivoTCERO()">📘 WORD EXECUTIVO</button>
+<button onclick="pdfCompletoQueimadas()">📙 PDF COMPLETO</button>
+<button onclick="gerarWordCompletoQueimadas()">📗 WORD COMPLETO</button>
 </div>
+</div>
+<div class="cardExecutivo">
+<h2>RELATÓRIOS TÉCNICOS PCe 0501/2026</h2>
+<div class="gridRelatorios">
+<button onclick="gerarPDFTecnico0501()">📕 PDF TÉCNICO</button>
+<button onclick="gerarWordTecnico0501()">📘 WORD TÉCNICO</button>
+<button onclick="gerarPDFMunicipios0501()">🗺️ PDF MUNICÍPIOS</button>
+<button onclick="gerarWordMunicipios0501()">🏛️ WORD MUNICÍPIOS</button>
+</div>
+</div>
+<div class="cardExecutivo">
+<h2>PAINEL GRÁFICO PARA RELATÓRIOS</h2>
 <div style="height:500px">
 <canvas id="graficoTopFocosRelatorio"></canvas>
 </div>
-<div style="height:500px">
+<div style="height:500px;margin-top:30px">
 <canvas id="graficoGovernancaRelatorio"></canvas>
 </div>
-<div style="height:500px">
+<div style="height:500px;margin-top:30px">
 <canvas id="graficoEvolucaoMensalRelatorio"></canvas>
+</div>
+</div>
+<div class="cardExecutivo">
+<h2>ESTRUTURA DOS RELATÓRIOS</h2>
+<div id="painelEstruturaRelatorios"></div>
 </div>
 </section>
 </div>
