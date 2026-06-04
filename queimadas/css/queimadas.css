@@ -164,3 +164,4 @@ body{overflow-x:hidden}
 .exec-lateral{display:flex;flex-direction:column;gap:12px}
 .exec-duplo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
 @media(max-width:1200px){.exec-mapa-grid{grid-template-columns:1fr}.exec-duplo{grid-template-columns:1fr}}
+.heat-azul{background:#2563eb;color:#fff;padding:14px;border-radius:14px;font-weight:800;min-height:165px;position:relative;box-shadow:0 4px 12px rgba(0,0,0,.10)}
