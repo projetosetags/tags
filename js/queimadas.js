@@ -3908,7 +3908,7 @@ let situacao={}
 situacao[(i.municipio||'').trim().toUpperCase()]=i
 })
 
-let geo=await fetch('geojson/municipios-ro.geojson')
+let geo=await fetch('/tags/queimadas/assets/geojson/municipios-ro.geojson')
 let geojson=await geo.json()
 
 window.layerMunicipios=L.geoJSON(geojson,{
