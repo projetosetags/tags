@@ -3851,7 +3851,7 @@ ${i.lnumerodocenviado||i.llnumerodocenviado||'-'}
 </td>
 
 <td>
-${i.ldatarecebimentodoc||'-'}
+${formatarDataBR(i.ldatarecebimentodoc)}
 </td>
 
 <td>
@@ -3908,7 +3908,7 @@ let situacao={}
 situacao[(i.municipio||'').trim().toUpperCase()]=i
 })
 
-let geo=await fetch('assets/geojson/municipios-ro.geojson')
+let geo=await fetch('geojson/municipios-ro.geojson')
 let geojson=await geo.json()
 
 window.layerMunicipios=L.geoJSON(geojson,{
@@ -4076,9 +4076,14 @@ html+=`
 <thead>
 <tr>
 <th>MUNICÍPIO</th>
-<th>SITUAÇÃO</th>
-<th>DOCUMENTO</th>
-<th>RECEBIMENTO</th>
+<th>OFÍCIO TCE</th>
+<th>DATA ENVIO</th>
+<th>PÁG ENVIO</th>
+<th>DATA REC 1</th>
+<th>DATA REC 2</th>
+<th>DOC 1</th>
+<th>DOC 2</th>
+<th>OBSERVAÇÃO</th>
 <th>AÇÃO</th>
 </tr>
 </thead>
@@ -4088,14 +4093,15 @@ lista.forEach(i=>{
 html+=`
 <tr>
 <td>${i.municipio||'-'}</td>
-<td>${i.classificacao_cor||'-'}</td>
-<td>${i.lnumerodocenviado||i.llnumerodocenviado||'-'}</td>
-<td>${i.ldatarecebimentodoc||'-'}</td>
-<td>
-<button onclick="editarMunicipio(${i.id})">
-Editar
-</button>
-</td>
+<td>${i.noficioenviadotcero||'-'}</td>
+<td>${formatarDataBR(i.dataenviodoc)}</td>
+<td>${i.paginaenviodoc||'-'}</td>
+<td>${formatarDataBR(i.ldatarecebimentodoc)}</td>
+<td>${formatarDataBR(i.lldatarecebimentodoc)}</td>
+<td>${i.lnumerodocenviado||'-'}</td>
+<td>${i.llnumerodocenviado||'-'}</td>
+<td>${i.observacao||'-'}</td>
+<td><button class="btnEditarMunicipio" onclick="editarMunicipio(${i.id})">✏ EDITAR</button></td>
 </tr>
 `
 })
