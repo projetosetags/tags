@@ -2823,7 +2823,7 @@ ${semPlano.join(' • ')}
 =========================================================*/
 async function renderGeoJSONRO(){
 if(!window.mapaQueimadasRO)return
-let resp=await fetch('assets/geojson/municipios-ro.geojson')
+let resp=await fetch('/tags/queimadas/assets/geojson/municipios-ro.geojson')
 if(!resp.ok){
 console.log('Erro ao carregar UCs')
 return
