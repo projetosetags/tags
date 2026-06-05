@@ -4093,11 +4093,11 @@ lista.forEach(i=>{
 html+=`
 <tr>
 <td>${i.municipio||'-'}</td>
-<td>${i.noficioenviadotcero||'-'}</td>
+<td>${i.nroficioenviadotcero||'-'}</td>
 <td>${formatarDataBR(i.dataenviodoc)}</td>
 <td>${i.paginaenviodoc||'-'}</td>
 <td>${formatarDataBR(i.ldatarecebimentodoc)}</td>
-<td>${formatarDataBR(i.lldatarecebimentodoc)}</td>
+<td>${i.lldatarecebimentodoc||'-'}</td>
 <td>${i.lnumerodocenviado||'-'}</td>
 <td>${i.llnumerodocenviado||'-'}</td>
 <td>${i.observacao||'-'}</td>
@@ -4234,16 +4234,150 @@ if(error){
 console.log(error)
 return
 }
-let html='<div style="overflow:auto"><table class="tabelaMunicipios">'
-html+='<thead><tr><th>Município</th><th>Situação</th><th>Documento</th></tr></thead><tbody>'
+let html='<div style="overflow:auto;max-height:500px">'
+html+='<table class="tabelaMunicipios">'
+html+='<thead>'
+html+='<tr>'
+html+='<th>Município</th>'
+html+='<th>Ofício</th>'
+html+='<th>Recebimento</th>'
+html+='<th>Ação</th>'
+html+='</tr>'
+html+='</thead>'
+html+='<tbody>'
 ;(data||[]).forEach(i=>{
 html+=`
 <tr>
 <td>${i.municipio||'-'}</td>
-<td>${i.classificacao_ia||'-'}</td>
 <td>${i.lnumerodocenviado||i.llnumerodocenviado||'-'}</td>
+<td>${formatarDataBR(i.ldatarecebimentodoc)}</td>
+<td>
+<button class="btnEditarMunicipio" onclick="editarMunicipio(${i.id})">
+✏ EDITAR
+</button>
+</td>
 </tr>`
 })
 html+='</tbody></table></div>'
 box.innerHTML=html
+}
+/*=========================================================
+100 QUEIMADAS FUNCTION EDITARMUNICIPIO
+=========================================================*/
+async function editarMunicipio(id){
+
+let {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+.eq('id',id)
+.single()
+
+if(error){
+console.log(error)
+alert('Registro não encontrado.')
+return
+}
+
+let html=''
+
+html+=`
+<div id="modalMunicipio" class="modalMunicipioOverlay">
+
+<div class="modalMunicipioBox">
+
+<h2>🏛️ Cadastro Municipal</h2>
+
+<label>Município</label>
+<input id="mMunicipio" value="${data.municipio||''}">
+
+<label>Ofício TCE-RO</label>
+<input id="mOficio" value="${data.nroficioenviadotcero||''}">
+
+<label>Data Envio</label>
+<input id="mDataEnvio" type="date" value="${data.dataenviodoc||''}">
+
+<label>Página Envio</label>
+<input id="mPaginaEnvio" value="${data.paginaenviodoc||''}">
+
+<label>Data Recebimento 1</label>
+<input id="mDataRec1" type="date" value="${data.ldatarecebimentodoc||''}">
+
+<label>Data Recebimento 2</label>
+<input id="mDataRec2" value="${data.lldatarecebimentodoc||''}">
+
+<label>Página Recebimento 1</label>
+<input id="mPagRec1" value="${data.lpaginarecebimentodoc||''}">
+
+<label>Página Recebimento 2</label>
+<input id="mPagRec2" value="${data.llpaginarecebimentodoc||''}">
+
+<label>Documento Recebido 1</label>
+<input id="mDoc1" value="${data.lnumerodocenviado||''}">
+
+<label>Documento Recebido 2</label>
+<input id="mDoc2" value="${data.llnumerodocenviado||''}">
+
+<label>Observação</label>
+<textarea id="mObs">${data.observacao||''}</textarea>
+
+<div class="modalMunicipioBotoes">
+
+<button class="btnSalvarMunicipio" onclick="salvarMunicipio(${id})">
+💾 SALVAR
+</button>
+
+<button class="btnCancelarMunicipio" onclick="fecharModalMunicipio()">
+❌ CANCELAR
+</button>
+
+</div>
+
+</div>
+
+</div>
+`
+
+document.body.insertAdjacentHTML('beforeend',html)
+
+}
+/*=========================================================
+101 QUEIMADAS FUNCTION FECHARMODALMUNICIPIO
+=========================================================*/
+function fecharModalMunicipio(){
+let modal=document.getElementById('modalMunicipio')
+if(modal)modal.remove()
+}
+/*=========================================================
+102 QUEIMADAS FUNCTION SALVARMUNICIPIO
+=========================================================*/
+async function salvarMunicipio(id){
+let payload={
+municipio:document.getElementById('mMunicipio').value,
+nroficioenviadotcero:document.getElementById('mOficio').value,
+dataenviodoc:document.getElementById('mDataEnvio').value,
+paginaenviodoc:document.getElementById('mPaginaEnvio').value,
+ldatarecebimentodoc:document.getElementById('mDataRec1').value,
+lldatarecebimentodoc:document.getElementById('mDataRec2').value,
+lpaginarecebimentodoc:document.getElementById('mPagRec1').value,
+llpaginarecebimentodoc:document.getElementById('mPagRec2').value,
+lnumerodocenviado:document.getElementById('mDoc1').value,
+llnumerodocenviado:document.getElementById('mDoc2').value,
+observacao:document.getElementById('mObs').value
+}
+let {error}=await client
+.from('queimadas_municipios_oficio')
+.update(payload)
+.eq('id',id)
+if(error){
+console.log(error)
+alert('Erro ao salvar.')
+return
+}
+fecharModalMunicipio()
+await renderCadastroMunicipios()
+if(typeof renderTabelaMunicipios==='function')
+await renderTabelaMunicipios()
+if(typeof renderSituacaoGeralMunicipios==='function')
+await renderSituacaoGeralMunicipios()
+alert('Registro atualizado com sucesso.')
 }
