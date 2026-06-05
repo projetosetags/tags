@@ -3909,8 +3909,10 @@ situacao[(i.municipio||'').trim().toUpperCase()]=i
 })
 
 let geo=await fetch('/tags/queimadas/assets/geojson/municipios-ro.geojson')
+console.log('GeoJSON status:',geo.status)
 let geojson=await geo.json()
-
+console.log('Features:',geojson.features?.length)
+console.log('Criando layer municipal')
 window.layerMunicipios=L.geoJSON(geojson,{
 style:f=>{
 let nome=
@@ -4234,13 +4236,19 @@ if(error){
 console.log(error)
 return
 }
-let html='<div style="overflow:auto;max-height:500px">'
+let html='<div style="overflow:auto">'
 html+='<table class="tabelaMunicipios">'
 html+='<thead>'
 html+='<tr>'
 html+='<th>Município</th>'
-html+='<th>Ofício</th>'
-html+='<th>Recebimento</th>'
+html+='<th>Ofício TCE-RO</th>'
+html+='<th>Data Envio</th>'
+html+='<th>Página Envio</th>'
+html+='<th>Data Rec. 1</th>'
+html+='<th>Data Rec. 2</th>'
+html+='<th>Doc. 1</th>'
+html+='<th>Doc. 2</th>'
+html+='<th>Observação</th>'
 html+='<th>Ação</th>'
 html+='</tr>'
 html+='</thead>'
@@ -4249,16 +4257,20 @@ html+='<tbody>'
 html+=`
 <tr>
 <td>${i.municipio||'-'}</td>
-<td>${i.lnumerodocenviado||i.llnumerodocenviado||'-'}</td>
+<td>${i.nroficioenviadotcero||'-'}</td>
+<td>${formatarDataBR(i.dataenviodoc)}</td>
+<td>${i.paginaenviodoc||'-'}</td>
 <td>${formatarDataBR(i.ldatarecebimentodoc)}</td>
-<td>
-<button class="btnEditarMunicipio" onclick="editarMunicipio(${i.id})">
-✏ EDITAR
-</button>
-</td>
+<td>${i.lldatarecebimentodoc||'-'}</td>
+<td>${i.lnumerodocenviado||'-'}</td>
+<td>${i.llnumerodocenviado||'-'}</td>
+<td>${i.observacao||'-'}</td>
+<td><button class="btnEditarMunicipio" onclick="editarMunicipio(${i.id})">✏ EDITAR</button></td>
 </tr>`
 })
-html+='</tbody></table></div>'
+html+='</tbody>'
+html+='</table>'
+html+='</div>'
 box.innerHTML=html
 }
 /*=========================================================
