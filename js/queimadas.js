@@ -1553,63 +1553,34 @@ baixarWordQueimadas('relatorio_executivo_tcero',html)
 036 QUEIMADAS FUNCTION RENDERMAPAMUNICIPIOS
 =========================================================*/
 async function renderMapaMunicipios(){
-
-let div=
-document.getElementById('mapaRO')
-||
-document.getElementById('mapaROEstadual')
+let div=document.getElementById('mapaRO')||document.getElementById('mapaROEstadual')
 if(!div)return
-
 if(window.mapaQueimadasRO){
+try{
 window.mapaQueimadasRO.remove()
+}catch(e){}
+window.mapaQueimadasRO=null
 }
-
-let mapa=L.map('mapaRO').setView([-10.9,-63.3],7)
+if(div._leaflet_id){
+delete div._leaflet_id
+}
+let mapa=L.map(div).setView([-10.9,-63.3],7)
 window.mapaQueimadasRO=mapa
-window.camadasControle=
-L.control.layers(
-{},
-{},
-{
-collapsed:false
-}
-).addTo(mapa)
-L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-{
-attribution:'OpenStreetMap'
-}
-).addTo(mapa)
-
-let {data,error}=await client
-.from('queimadas_heatmap')
-.select('*')
-
+window.camadasControle=L.control.layers({},{},{collapsed:false}).addTo(mapa)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
+let {data,error}=await client.from('queimadas_heatmap').select('*')
 if(error){
 console.log(error)
 return
 }
 const coordenadas=MUNICIPIOS_RO
 ;(data||[]).forEach(m=>{
-
 let coord=coordenadas[m.municipio]
-
 if(!coord)return
-
 let cor='green'
-
-if(m.classificacao==='MODERADO'){
-cor='yellow'
-}
-
-if(m.classificacao==='ALTO'){
-cor='orange'
-}
-
-if(m.classificacao==='CRÍTICO'){
-cor='red'
-}
-
+if(m.classificacao==='MODERADO')cor='yellow'
+if(m.classificacao==='ALTO')cor='orange'
+if(m.classificacao==='CRÍTICO')cor='red'
 L.circleMarker(coord,{
 radius:12,
 fillColor:cor,
@@ -1625,9 +1596,8 @@ Criticidade: ${m.criticidade}<br>
 Focos: ${m.focos}<br>
 Classificação: ${m.classificacao}
 `)
-
 })
-
+setTimeout(()=>{mapa.invalidateSize()},500)
 }
 /*=========================================================
 037 QUEIMADAS FUNCTION RENDERACOESSEDAM
@@ -2216,7 +2186,7 @@ if(typeof renderLegendaHeatmap==='function')await renderLegendaHeatmap()
 if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
 if(typeof renderKPIsMunicipais==='function')await renderKPIsMunicipais()
-if(typeof renderMapaMunicipalPlanos==='function')await renderMapaMunicipalPlanos()
+if(typeof renderMapaMunicipalPlanos==='function'){setTimeout(()=>{renderMapaMunicipalPlanos('TODOS')},500)}
 if(typeof renderSituacaoGeralMunicipios==='function')await renderSituacaoGeralMunicipios()
 if(typeof renderCadastroMunicipiosResumo==='function')await renderCadastroMunicipiosResumo()
 if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
@@ -3981,27 +3951,22 @@ window.layerMunicipios.getBounds()
 097 QUEIMADAS FUNCTION FILTRARMAPAMUNICIPAL
 =========================================================*/
 function filtrarMapaMunicipal(tipo){
-if(!window.layerMunicipios)return
-window.layerMunicipios.eachLayer(l=>{
+let layer=window.layerMunicipiosPlanos||window.layerMunicipios
+if(!layer)return
+layer.eachLayer(l=>{
 let m=l.dadosMunicipio
 if(!m){
-l.setStyle({fillOpacity:.15})
+l.setStyle({fillOpacity:.15,weight:1})
 return
 }
 if(tipo==='TODOS'){
-l.setStyle({fillOpacity:.85})
+l.setStyle({fillOpacity:.85,weight:1})
 return
 }
 if(m.classificacao_cor===tipo){
-l.setStyle({
-fillOpacity:.95,
-weight:2
-})
+l.setStyle({fillOpacity:.95,weight:3})
 }else{
-l.setStyle({
-fillOpacity:.10,
-weight:1
-})
+l.setStyle({fillOpacity:.10,weight:1})
 }
 })
 }
@@ -4395,79 +4360,71 @@ await renderSituacaoGeralMunicipios()
 alert('Registro atualizado com sucesso.')
 }
 
-async function renderMapaMunicipalPlanos(){
 
-let box=document.getElementById('mapaMunicipalPlanos')
-if(!box)return
-
+async function renderMapaMunicipalPlanos(filtro='TODOS'){
+let div=document.getElementById('mapaMunicipalPlanos')
+if(!div)return
 if(window.mapaMunicipalPlanos){
+try{
 window.mapaMunicipalPlanos.remove()
+}catch(e){}
+window.mapaMunicipalPlanos=null
 }
-
-window.mapaMunicipalPlanos=L.map('mapaMunicipalPlanos').setView([-10.9,-63.3],7)
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-attribution:'OpenStreetMap'
-}).addTo(window.mapaMunicipalPlanos)
-
+if(div._leaflet_id){
+delete div._leaflet_id
+}
+let mapa=L.map(div).setView([-10.9,-63.3],7)
+window.mapaMunicipalPlanos=mapa
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
 let geo=await fetch('/tags/queimadas/assets/geojson/municipios-ro.geojson')
+if(!geo.ok){
+console.log('Erro GeoJSON',geo.status)
+return
+}
 let geojson=await geo.json()
-
-let {data}=await client
-.from('queimadas_municipios_oficio')
-.select('*')
-
+let {data,error}=await client.from('queimadas_municipios_oficio').select('*')
+if(error){
+console.log(error)
+return
+}
 let situacao={}
-
 ;(data||[]).forEach(i=>{
-situacao[(i.municipio||'').toUpperCase().trim()]=i
+situacao[String(i.municipio||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/'/g,'').toUpperCase().trim()]=i
 })
-
-L.geoJSON(geojson,{
+window.layerMunicipiosPlanos=L.geoJSON(geojson,{
 style:f=>{
-
-let nome=String(
-f.properties.nome||
-f.properties.NOME||
-''
-)
-.toUpperCase()
-.trim()
-
+let nome=String(f.properties.nome||f.properties.NOME||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/'/g,'').toUpperCase().trim()
 let m=situacao[nome]
-
 let cor='#94a3b8'
-
 if(m){
+if(filtro!=='TODOS'&&m.classificacao_cor!==filtro){
+cor='#e5e7eb'
+}else{
 if(m.classificacao_cor==='VERDE')cor='#16a34a'
 if(m.classificacao_cor==='AMARELO')cor='#facc15'
 if(m.classificacao_cor==='VERMELHO')cor='#dc2626'
 }
-
+}
 return{
-fillColor:cor,
-fillOpacity:.85,
 color:'#ffffff',
-weight:1
+weight:1,
+fillColor:cor,
+fillOpacity:.85
 }
 },
-
 onEachFeature:(f,l)=>{
-
-let nome=String(
-f.properties.nome||
-f.properties.NOME||
-''
-)
-
-let m=situacao[nome.toUpperCase().trim()]
-
+let nome=String(f.properties.nome||f.properties.NOME||'')
+let chave=nome.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/'/g,'').toUpperCase().trim()
+let m=situacao[chave]
+l.dadosMunicipio=m
 l.bindPopup(`
 <b>${nome}</b><br>
-Situação: ${m?.classificacao_ia||'Sem classificação'}
+Situação: ${m?.classificacao_ia||'Sem classificação'}<br>
+Documento: ${m?.lnumerodocenviado||m?.llnumerodocenviado||'-'}<br>
+Recebimento: ${m?.ldatarecebimentodoc||'-'}
 `)
 }
-
-}).addTo(window.mapaMunicipalPlanos)
-
+}).addTo(mapa)
+mapa.fitBounds(window.layerMunicipiosPlanos.getBounds())
+setTimeout(()=>{mapa.invalidateSize()},500)
 }
