@@ -253,3 +253,40 @@ body{overflow-x:hidden}
 .tabelaMiniMunicipios th{background:#1e293b;color:#fff;padding:6px;border:1px solid #cbd5e1}
 .tabelaMiniMunicipios td{padding:5px;border:1px solid #cbd5e1}
 .tabelaMiniMunicipios tr:nth-child(even){background:#f8fafc}
+.tabelaMunicipalExecutiva th:nth-child(1),
+.tabelaMunicipalExecutiva td:nth-child(1){
+width:55px;
+min-width:55px;
+text-align:center;
+}
+.tabelaMunicipalExecutiva th:nth-child(2),
+.tabelaMunicipalExecutiva td:nth-child(2){
+width:280px;
+min-width:280px;
+}
+.tabelaMunicipalExecutiva th:nth-child(3),
+.tabelaMunicipalExecutiva td:nth-child(3){
+width:220px;
+min-width:220px;
+}
+.tabelaMunicipalExecutiva th:nth-child(4),
+.tabelaMunicipalExecutiva td:nth-child(4){
+width:130px;
+min-width:130px;
+text-align:center;
+}
+.tabelaMunicipalExecutiva th:nth-child(5),
+.tabelaMunicipalExecutiva td:nth-child(5){
+width:180px;
+min-width:180px;
+}
+.tabelaMunicipalExecutiva th:nth-child(6),
+.tabelaMunicipalExecutiva td:nth-child(6){
+min-width:300px;
+}
+.tabelaMunicipios th:nth-child(2),
+.tabelaMunicipios td:nth-child(2){
+min-width:220px;
+width:220px;
+font-weight:700;
+}
