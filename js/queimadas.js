@@ -2216,6 +2216,7 @@ if(typeof renderLegendaHeatmap==='function')await renderLegendaHeatmap()
 if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
 if(typeof renderKPIsMunicipais==='function')await renderKPIsMunicipais()
+if(typeof renderMapaMunicipalPlanos==='function')await renderMapaMunicipalPlanos()
 if(typeof renderSituacaoGeralMunicipios==='function')await renderSituacaoGeralMunicipios()
 if(typeof renderCadastroMunicipiosResumo==='function')await renderCadastroMunicipiosResumo()
 if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
@@ -4392,4 +4393,81 @@ await renderTabelaMunicipios()
 if(typeof renderSituacaoGeralMunicipios==='function')
 await renderSituacaoGeralMunicipios()
 alert('Registro atualizado com sucesso.')
+}
+
+async function renderMapaMunicipalPlanos(){
+
+let box=document.getElementById('mapaMunicipalPlanos')
+if(!box)return
+
+if(window.mapaMunicipalPlanos){
+window.mapaMunicipalPlanos.remove()
+}
+
+window.mapaMunicipalPlanos=L.map('mapaMunicipalPlanos').setView([-10.9,-63.3],7)
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+attribution:'OpenStreetMap'
+}).addTo(window.mapaMunicipalPlanos)
+
+let geo=await fetch('/tags/queimadas/assets/geojson/municipios-ro.geojson')
+let geojson=await geo.json()
+
+let {data}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+
+let situacao={}
+
+;(data||[]).forEach(i=>{
+situacao[(i.municipio||'').toUpperCase().trim()]=i
+})
+
+L.geoJSON(geojson,{
+style:f=>{
+
+let nome=String(
+f.properties.nome||
+f.properties.NOME||
+''
+)
+.toUpperCase()
+.trim()
+
+let m=situacao[nome]
+
+let cor='#94a3b8'
+
+if(m){
+if(m.classificacao_cor==='VERDE')cor='#16a34a'
+if(m.classificacao_cor==='AMARELO')cor='#facc15'
+if(m.classificacao_cor==='VERMELHO')cor='#dc2626'
+}
+
+return{
+fillColor:cor,
+fillOpacity:.85,
+color:'#ffffff',
+weight:1
+}
+},
+
+onEachFeature:(f,l)=>{
+
+let nome=String(
+f.properties.nome||
+f.properties.NOME||
+''
+)
+
+let m=situacao[nome.toUpperCase().trim()]
+
+l.bindPopup(`
+<b>${nome}</b><br>
+Situação: ${m?.classificacao_ia||'Sem classificação'}
+`)
+}
+
+}).addTo(window.mapaMunicipalPlanos)
+
 }
