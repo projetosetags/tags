@@ -1567,8 +1567,15 @@ delete div._leaflet_id
 let mapa=L.map(div).setView([-10.9,-63.3],7)
 window.mapaQueimadasRO=mapa
 window.camadasControle=L.control.layers({},{},{collapsed:false}).addTo(mapa)
-carregarUCsRO(mapa)
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
+if(typeof carregarUCsRO==='function'){
+await carregarUCsRO(mapa)
+}
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+attribution:'OpenStreetMap'
+}
+).addTo(mapa)
 let {data,error}=await client.from('queimadas_heatmap').select('*')
 if(error){
 console.log(error)
