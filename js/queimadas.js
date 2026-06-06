@@ -2093,6 +2093,7 @@ localStorage.setItem('abaQueimadas',nome)
 document.querySelectorAll('.btnAbaQueimadas').forEach(x=>x.classList.remove('btnAbaAtiva'))
 if(nome==='executivo')document.getElementById('btnAbaExecutivo')?.classList.add('btnAbaAtiva')
 if(nome==='executivomunicipal')document.getElementById('btnAbaExecutivoMunicipal')?.classList.add('btnAbaAtiva')
+if(nome==='mapa')document.getElementById('btnAbaMapa')?.classList.add('btnAbaAtiva')
 if(nome==='planejamento')document.getElementById('btnAbaPlanejamento')?.classList.add('btnAbaAtiva')
 if(nome==='monitoramento')document.getElementById('btnAbaMonitoramento')?.classList.add('btnAbaAtiva')
 if(nome==='analise')document.getElementById('btnAbaAnalise')?.classList.add('btnAbaAtiva')
@@ -2138,6 +2139,25 @@ if(typeof renderTabelaMunicipios==='function')await renderTabelaMunicipios()
 if(nome==='cadastroMunicipal'){
 document.getElementById('abaCadastroMunicipal')?.classList.remove('hidden')
 await renderCadastroMunicipios()
+}
+if(nome==='mapa'){
+document.getElementById('abaMapa')?.classList.remove('hidden')
+if(typeof renderMapaEstadual==='function'){
+await renderMapaEstadual()
+}
+setTimeout(()=>{
+if(window.mapaEstadualRO){
+window.mapaEstadualRO.invalidateSize()
+try{
+window.mapaEstadualRO.fitBounds(
+L.featureGroup([
+window.layerUCsEstadual,
+window.layerTIsEstadual
+].filter(Boolean)).getBounds()
+)
+}catch(e){}
+}
+},500)
 }
 if(nome==='planejamento'){
 document.getElementById('abaPlanejamento')?.classList.remove('hidden')
