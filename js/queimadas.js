@@ -1628,6 +1628,38 @@ return
 box.innerHTML=`<div class="impacto-box"><div class="impacto-score">${data.length}</div><div class="impacto-label">AÇÕES MONITORADAS</div></div>`
 }
 /*=========================================================
+037 QUEIMADAS FUNCTION RENDERMAPAUCS
+=========================================================*/
+async function renderMapaUCs(){
+let div=document.getElementById('mapaROEstadual')
+if(!div)return
+if(window.mapaUCsRO){
+try{
+window.mapaUCsRO.remove()
+}catch(e){}
+}
+if(div._leaflet_id){
+delete div._leaflet_id
+}
+let mapa=L.map('mapaROEstadual').setView([-10.9,-63.3],7)
+window.mapaUCsRO=mapa
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+attribution:'OpenStreetMap'
+}
+).addTo(mapa)
+if(typeof carregarUCsRO==='function'){
+await carregarUCsRO(mapa)
+}
+setTimeout(()=>{
+mapa.invalidateSize()
+if(window.layerUCs&&window.layerUCs.getBounds().isValid()){
+mapa.fitBounds(window.layerUCs.getBounds())
+}
+},500)
+}
+/*=========================================================
 038 QUEIMADAS FUNCTION RENDERACOESCBM
 =========================================================*/
 async function renderAcoesCBM(){
@@ -4143,13 +4175,18 @@ await renderCadastroMunicipios()
 document.addEventListener('DOMContentLoaded',async()=>{
 let abaSalva=localStorage.getItem('abaQueimadas')||'executivo'
 mostrarAbaQueimadas(abaSalva)
-if(typeof renderMapaMunicipios==='function')
-await renderMapaMunicipios('mapaRO')
-await renderMapaMunicipios('mapaROEstadual')
-if(typeof renderGeoJSONRO==='function')
+if(typeof renderMapaMunicipios==='function'){
+await renderMapaMunicipios()
+}
+if(typeof renderMapaUCs==='function'){
+await renderMapaUCs()
+}
+if(typeof renderGeoJSONRO==='function'){
 await renderGeoJSONRO()
-if(typeof renderUCs==='function')
+}
+if(typeof renderUCs==='function'){
 await renderUCs()
+}
 })
 /*=========================================================
 999 TOGGLE MAPA RO
