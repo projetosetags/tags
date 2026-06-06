@@ -4369,10 +4369,31 @@ fillOpacity:.35
 },
 onEachFeature:(f,l)=>{
 let p=(f&&f.properties)?f.properties:{}
-let nome=p.nome||p.NOME||p.terra_indigena||p.TERRA_INDIGENA||p.ti_nome||'Terra Indígena'
-let etnia=p.etnia||p.ETNIA||'-'
-let fase=p.fase||p.FASE||'-'
-let area=p.area||p.AREA||'-'
+let nome=
+p.terrai_nom||
+p.terrai_nom||
+p.nome||
+p.NOME||
+p.terra_indigena||
+p.TERRA_INDIGENA||
+p.ti_nome||
+'Terra Indígena'
+let etnia=
+p.etnia_nom||
+p.etnia||
+p.ETNIA||
+'-'
+let fase=
+p.fase_ti||
+p.fase||
+p.FASE||
+'-'
+let area=
+p.superficie||
+p.area_ha||
+p.area||
+p.AREA||
+'-'
 l.bindPopup(`
 <b>${nome}</b><br>
 Etnia: ${etnia}<br>
