@@ -1566,8 +1566,8 @@ delete div._leaflet_id
 }
 let mapa=L.map(div).setView([-10.9,-63.3],7)
 window.mapaQueimadasRO=mapa
-carregarUCsRO(mapa)
 window.camadasControle=L.control.layers({},{},{collapsed:false}).addTo(mapa)
+carregarUCsRO(mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
 let {data,error}=await client.from('queimadas_heatmap').select('*')
 if(error){
@@ -4371,68 +4371,97 @@ alert('Registro atualizado com sucesso.')
 =========================================================*/
 async function carregarUCsRO(mapa){
 
-let resp=await fetch('./assets/geojson/ucs_ro.geojson')
+try{
+
+let resp=await fetch('./assets/geojson/ucs-ro.geojson')
+
+if(!resp.ok){
+throw new Error(
+'Erro ao localizar assets/geojson/ucs-ro.geojson'
+)
+}
+
 let geo=await resp.json()
+
+if(window.layerUCs){
+window.layerUCs.remove()
+}
 
 window.layerUCs=L.geoJSON(
 geo,
 {
 style:f=>({
-
 color:'#006400',
 weight:1,
-
 fillColor:
 f.properties.grupo==='Proteção Integral'
 ?'#ff4444'
 :'#00aa55',
-
 fillOpacity:.45
-
 }),
-
 onEachFeature:(f,l)=>{
-
 l.bindPopup(`
-
-<b>${f.properties.nome_uc}</b><br>
-
-Categoria:
-${f.properties.categoria||'-'}<br>
-
-Grupo:
-${f.properties.grupo||'-'}<br>
-
-Situação:
-${f.properties.situacao||'-'}<br>
-
-Município:
-${f.properties.municipio||'-'}
-
+<b>${f.properties.nome_uc||'UC'}</b><br>
+Categoria: ${f.properties.categoria||'-'}<br>
+Grupo: ${f.properties.grupo||'-'}<br>
+Situação: ${f.properties.situacao||'-'}<br>
+Município: ${f.properties.municipio||'-'}
 `)
-
 }
-
 }
 )
 
 window.layerUCs.addTo(mapa)
 
+if(window.camadasControle){
 window.camadasControle.addOverlay(
 window.layerUCs,
 '🌳 UCs de Rondônia'
 )
+}
 
-document.getElementById(
+try{
+mapa.fitBounds(
+window.layerUCs.getBounds()
+)
+}catch(e){}
+
+let painel=document.getElementById(
 'painelUCsMapa'
-).innerHTML=
+)
+
+if(painel){
+painel.innerHTML=
 `
 <b>49 Unidades de Conservação</b><br>
 Fonte:
-<a href="https://app.tcgeo.tcero.tc.br/" target="_blank">
+<a
+href="https://app.tcgeo.tcero.tc.br/"
+target="_blank"
+>
 TCGeo / TCE-RO
 </a>
 `
+}
+
+}catch(e){
+
+console.error(
+'Erro ao carregar UCs:',
+e
+)
+
+let painel=document.getElementById(
+'painelUCsMapa'
+)
+
+if(painel){
+painel.innerHTML=
+'Erro ao carregar UCs.'
+}
+
+}
+
 }
 
 async function renderMapaMunicipalPlanos(filtro='TODOS'){
