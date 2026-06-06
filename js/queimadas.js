@@ -4222,14 +4222,16 @@ Município: ${municipio}
 layerUC.addTo(mapa)
 if(tipo==='executivo'){
 window.layerUCsExecutivo=layerUC
-if(window.camadasControleExecutivo){
+if(window.camadasControleExecutivo&&!window.overlayUCsExecutivoAdicionado){
 window.camadasControleExecutivo.addOverlay(layerUC,'🌳 UCs de Rondônia')
+window.overlayUCsExecutivoAdicionado=true
 }
 }
 if(tipo==='estadual'){
 window.layerUCsEstadual=layerUC
-if(window.camadasControleEstadual){
+if(window.camadasControleEstadual&&!window.overlayUCsEstadualAdicionado){
 window.camadasControleEstadual.addOverlay(layerUC,'🌳 UCs de Rondônia')
+window.overlayUCsEstadualAdicionado=true
 }
 }
 let painel=document.getElementById('painelUCsMapa')
@@ -4239,6 +4241,12 @@ painel.innerHTML=`
 Fonte:
 <a href="https://app.tcgeo.tc.br/" target="_blank">
 TCGeo / TCE-RO
+</a>
+<br><br>
+<b>19 Terras Indígenas de Rondônia</b><br>
+Fonte:
+<a href="https://www.gov.br/funai" target="_blank">
+FUNAI
 </a>
 `
 }
@@ -4429,9 +4437,13 @@ window.camadasControleEstadual.addOverlay(layerTI,'🛖 Terras Indígenas')
 }
 let painel=document.getElementById('painelTIMapa')
 if(painel){
+let totalTI=(geo.features||[]).length
 painel.innerHTML=`
-<b>Terras Indígenas de Rondônia</b><br>
-Fonte: FUNAI
+<b>${totalTI} Terras Indígenas de Rondônia</b><br>
+Fonte:
+<a href="https://www.gov.br/funai" target="_blank">
+FUNAI
+</a>
 `
 }
 }catch(e){
