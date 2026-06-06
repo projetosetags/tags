@@ -4371,7 +4371,7 @@ alert('Registro atualizado com sucesso.')
 =========================================================*/
 async function carregarUCsRO(mapa){
 
-let resp=await fetch('geojson/ucs_ro.geojson')
+let resp=await fetch('./assets/geojson/ucs_ro.geojson')
 let geo=await resp.json()
 
 window.layerUCs=L.geoJSON(
