@@ -1566,6 +1566,7 @@ delete div._leaflet_id
 }
 let mapa=L.map(div).setView([-10.9,-63.3],7)
 window.mapaQueimadasRO=mapa
+carregarUCsRO(mapa)
 window.camadasControle=L.control.layers({},{},{collapsed:false}).addTo(mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
 let {data,error}=await client.from('queimadas_heatmap').select('*')
@@ -1598,6 +1599,11 @@ Classificação: ${m.classificacao}
 `)
 })
 setTimeout(()=>{mapa.invalidateSize()},500)
+if(window.layerUCs){
+mapa.fitBounds(
+window.layerUCs.getBounds()
+)
+}
 }
 /*=========================================================
 037 QUEIMADAS FUNCTION RENDERACOESSEDAM
@@ -4360,6 +4366,74 @@ await renderSituacaoGeralMunicipios()
 alert('Registro atualizado com sucesso.')
 }
 
+/*=========================================================
+098 QUEIMADAS FUNCTION CARREGARUCSRO
+=========================================================*/
+async function carregarUCsRO(mapa){
+
+let resp=await fetch('geojson/ucs_ro.geojson')
+let geo=await resp.json()
+
+window.layerUCs=L.geoJSON(
+geo,
+{
+style:f=>({
+
+color:'#006400',
+weight:1,
+
+fillColor:
+f.properties.grupo==='Proteção Integral'
+?'#ff4444'
+:'#00aa55',
+
+fillOpacity:.45
+
+}),
+
+onEachFeature:(f,l)=>{
+
+l.bindPopup(`
+
+<b>${f.properties.nome_uc}</b><br>
+
+Categoria:
+${f.properties.categoria||'-'}<br>
+
+Grupo:
+${f.properties.grupo||'-'}<br>
+
+Situação:
+${f.properties.situacao||'-'}<br>
+
+Município:
+${f.properties.municipio||'-'}
+
+`)
+
+}
+
+}
+)
+
+window.layerUCs.addTo(mapa)
+
+window.camadasControle.addOverlay(
+window.layerUCs,
+'🌳 UCs de Rondônia'
+)
+
+document.getElementById(
+'painelUCsMapa'
+).innerHTML=
+`
+<b>49 Unidades de Conservação</b><br>
+Fonte:
+<a href="https://app.tcgeo.tcero.tc.br/" target="_blank">
+TCGeo / TCE-RO
+</a>
+`
+}
 
 async function renderMapaMunicipalPlanos(filtro='TODOS'){
 let div=document.getElementById('mapaMunicipalPlanos')
