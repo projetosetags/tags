@@ -1501,34 +1501,22 @@ baixarWordQueimadas('relatorio_executivo_tcero',html)
 /*=========================================================
 045 QUEIMADAS FUNCTION RENDERMAPAMUNICIPIOS
 =========================================================*/
-async function renderMapaMunicipios(idMapa='mapaRO'){
-let div=document.getElementById(idMapa)
+async function renderMapaMunicipios(){
+let div=document.getElementById('mapaRO')
 if(!div)return
-let somenteUCs=idMapa==='mapaROEstadual'
-if(window[idMapa+'_instance']){
-try{
-window[idMapa+'_instance'].remove()
-}catch(e){}
-window[idMapa+'_instance']=null
+if(window.mapaExecutivoRO){
+try{window.mapaExecutivoRO.remove()}catch(e){}
+window.mapaExecutivoRO=null
 }
 if(div._leaflet_id){
 delete div._leaflet_id
 }
-let mapa=L.map(idMapa).setView([-10.9,-63.3],7)
-window[idMapa+'_instance']=mapa
-window.camadasControle=L.control.layers({},{},{collapsed:false}).addTo(mapa)
+let mapa=L.map('mapaRO').setView([-10.9,-63.3],7)
+window.mapaExecutivoRO=mapa
+window.camadasControleExecutivo=L.control.layers({},{},{collapsed:false}).addTo(mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
 if(typeof carregarUCsRO==='function'){
-await carregarUCsRO(mapa)
-}
-if(somenteUCs){
-setTimeout(()=>{
-mapa.invalidateSize()
-if(window.layerUCs&&window.layerUCs.getBounds&&window.layerUCs.getBounds().isValid()){
-mapa.fitBounds(window.layerUCs.getBounds())
-}
-},500)
-return
+await carregarUCsRO(mapa,'executivo')
 }
 let {data,error}=await client.from('queimadas_heatmap').select('*')
 if(error){
@@ -1536,32 +1524,32 @@ console.log(error)
 return
 }
 const coordenadas=MUNICIPIOS_RO
+let grupoMunicipios=L.layerGroup()
 ;(data||[]).forEach(m=>{
 let coord=coordenadas[m.municipio]
 if(!coord)return
-let cor='green'
-if(m.classificacao==='MODERADO')cor='yellow'
-if(m.classificacao==='ALTO')cor='orange'
-if(m.classificacao==='CRÍTICO')cor='red'
+let cor='#16a34a'
+if(m.classificacao==='MODERADO')cor='#facc15'
+if(m.classificacao==='ALTO')cor='#f97316'
+if(m.classificacao==='CRÍTICO')cor='#dc2626'
 L.circleMarker(coord,{
 radius:12,
 fillColor:cor,
 color:'#000',
 weight:1,
 opacity:1,
-fillOpacity:0.8
-})
-.addTo(mapa)
-.bindPopup(`
+fillOpacity:.8
+}).bindPopup(`
 <b>${m.municipio}</b><br>
 Criticidade: ${m.criticidade}<br>
 Focos: ${m.focos}<br>
 Classificação: ${m.classificacao}
-`)
+`).addTo(grupoMunicipios)
 })
-setTimeout(()=>{
-mapa.invalidateSize()
-},500)
+grupoMunicipios.addTo(mapa)
+window.layerMunicipiosExecutivo=grupoMunicipios
+window.camadasControleExecutivo.addOverlay(grupoMunicipios,'🔥 Municípios')
+setTimeout(()=>{mapa.invalidateSize()},500)
 }
 /*=========================================================
 046 QUEIMADAS FUNCTION RENDERACOESSEDAM
@@ -3938,6 +3926,7 @@ let abaSalva=localStorage.getItem('abaQueimadas')||'executivo'
 mostrarAbaQueimadas(abaSalva)
 if(typeof renderMapaMunicipios==='function'){
 await renderMapaMunicipios()
+await renderMapaEstadual()
 }
 if(typeof renderMapaUCs==='function'){
 await renderMapaUCs()
@@ -4177,20 +4166,14 @@ alert('Registro atualizado com sucesso.')
 /*=========================================================
 108 QUEIMADAS FUNCTION CARREGARUCSRO
 =========================================================*/
-async function carregarUCsRO(mapa){
+async function carregarUCsRO(mapa,tipo='executivo'){
 try{
 let resp=await fetch('./assets/geojson/ucs-ro.geojson')
 if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/ucs-ro.geojson')
 }
 let geo=await resp.json()
-if(window.layerUCs){
-try{
-window.layerUCs.remove()
-}catch(e){}
-window.layerUCs=null
-}
-window.layerUCs=L.geoJSON(geo,{
+let layerUC=L.geoJSON(geo,{
 style:f=>{
 let p=(f&&f.properties)?f.properties:{}
 return{
@@ -4216,17 +4199,25 @@ Município: ${municipio}
 `)
 }
 })
-window.layerUCs.addTo(mapa)
-if(!mapa._ucsOverlayAdicionado&&window.camadasControle){
-window.camadasControle.addOverlay(window.layerUCs,'🌳 UCs de Rondônia')
-mapa._ucsOverlayAdicionado=true
+layerUC.addTo(mapa)
+if(tipo==='executivo'){
+window.layerUCsExecutivo=layerUC
+if(window.camadasControleExecutivo){
+window.camadasControleExecutivo.addOverlay(layerUC,'🌳 UCs de Rondônia')
+}
+}
+if(tipo==='estadual'){
+window.layerUCsEstadual=layerUC
+if(window.camadasControleEstadual){
+window.camadasControleEstadual.addOverlay(layerUC,'🌳 UCs de Rondônia')
+}
 }
 let painel=document.getElementById('painelUCsMapa')
 if(painel){
 painel.innerHTML=`
 <b>49 Unidades de Conservação</b><br>
 Fonte:
-<a href="https://app.tcgeo.tcero.tc.br/" target="_blank">
+<a href="https://app.tcgeo.tc.br/" target="_blank">
 TCGeo / TCE-RO
 </a>
 `
@@ -4239,7 +4230,9 @@ painel.innerHTML='Erro ao carregar UCs.'
 }
 }
 }
-
+/*=========================================================
+109 RENDER MAPA MUNICIPAL PLANOS
+=========================================================*/
 async function renderMapaMunicipalPlanos(filtro='TODOS'){
 let div=document.getElementById('mapaMunicipalPlanos')
 if(!div)return
@@ -4311,4 +4304,100 @@ window.layerUCs.bringToBack()
 }
 mapa.fitBounds(window.layerMunicipiosPlanos.getBounds())
 setTimeout(()=>{mapa.invalidateSize()},500)
+}
+/*=========================================================
+110 QUEIMADAS FUNCTION RENDERMAPAESTADUAL
+=========================================================*/
+async function renderMapaEstadual(){
+let div=document.getElementById('mapaROEstadual')
+if(!div)return
+if(window.mapaEstadualRO){
+try{window.mapaEstadualRO.remove()}catch(e){}
+window.mapaEstadualRO=null
+}
+if(div._leaflet_id){
+delete div._leaflet_id
+}
+let mapa=L.map('mapaROEstadual').setView([-10.9,-63.3],7)
+window.mapaEstadualRO=mapa
+window.camadasControleEstadual=L.control.layers({},{},{collapsed:false}).addTo(mapa)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
+if(typeof carregarUCsRO==='function'){
+await carregarUCsRO(mapa,'estadual')
+}
+if(typeof carregarTIsRO==='function'){
+await carregarTIsRO(mapa)
+}
+let bounds=[]
+if(window.layerUCsEstadual){
+bounds.push(window.layerUCsEstadual.getBounds())
+}
+if(window.layerTIsEstadual){
+bounds.push(window.layerTIsEstadual.getBounds())
+}
+if(bounds.length){
+try{
+let grupo=L.featureGroup([
+window.layerUCsEstadual,
+window.layerTIsEstadual
+].filter(Boolean))
+mapa.fitBounds(grupo.getBounds())
+}catch(e){}
+}
+setTimeout(()=>{
+mapa.invalidateSize()
+},500)
+}
+/*=========================================================
+111 QUEIMADAS FUNCTION CARREGARTISRO
+=========================================================*/
+async function carregarTIsRO(mapa){
+try{
+let resp=await fetch('./assets/geojson/terras-indigenas-ro.geojson')
+if(!resp.ok){
+throw new Error('Erro ao localizar assets/geojson/terras-indigenas-ro.geojson')
+}
+let geo=await resp.json()
+let layerTI=L.geoJSON(geo,{
+style:f=>{
+return{
+color:'#7c3aed',
+weight:2,
+fillColor:'#a855f7',
+fillOpacity:.35
+}
+},
+onEachFeature:(f,l)=>{
+let p=(f&&f.properties)?f.properties:{}
+let nome=p.nome||p.NOME||p.terra_indigena||p.TERRA_INDIGENA||p.ti_nome||'Terra Indígena'
+let etnia=p.etnia||p.ETNIA||'-'
+let fase=p.fase||p.FASE||'-'
+let area=p.area||p.AREA||'-'
+l.bindPopup(`
+<b>${nome}</b><br>
+Etnia: ${etnia}<br>
+Fase: ${fase}<br>
+Área: ${area}
+`)
+}
+})
+layerTI.addTo(mapa)
+window.layerTIsEstadual=layerTI
+if(window.camadasControleEstadual){
+window.camadasControleEstadual.addOverlay(layerTI,'🛖 Terras Indígenas')
+}
+let painel=document.getElementById('painelTIMapa')
+if(painel){
+painel.innerHTML=`
+<b>Terras Indígenas de Rondônia</b><br>
+Fonte: FUNAI
+`
+}
+}catch(e){
+console.error('Erro ao carregar TIs:',e)
+let painel=document.getElementById('painelTIMapa')
+if(painel){
+painel.innerHTML='Erro ao carregar Terras Indígenas.'
+}
+}
 }
