@@ -4417,76 +4417,35 @@ alert('Registro atualizado com sucesso.')
 098 QUEIMADAS FUNCTION CARREGARUCSRO
 =========================================================*/
 async function carregarUCsRO(mapa){
-
 try{
-
 let resp=await fetch('./assets/geojson/ucs-ro.geojson')
-
 if(!resp.ok){
-throw new Error(
-'Erro ao localizar assets/geojson/ucs-ro.geojson'
-)
+throw new Error('Erro ao localizar assets/geojson/ucs-ro.geojson')
 }
-
 let geo=await resp.json()
-
 if(window.layerUCs){
+try{
 window.layerUCs.remove()
+}catch(e){}
+window.layerUCs=null
 }
-
-window.layerUCs=L.geoJSON(
-geo,
-{
+window.layerUCs=L.geoJSON(geo,{
 style:f=>{
-
-let p=(f&&f.properties)
-?f.properties
-:{}
-
+let p=(f&&f.properties)?f.properties:{}
 return{
 color:'#006400',
 weight:1,
 fillColor:'#00aa55',
 fillOpacity:.45
 }
-
 },
-
 onEachFeature:(f,l)=>{
-
-let p=(f&&f.properties)
-?f.properties
-:{}
-
-let nome=
-p.nome_uc||
-p.nome||
-p.NOME_UC||
-p.NOME||
-p.uc||
-p.UC||
-'Unidade de Conservação'
-
-let categoria=
-p.categoria||
-p.CATEGORIA||
-'-'
-
-let grupo=
-p.grupo||
-p.GRUPO||
-'-'
-
-let situacao=
-p.situacao||
-p.SITUACAO||
-'-'
-
-let municipio=
-p.municipio||
-p.MUNICIPIO||
-'-'
-
+let p=(f&&f.properties)?f.properties:{}
+let nome=p.nome_uc||p.nome||p.NOME_UC||p.NOME||p.uc||p.UC||'Unidade de Conservação'
+let categoria=p.categoria||p.CATEGORIA||'-'
+let grupo=p.grupo||p.GRUPO||'-'
+let situacao=p.situacao||p.SITUACAO||'-'
+let municipio=p.municipio||p.MUNICIPIO||'-'
 l.bindPopup(`
 <b>${nome}</b><br>
 Categoria: ${categoria}<br>
@@ -4494,63 +4453,30 @@ Grupo: ${grupo}<br>
 Situação: ${situacao}<br>
 Município: ${municipio}
 `)
-
 }
-
-}
-)
-
+})
 window.layerUCs.addTo(mapa)
-
-if(window.camadasControle){
-window.camadasControle.addOverlay(
-window.layerUCs,
-'🌳 UCs de Rondônia'
-)
+if(!mapa._ucsOverlayAdicionado&&window.camadasControle){
+window.camadasControle.addOverlay(window.layerUCs,'🌳 UCs de Rondônia')
+mapa._ucsOverlayAdicionado=true
 }
-
-try{
-mapa.fitBounds(
-window.layerUCs.getBounds()
-)
-}catch(e){}
-
-let painel=document.getElementById(
-'painelUCsMapa'
-)
-
+let painel=document.getElementById('painelUCsMapa')
 if(painel){
-painel.innerHTML=
-`
+painel.innerHTML=`
 <b>49 Unidades de Conservação</b><br>
 Fonte:
-<a
-href="https://app.tcgeo.tcero.tc.br/"
-target="_blank"
->
+<a href="https://app.tcgeo.tcero.tc.br/" target="_blank">
 TCGeo / TCE-RO
 </a>
 `
 }
-
 }catch(e){
-
-console.error(
-'Erro ao carregar UCs:',
-e
-)
-
-let painel=document.getElementById(
-'painelUCsMapa'
-)
-
+console.error('Erro ao carregar UCs:',e)
+let painel=document.getElementById('painelUCsMapa')
 if(painel){
-painel.innerHTML=
-'Erro ao carregar UCs.'
+painel.innerHTML='Erro ao carregar UCs.'
 }
-
 }
-
 }
 
 async function renderMapaMunicipalPlanos(filtro='TODOS'){
@@ -4617,6 +4543,11 @@ Recebimento: ${m?.ldatarecebimentodoc||'-'}
 `)
 }
 }).addTo(mapa)
+if(window.layerUCs){
+try{
+window.layerUCs.bringToBack()
+}catch(e){}
+}
 mapa.fitBounds(window.layerMunicipiosPlanos.getBounds())
 setTimeout(()=>{mapa.invalidateSize()},500)
 }
