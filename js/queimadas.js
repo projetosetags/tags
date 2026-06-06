@@ -4390,24 +4390,66 @@ window.layerUCs.remove()
 window.layerUCs=L.geoJSON(
 geo,
 {
-style:f=>({
+style:f=>{
+
+let p=(f&&f.properties)
+?f.properties
+:{}
+
+return{
 color:'#006400',
 weight:1,
-fillColor:
-f.properties.grupo==='Proteção Integral'
-?'#ff4444'
-:'#00aa55',
+fillColor:'#00aa55',
 fillOpacity:.45
-}),
-onEachFeature:(f,l)=>{
-l.bindPopup(`
-<b>${f.properties.nome_uc||'UC'}</b><br>
-Categoria: ${f.properties.categoria||'-'}<br>
-Grupo: ${f.properties.grupo||'-'}<br>
-Situação: ${f.properties.situacao||'-'}<br>
-Município: ${f.properties.municipio||'-'}
-`)
 }
+
+},
+
+onEachFeature:(f,l)=>{
+
+let p=(f&&f.properties)
+?f.properties
+:{}
+
+let nome=
+p.nome_uc||
+p.nome||
+p.NOME_UC||
+p.NOME||
+p.uc||
+p.UC||
+'Unidade de Conservação'
+
+let categoria=
+p.categoria||
+p.CATEGORIA||
+'-'
+
+let grupo=
+p.grupo||
+p.GRUPO||
+'-'
+
+let situacao=
+p.situacao||
+p.SITUACAO||
+'-'
+
+let municipio=
+p.municipio||
+p.MUNICIPIO||
+'-'
+
+l.bindPopup(`
+<b>${nome}</b><br>
+Categoria: ${categoria}<br>
+Grupo: ${grupo}<br>
+Situação: ${situacao}<br>
+Município: ${municipio}
+`)
+
+}
+
 }
 )
 
