@@ -1553,8 +1553,11 @@ baixarWordQueimadas('relatorio_executivo_tcero',html)
 036 QUEIMADAS FUNCTION RENDERMAPAMUNICIPIOS
 =========================================================*/
 async function renderMapaMunicipios(){
-let div=document.getElementById('mapaRO')||document.getElementById('mapaROEstadual')
+let mapaExecutivo=document.getElementById('mapaRO')
+let mapaUC=document.getElementById('mapaROEstadual')
+let div=mapaExecutivo||mapaUC
 if(!div)return
+let somenteUCs=!mapaExecutivo&&!!mapaUC
 if(window.mapaQueimadasRO){
 try{
 window.mapaQueimadasRO.remove()
@@ -1567,15 +1570,19 @@ delete div._leaflet_id
 let mapa=L.map(div).setView([-10.9,-63.3],7)
 window.mapaQueimadasRO=mapa
 window.camadasControle=L.control.layers({},{},{collapsed:false}).addTo(mapa)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
 if(typeof carregarUCsRO==='function'){
 await carregarUCsRO(mapa)
 }
-L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-{
-attribution:'OpenStreetMap'
+if(somenteUCs){
+setTimeout(()=>{
+mapa.invalidateSize()
+if(window.layerUCs&&window.layerUCs.getBounds().isValid()){
+mapa.fitBounds(window.layerUCs.getBounds())
 }
-).addTo(mapa)
+},500)
+return
+}
 let {data,error}=await client.from('queimadas_heatmap').select('*')
 if(error){
 console.log(error)
@@ -1605,12 +1612,9 @@ Focos: ${m.focos}<br>
 Classificação: ${m.classificacao}
 `)
 })
-setTimeout(()=>{mapa.invalidateSize()},500)
-if(window.layerUCs){
-mapa.fitBounds(
-window.layerUCs.getBounds()
-)
-}
+setTimeout(()=>{
+mapa.invalidateSize()
+},500)
 }
 /*=========================================================
 037 QUEIMADAS FUNCTION RENDERACOESSEDAM
