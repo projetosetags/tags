@@ -1552,23 +1552,21 @@ baixarWordQueimadas('relatorio_executivo_tcero',html)
 /*=========================================================
 036 QUEIMADAS FUNCTION RENDERMAPAMUNICIPIOS
 =========================================================*/
-async function renderMapaMunicipios(){
-let mapaExecutivo=document.getElementById('mapaRO')
-let mapaUC=document.getElementById('mapaROEstadual')
-let div=mapaExecutivo||mapaUC
+async function renderMapaMunicipios(idMapa='mapaRO'){
+let div=document.getElementById(idMapa)
 if(!div)return
-let somenteUCs=!mapaExecutivo&&!!mapaUC
-if(window.mapaQueimadasRO){
+let somenteUCs=idMapa==='mapaROEstadual'
+if(window[idMapa+'_instance']){
 try{
-window.mapaQueimadasRO.remove()
+window[idMapa+'_instance'].remove()
 }catch(e){}
-window.mapaQueimadasRO=null
+window[idMapa+'_instance']=null
 }
 if(div._leaflet_id){
 delete div._leaflet_id
 }
-let mapa=L.map(div).setView([-10.9,-63.3],7)
-window.mapaQueimadasRO=mapa
+let mapa=L.map(idMapa).setView([-10.9,-63.3],7)
+window[idMapa+'_instance']=mapa
 window.camadasControle=L.control.layers({},{},{collapsed:false}).addTo(mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
 if(typeof carregarUCsRO==='function'){
@@ -1577,7 +1575,7 @@ await carregarUCsRO(mapa)
 if(somenteUCs){
 setTimeout(()=>{
 mapa.invalidateSize()
-if(window.layerUCs&&window.layerUCs.getBounds().isValid()){
+if(window.layerUCs&&window.layerUCs.getBounds&&window.layerUCs.getBounds().isValid()){
 mapa.fitBounds(window.layerUCs.getBounds())
 }
 },500)
@@ -4146,7 +4144,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
 let abaSalva=localStorage.getItem('abaQueimadas')||'executivo'
 mostrarAbaQueimadas(abaSalva)
 if(typeof renderMapaMunicipios==='function')
-await renderMapaMunicipios()
+await renderMapaMunicipios('mapaRO')
+await renderMapaMunicipios('mapaROEstadual')
 if(typeof renderGeoJSONRO==='function')
 await renderGeoJSONRO()
 if(typeof renderUCs==='function')
