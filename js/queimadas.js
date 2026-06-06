@@ -4242,12 +4242,6 @@ Fonte:
 <a href="https://app.tcgeo.tc.br/" target="_blank">
 TCGeo / TCE-RO
 </a>
-<br><br>
-<b>19 Terras Indígenas de Rondônia</b><br>
-Fonte:
-<a href="https://www.gov.br/funai" target="_blank">
-FUNAI
-</a>
 `
 }
 }catch(e){
