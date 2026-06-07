@@ -237,8 +237,8 @@ let {data=[]}=await client
 
 let top=[...data]
 .sort((a,b)=>
-Number(b.iriq||0)-
-Number(a.iriq||0)
+Number(b.risco||0)-
+Number(a.risco||0)
 )
 .slice(0,6)
 
