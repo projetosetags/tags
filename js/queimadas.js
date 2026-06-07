@@ -1655,38 +1655,7 @@ return
 }
 box.innerHTML=`<div class="impacto-box"><div class="impacto-score">${data.length}</div><div class="impacto-label">AÇÕES MONITORADAS</div></div>`
 }
-/*=========================================================
-047 QUEIMADAS FUNCTION RENDERMAPAUCS
-=========================================================*/
-async function renderMapaUCs(){
-let div=document.getElementById('mapaROEstadual')
-if(!div)return
-if(window.mapaUCsRO){
-try{
-window.mapaUCsRO.remove()
-}catch(e){}
-}
-if(div._leaflet_id){
-delete div._leaflet_id
-}
-let mapa=L.map('mapaROEstadual').setView([-10.9,-63.3],7)
-window.mapaUCsRO=mapa
-L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-{
-attribution:'OpenStreetMap'
-}
-).addTo(mapa)
-if(typeof carregarUCsRO==='function'){
-await carregarUCsRO(mapa)
-}
-setTimeout(()=>{
-mapa.invalidateSize()
-if(window.layerUCs&&window.layerUCs.getBounds().isValid()){
-mapa.fitBounds(window.layerUCs.getBounds())
-}
-},500)
-}
+
 /*=========================================================
 048 QUEIMADAS FUNCTION RENDERACOESCBM
 =========================================================*/
@@ -4049,9 +4018,7 @@ if(typeof renderMapaMunicipios==='function'){
 await renderMapaMunicipios()
 await renderMapaEstadual()
 }
-if(typeof renderMapaUCs==='function'){
-await renderMapaUCs()
-}
+
 if(typeof renderGeoJSONRO==='function'){
 await renderGeoJSONRO()
 }
@@ -4330,9 +4297,12 @@ window.overlayUCsExecutivoAdicionado=true
 }
 if(tipo==='estadual'){
 window.layerUCsEstadual=layerUC
+layerUC.addTo(mapa)
 if(window.camadasControleEstadual){
-window.camadasControleEstadual.addOverlay(layerUC,'🌳 UCs de Rondônia')
-window.overlayUCsEstadualAdicionado=true
+window.camadasControleEstadual.addOverlay(
+layerUC,
+'🌳 UCs de Rondônia'
+)
 }
 }
 let painel=document.getElementById('painelUCsMapa')
@@ -4443,33 +4413,42 @@ let div=document.getElementById('mapaROEstadual')
 if(!div)return
 if(window.mapaEstadualRO){
 try{window.mapaEstadualRO.remove()}catch(e){}
-window.mapaEstadualRO=null
 }
+window.mapaEstadualRO=null
+window.layerUCsEstadual=null
+window.layerTIsEstadual=null
+window.camadasControleEstadual=null
 if(div._leaflet_id){
 delete div._leaflet_id
 }
 let mapa=L.map('mapaROEstadual').setView([-10.9,-63.3],7)
 window.mapaEstadualRO=mapa
-window.camadasControleEstadual=L.control.layers({},{},{collapsed:false}).addTo(mapa)
-window.overlayTIsEstadualAdicionado=false
-window.overlayUCsEstadualAdicionado=false
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+attribution:'OpenStreetMap'
+}
+).addTo(mapa)
+window.camadasControleEstadual=
+L.control.layers(
+{},
+{},
+{
+collapsed:false
+}
+).addTo(mapa)
 if(typeof carregarUCsRO==='function'){
 await carregarUCsRO(mapa,'estadual')
 }
 if(typeof carregarTIsRO==='function'){
 await carregarTIsRO(mapa,'estadual')
 }
-let layers=[]
-if(window.layerUCsEstadual){
-layers.push(window.layerUCsEstadual)
-}
-if(window.layerTIsEstadual){
-layers.push(window.layerTIsEstadual)
-}
 setTimeout(()=>{
-mapa.invalidateSize(true)
 try{
+mapa.invalidateSize(true)
+let layers=[]
+if(window.layerUCsEstadual)layers.push(window.layerUCsEstadual)
+if(window.layerTIsEstadual)layers.push(window.layerTIsEstadual)
 if(layers.length){
 let grupo=L.featureGroup(layers)
 if(grupo.getBounds().isValid()){
@@ -4485,7 +4464,7 @@ maxZoom:8
 }catch(e){
 console.log(e)
 }
-},1500)
+},1200)
 }
 /*=========================================================
 111 QUEIMADAS FUNCTION CARREGARTISRO
@@ -4497,43 +4476,36 @@ if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/terras-indigenas-ro.geojson')
 }
 let geo=await resp.json()
-window.overlayTIsExecutivoAdicionado=false
-window.overlayTIsEstadualAdicionado=false
-let layerTI=L.geoJSON(geo,{
-style:f=>{
-return{
+let layerTI=L.geoJSON(
+geo,
+{
+style:{
 color:'#7c3aed',
 weight:2,
 fillColor:'#a855f7',
 fillOpacity:.35
-}
 },
 onEachFeature:(f,l)=>{
-let p=(f&&f.properties)?f.properties:{}
+let p=f.properties||{}
 let nome=
-p.terrai_nom||
 p.terrai_nom||
 p.nome||
 p.NOME||
 p.terra_indigena||
 p.TERRA_INDIGENA||
-p.ti_nome||
 'Terra Indígena'
 let etnia=
 p.etnia_nom||
 p.etnia||
-p.ETNIA||
 '-'
 let fase=
 p.fase_ti||
 p.fase||
-p.FASE||
 '-'
 let area=
 p.superficie||
 p.area_ha||
 p.area||
-p.AREA||
 '-'
 l.bindPopup(`
 <b>${nome}</b><br>
@@ -4542,18 +4514,26 @@ Fase: ${fase}<br>
 Área: ${area}
 `)
 }
-})
-layerTI.addTo(mapa)
+}
+)
 if(tipo==='executivo'){
 window.layerTIsExecutivo=layerTI
+layerTI.addTo(mapa)
 if(window.camadasControleExecutivo){
-window.camadasControleExecutivo.addOverlay(layerTI,'🛖 Terras Indígenas')
+window.camadasControleExecutivo.addOverlay(
+layerTI,
+'🛖 Terras Indígenas'
+)
 }
 }
 if(tipo==='estadual'){
 window.layerTIsEstadual=layerTI
+layerTI.addTo(mapa)
 if(window.camadasControleEstadual){
-window.camadasControleEstadual.addOverlay(layerTI,'🛖 Terras Indígenas')
+window.camadasControleEstadual.addOverlay(
+layerTI,
+'🛖 Terras Indígenas'
+)
 }
 }
 let painel=document.getElementById('painelTIMapa')
@@ -4568,10 +4548,6 @@ FUNAI
 `
 }
 }catch(e){
-console.error('Erro ao carregar TIs:',e)
-let painel=document.getElementById('painelTIMapa')
-if(painel){
-painel.innerHTML='Erro ao carregar Terras Indígenas.'
-}
+console.error(e)
 }
 }
