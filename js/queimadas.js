@@ -1579,32 +1579,6 @@ if(error){
 console.log(error)
 return
 }
-const coordenadas=MUNICIPIOS_RO
-let grupoMunicipios=L.layerGroup()
-;(data||[]).forEach(m=>{
-let coord=coordenadas[m.municipio]
-if(!coord)return
-let cor='#16a34a'
-if(m.classificacao==='MODERADO')cor='#facc15'
-if(m.classificacao==='ALTO')cor='#f97316'
-if(m.classificacao==='CRÍTICO')cor='#dc2626'
-L.circleMarker(coord,{
-radius:12,
-fillColor:cor,
-color:'#000',
-weight:1,
-opacity:1,
-fillOpacity:.8
-}).bindPopup(`
-<b>${m.municipio}</b><br>
-Criticidade: ${m.criticidade}<br>
-Focos: ${m.focos}<br>
-Classificação: ${m.classificacao}
-`).addTo(grupoMunicipios)
-})
-grupoMunicipios.addTo(mapa)
-window.layerMunicipiosExecutivo=grupoMunicipios
-window.camadasControleExecutivo.addOverlay(grupoMunicipios,'🔥 Municípios')
 setTimeout(()=>{mapa.invalidateSize()},500)
 }
 /*=========================================================
