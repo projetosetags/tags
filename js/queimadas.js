@@ -1525,11 +1525,25 @@ if(geo.ok){
 let geojson=await geo.json()
 let risco={}
 ;(data||[]).forEach(m=>{
-risco[String(m.municipio||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()]=m.classificacao
+risco[String(m.municipio||'')
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.replace(/'/g,'')
+.replace(/´/g,'')
+.replace(/`/g,'')
+.toUpperCase()
+.trim()]=m.classificacao
 })
 window.layerMunicipiosPoligonos=L.geoJSON(geojson,{
 style:f=>{
-let nome=String(f.properties.nome||f.properties.NOME||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()
+let nome=String(f.properties.nome||f.properties.NOME||'')
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.replace(/'/g,'')
+.replace(/´/g,'')
+.replace(/`/g,'')
+.toUpperCase()
+.trim()
 let classe=risco[nome]||''
 let cor='#16a34a'
 if(classe==='MODERADO')cor='#facc15'
