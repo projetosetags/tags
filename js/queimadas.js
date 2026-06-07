@@ -1514,7 +1514,14 @@ delete div._leaflet_id
 let mapa=L.map('mapaRO').setView([-10.9,-63.3],7)
 window.mapaExecutivoRO=mapa
 window.camadasControleExecutivo=L.control.layers({},{},{collapsed:false}).addTo(mapa)
+window.overlayTIsExecutivoAdicionado=false
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
+if(typeof carregarUCsRO==='function'){
+await carregarUCsRO(mapa,'executivo')
+}
+if(typeof carregarTIsRO==='function'){
+await carregarTIsRO(mapa,'executivo')
+}
 let {data,error}=await client.from('queimadas_heatmap').select('*')
 if(error){
 console.log(error)
@@ -1569,7 +1576,10 @@ Focos: ${registro?.focos||'-'}
 `)
 }
 }).addTo(mapa)
-window.camadasControleExecutivo.addOverlay(window.layerMunicipiosPoligonos,'🗺 Risco Municipal')
+window.camadasControleExecutivo.addOverlay(window.layerMunicipiosPoligonos,'🗺🔥RISCO DE QUEIMADAS')
+if(typeof carregarTIsRO==='function'){
+await carregarTIsRO(mapa,'executivo')
+}
 try{
 mapa.fitBounds(window.layerMunicipiosPoligonos.getBounds())
 }catch(e){}
@@ -4398,7 +4408,7 @@ mapa.invalidateSize()
 /*=========================================================
 111 QUEIMADAS FUNCTION CARREGARTISRO
 =========================================================*/
-async function carregarTIsRO(mapa){
+async function carregarTIsRO(mapa,tipo='estadual'){
 try{
 let resp=await fetch('./assets/geojson/terras-indigenas-ro.geojson')
 if(!resp.ok){
@@ -4450,9 +4460,19 @@ Fase: ${fase}<br>
 }
 })
 layerTI.addTo(mapa)
+if(tipo==='executivo'){
+window.layerTIsExecutivo=layerTI
+if(window.camadasControleExecutivo&&!window.overlayTIsExecutivoAdicionado){
+window.camadasControleExecutivo.addOverlay(layerTI,'🛖 Terras Indígenas')
+window.overlayTIsExecutivoAdicionado=true
+}
+}
+if(tipo==='estadual'){
 window.layerTIsEstadual=layerTI
-if(window.camadasControleEstadual){
+if(window.camadasControleEstadual&&!window.overlayTIsEstadualAdicionado){
 window.camadasControleEstadual.addOverlay(layerTI,'🛖 Terras Indígenas')
+window.overlayTIsEstadualAdicionado=true
+}
 }
 let painel=document.getElementById('painelTIMapa')
 if(painel){
