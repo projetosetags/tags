@@ -4364,8 +4364,8 @@ let situacao={}
 ;(data||[]).forEach(i=>{
 situacao[String(i.municipio||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/'/g,'').toUpperCase().trim()]=i
 })
-window.layerMunicipiosPlanos=L.geoJSON(geojson,{
 console.log('Layer criada')
+window.layerMunicipiosPlanos=L.geoJSON(geojson,{
 style:f=>{
 let nome=String(f.properties.nome||
 f.properties.NOME||
