@@ -2185,7 +2185,7 @@ if(typeof renderLegendaHeatmap==='function')await renderLegendaHeatmap()
 if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
 if(typeof renderKPIsMunicipais==='function')await renderKPIsMunicipais()
-if(typeof renderMapaMunicipalPlanos==='function'){setTimeout(()=>{renderMapaMunicipalPlanos('TODOS')},500)}
+if(typeof renderMapaMunicipalPlanos==='function')await renderMapaMunicipalPlanos('TODOS')
 if(typeof renderSituacaoGeralMunicipios==='function')await renderSituacaoGeralMunicipios()
 if(typeof renderCadastroMunicipiosResumo==='function')await renderCadastroMunicipiosResumo()
 if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
@@ -4401,8 +4401,23 @@ try{
 window.layerUCs.bringToBack()
 }catch(e){}
 }
-mapa.fitBounds(window.layerMunicipiosPlanos.getBounds())
-setTimeout(()=>{mapa.invalidateSize()},500)
+try{
+mapa.fitBounds(
+window.layerMunicipiosPlanos.getBounds(),
+{
+padding:[20,20]
+}
+)
+}catch(e){}
+setTimeout(()=>{
+mapa.invalidateSize(true)
+},100)
+setTimeout(()=>{
+mapa.invalidateSize(true)
+},500)
+setTimeout(()=>{
+mapa.invalidateSize(true)
+},1000)
 }
 /*=========================================================
 110 QUEIMADAS FUNCTION RENDERMAPAESTADUAL
