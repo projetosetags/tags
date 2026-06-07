@@ -87,8 +87,37 @@ doc,
 titulo,
 idElemento
 ){
+
 let el=document.getElementById(idElemento)
-if(!el)return
+
+if(!el){
+console.log(
+'Elemento não encontrado:',
+idElemento
+)
+return
+}
+
+console.log(
+'Capturando:',
+idElemento,
+'| largura:',
+el.offsetWidth,
+'| altura:',
+el.offsetHeight
+)
+
+if(
+el.offsetWidth===0||
+el.offsetHeight===0
+){
+console.log(
+'Painel sem tamanho:',
+idElemento
+)
+return
+}
+
 let canvas=await html2canvas(
 el,
 {
@@ -97,15 +126,24 @@ backgroundColor:'#ffffff',
 useCORS:true
 }
 )
+
 let img=canvas.toDataURL('image/png')
+
 doc.addPage()
-doc.setFont('helvetica','bold')
+
+doc.setFont(
+'helvetica',
+'bold'
+)
+
 doc.setFontSize(16)
+
 doc.text(
 titulo,
 15,
 20
 )
+
 doc.addImage(
 img,
 'PNG',
@@ -114,6 +152,7 @@ img,
 270,
 150
 )
+
 }
 /*=========================================================
 005 CAPA
