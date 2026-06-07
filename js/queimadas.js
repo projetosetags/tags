@@ -1618,6 +1618,7 @@ doc.text(
 doc.save(
 'relatorio-executivo-queimadas.pdf'
 )
+}
 /*=========================================================
 044 QUEIMADAS FUNCTION GERARWORDEXECUTIVOTCERO
 =========================================================*/
