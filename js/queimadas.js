@@ -1431,60 +1431,101 @@ let largura=doc.internal.pageSize.getWidth()
 let pagina=1
 
 doc.setFont('helvetica','bold')
-doc.setFontSize(18)
-doc.text('MONITORAMENTO INTELIGENTE DE QUEIMADAS 2026',largura/2,15,{align:'center'})
-
-doc.setFontSize(11)
-doc.text('Tribunal de Contas do Estado de Rondônia',largura/2,22,{align:'center'})
-
-doc.setDrawColor(0)
-doc.line(10,26,287,26)
-
-let y=35
-
+doc.setFontSize(22)
+doc.text('MONITORAMENTO INTELIGENTE DE QUEIMADAS 2026',largura/2,60,{align:'center'})
 doc.setFontSize(14)
-doc.text('DASHBOARD EXECUTIVO',10,y)
-
-y+=8
-
-doc.setFont('helvetica','normal')
-doc.setFontSize(10)
-doc.text('Plano Unificado TCE-RO + SEDAM + Corpo de Bombeiros',10,y)
-
-y+=10
-
-doc.setFont('helvetica','bold')
-doc.text('Objetivos Estratégicos',10,y)
-
-y+=6
-
-doc.setFont('helvetica','normal')
-doc.text('- Prevenção',15,y)
-y+=5
-doc.text('- Fiscalização',15,y)
-y+=5
-doc.text('- Mitigação',15,y)
-y+=5
-doc.text('- Resposta Operacional',15,y)
-y+=5
-doc.text('- Recuperação Ambiental',15,y)
-
-y+=15
-
-doc.setFont('helvetica','bold')
-doc.text('Metodologias Aplicadas',10,y)
-
-y+=6
-
-doc.setFont('helvetica','normal')
-doc.text('CHAP | Cadeia de Valor | Teoria da Mudança | ODS | HeatMap | Matriz 5x5 | IA-CHAP | IRIQ',15,y)
+doc.text('Painel Executivo',largura/2,80,{align:'center'})
+doc.text('PCe 0501/2026',largura/2,95,{align:'center'})
+doc.text('Tribunal de Contas do Estado de Rondônia',largura/2,110,{align:'center'})
 
 doc.setFontSize(8)
 doc.text('Página '+pagina,280,200,{align:'right'})
 
-/*=========================================================
-PÁGINA 02 - CONCLUSÃO EXECUTIVA
-=========================================================*/
+doc.addPage()
+pagina++
+
+doc.setFont('helvetica','bold')
+doc.setFontSize(18)
+doc.text('DASHBOARD EXECUTIVO',15,20)
+
+let y=35
+
+doc.setFont('helvetica','normal')
+doc.setFontSize(10)
+doc.text('Plano Unificado TCE-RO + SEDAM + Corpo de Bombeiros',15,y)
+
+y+=12
+
+doc.setFont('helvetica','bold')
+doc.text('Objetivos Estratégicos',15,y)
+
+y+=8
+
+doc.setFont('helvetica','normal')
+doc.text('• Prevenção',20,y)
+y+=6
+doc.text('• Fiscalização',20,y)
+y+=6
+doc.text('• Mitigação',20,y)
+y+=6
+doc.text('• Resposta Operacional',20,y)
+y+=6
+doc.text('• Recuperação Ambiental',20,y)
+
+y+=15
+
+doc.setFont('helvetica','bold')
+doc.text('Metodologias Aplicadas',15,y)
+
+y+=8
+
+doc.setFont('helvetica','normal')
+doc.text('CHAP | IA-CHAP | Cadeia de Valor | Teoria da Mudança | ODS | HeatMap | Matriz 5x5 | IRIQ',20,y)
+
+doc.setFontSize(8)
+doc.text('Página '+pagina,280,200,{align:'right'})
+
+await adicionarPainelPDF(
+doc,
+'MAPA EXECUTIVO',
+'boxMapaRO'
+)
+
+await adicionarPainelPDF(
+doc,
+'IRIQ ESTADUAL E HEATMAP',
+'painelIRIQHeatmapUnificado'
+)
+
+await adicionarPainelPDF(
+doc,
+'MUNICÍPIOS PRIORITÁRIOS',
+'painelMunicipiosPrioritarios'
+)
+
+await adicionarPainelPDF(
+doc,
+'FOCOS DE CALOR',
+'painelFocosINPE'
+)
+
+await adicionarPainelPDF(
+doc,
+'ALERTAS AUTOMÁTICOS',
+'painelAlertas'
+)
+
+await adicionarPainelPDF(
+doc,
+'UNIDADES DE CONSERVAÇÃO',
+'painelUCs'
+)
+
+await adicionarPainelPDF(
+doc,
+'INDICADORES ESTRATÉGICOS',
+'painelIndicadoresEstrategicos'
+)
 
 doc.addPage()
 
