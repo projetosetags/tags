@@ -4323,14 +4323,14 @@ Município: ${municipio}
 layerUC.addTo(mapa)
 if(tipo==='executivo'){
 window.layerUCsExecutivo=layerUC
-if(window.camadasControleExecutivo&&!window.overlayUCsExecutivoAdicionado){
+if(window.camadasControleExecutivo){
 window.camadasControleExecutivo.addOverlay(layerUC,'🌳 UCs de Rondônia')
 window.overlayUCsExecutivoAdicionado=true
 }
 }
 if(tipo==='estadual'){
 window.layerUCsEstadual=layerUC
-if(window.camadasControleEstadual&&!window.overlayUCsEstadualAdicionado){
+if(window.camadasControleEstadual){
 window.camadasControleEstadual.addOverlay(layerUC,'🌳 UCs de Rondônia')
 window.overlayUCsEstadualAdicionado=true
 }
@@ -4451,6 +4451,8 @@ delete div._leaflet_id
 let mapa=L.map('mapaROEstadual').setView([-10.9,-63.3],7)
 window.mapaEstadualRO=mapa
 window.camadasControleEstadual=L.control.layers({},{},{collapsed:false}).addTo(mapa)
+window.overlayTIsEstadualAdicionado=false
+window.overlayUCsEstadualAdicionado=false
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
 if(typeof carregarUCsRO==='function'){
 await carregarUCsRO(mapa,'estadual')
@@ -4495,6 +4497,8 @@ if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/terras-indigenas-ro.geojson')
 }
 let geo=await resp.json()
+window.overlayTIsExecutivoAdicionado=false
+window.overlayTIsEstadualAdicionado=false
 let layerTI=L.geoJSON(geo,{
 style:f=>{
 return{
@@ -4542,16 +4546,14 @@ Fase: ${fase}<br>
 layerTI.addTo(mapa)
 if(tipo==='executivo'){
 window.layerTIsExecutivo=layerTI
-if(window.camadasControleExecutivo&&!window.overlayTIsExecutivoAdicionado){
+if(window.camadasControleExecutivo){
 window.camadasControleExecutivo.addOverlay(layerTI,'🛖 Terras Indígenas')
-window.overlayTIsExecutivoAdicionado=true
 }
 }
 if(tipo==='estadual'){
 window.layerTIsEstadual=layerTI
-if(window.camadasControleEstadual&&!window.overlayTIsEstadualAdicionado){
+if(window.camadasControleEstadual){
 window.camadasControleEstadual.addOverlay(layerTI,'🛖 Terras Indígenas')
-window.overlayTIsEstadualAdicionado=true
 }
 }
 let painel=document.getElementById('painelTIMapa')
