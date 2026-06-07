@@ -2699,13 +2699,29 @@ if(error){
 box.innerHTML='Erro ao carregar.'
 return
 }
-let {data:heat=[]}=await client.from('queimadas_heatmap').select('*').order('risco',{ascending:false}).limit(6)
+let {data:heat=[]}=await client
+.from('queimadas_heatmap')
+.select('*')
+.order('criticidade',{ascending:false})
+.order('focos',{ascending:false})
+.limit(6)
 let comPlano=(data||[]).filter(i=>i.classificacao_cor==='VERDE')
 let dilacao=(data||[]).filter(i=>i.classificacao_cor==='AMARELO')
 let semPlano=(data||[]).filter(i=>i.classificacao_cor==='VERMELHO')
 let rankingHTML=''
+
 heat.forEach((m,i)=>{
-rankingHTML+=`<div><b>${i+1}º</b> ${m.municipio}</div>`
+rankingHTML+=`
+<div style="margin:4px 0">
+<b>${i+1}º ${m.municipio}</b>
+&nbsp;|&nbsp;
+Criticidade: <b>${m.criticidade||0}</b>
+&nbsp;|&nbsp;
+Focos: <b>${m.focos||0}</b>
+&nbsp;|&nbsp;
+Classificação: <b>${m.classificacao||'-'}</b>
+</div>
+`
 })
 box.innerHTML=`
 <div class="chap-grid">
@@ -2724,7 +2740,7 @@ box.innerHTML=`
 </div>
 <div style="margin-top:15px;padding:12px;border-radius:10px;background:#fef2f2;border:2px solid #dc2626">
 <div style="font-size:16px;font-weight:900;margin-bottom:8px;color:#991b1b">
-🔥 TOP 6 MUNICÍPIOS PRIORITÁRIOS (IRIQ)
+🔥 TOP Maiores Focos e Relevância (IRIQ)
 </div>
 ${rankingHTML}
 </div>
