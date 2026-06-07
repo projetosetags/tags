@@ -218,6 +218,61 @@ img,
 )
 }
 /*=========================================================
+015 QUEIMADAS RELATORIOS CONCLUSAO AUTOMATICA
+=========================================================*/
+async function gerarConclusaoAutomatica(){
+
+let {data=[]}=await client
+.from('queimadas_heatmap')
+.select('*')
+
+let criticos=
+(data||[]).filter(i=>
+String(i.classificacao||'')
+.toUpperCase()
+.includes('CRÍT')
+).length
+
+let altos=
+(data||[]).filter(i=>
+String(i.classificacao||'')
+.toUpperCase()==='ALTO'
+).length
+
+let moderados=
+(data||[]).filter(i=>
+String(i.classificacao||'')
+.toUpperCase()==='MODERADO'
+).length
+
+let baixos=
+(data||[]).filter(i=>
+String(i.classificacao||'')
+.toUpperCase()==='BAIXO'
+).length
+
+let top=[...(data||[])]
+.sort((a,b)=>
+Number(b.risco||0)-
+Number(a.risco||0)
+)
+.slice(0,6)
+
+let ranking=top
+.map((m,i)=>
+`${i+1}º ${m.municipio}`
+)
+.join(', ')
+
+return `
+Foram identificados ${criticos} municípios classificados como CRÍTICO, ${altos} municípios classificados como ALTO, ${moderados} municípios classificados como MODERADO e ${baixos} municípios classificados como BAIXO risco de queimadas.
+
+Os municípios que apresentam os maiores níveis de risco são: ${ranking}.
+
+Os resultados indicam a necessidade de fortalecimento das ações preventivas, monitoramento contínuo, atualização dos planos municipais e atuação integrada entre Estado, Municípios, Defesa Civil, Corpo de Bombeiros Militar, Sedam e demais órgãos envolvidos.
+`
+}
+/*=========================================================
 015 QUEIMADAS RELATORIOS ANEXOS
 =========================================================*/
 function adicionarAnexos(doc){
