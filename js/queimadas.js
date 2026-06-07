@@ -2237,18 +2237,29 @@ if(typeof renderMapaEstadual==='function'){
 await renderMapaEstadual()
 }
 setTimeout(()=>{
-if(window.mapaEstadualRO){
-window.mapaEstadualRO.invalidateSize()
+if(!window.mapaEstadualRO)return
+window.mapaEstadualRO.invalidateSize(true)
 try{
+let layers=[]
+if(window.layerUCsEstadual)layers.push(window.layerUCsEstadual)
+if(window.layerTIsEstadual)layers.push(window.layerTIsEstadual)
+if(layers.length){
+let grupo=L.featureGroup(layers)
+if(grupo.getBounds().isValid()){
 window.mapaEstadualRO.fitBounds(
-L.featureGroup([
-window.layerUCsEstadual,
-window.layerTIsEstadual
-].filter(Boolean)).getBounds()
-)
-}catch(e){}
+grupo.getBounds(),
+{
+padding:[20,20],
+maxZoom:9
 }
-},500)
+)
+}
+}
+}catch(e){
+console.log(e)
+}
+},1000)
+}
 }
 if(nome==='planejamento'){
 document.getElementById('abaPlanejamento')?.classList.remove('hidden')
@@ -4455,18 +4466,25 @@ bounds.push(window.layerUCsEstadual.getBounds())
 if(window.layerTIsEstadual){
 bounds.push(window.layerTIsEstadual.getBounds())
 }
-if(bounds.length){
-try{
 let grupo=L.featureGroup([
 window.layerUCsEstadual,
 window.layerTIsEstadual
 ].filter(Boolean))
-mapa.fitBounds(grupo.getBounds())
-}catch(e){}
-}
 setTimeout(()=>{
-mapa.invalidateSize()
-},500)
+mapa.invalidateSize(true)
+try{
+if(grupo.getLayers().length){
+mapa.fitBounds(
+grupo.getBounds(),
+{
+padding:[20,20]
+}
+)
+}
+}catch(e){
+console.log(e)
+}
+},1000)
 }
 /*=========================================================
 111 QUEIMADAS FUNCTION CARREGARTISRO
