@@ -3768,7 +3768,7 @@ let situacao={}
 situacao[(i.municipio||'').trim().toUpperCase()]=i
 })
 
-let geo=await fetch('/tags/queimadas/assets/geojson/municipios-ro.geojson')
+let geo=await fetch('./assets/geojson/municipios-ro.geojson')
 console.log('GeoJSON status:',geo.status)
 let geojson=await geo.json()
 console.log('Features:',geojson.features?.length)
