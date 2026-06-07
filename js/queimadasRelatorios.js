@@ -155,7 +155,7 @@ img,
 
 }
 /*=========================================================
-005 CAPA
+007 CAPA
 =========================================================*/
 function adicionarCapa(doc){
 doc.setFont('helvetica','bold')
@@ -169,26 +169,7 @@ doc.text('Tribunal de Contas do Estado de Rondônia',105,120,{align:'center'})
 }
 
 /*=========================================================
-006 PAINEL PDF
-=========================================================*/
-async function adicionarPainelPDF(doc,titulo,idElemento){
-let el=document.getElementById(idElemento)
-if(!el)return
-let canvas=await html2canvas(el,{
-scale:2,
-backgroundColor:'#ffffff',
-useCORS:true
-})
-let img=canvas.toDataURL('image/png')
-doc.addPage()
-doc.setFont('helvetica','bold')
-doc.setFontSize(16)
-doc.text(titulo,15,20)
-doc.addImage(img,'PNG',10,30,270,150)
-}
-
-/*=========================================================
-007 TOP MUNICIPIOS
+008 TOP 10 RISCOS PDF
 =========================================================*/
 async function adicionarTop10RiscosPDF(doc){
 let {data,error}=await client
@@ -218,7 +199,7 @@ headStyles:{fillColor:[127,29,29]}
 }
 
 /*=========================================================
-008 TABELA MUNICIPIOS
+009 TABELA MUNICIPIOS PDF
 =========================================================*/
 async function adicionarTabelaMunicipiosPDF(doc){
 let {data,error}=await client
@@ -247,7 +228,7 @@ alternateRowStyles:{fillColor:[245,245,245]}
 }
 
 /*=========================================================
-009 CONCLUSAO AUTOMATICA
+010 CONCLUSAO AUTOMATICA
 =========================================================*/
 async function gerarConclusaoAutomatica(){
 let {data=[]}=await client
@@ -263,54 +244,9 @@ let top=[...(data||[])]
 let ranking=top.map((m,i)=>`${i+1}º ${m.municipio}`).join(', ')
 return `Foram identificados ${criticos} municípios classificados como CRÍTICO, ${altos} classificados como ALTO, ${moderados} classificados como MODERADO e ${baixos} classificados como BAIXO risco. Os municípios mais críticos são: ${ranking}. Recomenda-se intensificar prevenção, fiscalização, monitoramento e resposta integrada.`
 }
+
 /*=========================================================
-011 ADICIONAR ANEXOS
-=========================================================*/
-function adicionarAnexos(doc){
-
-doc.addPage()
-
-doc.setFont('helvetica','bold')
-doc.setFontSize(18)
-
-doc.text(
-'ANEXOS',
-15,
-20
-)
-
-let lista=[
-'Mapa Executivo',
-'Mapa Estadual',
-'IRIQ Estadual',
-'Heatmap Estadual',
-'Painel CHAP',
-'Painel IA-CHAP',
-'Matriz de Risco 5x5',
-'Tabela de Municípios',
-'Evidências',
-'Monitoramento 4D'
-]
-
-let y=40
-
-lista.forEach((item,idx)=>{
-
-doc.setFontSize(12)
-
-doc.text(
-`${idx+1}. ${item}`,
-20,
-y
-)
-
-y+=10
-
-})
-
-}
-/*=========================================================
-010 ASSINATURAS
+ 011 ASSINATURAS PDF
 =========================================================*/
 function adicionarAssinaturasPDF(doc){
 doc.addPage()
@@ -335,3 +271,49 @@ doc.line(20,142,120,142)
 doc.setFont('helvetica','normal')
 doc.text('Supervisor dos Trabalhos',20,150)
 }
+/*=========================================================
+012 ANEXOS
+=========================================================*/
+function adicionarAnexos(doc){
+doc.addPage()
+doc.setFont('helvetica','bold')
+doc.setFontSize(18)
+doc.text('ANEXOS',15,20)
+let lista=[
+'Mapa Executivo',
+'Mapa Estadual',
+'IRIQ Estadual',
+'Heatmap Estadual',
+'Painel CHAP',
+'Painel IA-CHAP',
+'Matriz de Risco 5x5',
+'Tabela de Municípios',
+'Evidências',
+'Monitoramento 4D'
+]
+let y=40
+lista.forEach((item,idx)=>{
+doc.setFontSize(12)
+doc.text(`${idx+1}. ${item}`,20,y)
+y+=10
+})
+}
+/*=========================================================
+013 PDF EXECUTIVO
+=========================================================*/
+async function gerarPDFExecutivoTCERO(){}
+
+/*=========================================================
+014 PDF COMPLETO
+=========================================================*/
+async function pdfCompletoQueimadas(){}
+
+/*=========================================================
+015 WORD EXECUTIVO
+=========================================================*/
+async function gerarWordExecutivoTCERO(){}
+
+/*=========================================================
+016 WORD COMPLETO
+=========================================================*/
+async function gerarWordCompletoQueimadas(){}
