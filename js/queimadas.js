@@ -2372,11 +2372,14 @@ await renderTopRiscos()
 if(nome==='auditor'){
 document.getElementById('abaAuditor')?.classList.remove('hidden')
 if(typeof renderAuditoriaConcomitante==='function')await renderAuditoriaConcomitante()
+}
+/*=========================================================
 if(typeof renderMunicipiosSemEvidencias==='function')await renderMunicipiosSemEvidencias()
 if(typeof renderTopRiscos==='function')await renderTopRiscos()
 if(typeof renderPainelRelatoriosAuditoria==='function')await renderPainelRelatoriosAuditoria()
 }
-}
+=========================================================*/
+
 /*=========================================================
 065 QUEIMADAS FUNCTION RENDERTOPCRITICOS
 =========================================================*/
