@@ -473,3 +473,231 @@ doc.text(
 100
 )
 }
+/*=========================================================
+020 QUEIMADASPAINEL FUNCTION CAPTURARPAINEL
+=========================================================*/
+async function capturarPainel(id){
+let el=document.getElementById(id)
+if(!el)return null
+let canvas=await html2canvas(el,{
+scale:2,
+useCORS:true,
+backgroundColor:'#ffffff'
+})
+return canvas.toDataURL('image/png',1)
+}
+/*=========================================================
+021 QUEIMADASPAINEL FUNCTION ADDMAPAEXECUTIVO
+=========================================================*/
+async function addMapaExecutivoImagem(doc){
+
+let img=await capturarPainel('mapaRO')
+
+if(!img)return
+
+doc.setFontSize(16)
+
+doc.text(
+'MAPA EXECUTIVO DE RISCO DE QUEIMADAS',
+15,
+20
+)
+
+doc.addImage(
+img,
+'PNG',
+10,
+30,
+190,
+120
+)
+}
+/*=========================================================
+022 QUEIMADASPAINEL FUNCTION ADDMAPAESTADUAL
+=========================================================*/
+async function addMapaEstadualImagem(doc){
+
+let img=await capturarPainel(
+'mapaROEstadual'
+)
+
+if(!img)return
+
+doc.setFontSize(16)
+
+doc.text(
+'MAPA ESTADUAL',
+15,
+20
+)
+
+doc.addImage(
+img,
+'PNG',
+10,
+30,
+190,
+120
+)
+}
+/*=========================================================
+023 QUEIMADASPAINEL FUNCTION ADDHEATMAP
+=========================================================*/
+async function addHeatmapImagem(doc){
+
+let img=
+await capturarPainel(
+'painelIRIQHeatmapUnificado'
+)
+
+if(!img)return
+
+doc.setFontSize(16)
+
+doc.text(
+'HEATMAP ESTADUAL',
+15,
+20
+)
+
+doc.addImage(
+img,
+'PNG',
+10,
+30,
+190,
+110
+)
+}
+/*=========================================================
+024 QUEIMADASPAINEL FUNCTION CAPTURARGRAFICO
+=========================================================*/
+function capturarGrafico(id){
+
+let canvas=
+document.getElementById(id)
+
+if(!canvas)return null
+
+return canvas.toDataURL(
+'image/png',
+1
+)
+}
+/*=========================================================
+025 QUEIMADASPAINEL FUNCTION ADDGRAFICOMUNICIPIOS
+=========================================================*/
+async function addGraficoMunicipios(doc){
+
+let img=
+capturarGrafico(
+'graficoMunicipiosResposta'
+)
+
+if(!img)return
+
+doc.setFontSize(16)
+
+doc.text(
+'DISTRIBUIÇÃO DAS RESPOSTAS',
+15,
+20
+)
+
+doc.addImage(
+img,
+'PNG',
+20,
+35,
+160,
+110
+)
+}
+/*=========================================================
+026 QUEIMADASPAINEL FUNCTION CABECALHO
+=========================================================*/
+function qpCabecalho(doc,titulo){
+
+doc.setFillColor(
+15,
+23,
+42
+)
+
+doc.rect(
+0,
+0,
+210,
+18,
+'F'
+)
+
+doc.setTextColor(
+255,
+255,
+255
+)
+
+doc.setFontSize(12)
+
+doc.text(
+'TCE-RO • QUEIMADAS 2026',
+10,
+12
+)
+
+doc.text(
+titulo,
+200,
+12,
+{
+align:'right'
+}
+)
+
+doc.setTextColor(
+0,
+0,
+0
+)
+}
+/*=========================================================
+027 QUEIMADASPAINEL FUNCTION RODAPE
+=========================================================*/
+function qpRodape(doc){
+
+let pagina=
+doc.internal.getNumberOfPages()
+
+for(let i=1;i<=pagina;i++){
+
+doc.setPage(i)
+
+doc.setDrawColor(180)
+
+doc.line(
+10,
+285,
+200,
+285
+)
+
+doc.setFontSize(8)
+
+doc.text(
+'Fonte: TCE-RO • INPE • SEDAM • CBMRO',
+10,
+290
+)
+
+doc.text(
+'Página '+i,
+195,
+290,
+{
+align:'right'
+}
+)
+
+}
+}
