@@ -20,7 +20,7 @@ async function capturarElemento(id){
 let el=document.getElementById(id)
 if(!el)return null
 let canvas=await html2canvas(el,{
-scale:2,
+scale:1.5,
 useCORS:true,
 backgroundColor:'#ffffff'
 })
@@ -82,77 +82,15 @@ img,
 /*=========================================================
 006 ADICIONAR PAINEL PDF
 =========================================================*/
-async function adicionarPainelPDF(
-doc,
-titulo,
-idElemento
-){
-
-let el=document.getElementById(idElemento)
-
-if(!el){
-console.log(
-'Elemento não encontrado:',
-idElemento
-)
-return
-}
-
-console.log(
-'Capturando:',
-idElemento,
-'| largura:',
-el.offsetWidth,
-'| altura:',
-el.offsetHeight
-)
-
-if(
-el.offsetWidth===0||
-el.offsetHeight===0
-){
-console.log(
-'Painel sem tamanho:',
-idElemento
-)
-return
-}
-
-let canvas=await html2canvas(
-el,
-{
-scale:2,
-backgroundColor:'#ffffff',
-useCORS:true
-}
-)
-
-let img=canvas.toDataURL('image/png')
-
+async function adicionarPainelPDF(doc,titulo,idElemento){
+let img=await capturarElemento(idElemento)
+if(!img)return
 doc.addPage()
-
-doc.setFont(
-'helvetica',
-'bold'
-)
-
+adicionarCabecalho(doc,titulo)
+doc.setFont('helvetica','bold')
 doc.setFontSize(16)
-
-doc.text(
-titulo,
-15,
-20
-)
-
-doc.addImage(
-img,
-'PNG',
-10,
-30,
-270,
-150
-)
-
+doc.text(titulo,15,25)
+doc.addImage(img,'PNG',10,35,190,140)
 }
 /*=========================================================
 007 CAPA
@@ -301,19 +239,108 @@ y+=10
 /*=========================================================
 013 PDF EXECUTIVO
 =========================================================*/
-async function gerarPDFExecutivoTCERO(){}
-
+async function gerarPDFExecutivoTCERO(){
+const {jsPDF}=window.jspdf
+let doc=new jsPDF('p','mm','a4')
+adicionarCapa(doc)
+await adicionarPainelPDF(doc,'DASHBOARD EXECUTIVO','painelKPIs')
+await adicionarPainelPDF(doc,'IRIQ E HEATMAP','painelIRIQHeatmapUnificado')
+await adicionarPainelPDF(doc,'MUNICÍPIOS PRIORITÁRIOS','painelMunicipiosPrioritarios')
+await adicionarPainelPDF(doc,'FOCOS DE CALOR','painelFocosCalor')
+await adicionarPainelPDF(doc,'ALERTAS AUTOMÁTICOS','painelAlertas')
+await adicionarPainelPDF(doc,'UNIDADES DE CONSERVAÇÃO','painelUCs')
+await adicionarPainelPDF(doc,'INDICADORES ESTRATÉGICOS','painelIndicadoresEstrategicos')
+await adicionarTop10RiscosPDF(doc)
+await adicionarTabelaMunicipiosPDF(doc)
+let conclusao=await gerarConclusaoAutomatica()
+doc.addPage()
+doc.setFont('helvetica','bold')
+doc.setFontSize(16)
+doc.text('CONCLUSÕES',15,20)
+doc.setFont('helvetica','normal')
+doc.setFontSize(11)
+doc.text(doc.splitTextToSize(conclusao,180),15,35)
+adicionarAnexos(doc)
+adicionarAssinaturasPDF(doc)
+adicionarRodape(doc)
+doc.save('RELATORIO_EXECUTIVO_QUEIMADAS_2026.pdf')
+}
 /*=========================================================
 014 PDF COMPLETO
 =========================================================*/
-async function pdfCompletoQueimadas(){}
-
+async function pdfCompletoQueimadas(){
+const {jsPDF}=window.jspdf
+let doc=new jsPDF('l','mm','a4')
+adicionarCapa(doc)
+await adicionarPainelPDF(doc,'DASHBOARD EXECUTIVO','painelKPIs')
+await adicionarPainelPDF(doc,'MAPA ESTADUAL','mapaRO')
+await adicionarPainelPDF(doc,'IRIQ E HEATMAP','painelIRIQHeatmapUnificado')
+await adicionarPainelPDF(doc,'MUNICÍPIOS PRIORITÁRIOS','painelMunicipiosPrioritarios')
+await adicionarPainelPDF(doc,'FOCOS DE CALOR','painelFocosCalor')
+await adicionarPainelPDF(doc,'ALERTAS','painelAlertas')
+await adicionarPainelPDF(doc,'UNIDADES DE CONSERVAÇÃO','painelUCs')
+await adicionarPainelPDF(doc,'INDICADORES ESTRATÉGICOS','painelIndicadoresEstrategicos')
+await adicionarPainelPDF(doc,'PLANO UNIFICADO','painelPlanoUnificado')
+await adicionarPainelPDF(doc,'PLANO SEDAM','painelPlanoSEDAM')
+await adicionarPainelPDF(doc,'PLANO CBMRO','painelPlanoCBM')
+await adicionarPainelPDF(doc,'CADEIA DE VALOR','painelCadeiaValor')
+await adicionarPainelPDF(doc,'TEORIA DA MUDANÇA','painelTeoriaMudanca')
+await adicionarPainelPDF(doc,'ODS','painelODS')
+await adicionarPainelPDF(doc,'GANTT','painelGantt')
+await adicionarPainelPDF(doc,'CHAP','painelCHAP')
+await adicionarPainelPDF(doc,'IA-CHAP','painelIAChap')
+await adicionarPainelPDF(doc,'MATRIZ DE RISCO 5X5','painelMatriz5x5')
+await adicionarPainelPDF(doc,'MONITORAMENTO 4D','painelMonitoramento4D')
+await adicionarTop10RiscosPDF(doc)
+await adicionarTabelaMunicipiosPDF(doc)
+adicionarAnexos(doc)
+adicionarAssinaturasPDF(doc)
+adicionarRodape(doc)
+doc.save('RELATORIO_COMPLETO_QUEIMADAS_2026.pdf')
+}
 /*=========================================================
 015 WORD EXECUTIVO
 =========================================================*/
-async function gerarWordExecutivoTCERO(){}
-
+async function gerarWordExecutivoTCERO(){
+let conclusao=await gerarConclusaoAutomatica()
+let html=`
+<h1>RELATÓRIO EXECUTIVO - QUEIMADAS 2026</h1>
+<h2>PCe 0501/2026</h2>
+<p>${conclusao}</p>
+<h2>Top 10 Municípios de Maior Risco</h2>
+<p>Conforme classificação do Heatmap Estadual e IRIQ.</p>
+<h2>Indicadores Estratégicos</h2>
+<p>Monitoramento integrado TCE-RO, SEDAM, CBMRO e INPE.</p>
+<h2>Conclusão</h2>
+<p>${conclusao}</p>
+`
+baixarWordQueimadas('RELATORIO_EXECUTIVO_QUEIMADAS_2026',html)
+}
 /*=========================================================
 016 WORD COMPLETO
 =========================================================*/
-async function gerarWordCompletoQueimadas(){}
+async function gerarWordCompletoQueimadas(){
+let conclusao=await gerarConclusaoAutomatica()
+let html=`
+<h1>RELATÓRIO COMPLETO - QUEIMADAS 2026</h1>
+<h2>PCe 0501/2026</h2>
+<h3>Dashboard Executivo</h3>
+<p>Monitoramento estadual das queimadas em Rondônia.</p>
+<h3>Heatmap Estadual</h3>
+<p>Análise integrada de risco dos municípios.</p>
+<h3>IRIQ</h3>
+<p>Índice de Risco Integrado de Queimadas.</p>
+<h3>CHAP</h3>
+<p>Classificação Hierarquizada de Ações Preventivas.</p>
+<h3>IA-CHAP</h3>
+<p>Priorização automática baseada em inteligência artificial.</p>
+<h3>Matriz de Risco 5x5</h3>
+<p>Avaliação de probabilidade e impacto.</p>
+<h3>Monitoramento 4D</h3>
+<p>Acompanhamento contínuo das ações planejadas.</p>
+<h3>Conclusão</h3>
+<p>${conclusao}</p>
+`
+baixarWordQueimadas('RELATORIO_COMPLETO_QUEIMADAS_2026',html)
+}
+
