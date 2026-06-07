@@ -4456,34 +4456,34 @@ if(typeof carregarUCsRO==='function'){
 await carregarUCsRO(mapa,'estadual')
 }
 if(typeof carregarTIsRO==='function'){
-await carregarTIsRO(mapa)
+await carregarTIsRO(mapa,'estadual')
 }
-let bounds=[]
+let layers=[]
 if(window.layerUCsEstadual){
-bounds.push(window.layerUCsEstadual.getBounds())
+layers.push(window.layerUCsEstadual)
 }
 if(window.layerTIsEstadual){
-bounds.push(window.layerTIsEstadual.getBounds())
+layers.push(window.layerTIsEstadual)
 }
-let grupo=L.featureGroup([
-window.layerUCsEstadual,
-window.layerTIsEstadual
-].filter(Boolean))
 setTimeout(()=>{
 mapa.invalidateSize(true)
 try{
-if(grupo.getLayers().length){
+if(layers.length){
+let grupo=L.featureGroup(layers)
+if(grupo.getBounds().isValid()){
 mapa.fitBounds(
 grupo.getBounds(),
 {
-padding:[20,20]
+padding:[30,30],
+maxZoom:8
 }
 )
+}
 }
 }catch(e){
 console.log(e)
 }
-},1000)
+},1500)
 }
 /*=========================================================
 111 QUEIMADAS FUNCTION CARREGARTISRO
