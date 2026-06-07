@@ -1515,8 +1515,24 @@ let mapa=L.map('mapaRO').setView([-10.9,-63.3],7)
 window.mapaExecutivoRO=mapa
 window.camadasControleExecutivo=L.control.layers({},{},{collapsed:false}).addTo(mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
-if(typeof carregarUCsRO==='function'){
-await carregarUCsRO(mapa,'executivo')
+let geo=await fetch('./assets/geojson/municipios-ro.geojson')
+if(geo.ok){
+let geojson=await geo.json()
+window.layerMunicipiosPoligonos=L.geoJSON(
+geojson,
+{
+style:{
+color:'#2563eb',
+weight:1,
+fillColor:'#93c5fd',
+fillOpacity:.15
+}
+}
+).addTo(mapa)
+window.camadasControleExecutivo.addOverlay(
+window.layerMunicipiosPoligonos,
+'🗺 Municípios'
+)
 }
 let {data,error}=await client.from('queimadas_heatmap').select('*')
 if(error){
