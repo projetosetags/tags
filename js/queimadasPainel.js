@@ -701,3 +701,38 @@ align:'right'
 
 }
 }
+/*=========================================================
+028 RT TABELA MUNICIPIOS
+=========================================================*/
+async function rtTabelaMunicipios(doc){
+
+let {data=[]}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+.order('municipio')
+
+doc.autoTable({
+
+startY:30,
+
+head:[[
+'Município',
+'Situação',
+'Documento'
+]],
+
+body:data.map(i=>[
+i.municipio,
+i.classificacao_ia,
+i.lnumerodocenviado||
+i.llnumerodocenviado||
+'-'
+]),
+
+styles:{
+fontSize:7
+}
+
+})
+
+}
