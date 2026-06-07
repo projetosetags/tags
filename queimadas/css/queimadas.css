@@ -324,3 +324,12 @@ border:1px solid #cbd5e1;
 #abaExecutivo .leaflet-container,
 #abaExecutivoMunicipal .leaflet-container,
 #abaMapa .leaflet-container{background:#f8fafc;}
+#mapaMunicipalPlanos{
+width:100%!important;
+height:700px!important;
+min-height:700px!important;
+display:block!important;
+visibility:visible!important;
+position:relative;
+z-index:1;
+}
