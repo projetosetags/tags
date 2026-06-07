@@ -2694,79 +2694,49 @@ return iriq.toFixed(1)
 async function renderPlanosMunicipais(){
 let box=document.getElementById('painelPlanosMunicipais')
 if(!box)return
-
-let {data,error}=await client
-.from('queimadas_municipios_oficio')
-.select('*')
-.order('municipio')
-
+let {data,error}=await client.from('queimadas_municipios_oficio').select('*').order('municipio')
 if(error){
 box.innerHTML='Erro ao carregar.'
 return
 }
-
-let comPlano=(data||[])
-.filter(i=>i.classificacao_cor==='VERDE')
-
-let dilacao=(data||[])
-.filter(i=>i.classificacao_cor==='AMARELO')
-
-let semPlano=(data||[])
-.filter(i=>i.classificacao_cor==='VERMELHO')
-
+let {data:heat=[]}=await client.from('queimadas_heatmap').select('*').order('risco',{ascending:false}).limit(6)
+let comPlano=(data||[]).filter(i=>i.classificacao_cor==='VERDE')
+let dilacao=(data||[]).filter(i=>i.classificacao_cor==='AMARELO')
+let semPlano=(data||[]).filter(i=>i.classificacao_cor==='VERMELHO')
+let rankingHTML=''
+heat.forEach((m,i)=>{
+rankingHTML+=`<div><b>${i+1}º</b> ${m.municipio}</div>`
+})
 box.innerHTML=`
 <div class="chap-grid">
-
 <div class="chap-card">
-<div class="chap-num" style="color:#16a34a">
-${comPlano.length}
+<div class="chap-num" style="color:#16a34a">${comPlano.length}</div>
+<div class="chap-label">COM PLANO</div>
 </div>
-<div class="chap-label">
-COM PLANO
-</div>
-</div>
-
 <div class="chap-card">
-<div class="chap-num" style="color:#facc15">
-${dilacao.length}
+<div class="chap-num" style="color:#facc15">${dilacao.length}</div>
+<div class="chap-label">DILAÇÃO DE PRAZO</div>
 </div>
-<div class="chap-label">
-DILAÇÃO DE PRAZO
-</div>
-</div>
-
 <div class="chap-card">
-<div class="chap-num" style="color:#dc2626">
-${semPlano.length}
-</div>
-<div class="chap-label">
-SEM EVIDÊNCIA
+<div class="chap-num" style="color:#dc2626">${semPlano.length}</div>
+<div class="chap-label">SEM EVIDÊNCIA</div>
 </div>
 </div>
-
+<div style="margin-top:15px;padding:12px;border-radius:10px;background:#fef2f2;border:2px solid #dc2626">
+<div style="font-size:16px;font-weight:900;margin-bottom:8px;color:#991b1b">
+🔥 TOP 6 MUNICÍPIOS PRIORITÁRIOS (IRIQ)
 </div>
-
+${rankingHTML}
+</div>
 <div style="margin-top:15px">
-
-<h3 style="color:#15803d">
-✅ MUNICÍPIOS COM PLANO
-</h3>
+<h3 style="color:#15803d">✅ MUNICÍPIOS COM PLANO</h3>
 ${comPlano.map(i=>i.municipio).join(' • ')}
-
 <hr style="margin:15px 0">
-
-<h3 style="color:#ca8a04">
-🟡 MUNICÍPIOS COM DILAÇÃO DE PRAZO
-</h3>
+<h3 style="color:#ca8a04">🟡 MUNICÍPIOS COM DILAÇÃO DE PRAZO</h3>
 ${dilacao.map(i=>i.municipio).join(' • ')}
-
 <hr style="margin:15px 0">
-
-<h3 style="color:#dc2626">
-🚨 MUNICÍPIOS SEM EVIDÊNCIA DE PLANO
-</h3>
+<h3 style="color:#dc2626">🚨 MUNICÍPIOS SEM EVIDÊNCIA DE PLANO</h3>
 ${semPlano.map(i=>i.municipio).join(' • ')}
-
 </div>
 `
 }
