@@ -2335,9 +2335,10 @@ await renderTopRiscos()
 
 if(nome==='auditor'){
 document.getElementById('abaAuditor')?.classList.remove('hidden')
-await renderAuditoriaConcomitante()
-await renderMunicipiosSemEvidencias()
-await renderTopRiscos()
+if(typeof renderAuditoriaConcomitante==='function')await renderAuditoriaConcomitante()
+if(typeof renderMunicipiosSemEvidencias==='function')await renderMunicipiosSemEvidencias()
+if(typeof renderTopRiscos==='function')await renderTopRiscos()
+if(typeof renderPainelRelatoriosAuditoria==='function')await renderPainelRelatoriosAuditoria()
 }
 }
 /*=========================================================
@@ -4616,4 +4617,80 @@ FUNAI
 }catch(e){
 console.error(e)
 }
+}
+
+/*=========================================================
+120 AUDITORIA RELATORIOS
+=========================================================*/
+async function renderPainelRelatoriosAuditoria(){
+
+let painel=document.getElementById('painelAuditoria')
+
+if(!painel)return
+
+painel.innerHTML=`
+<div class="chap-grid">
+
+<div class="chap-card">
+<div class="chap-num">📕</div>
+<div class="chap-label">
+RELATÓRIO EXECUTIVO PDF
+</div>
+<button onclick="gerarPDFExecutivoTCERO()">
+GERAR PDF
+</button>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">📘</div>
+<div class="chap-label">
+RELATÓRIO EXECUTIVO WORD
+</div>
+<button onclick="gerarWordExecutivoTCERO()">
+GERAR WORD
+</button>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">📙</div>
+<div class="chap-label">
+RELATÓRIO COMPLETO PDF
+</div>
+<button onclick="pdfCompletoQueimadas()">
+GERAR PDF
+</button>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">📗</div>
+<div class="chap-label">
+RELATÓRIO COMPLETO WORD
+</div>
+<button onclick="gerarWordCompletoQueimadas()">
+GERAR WORD
+</button>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">🔥</div>
+<div class="chap-label">
+RELATÓRIO TÉCNICO PCe 0501
+</div>
+<button onclick="gerarPDFTecnico0501()">
+PDF TÉCNICO
+</button>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">🏛️</div>
+<div class="chap-label">
+RELATÓRIO MUNICIPAL
+</div>
+<button onclick="gerarPDFMunicipios0501()">
+PDF MUNICÍPIOS
+</button>
+</div>
+
+</div>
+`
 }
