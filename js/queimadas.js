@@ -1518,20 +1518,60 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'O
 let geo=await fetch('./assets/geojson/municipios-ro.geojson')
 if(geo.ok){
 let geojson=await geo.json()
+let risco={}
+;(data||[]).forEach(m=>{
+risco[String(m.municipio||'')
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.toUpperCase()
+.trim()]=m.classificacao
+})
 window.layerMunicipiosPoligonos=L.geoJSON(
 geojson,
 {
-style:{
-color:'#2563eb',
+style:f=>{
+let nome=String(
+f.properties.nome||
+f.properties.NOME||
+''
+)
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.toUpperCase()
+.trim()
+let classe=risco[nome]||''
+let cor='#16a34a'
+if(classe==='MODERADO')cor='#facc15'
+if(classe==='ALTO')cor='#f97316'
+if(classe==='CRÍTICO')cor='#dc2626'
+return{
+color:'#1e293b',
 weight:1,
-fillColor:'#93c5fd',
-fillOpacity:.15
+fillColor:cor,
+fillOpacity:.55
+}
+},
+onEachFeature:(f,l)=>{
+let nome=
+f.properties.nome||
+f.properties.NOME||
+'Município'
+let chave=String(nome)
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.toUpperCase()
+.trim()
+let classe=risco[chave]||'SEM DADOS'
+l.bindPopup(`
+<b>${nome}</b><br>
+Classificação: ${classe}
+`)
 }
 }
 ).addTo(mapa)
 window.camadasControleExecutivo.addOverlay(
 window.layerMunicipiosPoligonos,
-'🗺 Municípios'
+'🗺 Risco Municipal'
 )
 }
 let {data,error}=await client.from('queimadas_heatmap').select('*')
