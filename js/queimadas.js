@@ -2694,71 +2694,79 @@ return iriq.toFixed(1)
 async function renderPlanosMunicipais(){
 let box=document.getElementById('painelPlanosMunicipais')
 if(!box)return
-let comPlano=[
-'Ariquemes',
-'Cacoal',
-'Candeias do Jamari',
-'Castanheiras',
-'Colorado do Oeste',
-'Corumbiara',
-'Cujubim',
-'Governador Jorge Teixeira',
-'Guajará-Mirim',
-'Ji-Paraná',
-'Machadinho D\'Oeste',
-'Nova Mamoré',
-'Nova União',
-'Novo Horizonte do Oeste',
-'Ouro Preto do Oeste',
-'Presidente Médici',
-'Rolim de Moura',
-'Seringueiras',
-'Teixeirópolis',
-'Theobroma',
-'Vale do Anari',
-'Vilhena'
-]
 
-let semPlano=[
-'Alto Paraíso',
-'Alvorada D\'Oeste',
-'Buritis',
-'Cabixi',
-'Chupinguaia',
-'Costa Marques',
-'Itapuã do Oeste',
-'Ministro Andreazza',
-'Mirante da Serra',
-'Monte Negro',
-'Nova Brasilândia D\'Oeste',
-'Parecis',
-'Pimenteiras do Oeste',
-'São Felipe do Oeste',
-'São Francisco do Guaporé',
-'São Miguel do Guaporé',
-'Vale do Paraíso'
-]
+let {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+.order('municipio')
+
+if(error){
+box.innerHTML='Erro ao carregar.'
+return
+}
+
+let comPlano=(data||[])
+.filter(i=>i.classificacao_cor==='VERDE')
+
+let dilacao=(data||[])
+.filter(i=>i.classificacao_cor==='AMARELO')
+
+let semPlano=(data||[])
+.filter(i=>i.classificacao_cor==='VERMELHO')
+
 box.innerHTML=`
 <div class="chap-grid">
+
 <div class="chap-card">
-<div class="chap-num">${comPlano.length}</div>
-<div class="chap-label">COM PLANO</div>
+<div class="chap-num" style="color:#16a34a">
+${comPlano.length}
 </div>
+<div class="chap-label">
+COM PLANO
+</div>
+</div>
+
 <div class="chap-card">
-<div class="chap-num">${semPlano.length}</div>
-<div class="chap-label">SEM EVIDÊNCIA</div>
+<div class="chap-num" style="color:#facc15">
+${dilacao.length}
+</div>
+<div class="chap-label">
+DILAÇÃO DE PRAZO
 </div>
 </div>
+
+<div class="chap-card">
+<div class="chap-num" style="color:#dc2626">
+${semPlano.length}
+</div>
+<div class="chap-label">
+SEM EVIDÊNCIA
+</div>
+</div>
+
+</div>
+
 <div style="margin-top:15px">
+
 <h3 style="color:#15803d">
 ✅ MUNICÍPIOS COM PLANO
 </h3>
-${comPlano.join(' • ')}
+${comPlano.map(i=>i.municipio).join(' • ')}
+
 <hr style="margin:15px 0">
+
+<h3 style="color:#ca8a04">
+🟡 MUNICÍPIOS COM DILAÇÃO DE PRAZO
+</h3>
+${dilacao.map(i=>i.municipio).join(' • ')}
+
+<hr style="margin:15px 0">
+
 <h3 style="color:#dc2626">
 🚨 MUNICÍPIOS SEM EVIDÊNCIA DE PLANO
 </h3>
-${semPlano.join(' • ')}
+${semPlano.map(i=>i.municipio).join(' • ')}
+
 </div>
 `
 }
