@@ -1535,15 +1535,32 @@ let chave=String(m.municipio||'')
 .replace(/`/g,'')
 .toUpperCase()
 .trim()
-risco[chave]=String(m.classificacao||m.classificacao_ia||'BAIXO')
+let classe=String(
+m.classificacao||
+m.classificacao_ia||
+m.risco||
+m.risco_iriq||
+''
+)
 .normalize('NFD')
 .replace(/[\u0300-\u036f]/g,'')
 .toUpperCase()
 .trim()
+if(classe.includes('CRITICO')){
+classe='CRITICO'
+}else if(classe.includes('ALTO')){
+classe='ALTO'
+}else if(classe.includes('MODERADO')){
+classe='MODERADO'
+}else{
+classe='BAIXO'
+}
+risco[chave]=classe
 })
 window.layerMunicipiosPoligonos=L.geoJSON(geojson,{
 style:f=>{
-let nome=String(f.properties.nome||f.properties.NOME||'')
+let nome=String(
+f.properties.NM_MUN||f.properties.nome||f.properties.NOME||'')
 .normalize('NFD')
 .replace(/[\u0300-\u036f]/g,'')
 .replace(/'/g,'')
@@ -1568,7 +1585,15 @@ fillOpacity:.55
 }
 },
 onEachFeature:(f,l)=>{
-let nome=f.properties.nome||f.properties.NOME||'Município'
+let nome=
+f.properties.NM_MUN||
+f.properties.nome||
+f.properties.NOME||
+f.properties.municipio||
+f.properties.MUNICIPIO||
+f.properties.nm_mun||
+f.properties.nome_mun||
+'Município'
 let chave=String(nome)
 .normalize('NFD')
 .replace(/[\u0300-\u036f]/g,'')
@@ -4353,7 +4378,14 @@ situacao[String(i.municipio||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
 })
 window.layerMunicipiosPlanos=L.geoJSON(geojson,{
 style:f=>{
-let nome=String(f.properties.nome||f.properties.NOME||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/'/g,'').toUpperCase().trim()
+let nome=String(f.properties.nome||
+f.properties.NOME||
+f.properties.municipio||
+f.properties.MUNICIPIO||
+f.properties.nm_mun||
+f.properties.NM_MUN||
+f.properties.nome_mun||
+f.properties.NOME_MUN||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/'/g,'').toUpperCase().trim()
 let m=situacao[nome]
 let cor='#94a3b8'
 if(m){
