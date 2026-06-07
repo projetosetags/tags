@@ -2191,7 +2191,6 @@ if(typeof renderCadastroMunicipiosResumo==='function')await renderCadastroMunici
 if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
 if(typeof renderDilacoesPrazo==='function')await renderDilacoesPrazo()
 if(typeof renderSemResposta==='function')await renderSemResposta()
-if(typeof renderMapaMunicipal==='function'){setTimeout(()=>{renderMapaMunicipal()},300)}
 if(typeof renderGraficoMunicipios==='function')await renderGraficoMunicipios()
 if(typeof renderEstatisticasMunicipais==='function')await renderEstatisticasMunicipais()
 if(typeof renderTabelaMunicipios==='function')await renderTabelaMunicipios()
