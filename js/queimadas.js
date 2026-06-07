@@ -1351,72 +1351,37 @@ Number(a.nivel_risco||0)
 box.innerHTML=`
 <div class="chap-grid">
 <div class="chap-card">
-<div class="chap-num">
-${semEvidencia}
-</div>
-<div class="chap-label">
-SEM EVIDÊNCIAS
-</div>
+<div class="chap-num">${semEvidencia}</div>
+<div class="chap-label">SEM EVIDÊNCIAS</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">
-${riscosSemTratamento}
-</div>
-<div class="chap-label">
-SEM TRATAMENTO
-</div>
+<div class="chap-num">${riscosSemTratamento}</div>
+<div class="chap-label">SEM TRATAMENTO</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">
-${municipiosCriticos}
-</div>
-<div class="chap-label">
-CRÍTICOS
-</div>
+<div class="chap-num">${municipiosCriticos}</div>
+<div class="chap-label">CRÍTICOS</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">
-${municipiosAlto}
-</div>
-<div class="chap-label">
-ALTO RISCO
+<div class="chap-num">${municipiosAlto}</div>
+<div class="chap-label">ALTO RISCO</div>
 </div>
 </div>
-</div>
-<div class="card-executivo">
-<h2>
-TOP 10 RISCOS
-</h2>
+<div class="cardExecutivo">
+<h2>TOP 10 RISCOS</h2>
 ${topRiscos.map(i=>`
-<div style="
-display:flex;
-justify-content:space-between;
-padding:8px;
-border-bottom:1px solid #ddd;
-">
-<span>
-${i.risco}
-</span>
-<b>
-${i.nivel_risco}
-</b>
+<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #ddd;">
+<span>${i.risco}</span>
+<b>${i.nivel_risco}</b>
 </div>
 `).join('')}
 </div>
-<div class="card-executivo">
-<h2>
-ACHADOS AUTOMÁTICOS
-</h2>
+<div class="cardExecutivo">
+<h2>ACHADOS AUTOMÁTICOS</h2>
 <div style="padding:10px">
-${semEvidencia>0
-?'🚨 Existem evidências pendentes.<br>'
-:'✅ Evidências apresentadas.<br>'}
-${riscosSemTratamento>0
-?'🚨 Existem riscos sem tratamento definido.<br>'
-:'✅ Riscos tratados.<br>'}
-${municipiosCriticos>0
-?'🚨 Existem municípios críticos sob monitoramento.<br>'
-:'✅ Nenhum município crítico.<br>'}
+${semEvidencia>0?'🚨 Existem evidências pendentes.<br>':'✅ Evidências apresentadas.<br>'}
+${riscosSemTratamento>0?'🚨 Existem riscos sem tratamento definido.<br>':'✅ Riscos tratados.<br>'}
+${municipiosCriticos>0?'🚨 Existem municípios críticos sob monitoramento.<br>':'✅ Nenhum município crítico.<br>'}
 </div>
 </div>
 `
