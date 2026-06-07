@@ -1552,6 +1552,62 @@ linhas,
 )
 
 doc.setFontSize(8)
+
+doc.text(
+'Página '+pagina,
+280,
+200,
+{align:'right'}
+)
+await adicionarPainelPDF(
+doc,
+'MAPA EXECUTIVO',
+'boxMapaRO'
+)
+
+await adicionarPainelPDF(
+doc,
+'IRIQ ESTADUAL E HEATMAP',
+'painelIRIQHeatmapUnificado'
+)
+
+await adicionarPainelPDF(
+doc,
+'MUNICÍPIOS PRIORITÁRIOS',
+'painelMunicipiosPrioritarios'
+)
+
+await adicionarPainelPDF(
+doc,
+'FOCOS DE CALOR',
+'painelFocosINPE'
+)
+
+await adicionarPainelPDF(
+doc,
+'ALERTAS AUTOMÁTICOS',
+'painelAlertas'
+)
+
+await adicionarPainelPDF(
+doc,
+'UNIDADES DE CONSERVAÇÃO',
+'painelUCs'
+)
+
+await adicionarPainelPDF(
+doc,
+'INDICADORES ESTRATÉGICOS',
+'painelIndicadoresEstrategicos'
+)
+doc.addPage()
+
+pagina++
+
+adicionarAssinaturasPDF(doc)
+
+doc.setFontSize(8)
+
 doc.text(
 'Página '+pagina,
 280,
@@ -1559,8 +1615,9 @@ doc.text(
 {align:'right'}
 )
 
-doc.save('relatorio-executivo-queimadas.pdf')
-}
+doc.save(
+'relatorio-executivo-queimadas.pdf'
+)
 /*=========================================================
 044 QUEIMADAS FUNCTION GERARWORDEXECUTIVOTCERO
 =========================================================*/
