@@ -4377,7 +4377,7 @@ let mapa=L.map(div).setView([-10.9,-63.3],7)
 window.mapaMunicipalPlanos=mapa
 console.log('Mapa Municipal criado')
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
-let geo=await fetch('/tags/queimadas/assets/geojson/municipios-ro.geojson')
+let geo=await fetch('./assets/geojson/municipios-ro.geojson')
 if(!geo.ok){
 console.log('Erro GeoJSON',geo.status)
 return
