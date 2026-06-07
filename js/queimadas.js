@@ -1513,7 +1513,11 @@ delete div._leaflet_id
 }
 let mapa=L.map('mapaRO').setView([-10.9,-63.3],7)
 window.mapaExecutivoRO=mapa
-window.camadasControleExecutivo=L.control.layers({},{},{collapsed:false}).addTo(mapa)
+window.camadasControleExecutivo=L.control.layers(null,{
+'🔥 RISCO DE QUEIMADAS':window.layerMunicipiosPoligonos,
+'🌳 UCs de Rondônia':window.layerUCsExecutivo,
+'🛖 Terras Indígenas':window.layerTIsExecutivo
+},{collapsed:false}).addTo(mapa)
 window.overlayTIsExecutivoAdicionado=false
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
 if(typeof carregarUCsRO==='function'){
@@ -1551,11 +1555,21 @@ let nome=String(f.properties.nome||f.properties.NOME||'')
 .replace(/`/g,'')
 .toUpperCase()
 .trim()
-let classe=risco[nome]||''
+let classe=String(risco[nome]||'')
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.toUpperCase()
+.trim()
+
 let cor='#16a34a'
-if(classe==='MODERADO')cor='#facc15'
-if(classe==='ALTO')cor='#f97316'
-if(classe==='CRÍTICO')cor='#dc2626'
+
+if(classe==='CRITICO'){
+cor='#dc2626'
+}else if(classe==='ALTO'){
+cor='#f97316'
+}else if(classe==='MODERADO'){
+cor='#facc15'
+}
 return{
 color:'#1e293b',
 weight:1,
@@ -1565,7 +1579,14 @@ fillOpacity:.55
 },
 onEachFeature:(f,l)=>{
 let nome=f.properties.nome||f.properties.NOME||'Município'
-let chave=String(nome).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()
+let chave=String(nome)
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.replace(/'/g,'')
+.replace(/´/g,'')
+.replace(/`/g,'')
+.toUpperCase()
+.trim()
 let classe=risco[chave]||'SEM DADOS'
 let registro=(data||[]).find(m=>String(m.municipio||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()===chave)
 l.bindPopup(`
@@ -1576,10 +1597,7 @@ Focos: ${registro?.focos||'-'}
 `)
 }
 }).addTo(mapa)
-window.camadasControleExecutivo.addOverlay(window.layerMunicipiosPoligonos,'🗺🔥RISCO DE QUEIMADAS')
-if(typeof carregarTIsRO==='function'){
-await carregarTIsRO(mapa,'executivo')
-}
+window.camadasControleExecutivo.addOverlay(window.layerMunicipiosPoligonos,'🔥 RISCO DE QUEIMADAS')
 try{
 mapa.fitBounds(window.layerMunicipiosPoligonos.getBounds())
 }catch(e){}
