@@ -105,6 +105,51 @@ doc.setFontSize(10)
 doc.text(doc.splitTextToSize(painel.innerText,180),15,35)
 }
 /*=========================================================
+406 RT ANALISE MUNICIPAL
+=========================================================*/
+async function rtAnaliseMunicipal(doc){
+doc.setFontSize(16)
+doc.text('5. ANÁLISE MUNICIPAL',15,20)
+let {data=[]}=await client.from('queimadas_municipios_oficio').select('*')
+let total=data.length
+let respondidos=data.filter(i=>String(i.classificacao_ia||'').toUpperCase().includes('PLANO')).length
+let dilacao=data.filter(i=>String(i.classificacao_ia||'').toUpperCase().includes('DILA')).length
+let semResposta=total-respondidos-dilacao
+let texto=`Foram avaliados ${total} municípios. Identificaram-se ${respondidos} municípios com plano apresentado, ${dilacao} com dilação de prazo e ${semResposta} sem resposta ao Ofício Circular n.16/2026/GABPRES/TCERO.`
+doc.text(doc.splitTextToSize(texto,180),15,35)
+}
+/*=========================================================
+407 RT HEATMAP
+=========================================================*/
+async function rtHeatmap(doc){
+doc.setFontSize(16)
+doc.text('6. HEATMAP ESTADUAL',15,20)
+let painel=document.getElementById('painelIRIQHeatmapUnificado')
+if(!painel)return
+doc.setFontSize(10)
+doc.text(doc.splitTextToSize(painel.innerText.substring(0,4000),180),15,35)
+}
+/*=========================================================
+408 RT IRIQ
+=========================================================*/
+async function rtIRIQ(doc){
+doc.setFontSize(16)
+doc.text('7. IRIQ ESTADUAL',15,20)
+let texto='O Índice de Risco Integrado de Queimadas considera focos de calor, histórico de queimadas, cobertura vegetal, uso do solo, clima e vulnerabilidade ambiental, permitindo priorização territorial baseada em evidências.'
+doc.text(doc.splitTextToSize(texto,180),15,35)
+}
+/*=========================================================
+409 RT CHAP
+=========================================================*/
+async function rtCHAP(doc){
+doc.setFontSize(16)
+doc.text('8. CHAP',15,20)
+let painel=document.getElementById('painelCHAP')
+if(!painel)return
+doc.setFontSize(10)
+doc.text(doc.splitTextToSize(painel.innerText.substring(0,4000),180),15,35)
+}
+/*=========================================================
 410 RT MUNICIPIOS CRITICOS
 =========================================================*/
 async function rtMunicipiosCriticos(doc){
@@ -141,6 +186,28 @@ y+=10
 doc.text('• Áreas críticas identificadas pelo Heatmap.',20,y)
 }
 /*=========================================================
+410 RT IA-CHAP
+=========================================================*/
+async function rtIACHAP(doc){
+doc.setFontSize(16)
+doc.text('9. IA-CHAP',15,20)
+let painel=document.getElementById('painelIAChap')
+if(!painel)return
+doc.setFontSize(10)
+doc.text(doc.splitTextToSize(painel.innerText.substring(0,4000),180),15,35)
+}
+/*=========================================================
+411 RT MATRIZ 5X5
+=========================================================*/
+async function rtMatrizRisco(doc){
+doc.setFontSize(16)
+doc.text('10. MATRIZ DE RISCO 5X5',15,20)
+let painel=document.getElementById('painelMatriz5x5')
+if(!painel)return
+doc.setFontSize(10)
+doc.text(doc.splitTextToSize(painel.innerText.substring(0,4000),180),15,35)
+}
+/*=========================================================
 412 RT CONCLUSOES
 =========================================================*/
 async function rtConclusoes(doc){
@@ -170,74 +237,52 @@ y+=10
 })
 }
 /*=========================================================
-416 RT ASSINATURAS
-=========================================================*/
-async function rtAssinaturas(doc){
-doc.text('Manoel Fernandes Neto',20,90)
-doc.text('Auditor de Controle Externo',20,100)
-doc.text('Coordenador dos Trabalhos',20,110)
-doc.text('Luís Fernando Bueno',120,90)
-doc.text('Assessor Técnico',120,100)}
-/*=========================================================
-406 RT ANALISE MUNICIPAL
-=========================================================*/
-async function rtAnaliseMunicipal(doc){
-doc.setFontSize(16)
-doc.text('5. ANÁLISE MUNICIPAL',15,20)
-}
-
-/*=========================================================
-407 RT HEATMAP
-=========================================================*/
-async function rtHeatmap(doc){
-doc.setFontSize(16)
-doc.text('6. HEATMAP ESTADUAL',15,20)
-}
-
-/*=========================================================
-408 RT IRIQ
-=========================================================*/
-async function rtIRIQ(doc){
-doc.setFontSize(16)
-doc.text('7. IRIQ ESTADUAL',15,20)
-}
-
-/*=========================================================
-409 RT CHAP
-=========================================================*/
-async function rtCHAP(doc){
-doc.setFontSize(16)
-doc.text('8. CHAP',15,20)
-}
-
-/*=========================================================
-410 RT IA-CHAP
-=========================================================*/
-async function rtIACHAP(doc){
-doc.setFontSize(16)
-doc.text('9. IA-CHAP',15,20)
-}
-
-/*=========================================================
-411 RT MATRIZ 5X5
-=========================================================*/
-async function rtMatrizRisco(doc){
-doc.setFontSize(16)
-doc.text('10. MATRIZ DE RISCO 5X5',15,20)
-}
-
-/*=========================================================
 414 RT EVIDENCIAS
 =========================================================*/
 async function rtEvidencias(doc){
 doc.setFontSize(16)
 doc.text('14. EVIDÊNCIAS',15,20)
+let texto='Foram analisadas evidências documentais provenientes da SEDAM, Corpo de Bombeiros Militar, municípios, bases do INPE, sistemas institucionais e documentos encaminhados em resposta ao Ofício Circular n.16/2026/GABPRES/TCERO.'
+doc.text(doc.splitTextToSize(texto,180),15,35)
 }
-
 /*=========================================================
 415 RT ANEXOS
 =========================================================*/
 async function rtAnexos(doc){
 doc.setFontSize(16)
 doc.text('15. ANEXOS',15,20)
+let anexos=[
+'Mapa Estadual de Queimadas',
+'Heatmap Estadual',
+'IRIQ Estadual',
+'Painel CHAP',
+'Painel IA-CHAP',
+'Matriz de Risco 5x5',
+'Tabela Municipal Consolidada',
+'Planos de Ação',
+'Evidências Documentais',
+'Monitoramento 4D'
+]
+let y=40
+anexos.forEach((a,i)=>{
+doc.text(`${i+1}. ${a}`,20,y)
+y+=10
+})
+}
+/*=========================================================
+416 RT ASSINATURAS
+=========================================================*/
+async function rtAssinaturas(doc){
+doc.setFont('helvetica','bold')
+doc.text('Manoel Fernandes Neto',20,90)
+doc.line(20,92,90,92)
+doc.setFont('helvetica','normal')
+doc.text('Auditor de Controle Externo',20,100)
+doc.text('Coordenador dos Trabalhos',20,108)
+doc.setFont('helvetica','bold')
+doc.text('Luís Fernando Bueno',120,90)
+doc.line(120,92,185,92)
+doc.setFont('helvetica','normal')
+doc.text('Assessor Técnico',120,100)
+doc.text('Apoio Técnico',120,108)
 }
