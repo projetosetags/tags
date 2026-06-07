@@ -1511,21 +1511,12 @@ window.mapaExecutivoRO=null
 if(div._leaflet_id){
 delete div._leaflet_id
 }
+window.overlayUCsExecutivoAdicionado=false
+window.overlayTIsExecutivoAdicionado=false
 let mapa=L.map('mapaRO').setView([-10.9,-63.3],7)
 window.mapaExecutivoRO=mapa
-window.camadasControleExecutivo=L.control.layers(null,{
-'🔥 RISCO DE QUEIMADAS':window.layerMunicipiosPoligonos,
-'🌳 UCs de Rondônia':window.layerUCsExecutivo,
-'🛖 Terras Indígenas':window.layerTIsExecutivo
-},{collapsed:false}).addTo(mapa)
-window.overlayTIsExecutivoAdicionado=false
+window.camadasControleExecutivo=L.control.layers({},{},{collapsed:false}).addTo(mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
-if(typeof carregarUCsRO==='function'){
-await carregarUCsRO(mapa,'executivo')
-}
-if(typeof carregarTIsRO==='function'){
-await carregarTIsRO(mapa,'executivo')
-}
 let {data,error}=await client.from('queimadas_heatmap').select('*')
 if(error){
 console.log(error)
@@ -1536,14 +1527,19 @@ if(geo.ok){
 let geojson=await geo.json()
 let risco={}
 ;(data||[]).forEach(m=>{
-risco[String(m.municipio||'')
+let chave=String(m.municipio||'')
 .normalize('NFD')
 .replace(/[\u0300-\u036f]/g,'')
 .replace(/'/g,'')
 .replace(/´/g,'')
 .replace(/`/g,'')
 .toUpperCase()
-.trim()]=m.classificacao
+.trim()
+risco[chave]=String(m.classificacao||m.classificacao_ia||'BAIXO')
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.toUpperCase()
+.trim()
 })
 window.layerMunicipiosPoligonos=L.geoJSON(geojson,{
 style:f=>{
@@ -1555,14 +1551,8 @@ let nome=String(f.properties.nome||f.properties.NOME||'')
 .replace(/`/g,'')
 .toUpperCase()
 .trim()
-let classe=String(risco[nome]||'')
-.normalize('NFD')
-.replace(/[\u0300-\u036f]/g,'')
-.toUpperCase()
-.trim()
-
+let classe=risco[nome]||'BAIXO'
 let cor='#16a34a'
-
 if(classe==='CRITICO'){
 cor='#dc2626'
 }else if(classe==='ALTO'){
@@ -1588,7 +1578,16 @@ let chave=String(nome)
 .toUpperCase()
 .trim()
 let classe=risco[chave]||'SEM DADOS'
-let registro=(data||[]).find(m=>String(m.municipio||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()===chave)
+let registro=(data||[]).find(m=>
+String(m.municipio||'')
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.replace(/'/g,'')
+.replace(/´/g,'')
+.replace(/`/g,'')
+.toUpperCase()
+.trim()===chave
+)
 l.bindPopup(`
 <b>${nome}</b><br>
 Classificação: ${classe}<br>
@@ -1598,11 +1597,25 @@ Focos: ${registro?.focos||'-'}
 }
 }).addTo(mapa)
 window.camadasControleExecutivo.addOverlay(window.layerMunicipiosPoligonos,'🔥 RISCO DE QUEIMADAS')
+}
+if(typeof carregarUCsRO==='function'){
+await carregarUCsRO(mapa,'executivo')
+if(window.layerUCsExecutivo&&mapa.hasLayer(window.layerUCsExecutivo)){
+mapa.removeLayer(window.layerUCsExecutivo)
+}
+}
+if(typeof carregarTIsRO==='function'){
+await carregarTIsRO(mapa,'executivo')
+if(window.layerTIsExecutivo&&mapa.hasLayer(window.layerTIsExecutivo)){
+mapa.removeLayer(window.layerTIsExecutivo)
+}
+}
 try{
 mapa.fitBounds(window.layerMunicipiosPoligonos.getBounds())
 }catch(e){}
-}
-setTimeout(()=>{mapa.invalidateSize()},500)
+setTimeout(()=>{
+mapa.invalidateSize()
+},500)
 }
 /*=========================================================
 046 QUEIMADAS FUNCTION RENDERACOESSEDAM
