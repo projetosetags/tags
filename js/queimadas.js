@@ -2211,22 +2211,15 @@ await renderEstatisticasMunicipais()
 
 if(typeof renderTabelaMunicipios==='function')
 await renderTabelaMunicipios()
-
 setTimeout(async()=>{
-
 let div=document.getElementById('mapaMunicipalPlanos')
-
 if(div){
-
 await renderMapaMunicipalPlanos('TODOS')
-
 if(window.mapaMunicipalPlanos){
 window.mapaMunicipalPlanos.invalidateSize(true)
 }
-
 }
-
-},1000)
+},2000)
 }
 if(nome==='cadastroMunicipal'){
 document.getElementById('abaCadastroMunicipal')?.classList.remove('hidden')
@@ -4360,10 +4353,8 @@ painel.innerHTML='Erro ao carregar UCs.'
 =========================================================*/
 async function renderMapaMunicipalPlanos(filtro='TODOS'){
 let div=document.getElementById('mapaMunicipalPlanos')
-if(!div){
-console.log('mapaMunicipalPlanos não encontrado')
-return
-}
+if(!div)return
+div.innerHTML=''
 if(window.mapaMunicipalPlanos){
 try{
 window.mapaMunicipalPlanos.remove()
@@ -4373,10 +4364,19 @@ window.mapaMunicipalPlanos=null
 if(div._leaflet_id){
 delete div._leaflet_id
 }
-let mapa=L.map(div).setView([-10.9,-63.3],7)
+await new Promise(r=>setTimeout(r,500))
+let mapa=L.map(div,{
+preferCanvas:true,
+zoomControl:true
+})
 window.mapaMunicipalPlanos=mapa
-console.log('Mapa Municipal criado')
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
+mapa.setView([-10.9,-63.3],7)
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+attribution:'OpenStreetMap'
+}
+).addTo(mapa)
 let geo=await fetch('./assets/geojson/municipios-ro.geojson')
 if(!geo.ok){
 console.log('Erro GeoJSON',geo.status)
@@ -4444,19 +4444,32 @@ try{
 mapa.fitBounds(
 window.layerMunicipiosPlanos.getBounds(),
 {
-padding:[20,20]
+padding:[20,20],
+maxZoom:8
 }
 )
 }catch(e){}
-setTimeout(()=>{
-mapa.invalidateSize(true)
-},100)
+
 setTimeout(()=>{
 mapa.invalidateSize(true)
 },500)
+
 setTimeout(()=>{
 mapa.invalidateSize(true)
-},1000)
+try{
+mapa.fitBounds(
+window.layerMunicipiosPlanos.getBounds(),
+{
+padding:[20,20],
+maxZoom:8
+}
+)
+}catch(e){}
+},1500)
+
+setTimeout(()=>{
+mapa.invalidateSize(true)
+},2500)
 }
 /*=========================================================
 110 QUEIMADAS FUNCTION RENDERMAPAESTADUAL
