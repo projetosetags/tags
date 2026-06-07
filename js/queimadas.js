@@ -2185,7 +2185,11 @@ if(typeof renderLegendaHeatmap==='function')await renderLegendaHeatmap()
 if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
 if(typeof renderKPIsMunicipais==='function')await renderKPIsMunicipais()
-if(typeof renderMapaMunicipalPlanos==='function')await renderMapaMunicipalPlanos('TODOS')
+if(typeof renderMapaMunicipalPlanos==='function'){
+setTimeout(async()=>{
+await renderMapaMunicipalPlanos('TODOS')
+},300)
+}
 if(typeof renderSituacaoGeralMunicipios==='function')await renderSituacaoGeralMunicipios()
 if(typeof renderCadastroMunicipiosResumo==='function')await renderCadastroMunicipiosResumo()
 if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
@@ -4327,7 +4331,10 @@ painel.innerHTML='Erro ao carregar UCs.'
 =========================================================*/
 async function renderMapaMunicipalPlanos(filtro='TODOS'){
 let div=document.getElementById('mapaMunicipalPlanos')
-if(!div)return
+if(!div){
+console.log('mapaMunicipalPlanos não encontrado')
+return
+}
 if(window.mapaMunicipalPlanos){
 try{
 window.mapaMunicipalPlanos.remove()
@@ -4339,6 +4346,7 @@ delete div._leaflet_id
 }
 let mapa=L.map(div).setView([-10.9,-63.3],7)
 window.mapaMunicipalPlanos=mapa
+console.log('Mapa Municipal criado')
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
 let geo=await fetch('/tags/queimadas/assets/geojson/municipios-ro.geojson')
 if(!geo.ok){
@@ -4346,6 +4354,7 @@ console.log('Erro GeoJSON',geo.status)
 return
 }
 let geojson=await geo.json()
+console.log('GeoJSON carregado',geojson.features?.length)
 let {data,error}=await client.from('queimadas_municipios_oficio').select('*')
 if(error){
 console.log(error)
@@ -4356,6 +4365,7 @@ let situacao={}
 situacao[String(i.municipio||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/'/g,'').toUpperCase().trim()]=i
 })
 window.layerMunicipiosPlanos=L.geoJSON(geojson,{
+console.log('Layer criada')
 style:f=>{
 let nome=String(f.properties.nome||
 f.properties.NOME||
