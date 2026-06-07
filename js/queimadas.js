@@ -1429,24 +1429,35 @@ const {jsPDF}=window.jspdf
 let doc=new jsPDF('l','mm','a4')
 let largura=doc.internal.pageSize.getWidth()
 let pagina=1
+
 doc.setFont('helvetica','bold')
 doc.setFontSize(18)
 doc.text('MONITORAMENTO INTELIGENTE DE QUEIMADAS 2026',largura/2,15,{align:'center'})
+
 doc.setFontSize(11)
 doc.text('Tribunal de Contas do Estado de Rondônia',largura/2,22,{align:'center'})
+
 doc.setDrawColor(0)
 doc.line(10,26,287,26)
+
 let y=35
+
 doc.setFontSize(14)
 doc.text('DASHBOARD EXECUTIVO',10,y)
+
 y+=8
+
 doc.setFont('helvetica','normal')
 doc.setFontSize(10)
 doc.text('Plano Unificado TCE-RO + SEDAM + Corpo de Bombeiros',10,y)
+
 y+=10
+
 doc.setFont('helvetica','bold')
 doc.text('Objetivos Estratégicos',10,y)
+
 y+=6
+
 doc.setFont('helvetica','normal')
 doc.text('- Prevenção',15,y)
 y+=5
@@ -1457,15 +1468,56 @@ y+=5
 doc.text('- Resposta Operacional',15,y)
 y+=5
 doc.text('- Recuperação Ambiental',15,y)
+
 y+=15
+
 doc.setFont('helvetica','bold')
 doc.text('Metodologias Aplicadas',10,y)
+
 y+=6
+
 doc.setFont('helvetica','normal')
-doc.text('CHAP | Cadeia de Valor | Teoria da Mudança | ODS | HeatMap | Matriz 5x5',15,y)
-y+=15
+doc.text('CHAP | Cadeia de Valor | Teoria da Mudança | ODS | HeatMap | Matriz 5x5 | IA-CHAP | IRIQ',15,y)
+
 doc.setFontSize(8)
 doc.text('Página '+pagina,280,200,{align:'right'})
+
+/*=========================================================
+PÁGINA 02 - CONCLUSÃO EXECUTIVA
+=========================================================*/
+
+doc.addPage()
+
+pagina++
+
+doc.setFont('helvetica','bold')
+doc.setFontSize(18)
+doc.text('CONCLUSÃO EXECUTIVA',15,20)
+
+let conclusao=await gerarConclusaoAutomatica()
+
+doc.setFont('helvetica','normal')
+doc.setFontSize(11)
+
+let linhas=doc.splitTextToSize(
+conclusao,
+250
+)
+
+doc.text(
+linhas,
+15,
+35
+)
+
+doc.setFontSize(8)
+doc.text(
+'Página '+pagina,
+280,
+200,
+{align:'right'}
+)
+
 doc.save('relatorio-executivo-queimadas.pdf')
 }
 /*=========================================================
