@@ -2260,7 +2260,6 @@ console.log(e)
 }
 },1000)
 }
-}
 if(nome==='planejamento'){
 document.getElementById('abaPlanejamento')?.classList.remove('hidden')
 await renderPlanoUnificado()
