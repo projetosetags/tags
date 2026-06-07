@@ -1515,30 +1515,21 @@ let mapa=L.map('mapaRO').setView([-10.9,-63.3],7)
 window.mapaExecutivoRO=mapa
 window.camadasControleExecutivo=L.control.layers({},{},{collapsed:false}).addTo(mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
+let {data,error}=await client.from('queimadas_heatmap').select('*')
+if(error){
+console.log(error)
+return
+}
 let geo=await fetch('./assets/geojson/municipios-ro.geojson')
 if(geo.ok){
 let geojson=await geo.json()
 let risco={}
 ;(data||[]).forEach(m=>{
-risco[String(m.municipio||'')
-.normalize('NFD')
-.replace(/[\u0300-\u036f]/g,'')
-.toUpperCase()
-.trim()]=m.classificacao
+risco[String(m.municipio||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()]=m.classificacao
 })
-window.layerMunicipiosPoligonos=L.geoJSON(
-geojson,
-{
+window.layerMunicipiosPoligonos=L.geoJSON(geojson,{
 style:f=>{
-let nome=String(
-f.properties.nome||
-f.properties.NOME||
-''
-)
-.normalize('NFD')
-.replace(/[\u0300-\u036f]/g,'')
-.toUpperCase()
-.trim()
+let nome=String(f.properties.nome||f.properties.NOME||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()
 let classe=risco[nome]||''
 let cor='#16a34a'
 if(classe==='MODERADO')cor='#facc15'
@@ -1552,32 +1543,22 @@ fillOpacity:.55
 }
 },
 onEachFeature:(f,l)=>{
-let nome=
-f.properties.nome||
-f.properties.NOME||
-'Município'
-let chave=String(nome)
-.normalize('NFD')
-.replace(/[\u0300-\u036f]/g,'')
-.toUpperCase()
-.trim()
+let nome=f.properties.nome||f.properties.NOME||'Município'
+let chave=String(nome).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()
 let classe=risco[chave]||'SEM DADOS'
+let registro=(data||[]).find(m=>String(m.municipio||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()===chave)
 l.bindPopup(`
 <b>${nome}</b><br>
-Classificação: ${classe}
+Classificação: ${classe}<br>
+Criticidade: ${registro?.criticidade||'-'}<br>
+Focos: ${registro?.focos||'-'}
 `)
 }
-}
-).addTo(mapa)
-window.camadasControleExecutivo.addOverlay(
-window.layerMunicipiosPoligonos,
-'🗺 Risco Municipal'
-)
-}
-let {data,error}=await client.from('queimadas_heatmap').select('*')
-if(error){
-console.log(error)
-return
+}).addTo(mapa)
+window.camadasControleExecutivo.addOverlay(window.layerMunicipiosPoligonos,'🗺 Risco Municipal')
+try{
+mapa.fitBounds(window.layerMunicipiosPoligonos.getBounds())
+}catch(e){}
 }
 setTimeout(()=>{mapa.invalidateSize()},500)
 }
