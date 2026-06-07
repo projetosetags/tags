@@ -358,3 +358,28 @@ doc.text(
 170
 )
 }
+/*=========================================================
+019 QUEIMADAS RELATORIOS ADICIONAR PAINEL
+=========================================================*/
+async function adicionarPainelPDF(doc,titulo,idElemento){
+let el=document.getElementById(idElemento)
+if(!el)return
+let canvas=await html2canvas(el,{
+scale:2,
+backgroundColor:'#ffffff',
+useCORS:true
+})
+let img=canvas.toDataURL('image/png')
+doc.addPage()
+doc.setFont('helvetica','bold')
+doc.setFontSize(16)
+doc.text(titulo,15,20)
+doc.addImage(
+img,
+'PNG',
+10,
+30,
+270,
+150
+)
+}
