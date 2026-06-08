@@ -38,6 +38,12 @@ await rtPropostas(doc)
 doc.addPage()
 await rtAnexos(doc)
 doc.addPage()
+await rtMapaEstadual(doc)
+doc.addPage()
+await rtMapaMunicipal(doc)
+doc.addPage()
+await rtMonitoramento4D(doc)
+doc.addPage()
 await rtAssinaturas(doc)
 doc.save(
 'RT_PCe_0501_2026_QUEIMADAS.pdf'
@@ -96,13 +102,21 @@ doc.text(doc.splitTextToSize(texto,180),15,35)
 405 RT SITUACAO ESTADUAL
 =========================================================*/
 async function rtSituacaoEstadual(doc){
+doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text('4. SITUAÇÃO ESTADUAL',15,20)
-let painel=
-document.getElementById('painelIRIQHeatmapUnificado')
-if(!painel)return
-doc.setFontSize(10)
-doc.text(doc.splitTextToSize(painel.innerText,180),15,35)
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+let texto='     O Estado de Rondônia apresenta condições ambientais e climáticas que favorecem a ocorrência de queimadas durante o período de estiagem. A combinação entre cobertura vegetal suscetível, expansão das áreas antropizadas, histórico recorrente de focos de calor e condições meteorológicas adversas amplia significativamente os riscos de incêndios florestais e impactos ambientais associados.'
+doc.text(doc.splitTextToSize(texto,170),15,35)
+let img=await capturarElemento('painelIRIQHeatmapUnificado')
+if(img){
+doc.addImage(img,'PNG',10,65,190,80)
+}
+let texto2='     A análise integrada dos indicadores estaduais demonstra a existência de municípios classificados em níveis elevados de criticidade, exigindo atuação coordenada dos órgãos estaduais, municipais e federais. Os resultados obtidos pelo Heatmap Estadual e pelo Índice de Risco Integrado de Queimadas (IRIQ) evidenciam a necessidade de monitoramento permanente e adoção tempestiva de medidas preventivas.'
+doc.text(doc.splitTextToSize(texto2,170),15,155)
+let texto3='     Considerando os cenários analisados, conclui-se que o Estado deve manter estratégias contínuas de prevenção, preparação e resposta, priorizando os territórios de maior risco e fortalecendo os mecanismos de governança, fiscalização e controle ambiental.'
+doc.text(doc.splitTextToSize(texto3,170),15,205)
 }
 /*=========================================================
 406 RT ANALISE MUNICIPAL
@@ -289,18 +303,58 @@ doc.text(doc.splitTextToSize(texto,180),15,y)
 414 RT EVIDENCIAS
 =========================================================*/
 async function rtEvidencias(doc){
+doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text('13. EVIDÊNCIAS',15,20)
-let texto='Foram analisadas evidências documentais provenientes da SEDAM, Corpo de Bombeiros Militar, municípios, bases do INPE, sistemas institucionais, documentos encaminhados em resposta ao Ofício Circular n.16/2026/GABPRES/TCERO e demais fontes oficiais utilizadas no monitoramento.'
-doc.setFontSize(10)
-doc.text(doc.splitTextToSize(texto,180),15,35)
-let img=await capturarElemento('painelEvidencias')
-if(img){
-doc.addImage(img,'PNG',10,60,190,80)
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+let texto='     Foram analisadas evidências documentais provenientes da Secretaria de Estado do Desenvolvimento Ambiental - SEDAM, Corpo de Bombeiros Militar do Estado de Rondônia - CBMRO, municípios rondonienses, bases de dados do Instituto Nacional de Pesquisas Espaciais - INPE, sistemas institucionais e documentos encaminhados em resposta ao Ofício Circular n.16/2026/GABPRES/TCERO.'
+doc.text(doc.splitTextToSize(texto,170),15,35)
+let y=65
+let img1=await capturarElemento('painelEvidencias')
+if(img1){
+doc.addImage(img1,'PNG',10,y,190,55)
+y+=65
 }
-doc.setFontSize(9)
-doc.text(doc.splitTextToSize('As evidências analisadas subsidiam os achados, conclusões e propostas apresentadas neste relatório técnico, assegurando rastreabilidade e fundamentação das análises realizadas.',180),15,150)
+let img2=await capturarElemento('painelMonitoramento4D')
+if(img2&&y<220){
+doc.addImage(img2,'PNG',10,y,190,55)
+y+=65
 }
+if(y>220){
+doc.addPage()
+y=30
+}
+let img3=await capturarElemento('painelGovernanca')
+if(img3){
+doc.addImage(img3,'PNG',10,y,190,55)
+y+=65
+}
+if(y>220){
+doc.addPage()
+y=30
+}
+let img4=await capturarElemento('painelAcoesSedam')
+if(img4){
+doc.addImage(img4,'PNG',10,y,190,55)
+y+=65
+}
+if(y>220){
+doc.addPage()
+y=30
+}
+let img5=await capturarElemento('painelAcoesCBM')
+if(img5){
+doc.addImage(img5,'PNG',10,y,190,55)
+y+=65
+}
+if(y>220){
+doc.addPage()
+y=30
+}
+doc.setFontSize(11)
+let conclusao='     As evidências coletadas e analisadas demonstram a rastreabilidade das informações utilizadas no monitoramento, permitindo verificar a execução das ações planejadas, a situação dos municípios, os níveis de risco identificados e a efetividade das medidas adotadas pelos órgãos responsáveis. As informações apresentadas constituem suporte técnico para os achados, conclusões e propostas constantes deste relatório.'
+doc.text(doc.splitTextToSize(conclusao,170),15,y+5)
 }
 /*=========================================================
 415 RT CONCLUSOES
@@ -343,6 +397,7 @@ y+=10
 417 RT ANEXOS
 =========================================================*/
 async function rtAnexos(doc){
+doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text('16. ANEXOS',15,20)
 let anexos=[
@@ -363,6 +418,7 @@ let anexos=[
 'Demais documentos de suporte utilizados na análise.'
 ]
 let y=40
+doc.setFont('helvetica','normal')
 doc.setFontSize(10)
 anexos.forEach((a,i)=>{
 doc.text((i+1)+'. '+a,20,y)
@@ -393,4 +449,55 @@ doc.line(20,162,120,162)
 doc.setFont('helvetica','normal')
 doc.text('Auditor de Controle Externo',20,170)
 doc.text('Supervisor',20,178)
+}
+/*=========================================================
+419 RT MAPA ESTADUAL
+=========================================================*/
+async function rtMapaEstadual(doc){
+doc.setFont('helvetica','bold')
+doc.setFontSize(16)
+doc.text('ANEXO I - MAPA ESTADUAL DE RISCO',15,20)
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+doc.text(doc.splitTextToSize('O presente mapa apresenta a distribuição espacial dos riscos de queimadas no território do Estado de Rondônia, permitindo identificar áreas prioritárias para atuação preventiva, monitoramento e resposta operacional.',170),15,35)
+let img=await capturarElemento('mapaROEstadual')
+if(img){
+doc.addImage(img,'PNG',10,55,190,130)
+}
+doc.setFontSize(9)
+doc.text('Fonte: TCE-RO • INPE • Sedam • Base Cartográfica Estadual',15,200)
+}
+/*=========================================================
+420 RT MAPA MUNICIPAL
+=========================================================*/
+async function rtMapaMunicipal(doc){
+doc.setFont('helvetica','bold')
+doc.setFontSize(16)
+doc.text('ANEXO II - MAPA MUNICIPAL DOS PLANOS DE AÇÃO',15,20)
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+doc.text(doc.splitTextToSize('O mapa municipal demonstra a situação dos municípios quanto ao atendimento do Ofício Circular n.16/2026/GABPRES/TCERO e à apresentação dos respectivos planos de ação para enfrentamento das queimadas.',170),15,35)
+let img=await capturarElemento('mapaMunicipalPlanos')
+if(img){
+doc.addImage(img,'PNG',10,55,190,130)
+}
+doc.setFontSize(9)
+doc.text('Fonte: Municípios de Rondônia • TCE-RO',15,200)
+}
+/*=========================================================
+421 RT MONITORAMENTO 4D
+=========================================================*/
+async function rtMonitoramento4D(doc){
+doc.setFont('helvetica','bold')
+doc.setFontSize(16)
+doc.text('ANEXO III - MONITORAMENTO 4D',15,20)
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+doc.text(doc.splitTextToSize('O Monitoramento 4D consolida informações relacionadas à execução física, governança, evidências, monitoramento contínuo e acompanhamento institucional das ações previstas nos planos estaduais e municipais.',170),15,35)
+let img=await capturarElemento('painelMonitoramento4D')
+if(img){
+doc.addImage(img,'PNG',10,55,190,130)
+}
+doc.setFontSize(9)
+doc.text('Fonte: Sistema de Monitoramento Inteligente de Queimadas',15,200)
 }
