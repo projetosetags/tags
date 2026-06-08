@@ -19,51 +19,15 @@ fillOpacity:.45
 }
 },
 onEachFeature:(f,l)=>{
-let p=f.properties||{}
 
-let nome=
-p.nome_uc||
-p.nome||
-p.NOME_UC||
-p.NOME||
-p.uc_nome||
-'Unidade de Conservação'
+console.log('FEATURE COMPLETA UC')
+console.log(f)
 
-let categoria=
-p.categoria||
-p.CATEGORIA||
-'-'
+console.log('PROPERTIES UC')
+console.log(f.properties)
 
-let grupo=
-p.grupo||
-p.GRUPO||
-'-'
+l.bindPopup('TESTE UC')
 
-let situacao=
-p.situacao||
-p.SITUACAO||
-'-'
-
-let municipio=
-p.municipio||
-p.MUNICIPIO||
-'-'
-
-let area=
-p.ha_ato||
-p.area_ha||
-p.AREA_HA||
-p.area||
-'-'
-
-l.bindPopup(`
-<b>${nome}</b><br>
-<b>Categoria:</b> ${categoria}<br>
-<b>Grupo:</b> ${grupo}<br>
-<b>Situação:</b> ${situacao}<br>
-<b>Município:</b> ${municipio}<br>
-<b>Área:</b> ${area}
-`)
 }
 })
 
