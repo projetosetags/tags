@@ -104,6 +104,43 @@ deslocamento+=ALTURA_UTIL
 }
 }
 /*=========================================================
+005A ADICIONAR PAINEL PDF FORCADO
+=========================================================*/
+async function adicionarPainelPDFForcado(
+doc,
+titulo,
+idElemento
+){
+let el=document.getElementById(idElemento)
+if(!el)return
+
+let hidden=
+el.classList.contains('hidden')
+
+let displayOriginal=
+el.style.display
+
+el.classList.remove('hidden')
+el.style.display='block'
+
+await new Promise(
+r=>setTimeout(r,500)
+)
+
+await adicionarPainelPDF(
+doc,
+titulo,
+idElemento
+)
+
+if(hidden){
+el.classList.add('hidden')
+}
+
+el.style.display=
+displayOriginal
+}
+/*=========================================================
 006 CAPA PDF
 =========================================================*/
 function adicionarCapa(doc){
@@ -309,49 +346,72 @@ doc.text('Supervisor',20,150)
 async function gerarPDFExecutivoTCERO(){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4')
+
 adicionarCapa(doc)
 
-await mostrarAbaQueimadas('executivo')
-await new Promise(r=>setTimeout(r,2000))
-await adicionarPainelPDF(doc,'PAINEL EXECUTIVO','abaExecutivo')
+await adicionarPainelPDFForcado(
+doc,
+'PAINEL EXECUTIVO',
+'abaExecutivo'
+)
 
-await mostrarAbaQueimadas('executivomunicipal')
-await new Promise(r=>setTimeout(r,3000))
-await adicionarPainelPDF(doc,'EXECUTIVO MUNICIPAL','abaExecutivoMunicipal')
+await adicionarPainelPDFForcado(
+doc,
+'EXECUTIVO MUNICIPAL',
+'abaExecutivoMunicipal'
+)
 
-await mostrarAbaQueimadas('planejamento')
-await new Promise(r=>setTimeout(r,3000))
-await adicionarPainelPDF(doc,'PLANEJAMENTO','abaPlanejamento')
+await adicionarPainelPDFForcado(
+doc,
+'PLANEJAMENTO',
+'abaPlanejamento'
+)
 
-await mostrarAbaQueimadas('monitoramento')
-await new Promise(r=>setTimeout(r,3000))
-await adicionarPainelPDF(doc,'MONITORAMENTO','abaMonitoramento')
+await adicionarPainelPDFForcado(
+doc,
+'MONITORAMENTO',
+'abaMonitoramento'
+)
 
-await mostrarAbaQueimadas('analise')
-await new Promise(r=>setTimeout(r,3000))
-await adicionarPainelPDF(doc,'RISCOS IA','abaAnalise')
+await adicionarPainelPDFForcado(
+doc,
+'RISCOS IA',
+'abaAnalise'
+)
 
-await mostrarAbaQueimadas('mapa')
-await new Promise(r=>setTimeout(r,4000))
-await adicionarPainelPDF(doc,'MAPA ESTADUAL','abaMapa')
+await adicionarPainelPDFForcado(
+doc,
+'MAPA ESTADUAL',
+'abaMapa'
+)
 
-await mostrarAbaQueimadas('situacao')
-await new Promise(r=>setTimeout(r,3000))
-await adicionarPainelPDF(doc,'SALA DE SITUAÇÃO','abaSituacao')
+await adicionarPainelPDFForcado(
+doc,
+'SALA DE SITUAÇÃO',
+'abaSituacao'
+)
 
-await mostrarAbaQueimadas('presidente')
-await new Promise(r=>setTimeout(r,3000))
-await adicionarPainelPDF(doc,'GERAL','abaPresidente')
+await adicionarPainelPDFForcado(
+doc,
+'GERAL',
+'abaPresidente'
+)
 
-await mostrarAbaQueimadas('conselheiro')
-await new Promise(r=>setTimeout(r,3000))
-await adicionarPainelPDF(doc,'RELATOR','abaConselheiro')
+await adicionarPainelPDFForcado(
+doc,
+'RELATOR',
+'abaConselheiro'
+)
 
-await mostrarAbaQueimadas('auditor')
-await new Promise(r=>setTimeout(r,3000))
-await adicionarPainelPDF(doc,'AUDITORIA','abaAuditor')
+await adicionarPainelPDFForcado(
+doc,
+'AUDITORIA',
+'abaAuditor'
+)
 
-doc.save('RELATORIO_RONDÔNIA_QUEIMADAS_2026.pdf')
+doc.save(
+'RELATORIO_RONDONIA_QUEIMADAS_2026.pdf'
+)
 }
 /*=========================================================
 012 WORD EXECUTIVO TCERO
