@@ -8,7 +8,6 @@ if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/ucs-ro.geojson')
 }
 let geo=await resp.json()
-console.log('UC GEO',geo)
 
 let layerUC=L.geoJSON(geo,{
 style:f=>{
@@ -22,7 +21,13 @@ fillOpacity:.45
 onEachFeature:(f,l)=>{
 let p=f.properties||{}
 
-console.log(f.properties)
+let nome=
+p.nome_uc||
+p.nome||
+p.NOME_UC||
+p.NOME||
+p.uc_nome||
+'Unidade de Conservação'
 
 let categoria=
 p.categoria||
@@ -45,6 +50,7 @@ p.MUNICIPIO||
 '-'
 
 let area=
+p.ha_ato||
 p.area_ha||
 p.AREA_HA||
 p.area||
