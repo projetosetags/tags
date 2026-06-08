@@ -2,62 +2,29 @@
 001 QUEIMADAS BOTOES PDF WORD
 =========================================================*/
 function montarBotoesPDFQueimadas(tipo){
-
-if(tipo==='dashboard'){
-return `
-<button onclick="gerarPDFDashboardQueimadas()" class="btn-pdf">
-PDF DASHBOARD
-</button>
-<button onclick="gerarWordDashboardQueimadas()" class="btn-pdf btn-word">
-WORD DASHBOARD
-</button>
-`
+const botoes={
+dashboard:[
+'gerarPDFDashboardQueimadas',
+'gerarWordDashboardQueimadas',
+'PDF DASHBOARD',
+'WORD DASHBOARD'
+],
+resumo:[
+'gerarPDFResumoQueimadas',
+'gerarWordResumoQueimadas',
+'PDF RESUMO',
+'WORD RESUMO'
+],
+monitoramento:[
+'gerarPDFMonitoramentoQueimadas',
+'gerarWordMonitoramentoQueimadas',
+'PDF MONITORAMENTO',
+'WORD MONITORAMENTO'
+]
 }
-
-if(tipo==='resumo'){
-return `
-<button onclick="gerarPDFResumoQueimadas()" class="btn-pdf">
-PDF RESUMO
-</button>
-<button onclick="gerarWordResumoQueimadas()" class="btn-pdf btn-word">
-WORD RESUMO
-</button>
+if(!botoes[tipo])return''
+return`
+<button onclick="${botoes[tipo][0]}()" class="btn-pdf">${botoes[tipo][2]}</button>
+<button onclick="${botoes[tipo][1]}()" class="btn-pdf btn-word">${botoes[tipo][3]}</button>
 `
-}
-
-if(tipo==='monitoramento'){
-return `
-<button onclick="gerarPDFMonitoramentoQueimadas()" class="btn-pdf">
-PDF MONITORAMENTO
-</button>
-<button onclick="gerarWordMonitoramentoQueimadas()" class="btn-pdf btn-word">
-WORD MONITORAMENTO
-</button>
-`
-}
-
-if(tipo==='graficos'){
-return `
-<button onclick="gerarPDFGraficosQueimadas()" class="btn-pdf">
-PDF GRÁFICOS
-</button>
-<button onclick="gerarWordGraficosQueimadas()" class="btn-pdf btn-word">
-WORD GRÁFICOS
-</button>
-`
-}
-
-if(tipo==='cumpridos'){
-return `
-<button onclick="gerarPDFCumpridosQueimadas()" class="btn-pdf">
-PDF 100%
-</button>
-<button onclick="gerarWordCumpridosQueimadas()" class="btn-pdf btn-word">
-WORD 100%
-</button>
-`
-}
-
-return ''
-
 }
