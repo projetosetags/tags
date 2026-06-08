@@ -8,16 +8,6 @@ if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/ucs-ro.geojson')
 }
 let geo=await resp.json()
-
-
-console.log(
-'UC ESTRUTURA:',
-geo
-)
-
-  
-
-  
 let layerUC=L.geoJSON(geo,{
 style:f=>{
 let p=(f&&f.properties)?f.properties:{}
@@ -28,69 +18,18 @@ fillColor:'#00aa55',
 fillOpacity:.45
 }
 },
+
+
 onEachFeature:(f,l)=>{
-
-console.log('FEATURE UC:',f)
-
-let p=f.properties||
-f.attributes||
-f.data||
-f||
-
-{}
-
-console.log('PROPERTIES UC:',p)
-
-let nome=
-p.nome_uc||
-p.nome||
-p.NOME_UC||
-p.NOME||
-p.uc_nome||
-p.uc||
-p.ds_nome||
-p.nomeunidade||
-'Unidade de Conservação'
-
+l.on('click',()=>{
+console.log('UC FEATURE')
+console.log(f)
+console.log('UC PROPERTIES')
+console.log(f.properties)
+})
+}
 
   
-
-
-let categoria=
-p.categoria||
-p.CATEGORIA||
-'-'
-
-let grupo=
-p.grupo||
-p.GRUPO||
-'-'
-
-let situacao=
-p.situacao||
-p.SITUACAO||
-'-'
-
-let municipio=
-p.municipio||
-p.MUNICIPIO||
-'-'
-
-let area=
-p.area_ha||
-p.area||
-p.AREA_HA||
-'-'
-
-l.bindPopup(`
-<b>${nome}</b><br>
-<b>Categoria:</b> ${categoria}<br>
-<b>Grupo:</b> ${grupo}<br>
-<b>Situação:</b> ${situacao}<br>
-<b>Município:</b> ${municipio}<br>
-<b>Área:</b> ${area}
-`)
-}
 })
 if(tipo==='executivo'){
 window.layerUCsExecutivo=layerUC
