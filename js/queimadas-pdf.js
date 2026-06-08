@@ -310,31 +310,47 @@ async function gerarPDFExecutivoTCERO(){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4')
 adicionarCapa(doc)
-await adicionarPainelPDF(doc,'MAPA EXECUTIVO','mapaRO')
-await adicionarPainelPDF(doc,'IRIQ ESTADUAL E HEATMAP','painelIRIQHeatmapUnificado')
-await adicionarPainelPDF(doc,'MUNICÍPIOS PRIORITÁRIOS','painelMunicipiosPrioritarios')
-await adicionarPainelPDF(doc,'FOCOS DE CALOR','painelFocosCalor')
-await adicionarPainelPDF(doc,'ALERTAS AUTOMÁTICOS','painelAlertas')
-await adicionarPainelPDF(doc,'UNIDADES DE CONSERVAÇÃO','painelUCs')
-await adicionarPainelPDF(doc,'INDICADORES ESTRATÉGICOS','painelIndicadoresEstrategicos')
-await adicionarPainelPDF(doc,'SITUAÇÃO GERAL DOS MUNICÍPIOS','painelSituacaoGeralMunicipios')
-await adicionarPainelPDF(doc,'PLANOS DE AÇÃO APRESENTADOS','painelPlanosApresentados')
-await adicionarPainelPDF(doc,'DILAÇÕES DE PRAZO','painelDilacoesPrazo')
-await adicionarPainelPDF(doc,'MUNICÍPIOS SEM RESPOSTA','painelSemResposta')
-await adicionarPainelPDF(doc,'ESTATÍSTICAS MUNICIPAIS','painelEstatisticasMunicipais')
-await adicionarPainelPDF(doc,'TABELA GERAL DOS MUNICÍPIOS','painelTabelaMunicipios')
-await adicionarPainelPDF(doc,'CADASTRO MUNICIPAL','painelCadastroMunicipiosResumo')
-await adicionarTop10RiscosPDF(doc)
-let conclusao=await gerarConclusaoAutomatica()
-doc.addPage()
-doc.setFont('helvetica','bold')
-doc.setFontSize(16)
-doc.text('CONCLUSÃO EXECUTIVA',15,20)
-doc.setFont('helvetica','normal')
-doc.setFontSize(11)
-doc.text(doc.splitTextToSize(conclusao,180),15,35)
-await adicionarPainelPDF(doc,'ASSINATURAS','painelAuditoria')
-adicionarAssinaturasPDF(doc)
+
+await mostrarAbaQueimadas('executivo')
+await new Promise(r=>setTimeout(r,2000))
+await adicionarPainelPDF(doc,'PAINEL EXECUTIVO','abaExecutivo')
+
+await mostrarAbaQueimadas('executivomunicipal')
+await new Promise(r=>setTimeout(r,3000))
+await adicionarPainelPDF(doc,'EXECUTIVO MUNICIPAL','abaExecutivoMunicipal')
+
+await mostrarAbaQueimadas('planejamento')
+await new Promise(r=>setTimeout(r,3000))
+await adicionarPainelPDF(doc,'PLANEJAMENTO','abaPlanejamento')
+
+await mostrarAbaQueimadas('monitoramento')
+await new Promise(r=>setTimeout(r,3000))
+await adicionarPainelPDF(doc,'MONITORAMENTO','abaMonitoramento')
+
+await mostrarAbaQueimadas('analise')
+await new Promise(r=>setTimeout(r,3000))
+await adicionarPainelPDF(doc,'RISCOS IA','abaAnalise')
+
+await mostrarAbaQueimadas('mapa')
+await new Promise(r=>setTimeout(r,4000))
+await adicionarPainelPDF(doc,'MAPA ESTADUAL','abaMapa')
+
+await mostrarAbaQueimadas('situacao')
+await new Promise(r=>setTimeout(r,3000))
+await adicionarPainelPDF(doc,'SALA DE SITUAÇÃO','abaSituacao')
+
+await mostrarAbaQueimadas('presidente')
+await new Promise(r=>setTimeout(r,3000))
+await adicionarPainelPDF(doc,'GERAL','abaPresidente')
+
+await mostrarAbaQueimadas('conselheiro')
+await new Promise(r=>setTimeout(r,3000))
+await adicionarPainelPDF(doc,'RELATOR','abaConselheiro')
+
+await mostrarAbaQueimadas('auditor')
+await new Promise(r=>setTimeout(r,3000))
+await adicionarPainelPDF(doc,'AUDITORIA','abaAuditor')
+
 doc.save('RELATORIO_RONDÔNIA_QUEIMADAS_2026.pdf')
 }
 /*=========================================================
