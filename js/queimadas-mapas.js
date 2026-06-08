@@ -9,12 +9,13 @@ throw new Error('Erro ao localizar assets/geojson/ucs-ro.geojson')
 }
 let geo=await resp.json()
 
-  
-window.debugUC=
-geo.features[0].properties
-console.table(
-window.debugUC
+
+console.log(
+'UC ESTRUTURA:',
+geo
 )
+
+  
 
   
 let layerUC=L.geoJSON(geo,{
