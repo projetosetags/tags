@@ -299,44 +299,30 @@ async function gerarPDFExecutivoTCERO(){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4')
 adicionarCapa(doc)
-doc.addPage()
-doc.setFont('helvetica','bold')
-doc.setFontSize(18)
-doc.text('SUMÁRIO EXECUTIVO',15,20)
-let itens=[
-'1. Mapa Executivo',
-'2. IRIQ Estadual e Heatmap',
-'3. Municípios Prioritários',
-'4. Focos de Calor',
-'5. Alertas Automáticos',
-'6. Indicadores Estratégicos',
-'7. Top 10 Municípios de Maior Risco',
-'8. Conclusão Executiva',
-'9. Assinaturas'
-]
-let y=40
-itens.forEach(i=>{
-doc.text(i,20,y)
-y+=12
-})
+await adicionarPainelPDF(doc,'PAINEL EXECUTIVO','painelExecutivo')
 await adicionarPainelPDF(doc,'MAPA EXECUTIVO','mapaRO')
 await adicionarPainelPDF(doc,'IRIQ ESTADUAL E HEATMAP','painelIRIQHeatmapUnificado')
 await adicionarPainelPDF(doc,'MUNICÍPIOS PRIORITÁRIOS','painelMunicipiosPrioritarios')
 await adicionarPainelPDF(doc,'FOCOS DE CALOR','painelFocosCalor')
 await adicionarPainelPDF(doc,'ALERTAS AUTOMÁTICOS','painelAlertas')
+await adicionarPainelPDF(doc,'UNIDADES DE CONSERVAÇÃO','painelUCs')
 await adicionarPainelPDF(doc,'INDICADORES ESTRATÉGICOS','painelIndicadoresEstrategicos')
+await adicionarPainelPDF(doc,'SITUAÇÃO GERAL DOS MUNICÍPIOS','painelSituacaoGeralMunicipios')
+await adicionarPainelPDF(doc,'PLANOS APRESENTADOS','painelPlanosApresentados')
+await adicionarPainelPDF(doc,'DILAÇÕES DE PRAZO','painelDilacoesPrazo')
+await adicionarPainelPDF(doc,'MUNICÍPIOS SEM RESPOSTA','painelSemResposta')
+await adicionarPainelPDF(doc,'ESTATÍSTICAS MUNICIPAIS','painelEstatisticasMunicipais')
 await adicionarTop10RiscosPDF(doc)
 let conclusao=await gerarConclusaoAutomatica()
 doc.addPage()
 doc.setFont('helvetica','bold')
-doc.setFontSize(18)
+doc.setFontSize(16)
 doc.text('CONCLUSÃO EXECUTIVA',15,20)
 doc.setFont('helvetica','normal')
 doc.setFontSize(11)
-doc.text(doc.splitTextToSize(conclusao,250),15,35)
+doc.text(doc.splitTextToSize(conclusao,180),15,35)
 adicionarAssinaturasPDF(doc)
-adicionarRodape(doc)
-doc.save('RELATORIO_EXECUTIVO_QUEIMADAS_2026.pdf')
+doc.save('RELATORIO_RONDÔNIA_QUEIMADAS_2026.pdf')
 }
 /*=========================================================
 012 WORD EXECUTIVO TCERO
