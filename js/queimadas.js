@@ -2082,6 +2082,15 @@ if(typeof renderSemResposta==='function')await renderSemResposta()
 if(typeof renderGraficoMunicipios==='function')await renderGraficoMunicipios()
 if(typeof renderEstatisticasMunicipais==='function')await renderEstatisticasMunicipais()
 if(typeof renderTabelaMunicipios==='function')await renderTabelaMunicipios()
+let divMapa=document.getElementById('mapaMunicipalPlanos')
+console.log(
+'ALTURA MAPA:',
+divMapa?.offsetHeight
+)
+console.log(
+'LARGURA MAPA:',
+divMapa?.offsetWidth
+)
 setTimeout(async()=>{
 let div=document.getElementById('mapaMunicipalPlanos')
 if(div){
