@@ -75,19 +75,17 @@ if(!el)return
 if(el.offsetWidth===0)return
 if(el.offsetHeight===0)return
 let canvas=await html2canvas(el,{
-scale:3,
+scale:2,
 backgroundColor:'#ffffff',
 useCORS:true
 })
 let img=canvas.toDataURL('image/png')
-let largura=180
-let altura=(canvas.height*largura)/canvas.width
-let restante=altura
-let deslocamento=0
-const ALTURA_UTIL=235
-while(restante>0){
+let pdfW=180
+let pdfH=(canvas.height*pdfW)/canvas.width
+let pageH=250
+let y=0
+while(y<pdfH){
 doc.addPage()
-adicionarCabecalhoPDF(doc,titulo)
 doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text(titulo,15,20)
@@ -95,12 +93,11 @@ doc.addImage(
 img,
 'PNG',
 15,
-30-deslocamento,
-largura,
-altura
+30-y,
+pdfW,
+pdfH
 )
-restante-=ALTURA_UTIL
-deslocamento+=ALTURA_UTIL
+y+=pageH
 }
 }
 /*=========================================================
@@ -408,7 +405,10 @@ doc,
 'AUDITORIA',
 'abaAuditor'
 )
-
+console.log(
+'TOTAL PAGINAS PDF:',
+doc.internal.getNumberOfPages()
+)
 doc.save(
 'RELATORIO_RONDONIA_QUEIMADAS_2026.pdf'
 )
