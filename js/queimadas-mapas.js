@@ -34,9 +34,9 @@ Município: ${municipio}
 `)
 }
 })
-layerUC.addTo(mapa)
 if(tipo==='executivo'){
 window.layerUCsExecutivo=layerUC
+layerUC.addTo(mapa)
 if(window.camadasControleExecutivo){
 window.camadasControleExecutivo.addOverlay(layerUC,'🌳 UCs de Rondônia')
 window.overlayUCsExecutivoAdicionado=true
@@ -86,7 +86,7 @@ window.mapaMunicipalPlanos=null
 if(div._leaflet_id){
 delete div._leaflet_id
 }
-await new Promise(r=>setTimeout(r,500))
+await new Promise(r=>setTimeout(r,100))
 let mapa=L.map(div,{
 preferCanvas:true,
 zoomControl:true
@@ -153,7 +153,7 @@ l.bindPopup(`
 <b>${nome}</b><br>
 Situação: ${m?.classificacao_ia||'Sem classificação'}<br>
 Documento: ${m?.lnumerodocenviado||m?.llnumerodocenviado||'-'}<br>
-Recebimento: ${m?.ldatarecebimentodoc||'-'}
+Recebimento: ${formatarDataBR?.(m?.ldatarecebimentodoc)||m?.ldatarecebimentodoc||'-'}
 `)
 }
 }).addTo(mapa)
@@ -227,9 +227,17 @@ collapsed:false
 ).addTo(mapa)
 if(typeof carregarUCsRO==='function'){
 await carregarUCsRO(mapa,'estadual')
+if(window.layerUCsEstadual){
+window.layerUCsEstadual.bringToFront()
+}
 }
 if(typeof carregarTIsRO==='function'){
+if(window.layerTIsEstadual){
+window.layerTIsEstadual.bringToFront()
+}
+}
 await carregarTIsRO(mapa,'estadual')
+
 }
 setTimeout(()=>{
 try{
@@ -264,6 +272,15 @@ if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/terras-indigenas-ro.geojson')
 }
 let geo=await resp.json()
+console.log(
+geo.features[0].properties
+)
+console.log(
+'TI CAMPOS:',
+Object.keys(
+geo.features?.[0]?.properties||{}
+)
+)
 let layerTI=L.geoJSON(
 geo,
 {
@@ -274,27 +291,42 @@ fillColor:'#a855f7',
 fillOpacity:.35
 },
 onEachFeature:(f,l)=>{
+
 let p=f.properties||{}
+
 let nome=
 p.terrai_nom||
+p.terra_indigena||
 p.nome||
 p.NOME||
-p.terra_indigena||
-p.TERRA_INDIGENA||
+p.nm_ti||
+p.NM_TI||
+p.nome_ti||
+p.NOME_TI||
 'Terra Indígena'
+
 let etnia=
 p.etnia_nom||
 p.etnia||
+p.ETNIA||
+p.povo||
+p.POVO||
 '-'
+
 let fase=
 p.fase_ti||
 p.fase||
+p.FASE||
 '-'
+
 let area=
 p.superficie||
 p.area_ha||
+p.AREA_HA||
 p.area||
+p.AREA||
 '-'
+
 l.bindPopup(`
 <b>${nome}</b><br>
 Etnia: ${etnia}<br>
@@ -400,6 +432,9 @@ RELATÓRIO TÉCNICO PCe 0501
 <button onclick="gerarPDFTecnico0501()">
 PDF TÉCNICO
 </button>
+<button onclick="gerarWordTecnico0501()">
+WORD TÉCNICO
+</button>
 </div>
 
 <div class="chap-card">
@@ -409,6 +444,9 @@ RELATÓRIO MUNICIPAL
 </div>
 <button onclick="gerarPDFMunicipios0501()">
 PDF MUNICÍPIOS
+</button>
+<button onclick="gerarWordMunicipios0501()">
+WORD MUNICÍPIOS
 </button>
 </div>
 
