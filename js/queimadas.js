@@ -2073,33 +2073,15 @@ if(typeof renderLegendaHeatmap==='function')await renderLegendaHeatmap()
 
 if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
-
-if(typeof renderSituacaoGeralMunicipios==='function')
-await renderSituacaoGeralMunicipios()
-
-if(typeof renderKPIsMunicipais==='function')
-await renderKPIsMunicipais()
-
-if(typeof renderCadastroMunicipiosResumo==='function')
-await renderCadastroMunicipiosResumo()
-
-if(typeof renderPlanosApresentados==='function')
-await renderPlanosApresentados()
-
-if(typeof renderDilacoesPrazo==='function')
-await renderDilacoesPrazo()
-
-if(typeof renderSemResposta==='function')
-await renderSemResposta()
-
-if(typeof renderGraficoMunicipios==='function')
-await renderGraficoMunicipios()
-
-if(typeof renderEstatisticasMunicipais==='function')
-await renderEstatisticasMunicipais()
-
-if(typeof renderTabelaMunicipios==='function')
-await renderTabelaMunicipios()
+if(typeof renderSituacaoGeralMunicipios==='function')await renderSituacaoGeralMunicipios()
+if(typeof renderKPIsMunicipais==='function')await renderKPIsMunicipais()
+if(typeof renderCadastroMunicipiosResumo==='function')await renderCadastroMunicipiosResumo()
+if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
+if(typeof renderDilacoesPrazo==='function')await renderDilacoesPrazo()
+if(typeof renderSemResposta==='function')await renderSemResposta()
+if(typeof renderGraficoMunicipios==='function')await renderGraficoMunicipios()
+if(typeof renderEstatisticasMunicipais==='function')await renderEstatisticasMunicipais()
+if(typeof renderTabelaMunicipios==='function')await renderTabelaMunicipios()
 setTimeout(async()=>{
 let div=document.getElementById('mapaMunicipalPlanos')
 if(div){
