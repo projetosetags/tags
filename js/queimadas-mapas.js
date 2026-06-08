@@ -29,9 +29,31 @@ fillOpacity:.45
 }
 },
 onEachFeature:(f,l)=>{
-console.table(f.properties)
-let p=f.properties||{}
 
+console.log('FEATURE UC:',f)
+
+let p=f.properties||
+f.attributes||
+f.data||
+f||
+
+{}
+
+console.log('PROPERTIES UC:',p)
+
+let nome=
+p.nome_uc||
+p.nome||
+p.NOME_UC||
+p.NOME||
+p.uc_nome||
+p.uc||
+p.ds_nome||
+p.nomeunidade||
+'Unidade de Conservação'
+
+
+  
 let nome=
 p.nome_uc||
 p.nome||
