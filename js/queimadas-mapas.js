@@ -232,12 +232,10 @@ window.layerUCsEstadual.bringToFront()
 }
 }
 if(typeof carregarTIsRO==='function'){
+await carregarTIsRO(mapa,'estadual')
 if(window.layerTIsEstadual){
 window.layerTIsEstadual.bringToFront()
 }
-}
-await carregarTIsRO(mapa,'estadual')
-
 }
 setTimeout(()=>{
 try{
