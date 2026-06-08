@@ -8,49 +8,88 @@ if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/ucs-ro.geojson')
 }
 let geo=await resp.json()
-alert(
-JSON.stringify(
-Object.keys(geo),
-null,
-2
-)
-)
 console.log('UC GEO',geo)
 
-console.log('TIPO GEO',typeof geo)
-console.log('GEO',geo)
-
-return
-
 let layerUC=L.geoJSON(geo,{
+style:f=>{
+return{
+color:'#006400',
+weight:1,
+fillColor:'#00aa55',
+fillOpacity:.45
+}
+},
+onEachFeature:(f,l)=>{
+let p=f.properties||{}
 
+let nome=
+p.nome_uc||
+p.nome||
+p.NOME_UC||
+p.NOME||
+p.ds_nome||
+p.uc_nome||
+'Unidade de Conservação'
 
-  
+let categoria=
+p.categoria||
+p.CATEGORIA||
+'-'
+
+let grupo=
+p.grupo||
+p.GRUPO||
+'-'
+
+let situacao=
+p.situacao||
+p.SITUACAO||
+'-'
+
+let municipio=
+p.municipio||
+p.MUNICIPIO||
+'-'
+
+let area=
+p.area_ha||
+p.AREA_HA||
+p.area||
+'-'
+
+l.bindPopup(`
+<b>${nome}</b><br>
+<b>Categoria:</b> ${categoria}<br>
+<b>Grupo:</b> ${grupo}<br>
+<b>Situação:</b> ${situacao}<br>
+<b>Município:</b> ${municipio}<br>
+<b>Área:</b> ${area}
+`)
+}
+})
+
 if(tipo==='executivo'){
 window.layerUCsExecutivo=layerUC
 layerUC.addTo(mapa)
 if(window.camadasControleExecutivo){
-window.camadasControleExecutivo.addOverlay(layerUC,'🌳 UCs de Rondônia')
-window.overlayUCsExecutivoAdicionado=true
+window.camadasControleExecutivo.addOverlay(
+layerUC,
+'🌳 UCs de Rondônia'
+)
 }
 }
+
 if(tipo==='estadual'){
 window.layerUCsEstadual=layerUC
 layerUC.addTo(mapa)
-if(
-window.camadasControleEstadual &&
-window.mapaEstadualRO
-){
-try{
+if(window.camadasControleEstadual){
 window.camadasControleEstadual.addOverlay(
 layerUC,
 '🌳 UCs de Rondônia'
 )
-}catch(e){
-console.log(e)
 }
 }
-}
+
 let painel=document.getElementById('painelUCsMapa')
 if(painel){
 painel.innerHTML=`
@@ -63,10 +102,6 @@ TCGeo / TCE-RO
 }
 }catch(e){
 console.error('Erro ao carregar UCs:',e)
-let painel=document.getElementById('painelUCsMapa')
-if(painel){
-painel.innerHTML='Erro ao carregar UCs.'
-}
 }
 }
 /*=========================================================
