@@ -175,8 +175,11 @@ console.error('Erro ao carregar UCs:',e)
 109 RENDER MAPA MUNICIPAL PLANOS
 =========================================================*/
 async function renderMapaMunicipalPlanos(filtro='TODOS'){
-console.log('MAPA MUNICIPAL EXECUTADO')
+console.log('RENDER MAPA MUNICIPAL')
 let div=document.getElementById('mapaMunicipalPlanos')
+console.log('DIV MAPA',div)
+console.log('ALTURA',div?.offsetHeight)
+console.log('LARGURA',div?.offsetWidth)
 if(!div)return
 div.innerHTML=''
 if(window.mapaMunicipalPlanos){
@@ -209,6 +212,7 @@ return
 let geojson=await geo.json()
 console.log('GeoJSON carregado',geojson.features?.length)
 let {data,error}=await client.from('queimadas_municipios_oficio').select('*')
+console.log('REGISTROS BANCO',data?.length)
 if(error){
 console.log(error)
 return
