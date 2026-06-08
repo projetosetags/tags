@@ -267,237 +267,70 @@ ${ranking}.
 Recomenda-se intensificar prevenção,
 fiscalização, monitoramento e resposta integrada.
 `
-
 }
-
 /*=========================================================
 010 ASSINATURAS PDF
 =========================================================*/
 function adicionarAssinaturasPDF(doc){
-
 doc.addPage()
-
 doc.setFont('helvetica','bold')
 doc.setFontSize(18)
-
-doc.text(
-'ASSINATURAS',
-15,
-20
-)
-
+doc.text('ASSINATURAS',15,20)
 doc.setFontSize(12)
-
-doc.text(
-'Manoel Fernandes Neto',
-20,
-70
-)
-
-doc.line(
-20,
-72,
-100,
-72
-)
-
-doc.setFont(
-'helvetica',
-'normal'
-)
-
-doc.text(
-'Auditor de Controle Externo',
-20,
-80
-)
-
-doc.text(
-'Coordenador dos Trabalhos',
-20,
-88
-)
-
-doc.setFont(
-'helvetica',
-'bold'
-)
-
-doc.text(
-'Luís Fernando Bueno',
-150,
-70
-)
-
-doc.line(
-150,
-72,
-230,
-72
-)
-
-doc.setFont(
-'helvetica',
-'normal'
-)
-
-doc.text(
-'Assessor Técnico',
-150,
-80
-)
-
-doc.text(
-'Apoio Técnico',
-150,
-88
-)
-
-doc.setFont(
-'helvetica',
-'bold'
-)
-
-doc.text(
-'Raimundo Paulo Dias Barros Vieira',
-20,
-140
-)
-
-doc.line(
-20,
-142,
-120,
-142
-)
-
-doc.setFont(
-'helvetica',
-'normal'
-)
-
-doc.text(
-'Supervisor dos Trabalhos',
-20,
-150
-)
-
+doc.text('Manoel Fernandes Neto',20,70)
+doc.line(20,72,100,72)
+doc.setFont('helvetica','normal')
+doc.text('Auditor de Controle Externo',20,80)
+doc.text('Coordenador dos Trabalhos',20,88)
+doc.setFont('helvetica','bold')
+doc.text('Luís Fernando Bueno',150,70)
+doc.line(150,72,230,72)
+doc.setFont('helvetica','normal')
+doc.text('Assessor Técnico',150,80)
+doc.text('Apoio Técnico',150,88)
+doc.setFont('helvetica','bold')
+doc.text('Raimundo Paulo Dias Barros Vieira',20,140)
+doc.line(20,142,120,142)
+doc.setFont('helvetica','normal')
+doc.text('Supervisor dos Trabalhos',20,150)
 }
-
 /*=========================================================
 011 PDF EXECUTIVO TCERO
 =========================================================*/
 async function gerarPDFExecutivoTCERO(){
-
 const {jsPDF}=window.jspdf
-
-let doc=new jsPDF(
-'l',
-'mm',
-'a4'
-)
-
+let doc=new jsPDF('l','mm','a4')
 adicionarCapa(doc)
-
-await adicionarPainelPDF(
-doc,
-'MAPA EXECUTIVO',
-'mapaRO'
-)
-
-await adicionarPainelPDF(
-doc,
-'IRIQ ESTADUAL E HEATMAP',
-'painelIRIQHeatmapUnificado'
-)
-
-await adicionarPainelPDF(
-doc,
-'MUNICÍPIOS PRIORITÁRIOS',
-'painelMunicipiosPrioritarios'
-)
-
-await adicionarPainelPDF(
-doc,
-'FOCOS DE CALOR',
-'painelFocosCalor'
-)
-
-await adicionarPainelPDF(
-doc,
-'ALERTAS AUTOMÁTICOS',
-'painelAlertas'
-)
-
-await adicionarPainelPDF(
-doc,
-'UNIDADES DE CONSERVAÇÃO',
-'painelUCs'
-)
-
-await adicionarPainelPDF(
-doc,
-'INDICADORES ESTRATÉGICOS',
-'painelIndicadoresEstrategicos'
-)
-
-let conclusao=
-await gerarConclusaoAutomatica()
-
+await adicionarPainelPDF(doc,'MAPA EXECUTIVO','mapaRO')
+await adicionarPainelPDF(doc,'IRIQ ESTADUAL E HEATMAP','painelIRIQHeatmapUnificado')
+await adicionarPainelPDF(doc,'MUNICÍPIOS PRIORITÁRIOS','painelMunicipiosPrioritarios')
+await adicionarPainelPDF(doc,'FOCOS DE CALOR','painelFocosCalor')
+await adicionarPainelPDF(doc,'ALERTAS AUTOMÁTICOS','painelAlertas')
+await adicionarPainelPDF(doc,'UNIDADES DE CONSERVAÇÃO','painelUCs')
+await adicionarPainelPDF(doc,'INDICADORES ESTRATÉGICOS','painelIndicadoresEstrategicos')
+let conclusao=await gerarConclusaoAutomatica()
 doc.addPage()
-
-doc.setFont(
-'helvetica',
-'bold'
-)
-
+doc.setFont('helvetica','bold')
 doc.setFontSize(18)
-
-doc.text(
-'CONCLUSÃO EXECUTIVA',
-15,
-20
-)
-
-doc.setFont(
-'helvetica',
-'normal'
-)
-
+doc.text('CONCLUSÃO EXECUTIVA',15,20)
+doc.setFont('helvetica','normal')
 doc.setFontSize(11)
-
-doc.text(
-doc.splitTextToSize(
-conclusao,
-250
-),
-15,
-35
-)
-
+doc.text(doc.splitTextToSize(conclusao,250),15,35)
 adicionarAssinaturasPDF(doc)
-
-doc.save(
-'relatorio-executivo-queimadas.pdf'
-)
-
+doc.save('relatorio-executivo-queimadas.pdf')
 }
-
 /*=========================================================
 012 WORD EXECUTIVO TCERO
 =========================================================*/
 function gerarWordExecutivoTCERO(){
-
 let html=`
 <h1>MONITORAMENTO INTELIGENTE DE QUEIMADAS 2026</h1>
 <h2>Tribunal de Contas do Estado de Rondônia</h2>
 <h3>Plano Unificado TCE-RO</h3>
 <p>Este relatório consolida as ações do Plano Unificado de Enfrentamento às Queimadas e Incêndios Florestais.</p>
 `
-
 baixarWordQueimadas(
 'relatorio_executivo_tcero',
 html
 )
-
 }
