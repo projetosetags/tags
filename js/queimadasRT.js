@@ -150,42 +150,6 @@ doc.setFontSize(10)
 doc.text(doc.splitTextToSize(painel.innerText.substring(0,4000),180),15,35)
 }
 /*=========================================================
-410 RT MUNICIPIOS CRITICOS
-=========================================================*/
-async function rtMunicipiosCriticos(doc){
-doc.setFontSize(16)
-doc.text('10. MUNICÍPIOS CRÍTICOS',15,20)
-let {data=[]}=await client
-.from('queimadas_heatmap')
-.select('*')
-let top=[...data]
-.sort((a,b)=>
-Number(b.risco||0)-
-Number(a.risco||0)
-)
-.slice(0,6)
-let y=40
-top.forEach((m,i)=>{
-doc.text(`${i+1}º ${m.municipio} - IRIQ ${m.iriq}`,20,y)
-y+=12
-})
-}
-/*=========================================================
-411 RT ACHADOS
-=========================================================*/
-async function rtAchados(doc){
-doc.setFontSize(16)
-doc.text('11. ACHADOS',15,20)
-let y=40
-doc.text('• Municípios sem resposta ao Ofício Circular.',20,y)
-y+=10
-doc.text('• Municípios com dilação de prazo.',20,y)
-y+=10
-doc.text('• Municípios sem plano de ação apresentado.',20,y)
-y+=10
-doc.text('• Áreas críticas identificadas pelo Heatmap.',20,y)
-}
-/*=========================================================
 410 RT IA-CHAP
 =========================================================*/
 async function rtIACHAP(doc){
@@ -208,7 +172,51 @@ doc.setFontSize(10)
 doc.text(doc.splitTextToSize(painel.innerText.substring(0,4000),180),15,35)
 }
 /*=========================================================
-412 RT CONCLUSOES
+412 RT MUNICIPIOS CRITICOS
+=========================================================*/
+async function rtMunicipiosCriticos(doc){
+doc.setFontSize(16)
+doc.text('10. MUNICÍPIOS CRÍTICOS',15,20)
+let {data=[]}=await client
+.from('queimadas_heatmap')
+.select('*')
+let top=[...data]
+.sort((a,b)=>
+Number(b.risco||0)-
+Number(a.risco||0)
+)
+.slice(0,6)
+let y=40
+top.forEach((m,i)=>{
+doc.text(`${i+1}º ${m.municipio} - IRIQ ${m.iriq}`,20,y)
+y+=12
+})
+}
+/*=========================================================
+413 RT ACHADOS
+=========================================================*/
+async function rtAchados(doc){
+doc.setFontSize(16)
+doc.text('11. ACHADOS',15,20)
+let y=40
+doc.text('• Municípios sem resposta ao Ofício Circular.',20,y)
+y+=10
+doc.text('• Municípios com dilação de prazo.',20,y)
+y+=10
+doc.text('• Municípios sem plano de ação apresentado.',20,y)
+y+=10
+doc.text('• Áreas críticas identificadas pelo Heatmap.',20,y)
+}
+/*=========================================================
+414 RT EVIDENCIAS
+=========================================================*/
+async function rtEvidencias(doc){
+doc.setFontSize(16)
+doc.text('14. EVIDÊNCIAS',15,20)
+let texto='Foram analisadas evidências documentais provenientes da SEDAM, Corpo de Bombeiros Militar, municípios, bases do INPE, sistemas institucionais e documentos encaminhados em resposta ao Ofício Circular n.16/2026/GABPRES/TCERO.'
+doc.text(doc.splitTextToSize(texto,180),15,35)
+}/*=========================================================
+415 RT CONCLUSOES
 =========================================================*/
 async function rtConclusoes(doc){
 doc.setFontSize(16)
@@ -219,7 +227,7 @@ Os dados demonstram necessidade de fortalecimento das ações preventivas, monit
 doc.text(doc.splitTextToSize(texto,180),15,35)
 }
 /*=========================================================
-413 RT PROPOSTAS
+416 RT PROPOSTAS
 =========================================================*/
 async function rtPropostas(doc){
 doc.setFontSize(16)
@@ -237,16 +245,7 @@ y+=10
 })
 }
 /*=========================================================
-414 RT EVIDENCIAS
-=========================================================*/
-async function rtEvidencias(doc){
-doc.setFontSize(16)
-doc.text('14. EVIDÊNCIAS',15,20)
-let texto='Foram analisadas evidências documentais provenientes da SEDAM, Corpo de Bombeiros Militar, municípios, bases do INPE, sistemas institucionais e documentos encaminhados em resposta ao Ofício Circular n.16/2026/GABPRES/TCERO.'
-doc.text(doc.splitTextToSize(texto,180),15,35)
-}
-/*=========================================================
-415 RT ANEXOS
+417 RT ANEXOS
 =========================================================*/
 async function rtAnexos(doc){
 doc.setFontSize(16)
@@ -270,7 +269,7 @@ y+=10
 })
 }
 /*=========================================================
-416 RT ASSINATURAS
+418 RT ASSINATURAS
 =========================================================*/
 async function rtAssinaturas(doc){
 doc.setFont('helvetica','bold')
