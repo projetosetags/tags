@@ -45,11 +45,18 @@ window.overlayUCsExecutivoAdicionado=true
 if(tipo==='estadual'){
 window.layerUCsEstadual=layerUC
 layerUC.addTo(mapa)
-if(window.camadasControleEstadual){
+if(
+window.camadasControleEstadual &&
+window.mapaEstadualRO
+){
+try{
 window.camadasControleEstadual.addOverlay(
 layerUC,
 '🌳 UCs de Rondônia'
 )
+}catch(e){
+console.log(e)
+}
 }
 }
 let painel=document.getElementById('painelUCsMapa')
@@ -347,11 +354,18 @@ layerTI,
 if(tipo==='estadual'){
 window.layerTIsEstadual=layerTI
 layerTI.addTo(mapa)
-if(window.camadasControleEstadual){
+if(
+window.camadasControleEstadual &&
+window.mapaEstadualRO
+){
+try{
 window.camadasControleEstadual.addOverlay(
 layerTI,
 '🛖 Terras Indígenas'
 )
+}catch(e){
+console.log(e)
+}
 }
 }
 let painel=document.getElementById('painelTIMapa')
