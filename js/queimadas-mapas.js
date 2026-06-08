@@ -54,14 +54,7 @@ p.nomeunidade||
 
 
   
-let nome=
-p.nome_uc||
-p.nome||
-p.NOME_UC||
-p.NOME||
-p.uc_nome||
-p.uc||
-'Unidade de Conservação'
+
 
 let categoria=
 p.categoria||
