@@ -8,6 +8,15 @@ if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/ucs-ro.geojson')
 }
 let geo=await resp.json()
+
+  
+window.debugUC=
+geo.features[0].properties
+console.table(
+window.debugUC
+)
+
+  
 let layerUC=L.geoJSON(geo,{
 style:f=>{
 let p=(f&&f.properties)?f.properties:{}
@@ -19,18 +28,51 @@ fillOpacity:.45
 }
 },
 onEachFeature:(f,l)=>{
-let p=(f&&f.properties)?f.properties:{}
-let nome=p.nome_uc||p.nome||p.NOME_UC||p.NOME||p.uc||p.UC||'Unidade de Conservação'
-let categoria=p.categoria||p.CATEGORIA||'-'
-let grupo=p.grupo||p.GRUPO||'-'
-let situacao=p.situacao||p.SITUACAO||'-'
-let municipio=p.municipio||p.MUNICIPIO||'-'
+
+let p=f.properties||{}
+
+let nome=
+p.nome_uc||
+p.nome||
+p.NOME_UC||
+p.NOME||
+p.uc_nome||
+p.uc||
+'Unidade de Conservação'
+
+let categoria=
+p.categoria||
+p.CATEGORIA||
+'-'
+
+let grupo=
+p.grupo||
+p.GRUPO||
+'-'
+
+let situacao=
+p.situacao||
+p.SITUACAO||
+'-'
+
+let municipio=
+p.municipio||
+p.MUNICIPIO||
+'-'
+
+let area=
+p.area_ha||
+p.area||
+p.AREA_HA||
+'-'
+
 l.bindPopup(`
 <b>${nome}</b><br>
-Categoria: ${categoria}<br>
-Grupo: ${grupo}<br>
-Situação: ${situacao}<br>
-Município: ${municipio}
+<b>Categoria:</b> ${categoria}<br>
+<b>Grupo:</b> ${grupo}<br>
+<b>Situação:</b> ${situacao}<br>
+<b>Município:</b> ${municipio}<br>
+<b>Área:</b> ${area}
 `)
 }
 })
