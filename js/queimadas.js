@@ -2091,15 +2091,33 @@ console.log(
 'LARGURA MAPA:',
 divMapa?.offsetWidth
 )
+requestAnimationFrame(()=>{
+
 setTimeout(async()=>{
-let div=document.getElementById('mapaMunicipalPlanos')
-if(div){
+
+let div=document.getElementById(
+'mapaMunicipalPlanos'
+)
+
+if(!div){
+console.log(
+'mapaMunicipalPlanos não encontrado'
+)
+return
+}
+
 await renderMapaMunicipalPlanos('TODOS')
-if(window.mapaMunicipalPlanos){
-window.mapaMunicipalPlanos.invalidateSize(true)
-}
-}
-},2000)
+
+setTimeout(()=>{
+
+window.mapaMunicipalPlanos
+?.invalidateSize(true)
+
+},500)
+
+},300)
+
+})
 }
 if(nome==='cadastroMunicipal'){
 document.getElementById('abaCadastroMunicipal')?.classList.remove('hidden')
