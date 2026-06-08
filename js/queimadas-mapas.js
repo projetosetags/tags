@@ -175,6 +175,7 @@ console.error('Erro ao carregar UCs:',e)
 109 RENDER MAPA MUNICIPAL PLANOS
 =========================================================*/
 async function renderMapaMunicipalPlanos(filtro='TODOS'){
+console.log('MAPA MUNICIPAL EXECUTADO')
 let div=document.getElementById('mapaMunicipalPlanos')
 if(!div)return
 div.innerHTML=''
