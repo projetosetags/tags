@@ -8,20 +8,41 @@ if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/ucs-ro.geojson')
 }
 let geo=await resp.json()
-
+let totalEstadual=0
+let totalFederal=0
+let totalMunicipal=0
+;(geo.features||[]).forEach(f=>{
+let esfera=String(
+f.properties?.esfera||''
+).toUpperCase()
+if(esfera==='ESTADUAL')totalEstadual++
+if(esfera==='FEDERAL')totalFederal++
+if(esfera==='MUNICIPAL')totalMunicipal++
+})
 let layerUC=L.geoJSON(geo,{
 style:f=>{
+let esfera=String(
+f.properties?.esfera||''
+).toUpperCase()
+let cor='#94a3b8'
+if(esfera==='ESTADUAL'){
+cor='#dc2626'
+}
+if(esfera==='FEDERAL'){
+cor='#2563eb'
+}
+if(esfera==='MUNICIPAL'){
+cor='#f59e0b'
+}
 return{
-color:'#006400',
-weight:1,
-fillColor:'#00aa55',
+color:cor,
+weight:1.5,
+fillColor:cor,
 fillOpacity:.45
 }
 },
 onEachFeature:(f,l)=>{
-
 let p=f.properties||{}
-
 let nome=
 p.nome_uc||
 p.NOME_UC||
@@ -97,10 +118,10 @@ fillOpacity:.45
 
 l.bindPopup(`
 <b>${nome}</b><br>
+<b>Esfera:</b> ${esfera}<br>
 <b>Categoria:</b> ${categoria}<br>
 <b>Grupo:</b> ${grupo}<br>
 <b>Município(s):</b> ${municipio}<br>
-<b>Esfera:</b> ${esfera}<br>
 <b>Gestor:</b> ${gestor}<br>
 <b>Situação:</b> ${status}<br>
 <b>Área:</b> ${areaTexto}
@@ -134,12 +155,18 @@ layerUC,
 let painel=document.getElementById('painelUCsMapa')
 if(painel){
 painel.innerHTML=`
-<b>${(geo.features||[]).length} Unidades de Conservação</b><br>
-🔴 Proteção Integral<br>
-🟢 Uso Sustentável<br><br>
+<b>UNIDADES DE CONSERVAÇÃO</b><br><br>
+🔴 Estaduais:
+<b>${totalEstadual}</b><br>
+🔵 Federais:
+<b>${totalFederal}</b><br>
+🟠 Municipais:
+<b>${totalMunicipal}</b><br><br>
+<b>Total:</b>
+${geo.features.length}<br><br>
 Fonte:
 <a href="https://app.tcgeo.tc.br/" target="_blank">
-TCGeo / TCE-RO
+TCGeo / CNUC
 </a>
 `
 }
