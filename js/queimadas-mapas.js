@@ -193,7 +193,7 @@ delete div._leaflet_id
 }
 await new Promise(r=>setTimeout(r,100))
 let mapa=L.map(
-'mapaMunicipalPlanos',
+div,
 {
 preferCanvas:true,
 zoomControl:true
