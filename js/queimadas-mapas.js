@@ -29,7 +29,7 @@ fillOpacity:.45
 }
 },
 onEachFeature:(f,l)=>{
-
+console.table(f.properties)
 let p=f.properties||{}
 
 let nome=
