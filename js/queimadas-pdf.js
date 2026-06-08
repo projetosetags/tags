@@ -60,38 +60,41 @@ doc.text('Página '+i,200,290,{align:'right'})
 =========================================================*/
 async function adicionarPainelPDF(doc,titulo,idElemento){
 let el=document.getElementById(idElemento)
-if(!el){
-console.log('Elemento inexistente:',idElemento)
-return
-}
-if(el.offsetWidth===0){
-console.log('Largura ZERO:',idElemento)
-return
-}
-if(el.offsetHeight===0){
-console.log('Altura ZERO:',idElemento)
-return
-}
-console.log(
-'Capturando:',
-idElemento,
-el.offsetWidth,
-el.offsetHeight
-)
-let canvas=await html2canvas(
-el,
-{
+if(!el)return
+if(el.offsetWidth===0)return
+if(el.offsetHeight===0)return
+let canvas=await html2canvas(el,{
 scale:2,
 backgroundColor:'#ffffff',
 useCORS:true
-}
-)
+})
 let img=canvas.toDataURL('image/png')
+let largura=190
+let altura=(canvas.height*largura)/canvas.width
+let restante=altura
+let deslocamento=0
+let primeira=true
+while(restante>0){
 doc.addPage()
 doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text(titulo,15,20)
-doc.addImage(img,'PNG',10,30,270,150)
+doc.addImage(
+img,
+'PNG',
+10,
+30-deslocamento,
+largura,
+altura
+)
+if(primeira){
+restante-=250
+primeira=false
+}else{
+restante-=250
+}
+deslocamento+=250
+}
 }
 /*=========================================================
 006 CAPA PDF
@@ -298,7 +301,7 @@ doc.text('Supervisor',20,150)
 =========================================================*/
 async function gerarPDFExecutivoTCERO(){
 const {jsPDF}=window.jspdf
-let doc=new jsPDF('l','mm','a4')
+let doc=new jsPDF('p','mm','a4')
 adicionarCapa(doc)
 doc.addPage()
 doc.setFont('helvetica','bold')
@@ -393,13 +396,40 @@ let html=`
 <head>
 <meta charset='utf-8'>
 <title>${nome}</title>
+<style>
+body{
+font-family:Calibri,Arial,sans-serif;
+font-size:12pt;
+margin:2.5cm;
+line-height:1.5;
+}
+h1{
+text-align:center;
+}
+h2{
+margin-top:20px;
+}
+table{
+border-collapse:collapse;
+width:100%;
+}
+td,th{
+border:1px solid #000;
+padding:4px;
+}
+</style>
 </head>
 <body>
 ${conteudo}
 </body>
 </html>
 `
-let blob=new Blob(['\ufeff',html],{type:'application/msword'})
+let blob=new Blob(
+['\ufeff',html],
+{
+type:'application/msword;charset=utf-8'
+}
+)
 let url=URL.createObjectURL(blob)
 let a=document.createElement('a')
 a.href=url
@@ -414,46 +444,62 @@ URL.revokeObjectURL(url)
 =========================================================*/
 async function pdfCompletoQueimadas(){
 const {jsPDF}=window.jspdf
-let doc=new jsPDF('l','mm','a4')
+let doc=new jsPDF('p','mm','a4')
+
 adicionarCapa(doc)
-await adicionarPainelPDF(doc,'MAPA EXECUTIVO','mapaRO')
-await adicionarPainelPDF(doc,'IRIQ ESTADUAL E HEATMAP','painelIRIQHeatmapUnificado')
-await adicionarPainelPDF(doc,'MUNICÍPIOS PRIORITÁRIOS','painelMunicipiosPrioritarios')
-await adicionarPainelPDF(doc,'FOCOS DE CALOR','painelFocosCalor')
-await adicionarPainelPDF(doc,'ALERTAS AUTOMÁTICOS','painelAlertas')
-await adicionarPainelPDF(doc,'UNIDADES DE CONSERVAÇÃO','painelUCs')
-await adicionarPainelPDF(doc,'INDICADORES ESTRATÉGICOS','painelIndicadoresEstrategicos')
-await adicionarPainelPDF(doc,'SITUAÇÃO GERAL DOS MUNICÍPIOS','painelSituacaoGeralMunicipios')
-await adicionarPainelPDF(doc,'PLANOS APRESENTADOS','painelPlanosApresentados')
-await adicionarPainelPDF(doc,'DILAÇÕES DE PRAZO','painelDilacoesPrazo')
-await adicionarPainelPDF(doc,'MUNICÍPIOS SEM RESPOSTA','painelSemResposta')
-await adicionarPainelPDF(doc,'ESTATÍSTICAS MUNICIPAIS','painelEstatisticasMunicipais')
-await adicionarPainelPDF(doc,'CHAP','painelCHAP')
-await adicionarPainelPDF(doc,'IA-CHAP','painelIAChap')
-await adicionarPainelPDF(doc,'MATRIZ DE RISCO 5X5','painelMatriz5x5')
-await adicionarPainelPDF(doc,'TOP RISCOS','painelTopRiscos')
-await adicionarPainelPDF(doc,'PREDIÇÃO DE QUEIMADAS','painelIARiscos')
-await adicionarPainelPDF(doc,'PRIORIZAÇÃO MUNICIPAL','painelIAPriorizacao')
-await adicionarPainelPDF(doc,'SUGESTÕES AUTOMÁTICAS','painelIASugestoes')
-await adicionarPainelPDF(doc,'PLANO UNIFICADO','painelPlanoUnificado')
-await adicionarPainelPDF(doc,'PLANO Sedam','painelPlanoSedam')
-await adicionarPainelPDF(doc,'PLANO CBMRO','painelPlanoCBM')
-await adicionarPainelPDF(doc,'CADEIA DE VALOR','painelCadeiaValor')
-await adicionarPainelPDF(doc,'TEORIA DA MUDANÇA','painelTeoriaMudanca')
-await adicionarPainelPDF(doc,'ODS','painelODS')
-await adicionarPainelPDF(doc,'GANTT','painelGantt')
-await adicionarPainelPDF(doc,'MARCOS ESTRATÉGICOS','painelMarcos')
-await adicionarPainelPDF(doc,'GOVERNANÇA','painelGovernanca')
-await adicionarPainelPDF(doc,'MONITORAMENTO 4D','painelMonitoramento4D')
-await adicionarPainelPDF(doc,'EXECUÇÃO FÍSICA','painelExecucaoFisica')
-await adicionarPainelPDF(doc,'EXECUÇÃO FINANCEIRA','painelExecucaoFinanceira')
-await adicionarPainelPDF(doc,'EVIDÊNCIAS','painelEvidencias')
-await adicionarTop10RiscosPDF(doc)
-await adicionarTabelaMunicipiosPDF(doc)
-adicionarAssinaturasPDF(doc)
-adicionarRodape(doc)
-doc.save('RELATORIO_COMPLETO_QUEIMADAS_2026.pdf')
+
+doc.addPage()
+doc.setFont('helvetica','bold')
+doc.setFontSize(18)
+doc.text('SUMÁRIO GERAL',15,20)
+
+let itens=[
+'1. Mapa Executivo',
+'2. IRIQ Estadual e Heatmap',
+'3. Municípios Prioritários',
+'4. Focos de Calor',
+'5. Alertas Automáticos',
+'6. Unidades de Conservação',
+'7. Indicadores Estratégicos',
+'8. Situação Geral dos Municípios',
+'9. Planos Apresentados',
+'10. Dilação de Prazo',
+'11. Municípios sem Resposta',
+'12. Estatísticas Municipais',
+'13. CHAP',
+'14. IA-CHAP',
+'15. Matriz de Risco 5x5',
+'16. Top Riscos',
+'17. Predição de Queimadas',
+'18. Priorização Municipal',
+'19. Sugestões Automáticas',
+'20. Plano Unificado',
+'21. Plano Sedam',
+'22. Plano CBMRO',
+'23. Cadeia de Valor',
+'24. Teoria da Mudança',
+'25. ODS',
+'26. Cronograma Gantt',
+'27. Marcos Estratégicos',
+'28. Governança',
+'29. Monitoramento 4D',
+'30. Execução Física',
+'31. Execução Financeira',
+'32. Evidências',
+'33. Top 10 Municípios de Maior Risco',
+'34. Tabela Consolidada dos Municípios',
+'35. Assinaturas'
+]
+let y=35
+itens.forEach(i=>{
+doc.text(i,20,y)
+y+=7
+if(y>270){
+doc.addPage()
+y=20
 }
+})
+await adicionarPainelPDF(doc,'MAPA EXECUTIVO','mapaRO')
 /*=========================================================
 015 WORD COMPLETO
 =========================================================*/
