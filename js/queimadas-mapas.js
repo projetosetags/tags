@@ -20,13 +20,91 @@ fillOpacity:.45
 },
 onEachFeature:(f,l)=>{
 
-console.log('FEATURE COMPLETA UC')
-console.log(f)
+let p=f.properties||{}
 
-console.log('PROPERTIES UC')
-console.log(f.properties)
+let nome=
+p.nome_uc||
+p.NOME_UC||
+'Unidade de Conservação'
 
-l.bindPopup('Estadual')
+let categoria=
+p.categoria||
+p.CATEGORIA||
+'-'
+
+let grupo=
+p.grupo||
+p.GRUPO||
+'-'
+
+let municipio=
+p.municipio||
+p.MUNICIPIO||
+'-'
+
+let esfera=
+p.esfera||
+p.ESFERA||
+'-'
+
+let gestor=
+p.org_gestor||
+p.ORG_GESTOR||
+'-'
+
+let status=
+p.status||
+p.STATUS||
+p.situacao||
+'-'
+
+let area=Number(
+p.ha_total||
+p.HA_TOTAL||
+0
+)
+
+let areaTexto=
+area>0
+?area.toLocaleString(
+'pt-BR',
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+)+' ha'
+:'-'
+
+if(
+grupo
+.toUpperCase()
+.includes('PROTE')
+){
+l.setStyle({
+color:'#8b0000',
+fillColor:'#ff4444',
+weight:1,
+fillOpacity:.55
+})
+}else{
+l.setStyle({
+color:'#006400',
+fillColor:'#00aa55',
+weight:1,
+fillOpacity:.45
+})
+}
+
+l.bindPopup(`
+<b>${nome}</b><br>
+<b>Categoria:</b> ${categoria}<br>
+<b>Grupo:</b> ${grupo}<br>
+<b>Município(s):</b> ${municipio}<br>
+<b>Esfera:</b> ${esfera}<br>
+<b>Gestor:</b> ${gestor}<br>
+<b>Situação:</b> ${status}<br>
+<b>Área:</b> ${areaTexto}
+`)
 
 }
 })
@@ -56,7 +134,9 @@ layerUC,
 let painel=document.getElementById('painelUCsMapa')
 if(painel){
 painel.innerHTML=`
-<b>49 Unidades de Conservação</b><br>
+<b>${(geo.features||[]).length} Unidades de Conservação</b><br>
+🔴 Proteção Integral<br>
+🟢 Uso Sustentável<br><br>
 Fonte:
 <a href="https://app.tcgeo.tc.br/" target="_blank">
 TCGeo / TCE-RO
