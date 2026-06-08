@@ -22,14 +22,7 @@ fillOpacity:.45
 onEachFeature:(f,l)=>{
 let p=f.properties||{}
 
-let nome=
-p.nome_uc||
-p.nome||
-p.NOME_UC||
-p.NOME||
-p.ds_nome||
-p.uc_nome||
-'Unidade de Conservação'
+console.log(f.properties)
 
 let categoria=
 p.categoria||
