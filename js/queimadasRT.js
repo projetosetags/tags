@@ -44,6 +44,14 @@ await rtMapaMunicipal(doc)
 doc.addPage()
 await rtMonitoramento4D(doc)
 doc.addPage()
+await rtReferencias(doc)
+doc.addPage()
+await rtSiglas(doc)
+doc.addPage()
+await rtGlossario(doc)
+doc.addPage()
+await rtFichaTecnica(doc)
+doc.addPage()
 await rtAssinaturas(doc)
 doc.save(
 'RT_PCe_0501_2026_QUEIMADAS.pdf'
@@ -500,4 +508,114 @@ doc.addImage(img,'PNG',10,55,190,130)
 }
 doc.setFontSize(9)
 doc.text('Fonte: Sistema de Monitoramento Inteligente de Queimadas',15,200)
+}
+/*=========================================================
+422 RT REFERENCIAS
+=========================================================*/
+async function rtReferencias(doc){
+doc.setFont('helvetica','bold')
+doc.setFontSize(16)
+doc.text('18. REFERÊNCIAS',15,20)
+doc.setFont('helvetica','normal')
+doc.setFontSize(11)
+let refs=[
+'Instituto Nacional de Pesquisas Espaciais - INPE. Programa Queimadas.',
+'MapBiomas Brasil. Coleções de Uso e Cobertura da Terra.',
+'Secretaria de Estado do Desenvolvimento Ambiental - Sedam.',
+'Corpo de Bombeiros Militar do Estado de Rondônia - CBMRO.',
+'Tribunal de Contas do Estado de Rondônia - TCE-RO.',
+'Plano de Ação da Sedam para Enfrentamento das Queimadas.',
+'Plano Operacional Anual do CBMRO.',
+'Plano Unificado de Enfrentamento às Queimadas.',
+'Metodologia CHAP.',
+'Metodologia IA-CHAP.',
+'Heatmap Estadual de Queimadas.',
+'Índice de Risco Integrado de Queimadas - IRIQ.',
+'Processo PCe 0501/2026.',
+'Ofício Circular n.16/2026/GABPRES/TCERO.'
+]
+let y=40
+refs.forEach((r,i)=>{
+doc.text((i+1)+'. '+r,20,y)
+y+=10
+})
+}
+/*=========================================================
+423 RT SIGLAS
+=========================================================*/
+async function rtSiglas(doc){
+doc.setFont('helvetica','bold')
+doc.setFontSize(16)
+doc.text('19. SIGLAS E ABREVIATURAS',15,20)
+doc.setFont('helvetica','normal')
+doc.setFontSize(11)
+let siglas=[
+['CBMRO','Corpo de Bombeiros Militar do Estado de Rondônia'],
+['CHAP','Classificação Hierarquizada de Ameaças e Prioridades'],
+['IA-CHAP','Inteligência Artificial aplicada ao CHAP'],
+['INPE','Instituto Nacional de Pesquisas Espaciais'],
+['IRIQ','Índice de Risco Integrado de Queimadas'],
+['ODS','Objetivos de Desenvolvimento Sustentável'],
+['PCe','Processo de Controle Externo'],
+['Sedam','Secretaria de Estado do Desenvolvimento Ambiental'],
+['TCE-RO','Tribunal de Contas do Estado de Rondônia'],
+['TI','Terra Indígena'],
+['UC','Unidade de Conservação']
+]
+doc.autoTable({
+startY:35,
+head:[['SIGLA','DESCRIÇÃO']],
+body:siglas,
+styles:{fontSize:10},
+headStyles:{fillColor:[15,23,42]}
+})
+}
+/*=========================================================
+424 RT GLOSSARIO
+=========================================================*/
+async function rtGlossario(doc){
+doc.setFont('helvetica','bold')
+doc.setFontSize(16)
+doc.text('20. GLOSSÁRIO',15,20)
+doc.setFont('helvetica','normal')
+doc.setFontSize(11)
+let texto=[
+'Queimada: utilização controlada ou não do fogo em vegetação natural ou antrópica.',
+'Foco de Calor: registro orbital de temperatura compatível com presença de fogo.',
+'Heatmap: representação gráfica dos níveis de risco por território.',
+'IRIQ: indicador composto utilizado para classificação dos riscos de queimadas.',
+'Governança: conjunto de mecanismos de coordenação, decisão e controle das ações.',
+'Monitoramento 4D: acompanhamento contínuo das ações, evidências, resultados e riscos.',
+'CHAP: metodologia de classificação e priorização de riscos.',
+'IA-CHAP: aplicação de inteligência artificial inovadora e prática com propósito para análise preditiva dos riscos.',
+'Matriz 5x5: ferramenta de avaliação baseada em probabilidade e impacto.',
+'Sala de Situação: ambiente destinado ao acompanhamento dos eventos críticos.'
+]
+let y=40
+texto.forEach(t=>{
+doc.text(doc.splitTextToSize('• '+t,170),20,y)
+y+=18
+})
+}
+/*=========================================================
+425 RT FICHA TECNICA
+=========================================================*/
+async function rtFichaTecnica(doc){
+doc.setFont('helvetica','bold')
+doc.setFontSize(16)
+doc.text('21. FICHA TÉCNICA',15,20)
+doc.setFont('helvetica','normal')
+doc.setFontSize(11)
+doc.text('TRIBUNAL DE CONTAS DO ESTADO DE RONDÔNIA',20,45)
+doc.text('Processo: PCe 0501/2026',20,60)
+doc.text('Objeto: Monitoramento das Queimadas e Incêndios Florestais',20,72)
+doc.text('Relatório Técnico de Monitoramento',20,84)
+doc.text('Coordenador dos Trabalhos:',20,110)
+doc.text('Manoel Fernandes Neto',40,122)
+doc.text('Equipe Técnica:',20,145)
+doc.text('Luís Fernando Bueno',40,157)
+doc.text('Raimundo Paulo Dias Barros Vieira',40,169)
+doc.text('Ferramentas Utilizadas:',20,195)
+doc.text('Heatmap Estadual • IRIQ • CHAP • IA-CHAP • Matriz 5x5 • Monitoramento 4D',40,207)
+doc.text('Data de Emissão: '+new Date().toLocaleDateString('pt-BR'),20,235)
 }
