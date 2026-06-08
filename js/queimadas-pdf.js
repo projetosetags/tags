@@ -120,9 +120,13 @@ el.style.display
 el.classList.remove('hidden')
 el.style.display='block'
 
-await new Promise(
-r=>setTimeout(r,500)
-)
+await new Promise(r=>setTimeout(r,500))
+
+for(let i=0;i<8;i++){
+await new Promise(r=>requestAnimationFrame(r))
+}
+
+await new Promise(r=>setTimeout(r,3000))
 
 await adicionarPainelPDF(
 doc,
@@ -345,7 +349,39 @@ const {jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4')
 
 adicionarCapa(doc)
+/*=========================================================
+PRÉ-CARREGAMENTO DAS ABAS
+=========================================================*/
 
+await mostrarAbaQueimadas('executivo')
+await new Promise(r=>setTimeout(r,3000))
+
+await mostrarAbaQueimadas('executivomunicipal')
+await new Promise(r=>setTimeout(r,5000))
+
+await mostrarAbaQueimadas('planejamento')
+await new Promise(r=>setTimeout(r,3000))
+
+await mostrarAbaQueimadas('monitoramento')
+await new Promise(r=>setTimeout(r,3000))
+
+await mostrarAbaQueimadas('analise')
+await new Promise(r=>setTimeout(r,3000))
+
+await mostrarAbaQueimadas('mapa')
+await new Promise(r=>setTimeout(r,5000))
+
+await mostrarAbaQueimadas('situacao')
+await new Promise(r=>setTimeout(r,3000))
+
+await mostrarAbaQueimadas('presidente')
+await new Promise(r=>setTimeout(r,3000))
+
+await mostrarAbaQueimadas('conselheiro')
+await new Promise(r=>setTimeout(r,3000))
+
+await mostrarAbaQueimadas('auditor')
+await new Promise(r=>setTimeout(r,3000))
 await adicionarPainelPDFForcado(
 doc,
 'PAINEL EXECUTIVO',
