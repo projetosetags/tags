@@ -59,39 +59,40 @@ doc.text('Página '+i,200,290,{align:'right'})
 005 ADICIONAR PAINEL PDF
 =========================================================*/
 async function adicionarPainelPDF(doc,titulo,idElemento){
-
 let el=document.getElementById(idElemento)
-
-if(!el)return
-
-if(el.offsetWidth===0)return
-if(el.offsetHeight===0)return
-
-let canvas=await html2canvas(el,{
+if(!el){
+console.log('Elemento inexistente:',idElemento)
+return
+}
+if(el.offsetWidth===0){
+console.log('Largura ZERO:',idElemento)
+return
+}
+if(el.offsetHeight===0){
+console.log('Altura ZERO:',idElemento)
+return
+}
+console.log(
+'Capturando:',
+idElemento,
+el.offsetWidth,
+el.offsetHeight
+)
+let canvas=await html2canvas(
+el,
+{
 scale:2,
 backgroundColor:'#ffffff',
 useCORS:true
-})
-
+}
+)
 let img=canvas.toDataURL('image/png')
-
 doc.addPage()
-
 doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text(titulo,15,20)
-
-doc.addImage(
-img,
-'PNG',
-10,
-30,
-270,
-150
-)
-
+doc.addImage(img,'PNG',10,30,270,150)
 }
-
 /*=========================================================
 006 CAPA PDF
 =========================================================*/
@@ -110,7 +111,6 @@ doc.text(
 {align:'center'}
 )
 }
-
 /*=========================================================
 007 TOP 10 RISCOS PDF
 =========================================================*/
