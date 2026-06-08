@@ -64,7 +64,7 @@ if(!el)return
 if(el.offsetWidth===0)return
 if(el.offsetHeight===0)return
 let canvas=await html2canvas(el,{
-scale:2,
+scale:3,
 backgroundColor:'#ffffff',
 useCORS:true
 })
@@ -76,6 +76,7 @@ let deslocamento=0
 let primeira=true
 while(restante>0){
 doc.addPage()
+qpCabecalho(doc,titulo)
 doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text(titulo,15,20)
@@ -95,6 +96,7 @@ restante-=250
 }
 deslocamento+=250
 }
+adicionarRodape(doc)
 }
 /*=========================================================
 006 CAPA PDF
