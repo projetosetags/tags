@@ -1626,8 +1626,14 @@ dash.style.display='none'
 function abrirPainelSepat(){
 window.location.href='sepatindex.html'
 }
+/*=========================================================
+ABRIR PAINEL QUEIMADAS
+=========================================================*/
 function abrirPainelQueimadas(){
-alert('Painel de Combate às Queimadas em desenvolvimento.')
+window.open(
+'https://projetosetags.github.io/tags/queimadas/index.html',
+'_blank'
+)
 }
 
 function voltarPainelGeral(){
