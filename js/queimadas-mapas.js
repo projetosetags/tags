@@ -192,11 +192,23 @@ if(div._leaflet_id){
 delete div._leaflet_id
 }
 await new Promise(r=>setTimeout(r,100))
-let mapa=L.map(div,{
+let mapa=L.map(
+'mapaMunicipalPlanos',
+{
 preferCanvas:true,
 zoomControl:true
-})
+}
+)
 window.mapaMunicipalPlanos=mapa
+console.log(
+'MAPA CRIADO'
+)
+
+console.log(
+document.getElementById(
+'mapaMunicipalPlanos'
+)
+)
 mapa.setView([-10.9,-63.3],7)
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -263,6 +275,12 @@ Recebimento: ${formatarDataBR?.(m?.ldatarecebimentodoc)||m?.ldatarecebimentodoc|
 `)
 }
 }).addTo(mapa)
+console.log(
+'LAYERS',
+window.layerMunicipiosPlanos
+.getLayers()
+.length
+)
 if(window.layerUCs){
 try{
 window.layerUCs.bringToBack()
