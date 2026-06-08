@@ -8,29 +8,24 @@ if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/ucs-ro.geojson')
 }
 let geo=await resp.json()
+alert(
+JSON.stringify(
+Object.keys(geo),
+null,
+2
+)
+)
+console.log('UC GEO',geo)
+
+console.log('TIPO GEO',typeof geo)
+console.log('GEO',geo)
+
+return
+
 let layerUC=L.geoJSON(geo,{
-style:f=>{
-let p=(f&&f.properties)?f.properties:{}
-return{
-color:'#006400',
-weight:1,
-fillColor:'#00aa55',
-fillOpacity:.45
-}
-},
 
-
-onEachFeature:(f,l)=>{
-l.on('click',()=>{
-console.log('UC FEATURE')
-console.log(f)
-console.log('UC PROPERTIES')
-console.log(f.properties)
-})
-}
 
   
-})
 if(tipo==='executivo'){
 window.layerUCsExecutivo=layerUC
 layerUC.addTo(mapa)
