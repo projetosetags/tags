@@ -115,15 +115,15 @@ window.layerUCFederalExecutivo=layerUCFederal
 window.layerUCMunicipalExecutivo=layerUCMunicipal
 layerUCEstadual.addTo(mapa)
 if(window.camadasControleExecutivo){
-window.camadasControleEstadual.addOverlay(
+window.camadasControleExecutivo.addOverlay(
 layerUCEstadual,
 `🔴 UCs Estaduais (${totalEstadual})`
 )
-window.camadasControleEstadual.addOverlay(
+window.camadasControleExecutivo.addOverlay(
 layerUCFederal,
 `🔵 UCs Federais (${totalFederal})`
 )
-window.camadasControleEstadual.addOverlay(
+window.camadasControleExecutivo.addOverlay(
 layerUCMunicipal,
 `🟠 UCs Municipais (${totalMunicipal})`
 )
