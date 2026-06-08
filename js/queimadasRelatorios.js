@@ -1,18 +1,4 @@
 /*=========================================================
-001 QUEIMADAS RELATORIOS CONFIG
-=========================================================*/
-const QR={
-titulo:'QUEIMADAS 2026',
-subtitulo:'Monitoramento Inteligente',
-processo:'PCe 0501/2026',
-fonte:'TCE-RO • INPE • SEDAM • CBMRO',
-assinaturas:[
-'Manoel Fernandes Neto',
-'Luís Fernando Bueno',
-'Raimundo Paulo Dias Barros Vieira'
-]
-}
-/*=========================================================
 002 CAPTURAR ELEMENTO
 =========================================================*/
 async function capturarElemento(id){
