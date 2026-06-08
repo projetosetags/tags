@@ -300,13 +300,33 @@ async function gerarPDFExecutivoTCERO(){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('l','mm','a4')
 adicionarCapa(doc)
+doc.addPage()
+doc.setFont('helvetica','bold')
+doc.setFontSize(18)
+doc.text('SUMÁRIO EXECUTIVO',15,20)
+let itens=[
+'1. Mapa Executivo',
+'2. IRIQ Estadual e Heatmap',
+'3. Municípios Prioritários',
+'4. Focos de Calor',
+'5. Alertas Automáticos',
+'6. Indicadores Estratégicos',
+'7. Top 10 Municípios de Maior Risco',
+'8. Conclusão Executiva',
+'9. Assinaturas'
+]
+let y=40
+itens.forEach(i=>{
+doc.text(i,20,y)
+y+=12
+})
 await adicionarPainelPDF(doc,'MAPA EXECUTIVO','mapaRO')
 await adicionarPainelPDF(doc,'IRIQ ESTADUAL E HEATMAP','painelIRIQHeatmapUnificado')
 await adicionarPainelPDF(doc,'MUNICÍPIOS PRIORITÁRIOS','painelMunicipiosPrioritarios')
 await adicionarPainelPDF(doc,'FOCOS DE CALOR','painelFocosCalor')
 await adicionarPainelPDF(doc,'ALERTAS AUTOMÁTICOS','painelAlertas')
-await adicionarPainelPDF(doc,'UNIDADES DE CONSERVAÇÃO','painelUCs')
 await adicionarPainelPDF(doc,'INDICADORES ESTRATÉGICOS','painelIndicadoresEstrategicos')
+await adicionarTop10RiscosPDF(doc)
 let conclusao=await gerarConclusaoAutomatica()
 doc.addPage()
 doc.setFont('helvetica','bold')
@@ -316,20 +336,161 @@ doc.setFont('helvetica','normal')
 doc.setFontSize(11)
 doc.text(doc.splitTextToSize(conclusao,250),15,35)
 adicionarAssinaturasPDF(doc)
-doc.save('relatorio-executivo-queimadas.pdf')
+adicionarRodape(doc)
+doc.save('RELATORIO_EXECUTIVO_QUEIMADAS_2026.pdf')
 }
 /*=========================================================
 012 WORD EXECUTIVO TCERO
 =========================================================*/
-function gerarWordExecutivoTCERO(){
+async function gerarWordExecutivoTCERO(){
+let conclusao=await gerarConclusaoAutomatica()
 let html=`
 <h1>MONITORAMENTO INTELIGENTE DE QUEIMADAS 2026</h1>
-<h2>Tribunal de Contas do Estado de Rondônia</h2>
-<h3>Plano Unificado TCE-RO</h3>
-<p>Este relatório consolida as ações do Plano Unificado de Enfrentamento às Queimadas e Incêndios Florestais.</p>
+<h2>TRIBUNAL DE CONTAS DO ESTADO DE RONDÔNIA</h2>
+<h3>PCe 0501/2026</h3>
+<p>Relatório Executivo consolidado do Monitoramento Inteligente de Queimadas, Incêndios Florestais e Eventos Associados no Estado de Rondônia.</p>
+<h2>DASHBOARD EXECUTIVO</h2>
+${document.getElementById('painelKPIs')?.innerHTML||''}
+<h2>IRIQ ESTADUAL E HEATMAP</h2>
+${document.getElementById('painelIRIQHeatmapUnificado')?.innerHTML||''}
+<h2>MUNICÍPIOS PRIORITÁRIOS</h2>
+${document.getElementById('painelMunicipiosPrioritarios')?.innerHTML||''}
+<h2>FOCOS DE CALOR</h2>
+${document.getElementById('painelFocosCalor')?.innerHTML||''}
+<h2>ALERTAS AUTOMÁTICOS</h2>
+${document.getElementById('painelAlertas')?.innerHTML||''}
+<h2>UNIDADES DE CONSERVAÇÃO</h2>
+${document.getElementById('painelUCs')?.innerHTML||''}
+<h2>INDICADORES ESTRATÉGICOS</h2>
+${document.getElementById('painelIndicadoresEstrategicos')?.innerHTML||''}
+<h2>CONCLUSÃO EXECUTIVA</h2>
+<p>${conclusao}</p>
+<br><br><br>
+<table style="width:100%">
+<tr>
+<td>
+____________________________________<br>
+Manoel Fernandes Neto<br>
+Auditor de Controle Externo<br>
+Matrícula n.275
+</td>
+<td>
+____________________________________<br>
+Luís Fernando Bueno<br>
+Assessor Técnico
+</td>
+</tr>
+</table>
 `
-baixarWordQueimadas(
-'relatorio_executivo_tcero',
-html
-)
+baixarWordQueimadas('relatorio_executivo_queimadas_2026',html)
+}
+/*=========================================================
+13 WORD BASE
+=========================================================*/
+function baixarWordQueimadas(nome,conteudo){
+let html=`
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='utf-8'>
+<title>${nome}</title>
+</head>
+<body>
+${conteudo}
+</body>
+</html>
+`
+let blob=new Blob(['\ufeff',html],{type:'application/msword'})
+let url=URL.createObjectURL(blob)
+let a=document.createElement('a')
+a.href=url
+a.download=nome+'.doc'
+document.body.appendChild(a)
+a.click()
+document.body.removeChild(a)
+URL.revokeObjectURL(url)
+}
+/*=========================================================
+014 PDF COMPLETO
+=========================================================*/
+async function pdfCompletoQueimadas(){
+const {jsPDF}=window.jspdf
+let doc=new jsPDF('l','mm','a4')
+adicionarCapa(doc)
+await adicionarPainelPDF(doc,'MAPA EXECUTIVO','mapaRO')
+await adicionarPainelPDF(doc,'IRIQ ESTADUAL E HEATMAP','painelIRIQHeatmapUnificado')
+await adicionarPainelPDF(doc,'MUNICÍPIOS PRIORITÁRIOS','painelMunicipiosPrioritarios')
+await adicionarPainelPDF(doc,'FOCOS DE CALOR','painelFocosCalor')
+await adicionarPainelPDF(doc,'ALERTAS AUTOMÁTICOS','painelAlertas')
+await adicionarPainelPDF(doc,'UNIDADES DE CONSERVAÇÃO','painelUCs')
+await adicionarPainelPDF(doc,'INDICADORES ESTRATÉGICOS','painelIndicadoresEstrategicos')
+await adicionarPainelPDF(doc,'SITUAÇÃO GERAL DOS MUNICÍPIOS','painelSituacaoGeralMunicipios')
+await adicionarPainelPDF(doc,'PLANOS APRESENTADOS','painelPlanosApresentados')
+await adicionarPainelPDF(doc,'DILAÇÕES DE PRAZO','painelDilacoesPrazo')
+await adicionarPainelPDF(doc,'MUNICÍPIOS SEM RESPOSTA','painelSemResposta')
+await adicionarPainelPDF(doc,'ESTATÍSTICAS MUNICIPAIS','painelEstatisticasMunicipais')
+await adicionarPainelPDF(doc,'CHAP','painelCHAP')
+await adicionarPainelPDF(doc,'IA-CHAP','painelIAChap')
+await adicionarPainelPDF(doc,'MATRIZ DE RISCO 5X5','painelMatriz5x5')
+await adicionarPainelPDF(doc,'TOP RISCOS','painelTopRiscos')
+await adicionarPainelPDF(doc,'PREDIÇÃO DE QUEIMADAS','painelIARiscos')
+await adicionarPainelPDF(doc,'PRIORIZAÇÃO MUNICIPAL','painelIAPriorizacao')
+await adicionarPainelPDF(doc,'SUGESTÕES AUTOMÁTICAS','painelIASugestoes')
+await adicionarPainelPDF(doc,'PLANO UNIFICADO','painelPlanoUnificado')
+await adicionarPainelPDF(doc,'PLANO SEDAM','painelPlanoSEDAM')
+await adicionarPainelPDF(doc,'PLANO CBMRO','painelPlanoCBM')
+await adicionarPainelPDF(doc,'CADEIA DE VALOR','painelCadeiaValor')
+await adicionarPainelPDF(doc,'TEORIA DA MUDANÇA','painelTeoriaMudanca')
+await adicionarPainelPDF(doc,'ODS','painelODS')
+await adicionarPainelPDF(doc,'GANTT','painelGantt')
+await adicionarPainelPDF(doc,'MARCOS ESTRATÉGICOS','painelMarcos')
+await adicionarPainelPDF(doc,'GOVERNANÇA','painelGovernanca')
+await adicionarPainelPDF(doc,'MONITORAMENTO 4D','painelMonitoramento4D')
+await adicionarPainelPDF(doc,'EXECUÇÃO FÍSICA','painelExecucaoFisica')
+await adicionarPainelPDF(doc,'EXECUÇÃO FINANCEIRA','painelExecucaoFinanceira')
+await adicionarPainelPDF(doc,'EVIDÊNCIAS','painelEvidencias')
+await adicionarTop10RiscosPDF(doc)
+await adicionarTabelaMunicipiosPDF(doc)
+adicionarAssinaturasPDF(doc)
+adicionarRodape(doc)
+doc.save('RELATORIO_COMPLETO_QUEIMADAS_2026.pdf')
+}
+/*=========================================================
+015 WORD COMPLETO
+=========================================================*/
+async function gerarWordCompletoQueimadas(){
+let conclusao=await gerarConclusaoAutomatica()
+let html=`
+<h1>QUEIMADAS 2026</h1>
+<h2>RELATÓRIO COMPLETO</h2>
+<h3>TRIBUNAL DE CONTAS DO ESTADO DE RONDÔNIA</h3>
+<h3>DASHBOARD EXECUTIVO</h3>
+${document.getElementById('painelKPIs')?.innerHTML||''}
+<h3>IRIQ E HEATMAP</h3>
+${document.getElementById('painelIRIQHeatmapUnificado')?.innerHTML||''}
+<h3>MUNICÍPIOS PRIORITÁRIOS</h3>
+${document.getElementById('painelMunicipiosPrioritarios')?.innerHTML||''}
+<h3>FOCOS DE CALOR</h3>
+${document.getElementById('painelFocosCalor')?.innerHTML||''}
+<h3>ALERTAS</h3>
+${document.getElementById('painelAlertas')?.innerHTML||''}
+<h3>UNIDADES DE CONSERVAÇÃO</h3>
+${document.getElementById('painelUCs')?.innerHTML||''}
+<h3>INDICADORES ESTRATÉGICOS</h3>
+${document.getElementById('painelIndicadoresEstrategicos')?.innerHTML||''}
+<h3>CHAP</h3>
+${document.getElementById('painelCHAP')?.innerHTML||''}
+<h3>IA-CHAP</h3>
+${document.getElementById('painelIAChap')?.innerHTML||''}
+<h3>MATRIZ DE RISCO 5X5</h3>
+${document.getElementById('painelMatriz5x5')?.innerHTML||''}
+<h3>PLANO UNIFICADO</h3>
+${document.getElementById('painelPlanoUnificado')?.innerHTML||''}
+<h3>MONITORAMENTO 4D</h3>
+${document.getElementById('painelMonitoramento4D')?.innerHTML||''}
+<h3>EVIDÊNCIAS</h3>
+${document.getElementById('painelEvidencias')?.innerHTML||''}
+<h3>CONCLUSÃO</h3>
+<p>${conclusao}</p>
+`
+baixarWordQueimadas('RELATORIO_COMPLETO_QUEIMADAS_2026',html)
 }
