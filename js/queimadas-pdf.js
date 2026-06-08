@@ -54,7 +54,18 @@ doc.text(QR.fonte,10,290)
 doc.text('Página '+i,200,290,{align:'right'})
 }
 }
-
+/*=========================================================
+004A CABECALHO PDF
+=========================================================*/
+function adicionarCabecalhoPDF(doc,titulo){
+doc.setFillColor(22,44,95)
+doc.rect(0,0,210,15,'F')
+doc.setTextColor(255,255,255)
+doc.setFont('helvetica','bold')
+doc.setFontSize(12)
+doc.text(titulo,15,10)
+doc.setTextColor(0,0,0)
+}
 /*=========================================================
 005 ADICIONAR PAINEL PDF
 =========================================================*/
@@ -76,6 +87,7 @@ let deslocamento=0
 const ALTURA_UTIL=235
 while(restante>0){
 doc.addPage()
+adicionarCabecalhoPDF(doc,titulo)
 doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text(titulo,15,20)
