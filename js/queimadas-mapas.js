@@ -277,23 +277,6 @@ if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/terras-indigenas-ro.geojson')
 }
 let geo=await resp.json()
-window.debugTI=
-geo.features[0].properties
-
-console.log(
-'TI PROPERTIES:',
-window.debugTI
-)
-
-console.table(
-window.debugTI
-)
-console.log(
-'TI CAMPOS:',
-Object.keys(
-geo.features?.[0]?.properties||{}
-)
-)
 let layerTI=L.geoJSON(
 geo,
 {
@@ -308,43 +291,58 @@ onEachFeature:(f,l)=>{
 let p=f.properties||{}
 
 let nome=
+p.terrai_nome||
 p.terrai_nom||
 p.terra_indigena||
 p.nome||
 p.NOME||
-p.nm_ti||
-p.NM_TI||
-p.nome_ti||
-p.NOME_TI||
 'Terra Indígena'
 
 let etnia=
+p.etnia_nome||
 p.etnia_nom||
 p.etnia||
-p.ETNIA||
-p.povo||
-p.POVO||
 '-'
 
 let fase=
 p.fase_ti||
 p.fase||
-p.FASE||
 '-'
 
-let area=
+let municipio=
+p.municipio_nome||
+p.municipio||
+'-'
+
+let modalidade=
+p.modalidade_ti||
+'-'
+
+let area=Number(
+p.superficie_perimetro_ha||
 p.superficie||
 p.area_ha||
-p.AREA_HA||
-p.area||
-p.AREA||
-'-'
+0
+)
+
+let areaTexto=
+area>0
+?area.toLocaleString(
+'pt-BR',
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+)+' ha'
+:'-'
 
 l.bindPopup(`
 <b>${nome}</b><br>
-Etnia: ${etnia}<br>
-Fase: ${fase}<br>
-Área: ${area}
+<b>Etnia:</b> ${etnia}<br>
+<b>Municípios:</b> ${municipio}<br>
+<b>Modalidade:</b> ${modalidade}<br>
+<b>Fase:</b> ${fase}<br>
+<b>Área:</b> ${areaTexto}
 `)
 }
 }
@@ -381,6 +379,7 @@ if(painel){
 let totalTI=(geo.features||[]).length
 painel.innerHTML=`
 <b>${totalTI} Terras Indígenas de Rondônia</b><br>
+Áreas oficialmente reconhecidas pela FUNAI.<br>
 Fonte:
 <a href="https://www.gov.br/funai" target="_blank">
 FUNAI
