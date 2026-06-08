@@ -280,7 +280,7 @@ doc.text('Manoel Fernandes Neto',20,70)
 doc.line(20,72,100,72)
 doc.setFont('helvetica','normal')
 doc.text('Auditor de Controle Externo',20,80)
-doc.text('Coordenador dos Trabalhos',20,88)
+doc.text('Matrícula n. 275',20,88)
 doc.setFont('helvetica','bold')
 doc.text('Luís Fernando Bueno',150,70)
 doc.line(150,72,230,72)
@@ -291,7 +291,7 @@ doc.setFont('helvetica','bold')
 doc.text('Raimundo Paulo Dias Barros Vieira',20,140)
 doc.line(20,142,120,142)
 doc.setFont('helvetica','normal')
-doc.text('Supervisor dos Trabalhos',20,150)
+doc.text('Supervisor',20,150)
 }
 /*=========================================================
 011 PDF EXECUTIVO TCERO
