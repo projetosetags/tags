@@ -30,7 +30,7 @@ let a=document.createElement('a')
 
 a.href=url
 
-a.download=nome+'.doc'
+a.download=nome+'.docx'
 
 document.body.appendChild(a)
 
@@ -45,44 +45,27 @@ URL.revokeObjectURL(url)
 051 WORD DASHBOARD QUEIMADAS
 =========================================================*/
 function gerarWordDashboardQueimadas(){
-
 let itens=document.getElementById('dashboardTotalItens')?.innerText||'0'
-
 let subitens=document.getElementById('dashboardTotalSubitens')?.innerText||'0'
-
 let media=document.getElementById('dashboardMediaGeral')?.innerText||'0%'
-
 let html=`
 <h1>DASHBOARD EXECUTIVO - QUEIMADAS 2026</h1>
-
-<table border="1" cellspacing="0" cellpadding="6">
-
+<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%">
 <tr>
 <th>Itens Estratégicos</th>
 <th>Subitens</th>
 <th>Média Geral</th>
 </tr>
-
 <tr>
 <td>${itens}</td>
 <td>${subitens}</td>
 <td>${media}</td>
 </tr>
-
 </table>
-
 <br>
-
-<p>
-Painel consolidado de acompanhamento técnico das ações relacionadas às queimadas 2026.
-</p>
+<p>Painel consolidado de acompanhamento técnico das ações relacionadas às queimadas 2026.</p>
 `
-
-baixarWordQueimadas(
-'dashboard_queimadas',
-html
-)
-
+baixarWordQueimadas('dashboard_queimadas',html)
 }
 /*=========================================================
 052 WORD RESUMO QUEIMADAS
@@ -90,7 +73,12 @@ html
 function gerarWordResumoQueimadas(){
 
 let lista=[...(window.allData||[])]
-
+lista.sort((a,b)=>
+String(a.item||'')
+.localeCompare(
+String(b.item||'')
+)
+)
 let linhas=lista.map(i=>`
 <tr>
 <td>${i.item||'-'}</td>
@@ -131,7 +119,12 @@ html
 function gerarWordMonitoramentoQueimadas(){
 
 let lista=[...(window.allData||[])]
-
+lista.sort((a,b)=>
+String(a.item||'')
+.localeCompare(
+String(b.item||'')
+)
+)
 let linhas=lista.map(i=>`
 <tr>
 <td>${i.item||'-'}</td>
