@@ -26,7 +26,7 @@ console.log(f)
 console.log('PROPERTIES UC')
 console.log(f.properties)
 
-l.bindPopup('TESTE UC')
+l.bindPopup('Estadual')
 
 }
 })
