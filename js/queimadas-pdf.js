@@ -76,7 +76,6 @@ let deslocamento=0
 const ALTURA_UTIL=235
 while(restante>0){
 doc.addPage()
-qpCabecalho(doc,titulo)
 doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text(titulo,15,20)
