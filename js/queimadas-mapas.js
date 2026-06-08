@@ -1,4 +1,199 @@
 /*=========================================================
+108 QUEIMADAS FUNCTION CARREGARUCSRO
+=========================================================*/
+async function carregarUCsRO(mapa,tipo='executivo'){
+try{
+let resp=await fetch('./assets/geojson/ucs-ro.geojson')
+if(!resp.ok){
+throw new Error('Erro ao localizar assets/geojson/ucs-ro.geojson')
+}
+let geo=await resp.json()
+let layerUC=L.geoJSON(geo,{
+style:f=>{
+let p=(f&&f.properties)?f.properties:{}
+return{
+color:'#006400',
+weight:1,
+fillColor:'#00aa55',
+fillOpacity:.45
+}
+},
+onEachFeature:(f,l)=>{
+let p=(f&&f.properties)?f.properties:{}
+let nome=p.nome_uc||p.nome||p.NOME_UC||p.NOME||p.uc||p.UC||'Unidade de Conservação'
+let categoria=p.categoria||p.CATEGORIA||'-'
+let grupo=p.grupo||p.GRUPO||'-'
+let situacao=p.situacao||p.SITUACAO||'-'
+let municipio=p.municipio||p.MUNICIPIO||'-'
+l.bindPopup(`
+<b>${nome}</b><br>
+Categoria: ${categoria}<br>
+Grupo: ${grupo}<br>
+Situação: ${situacao}<br>
+Município: ${municipio}
+`)
+}
+})
+layerUC.addTo(mapa)
+if(tipo==='executivo'){
+window.layerUCsExecutivo=layerUC
+if(window.camadasControleExecutivo){
+window.camadasControleExecutivo.addOverlay(layerUC,'🌳 UCs de Rondônia')
+window.overlayUCsExecutivoAdicionado=true
+}
+}
+if(tipo==='estadual'){
+window.layerUCsEstadual=layerUC
+layerUC.addTo(mapa)
+if(window.camadasControleEstadual){
+window.camadasControleEstadual.addOverlay(
+layerUC,
+'🌳 UCs de Rondônia'
+)
+}
+}
+let painel=document.getElementById('painelUCsMapa')
+if(painel){
+painel.innerHTML=`
+<b>49 Unidades de Conservação</b><br>
+Fonte:
+<a href="https://app.tcgeo.tc.br/" target="_blank">
+TCGeo / TCE-RO
+</a>
+`
+}
+}catch(e){
+console.error('Erro ao carregar UCs:',e)
+let painel=document.getElementById('painelUCsMapa')
+if(painel){
+painel.innerHTML='Erro ao carregar UCs.'
+}
+}
+}
+/*=========================================================
+109 RENDER MAPA MUNICIPAL PLANOS
+=========================================================*/
+async function renderMapaMunicipalPlanos(filtro='TODOS'){
+let div=document.getElementById('mapaMunicipalPlanos')
+if(!div)return
+div.innerHTML=''
+if(window.mapaMunicipalPlanos){
+try{
+window.mapaMunicipalPlanos.remove()
+}catch(e){}
+window.mapaMunicipalPlanos=null
+}
+if(div._leaflet_id){
+delete div._leaflet_id
+}
+await new Promise(r=>setTimeout(r,500))
+let mapa=L.map(div,{
+preferCanvas:true,
+zoomControl:true
+})
+window.mapaMunicipalPlanos=mapa
+mapa.setView([-10.9,-63.3],7)
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+attribution:'OpenStreetMap'
+}
+).addTo(mapa)
+let geo=await fetch('./assets/geojson/municipios-ro.geojson')
+if(!geo.ok){
+console.log('Erro GeoJSON',geo.status)
+return
+}
+let geojson=await geo.json()
+console.log('GeoJSON carregado',geojson.features?.length)
+let {data,error}=await client.from('queimadas_municipios_oficio').select('*')
+if(error){
+console.log(error)
+return
+}
+let situacao={}
+;(data||[]).forEach(i=>{
+situacao[String(i.municipio||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/'/g,'').toUpperCase().trim()]=i
+})
+console.log('Layer criada')
+window.layerMunicipiosPlanos=L.geoJSON(geojson,{
+style:f=>{
+let nome=String(f.properties.nome||
+f.properties.NOME||
+f.properties.municipio||
+f.properties.MUNICIPIO||
+f.properties.nm_mun||
+f.properties.NM_MUN||
+f.properties.nome_mun||
+f.properties.NOME_MUN||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/'/g,'').toUpperCase().trim()
+let m=situacao[nome]
+let cor='#94a3b8'
+if(m){
+if(filtro!=='TODOS'&&m.classificacao_cor!==filtro){
+cor='#e5e7eb'
+}else{
+if(m.classificacao_cor==='VERDE')cor='#16a34a'
+if(m.classificacao_cor==='AMARELO')cor='#facc15'
+if(m.classificacao_cor==='VERMELHO')cor='#dc2626'
+}
+}
+return{
+color:'#ffffff',
+weight:1,
+fillColor:cor,
+fillOpacity:.85
+}
+},
+onEachFeature:(f,l)=>{
+let nome=String(f.properties.nome||f.properties.NOME||'')
+let chave=nome.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/'/g,'').toUpperCase().trim()
+let m=situacao[chave]
+l.dadosMunicipio=m
+l.bindPopup(`
+<b>${nome}</b><br>
+Situação: ${m?.classificacao_ia||'Sem classificação'}<br>
+Documento: ${m?.lnumerodocenviado||m?.llnumerodocenviado||'-'}<br>
+Recebimento: ${m?.ldatarecebimentodoc||'-'}
+`)
+}
+}).addTo(mapa)
+if(window.layerUCs){
+try{
+window.layerUCs.bringToBack()
+}catch(e){}
+}
+try{
+mapa.fitBounds(
+window.layerMunicipiosPlanos.getBounds(),
+{
+padding:[20,20],
+maxZoom:8
+}
+)
+}catch(e){}
+
+setTimeout(()=>{
+mapa.invalidateSize(true)
+},500)
+
+setTimeout(()=>{
+mapa.invalidateSize(true)
+try{
+mapa.fitBounds(
+window.layerMunicipiosPlanos.getBounds(),
+{
+padding:[20,20],
+maxZoom:8
+}
+)
+}catch(e){}
+},1500)
+
+setTimeout(()=>{
+mapa.invalidateSize(true)
+},2500)
+}
+/*=========================================================
 110 QUEIMADAS FUNCTION RENDERMAPAESTADUAL
 =========================================================*/
 async function renderMapaEstadual(){
