@@ -73,7 +73,7 @@ let largura=190
 let altura=(canvas.height*largura)/canvas.width
 let restante=altura
 let deslocamento=0
-let primeira=true
+const ALTURA_UTIL=235
 while(restante>0){
 doc.addPage()
 qpCabecalho(doc,titulo)
@@ -88,15 +88,9 @@ img,
 largura,
 altura
 )
-if(primeira){
-restante-=250
-primeira=false
-}else{
-restante-=250
+restante-=ALTURA_UTIL
+deslocamento+=ALTURA_UTIL
 }
-deslocamento+=250
-}
-adicionarRodape(doc)
 }
 /*=========================================================
 006 CAPA PDF
