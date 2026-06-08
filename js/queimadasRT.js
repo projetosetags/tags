@@ -130,95 +130,110 @@ doc.text(doc.splitTextToSize('Os resultados demonstram diferentes níveis de mat
 407 RT HEATMAP
 =========================================================*/
 async function rtHeatmap(doc){
+doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text('6. HEATMAP ESTADUAL',15,20)
-let texto='O Heatmap Estadual consolida a distribuição espacial dos níveis de risco de queimadas nos municípios rondonienses, permitindo identificar áreas críticas e apoiar a priorização das ações preventivas e de resposta.'
-doc.setFontSize(10)
-doc.text(doc.splitTextToSize(texto,180),15,35)
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+let texto='     O Heatmap Estadual consolida os resultados do monitoramento das queimadas em Rondônia por meio da classificação dos municípios em diferentes níveis de risco. A metodologia considera indicadores ambientais, históricos de queimadas, focos de calor, vulnerabilidades territoriais e fatores climáticos associados ao período de estiagem.'
+doc.text(doc.splitTextToSize(texto,170),15,35)
 let img=await capturarElemento('painelIRIQHeatmapUnificado')
 if(img){
-doc.addImage(img,'PNG',10,55,190,80)
+doc.addImage(img,'PNG',10,60,190,80)
 }
-doc.setFontSize(9)
-doc.text(doc.splitTextToSize('A análise evidencia concentração de risco em determinados territórios, reforçando a necessidade de ações integradas entre Estado, municípios e órgãos de fiscalização.',180),15,145)
+let texto2='     A distribuição espacial dos riscos permite identificar áreas prioritárias para atuação preventiva e corretiva. Municípios classificados nas faixas de risco Alto e Crítico demandam maior atenção dos gestores públicos, considerando a probabilidade elevada de ocorrência de queimadas e seus impactos ambientais, sociais e econômicos.'
+doc.setFontSize(12)
+doc.text(doc.splitTextToSize(texto2,170),15,155)
 }
-
 /*=========================================================
 408 RT IRIQ
 =========================================================*/
 async function rtIRIQ(doc){
+doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text('7. IRIQ ESTADUAL',15,20)
-let texto='O Índice de Risco Integrado de Queimadas considera focos de calor, histórico de queimadas, cobertura vegetal, uso do solo, clima e vulnerabilidade ambiental, permitindo priorização territorial baseada em evidências.'
-doc.setFontSize(10)
-doc.text(doc.splitTextToSize(texto,180),15,35)
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+let texto='     O Índice de Risco Integrado de Queimadas (IRIQ) constitui indicador composto desenvolvido para apoiar a priorização territorial das ações de enfrentamento às queimadas. O índice considera fatores relacionados aos focos de calor, histórico de ocorrências, cobertura vegetal, uso e ocupação do solo, variáveis climáticas e vulnerabilidade ambiental.'
+doc.text(doc.splitTextToSize(texto,170),15,35)
 let img=await capturarElemento('painelMunicipiosPrioritarios')
 if(img){
-doc.addImage(img,'PNG',10,55,190,80)
+doc.addImage(img,'PNG',10,60,190,80)
 }
-doc.setFontSize(9)
-doc.text(doc.splitTextToSize('Os municípios com maiores índices devem receber atenção prioritária das ações preventivas, operacionais e de monitoramento contínuo.',180),15,145)
+let texto2='     Os resultados obtidos permitem hierarquizar os municípios segundo sua criticidade relativa, subsidiando a tomada de decisão, a alocação de recursos públicos e a definição de estratégias preventivas durante o período crítico de queimadas.'
+doc.text(doc.splitTextToSize(texto2,170),15,155)
 }
 
 /*=========================================================
 409 RT CHAP
 =========================================================*/
 async function rtCHAP(doc){
+doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text('8. CHAP',15,20)
-let texto='O modelo CHAP constitui metodologia estruturada para avaliação de cenários de risco, vulnerabilidade e capacidade de resposta institucional relacionada às queimadas e incêndios florestais.'
-doc.setFontSize(10)
-doc.text(doc.splitTextToSize(texto,180),15,35)
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+let texto='     O modelo CHAP foi utilizado como instrumento estruturado de análise de riscos, permitindo avaliar cenários relacionados às queimadas e incêndios florestais a partir da combinação de fatores de ameaça, vulnerabilidade e capacidade de resposta institucional.'
+doc.text(doc.splitTextToSize(texto,170),15,35)
 let img=await capturarElemento('painelCHAP')
 if(img){
-doc.addImage(img,'PNG',10,55,190,80)
+doc.addImage(img,'PNG',10,60,190,80)
 }
-doc.setFontSize(9)
-doc.text(doc.splitTextToSize('Os resultados do CHAP subsidiam a definição de prioridades estratégicas e operacionais para redução dos riscos identificados.',180),15,145)
+let texto2='     A aplicação do CHAP possibilita identificar fragilidades operacionais, institucionais e ambientais, contribuindo para o aperfeiçoamento das estratégias de prevenção, preparação, resposta e recuperação relacionadas aos eventos críticos monitorados.'
+doc.text(doc.splitTextToSize(texto2,170),15,155)
 }
 
 /*=========================================================
 410 RT IA-CHAP
 =========================================================*/
 async function rtIACHAP(doc){
+doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text('9. IA-CHAP',15,20)
-let texto='A metodologia IA-CHAP utiliza inteligência artificial para ampliar a capacidade analítica do modelo CHAP, permitindo identificar padrões, tendências e recomendações automatizadas.'
-doc.setFontSize(10)
-doc.text(doc.splitTextToSize(texto,180),15,35)
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+let texto='     A metodologia IA-CHAP representa a evolução analítica do modelo CHAP por meio da utilização de inteligência artificial aplicada ao tratamento e interpretação dos dados monitorados. A ferramenta amplia a capacidade preditiva e analítica dos cenários de risco relacionados às queimadas.'
+doc.text(doc.splitTextToSize(texto,170),15,35)
 let img=await capturarElemento('painelIAChap')
 if(img){
-doc.addImage(img,'PNG',10,55,190,80)
+doc.addImage(img,'PNG',10,60,190,80)
 }
-doc.setFontSize(9)
-doc.text(doc.splitTextToSize('As análises produzidas pela IA contribuem para a tomada de decisão baseada em evidências e para a otimização da alocação de recursos.',180),15,145)
+let texto2='     Os resultados produzidos pela IA permitem identificar padrões de comportamento, tendências de evolução dos riscos e oportunidades de atuação preventiva, fortalecendo a tomada de decisão baseada em evidências e contribuindo para maior efetividade das ações governamentais.'
+doc.text(doc.splitTextToSize(texto2,170),15,155)
 }
 /*=========================================================
 411 RT MATRIZ 5X5
 =========================================================*/
 async function rtMatrizRisco(doc){
+doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text('10. MATRIZ DE RISCO 5X5',15,20)
-let texto='A Matriz de Risco 5x5 combina probabilidade e impacto para classificar eventos relacionados às queimadas, permitindo avaliação padronizada e priorização de respostas.'
-doc.setFontSize(10)
-doc.text(doc.splitTextToSize(texto,180),15,35)
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+let texto='     A Matriz de Risco 5x5 foi utilizada para classificar os eventos monitorados segundo a combinação entre probabilidade de ocorrência e impacto potencial. A metodologia permite avaliar objetivamente a criticidade dos riscos associados às queimadas e incêndios florestais.'
+doc.text(doc.splitTextToSize(texto,170),15,35)
 let img=await capturarElemento('painelMatriz5x5')
 if(img){
-doc.addImage(img,'PNG',10,55,190,80)
+doc.addImage(img,'PNG',10,60,190,80)
 }
-doc.setFontSize(9)
-doc.text(doc.splitTextToSize('Os riscos classificados como altos e críticos demandam monitoramento permanente e medidas preventivas imediatas.',180),15,145)
+let texto2='     Os riscos enquadrados nas categorias Alta e Crítica exigem monitoramento contínuo e adoção imediata de medidas mitigadoras. A matriz subsidia a definição de prioridades institucionais e orienta o direcionamento dos recursos disponíveis para as áreas de maior vulnerabilidade.'
+doc.text(doc.splitTextToSize(texto2,170),15,155)
 }
 /*=========================================================
 412 RT MUNICIPIOS CRITICOS
 =========================================================*/
 async function rtMunicipiosCriticos(doc){
+doc.setFont('helvetica','bold')
 doc.setFontSize(16)
 doc.text('11. MUNICÍPIOS CRÍTICOS',15,20)
 let {data=[]}=await client.from('queimadas_heatmap').select('*')
 let top=[...data].sort((a,b)=>Number(b.risco||0)-Number(a.risco||0)).slice(0,10)
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+let texto1='     Com base nos resultados obtidos por meio do Heatmap Estadual, do Índice de Risco Integrado de Queimadas (IRIQ), do modelo CHAP e do IA-CHAP, foram identificados os municípios que apresentam maior criticidade quanto à ocorrência de queimadas e incêndios florestais. A classificação considera fatores históricos, ambientais, climáticos e operacionais, permitindo a priorização das ações preventivas, fiscalizatórias e de resposta.'
+doc.text(doc.splitTextToSize(texto1,170),15,35)
 doc.autoTable({
-startY:35,
+startY:75,
 head:[['POSIÇÃO','MUNICÍPIO','IRIQ','RISCO','CLASSIFICAÇÃO','FOCOS']],
 body:top.map((m,i)=>[
 i+1,
@@ -228,9 +243,24 @@ m.risco||'-',
 m.classificacao||'-',
 m.focos||'-'
 ]),
-styles:{fontSize:8},
-headStyles:{fillColor:[127,29,29]}
+styles:{
+fontSize:10,
+font:'helvetica',
+cellPadding:2
+},
+headStyles:{
+fillColor:[127,29,29],
+fontSize:10
+},
+alternateRowStyles:{
+fillColor:[245,245,245]
+}
 })
+let y=(doc.lastAutoTable?.finalY||160)+15
+doc.setFont('helvetica','normal')
+doc.setFontSize(12)
+let texto2='     Observa-se que os municípios constantes na tabela acima demandam atenção prioritária dos órgãos estaduais e municipais, especialmente durante o período crítico de estiagem. Recomenda-se o fortalecimento das ações de monitoramento, prevenção, fiscalização ambiental, combate aos incêndios florestais e acompanhamento contínuo da execução dos planos de ação locais, visando reduzir os impactos ambientais, sociais e econômicos decorrentes das queimadas.'
+doc.text(doc.splitTextToSize(texto2,170),15,y)
 }
 /*=========================================================
 413 RT ACHADOS
