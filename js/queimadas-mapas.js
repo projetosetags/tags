@@ -277,8 +277,16 @@ if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/terras-indigenas-ro.geojson')
 }
 let geo=await resp.json()
-console.log(
+window.debugTI=
 geo.features[0].properties
+
+console.log(
+'TI PROPERTIES:',
+window.debugTI
+)
+
+console.table(
+window.debugTI
 )
 console.log(
 'TI CAMPOS:',
