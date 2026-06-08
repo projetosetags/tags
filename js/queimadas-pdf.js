@@ -5,7 +5,7 @@ const QR={
 titulo:'QUEIMADAS 2026',
 subtitulo:'Monitoramento Inteligente',
 processo:'PCe 0501/2026',
-fonte:'TCE-RO • INPE • SEDAM • CBMRO',
+fonte:'TCE-RO • INPE • Sedam • CBMRO',
 assinaturas:[
 'Manoel Fernandes Neto',
 'Luís Fernando Bueno',
@@ -436,7 +436,7 @@ await adicionarPainelPDF(doc,'PREDIÇÃO DE QUEIMADAS','painelIARiscos')
 await adicionarPainelPDF(doc,'PRIORIZAÇÃO MUNICIPAL','painelIAPriorizacao')
 await adicionarPainelPDF(doc,'SUGESTÕES AUTOMÁTICAS','painelIASugestoes')
 await adicionarPainelPDF(doc,'PLANO UNIFICADO','painelPlanoUnificado')
-await adicionarPainelPDF(doc,'PLANO SEDAM','painelPlanoSEDAM')
+await adicionarPainelPDF(doc,'PLANO Sedam','painelPlanoSedam')
 await adicionarPainelPDF(doc,'PLANO CBMRO','painelPlanoCBM')
 await adicionarPainelPDF(doc,'CADEIA DE VALOR','painelCadeiaValor')
 await adicionarPainelPDF(doc,'TEORIA DA MUDANÇA','painelTeoriaMudanca')
