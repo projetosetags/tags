@@ -8,6 +8,30 @@ if(!resp.ok){
 throw new Error('Erro ao localizar assets/geojson/ucs-ro.geojson')
 }
 let geo=await resp.json()
+let estaduais={
+type:'FeatureCollection',
+features:(geo.features||[]).filter(f=>
+String(
+f.properties?.esfera||''
+).toUpperCase().trim()==='ESTADUAL'
+)
+}
+let federais={
+type:'FeatureCollection',
+features:(geo.features||[]).filter(f=>
+String(
+f.properties?.esfera||''
+).toUpperCase().trim()==='FEDERAL'
+)
+}
+let municipais={
+type:'FeatureCollection',
+features:(geo.features||[]).filter(f=>
+String(
+f.properties?.esfera||''
+).toUpperCase().trim()==='MUNICIPAL'
+)
+}
 let totalEstadual=0
 let totalFederal=0
 let totalMunicipal=0
@@ -19,102 +43,19 @@ if(esfera==='ESTADUAL')totalEstadual++
 if(esfera==='FEDERAL')totalFederal++
 if(esfera==='MUNICIPAL')totalMunicipal++
 })
-let layerUC=L.geoJSON(geo,{
-style:f=>{
-let esfera=String(
-f.properties?.esfera||''
-).toUpperCase()
-let cor='#94a3b8'
-if(esfera==='ESTADUAL'){
-cor='#dc2626'
-}
-if(esfera==='FEDERAL'){
-cor='#2563eb'
-}
-if(esfera==='MUNICIPAL'){
-cor='#f59e0b'
-}
-return{
-color:cor,
-weight:1.5,
-fillColor:cor,
-fillOpacity:.45
-}
-},
-onEachFeature:(f,l)=>{
+function popupUC(f,l){
+
 let p=f.properties||{}
-let nome=
-p.nome_uc||
-p.NOME_UC||
-'Unidade de Conservação'
 
-let categoria=
-p.categoria||
-p.CATEGORIA||
-'-'
+let nome=p.nome_uc||'-'
+let categoria=p.categoria||'-'
+let grupo=p.grupo||'-'
+let esfera=p.esfera||'-'
+let municipio=p.municipio||'-'
+let gestor=p.org_gestor||'-'
+let status=p.status||p.situacao||'-'
 
-let grupo=
-p.grupo||
-p.GRUPO||
-'-'
-
-let municipio=
-p.municipio||
-p.MUNICIPIO||
-'-'
-
-let esfera=
-p.esfera||
-p.ESFERA||
-'-'
-
-let gestor=
-p.org_gestor||
-p.ORG_GESTOR||
-'-'
-
-let status=
-p.status||
-p.STATUS||
-p.situacao||
-'-'
-
-let area=Number(
-p.ha_total||
-p.HA_TOTAL||
-0
-)
-
-let areaTexto=
-area>0
-?area.toLocaleString(
-'pt-BR',
-{
-minimumFractionDigits:2,
-maximumFractionDigits:2
-}
-)+' ha'
-:'-'
-
-if(
-grupo
-.toUpperCase()
-.includes('PROTE')
-){
-l.setStyle({
-color:'#8b0000',
-fillColor:'#ff4444',
-weight:1,
-fillOpacity:.55
-})
-}else{
-l.setStyle({
-color:'#006400',
-fillColor:'#00aa55',
-weight:1,
-fillOpacity:.45
-})
-}
+let area=Number(p.ha_total||0)
 
 l.bindPopup(`
 <b>${nome}</b><br>
@@ -124,34 +65,90 @@ l.bindPopup(`
 <b>Município(s):</b> ${municipio}<br>
 <b>Gestor:</b> ${gestor}<br>
 <b>Situação:</b> ${status}<br>
-<b>Área:</b> ${areaTexto}
+<b>Área:</b>
+${area.toLocaleString('pt-BR')} ha
 `)
-
 }
-})
+
+let layerUCEstadual=L.geoJSON(
+estaduais,
+{
+style:{
+color:'#dc2626',
+weight:1.5,
+fillColor:'#dc2626',
+fillOpacity:.45
+},
+onEachFeature:popupUC
+}
+)
+
+let layerUCFederal=L.geoJSON(
+federais,
+{
+style:{
+color:'#2563eb',
+weight:1.5,
+fillColor:'#2563eb',
+fillOpacity:.45
+},
+onEachFeature:popupUC
+}
+)
+
+let layerUCMunicipal=L.geoJSON(
+municipais,
+{
+style:{
+color:'#f59e0b',
+weight:1.5,
+fillColor:'#f59e0b',
+fillOpacity:.45
+},
+onEachFeature:popupUC
+}
+)
 
 if(tipo==='executivo'){
-window.layerUCsExecutivo=layerUC
-layerUC.addTo(mapa)
+window.layerUCEstadualExecutivo=layerUCEstadual
+window.layerUCFederalExecutivo=layerUCFederal
+window.layerUCMunicipalExecutivo=layerUCMunicipal
+layerUCEstadual.addTo(mapa)
 if(window.camadasControleExecutivo){
-window.camadasControleExecutivo.addOverlay(
-layerUC,
-'🌳 UCs de Rondônia'
+window.camadasControleEstadual.addOverlay(
+layerUCEstadual,
+`🔴 UCs Estaduais (${totalEstadual})`
+)
+window.camadasControleEstadual.addOverlay(
+layerUCFederal,
+`🔵 UCs Federais (${totalFederal})`
+)
+window.camadasControleEstadual.addOverlay(
+layerUCMunicipal,
+`🟠 UCs Municipais (${totalMunicipal})`
 )
 }
 }
-
 if(tipo==='estadual'){
-window.layerUCsEstadual=layerUC
-layerUC.addTo(mapa)
+window.layerUCEstadual=layerUCEstadual
+window.layerUCFederal=layerUCFederal
+window.layerUCMunicipal=layerUCMunicipal
+layerUCEstadual.addTo(mapa)
 if(window.camadasControleEstadual){
 window.camadasControleEstadual.addOverlay(
-layerUC,
-'🌳 UCs de Rondônia'
+layerUCEstadual,
+`🔴 UCs Estaduais (${totalEstadual})`
+)
+window.camadasControleEstadual.addOverlay(
+layerUCFederal,
+`🔵 UCs Federais (${totalFederal})`
+)
+window.camadasControleEstadual.addOverlay(
+layerUCMunicipal,
+`🟠 UCs Municipais (${totalMunicipal})`
 )
 }
 }
-
 let painel=document.getElementById('painelUCsMapa')
 if(painel){
 painel.innerHTML=`
