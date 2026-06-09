@@ -2272,6 +2272,19 @@ canvas,img{
 max-width:100%;
 height:auto;
 }
+.cardExecutivo,
+.cardMunicipal,
+.cardPainel,
+.cardRelatorio,
+.cardMapa,
+.cardAnalise{
+page-break-inside:avoid;
+break-inside:avoid;
+margin-bottom:20px;
+}
+h1,h2,h3,h4{
+page-break-after:avoid;
+}
 </style>
 </head>
 <body>
@@ -2310,4 +2323,52 @@ return
 }
 }
 window.print()
+}
+/*=========================================================
+997 QUEIMADAS FUNCTION GERARPDFEXECUTIVOQUEIMADAS
+=========================================================*/
+function gerarPDFExecutivoQueimadas(){
+
+let ids=[
+'cardMapaRO',
+'cardIRIQHeatmap',
+'cardMunicipiosPrioritarios',
+'cardFocosCalor',
+'cardAlertas'
+]
+
+let html=''
+
+ids.forEach(id=>{
+let el=document.getElementById(id)
+if(el)html+=el.outerHTML
+})
+
+let tela=window.open('','_blank')
+
+tela.document.write(`
+<html>
+<head>
+<title>Relatório Executivo Queimadas</title>
+<style>
+@page{size:A4 landscape;margin:8mm;}
+body{font-family:Arial,sans-serif;}
+.cardExecutivo{page-break-after:always;break-after:page;page-break-inside:avoid;break-inside:avoid;}
+img,canvas{max-width:100%;height:auto;}
+.leaflet-container{height:180mm!important;}
+</style>
+</head>
+<body>
+${html}
+</body>
+</html>
+`)
+
+tela.document.close()
+
+setTimeout(()=>{
+tela.focus()
+tela.print()
+},1000)
+
 }
