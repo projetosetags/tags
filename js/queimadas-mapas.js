@@ -175,40 +175,30 @@ console.error('Erro ao carregar UCs:',e)
 109 RENDER MAPA MUNICIPAL PLANOS
 =========================================================*/
 async function renderMapaMunicipalPlanos(filtro='TODOS'){
-console.log('RENDER MAPA MUNICIPAL')
 let div=document.getElementById('mapaMunicipalPlanos')
-console.log('DIV MAPA',div)
-console.log('ALTURA',div?.offsetHeight)
-console.log('LARGURA',div?.offsetWidth)
 if(!div)return
-div.innerHTML=''
+
 if(window.mapaMunicipalPlanos){
 try{
 window.mapaMunicipalPlanos.remove()
 }catch(e){}
 window.mapaMunicipalPlanos=null
 }
+
+div.innerHTML=''
+
 if(div._leaflet_id){
 delete div._leaflet_id
 }
-await new Promise(r=>setTimeout(r,100))
-let mapa=L.map(
-div,
-{
+
+await new Promise(r=>setTimeout(r,50))
+
+let mapa=L.map(div,{
 preferCanvas:true,
 zoomControl:true
-}
-)
-window.mapaMunicipalPlanos=mapa
-console.log(
-'MAPA CRIADO'
-)
+})
 
-console.log(
-document.getElementById(
-'mapaMunicipalPlanos'
-)
-)
+window.mapaMunicipalPlanos=mapa
 mapa.setView([-10.9,-63.3],7)
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -222,9 +212,7 @@ console.log('Erro GeoJSON',geo.status)
 return
 }
 let geojson=await geo.json()
-console.log('GeoJSON carregado',geojson.features?.length)
 let {data,error}=await client.from('queimadas_municipios_oficio').select('*')
-console.log('REGISTROS BANCO',data?.length)
 if(error){
 console.log(error)
 return
@@ -233,7 +221,6 @@ let situacao={}
 ;(data||[]).forEach(i=>{
 situacao[String(i.municipio||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/'/g,'').toUpperCase().trim()]=i
 })
-console.log('Layer criada')
 window.layerMunicipiosPlanos=L.geoJSON(geojson,{
 style:f=>{
 let nome=String(f.properties.nome||
@@ -275,12 +262,6 @@ Recebimento: ${formatarDataBR?.(m?.ldatarecebimentodoc)||m?.ldatarecebimentodoc|
 `)
 }
 }).addTo(mapa)
-console.log(
-'LAYERS',
-window.layerMunicipiosPlanos
-.getLayers()
-.length
-)
 if(window.layerUCs){
 try{
 window.layerUCs.bringToBack()
@@ -296,13 +277,12 @@ maxZoom:8
 )
 }catch(e){}
 
-setTimeout(()=>{
-mapa.invalidateSize(true)
-},500)
+requestAnimationFrame(()=>{
 
-setTimeout(()=>{
 mapa.invalidateSize(true)
+
 try{
+
 mapa.fitBounds(
 window.layerMunicipiosPlanos.getBounds(),
 {
@@ -310,12 +290,10 @@ padding:[20,20],
 maxZoom:8
 }
 )
-}catch(e){}
-},1500)
 
-setTimeout(()=>{
-mapa.invalidateSize(true)
-},2500)
+}catch(e){}
+
+})
 }
 /*=========================================================
 110 QUEIMADAS FUNCTION RENDERMAPAESTADUAL
@@ -333,7 +311,7 @@ window.camadasControleEstadual=null
 if(div._leaflet_id){
 delete div._leaflet_id
 }
-let mapa=L.map('mapaROEstadual').setView([-10.9,-63.3],7)
+let mapa=L.map(div).setView([-10.9,-63.3],7)
 window.mapaEstadualRO=mapa
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
