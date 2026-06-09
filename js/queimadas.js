@@ -2351,6 +2351,17 @@ let el=document.getElementById(ids[i])
 
 if(!el)continue
 
+if(
+el.offsetWidth===0 ||
+el.offsetHeight===0
+){
+console.warn(
+'Elemento oculto:',
+ids[i]
+)
+continue
+}
+
 let canvas=await html2canvas(
 el,
 {
@@ -2360,13 +2371,37 @@ backgroundColor:'#ffffff'
 }
 )
 
-let img=canvas.toDataURL('image/jpeg',0.95)
+if(
+!canvas.width ||
+!canvas.height
+){
+console.warn(
+'Canvas inválido:',
+ids[i]
+)
+continue
+}
+
+let img=canvas.toDataURL(
+'image/jpeg',
+0.95
+)
 
 let largura=277
+
 let altura=
-canvas.height*
-largura/
+(canvas.height*largura)/
 canvas.width
+
+if(
+!isFinite(altura)
+){
+console.warn(
+'Altura inválida:',
+ids[i]
+)
+continue
+}
 
 if(i>0){
 pdf.addPage()
