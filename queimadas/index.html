@@ -3,333 +3,670 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>QUEIMADAS 2026 | Monitoramento Inteligente</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="css/queimadas.css?v=2026">
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<title>Painel de Acompanhamento TAGs/Sedam e Sepat 2026</title>
+<link rel="icon" href="/tags/assets/bg-monitoramento.png">
+<link rel="stylesheet" href="./css/tailwind.min.css">
+<link rel="stylesheet" href="./css/style.css?v=6">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="../config.js"></script>
-<script>
-const client=supabase.createClient(window.S_URL,window.S_KEY)
-if(typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels)}
-</script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="../js/municipios-ro.js"></script>
-<script src="../js/queimadas-pdf.js?v=2026"></script>
-<script src="../js/queimadasRT.js?v=2026"></script>
-<script src="../js/queimadas-monitoramento.js?v=2026"></script>
-<script src="../js/queimadas.js"></script>
-<script src="../js/queimadas-municipios.js?v=2026"></script>
-<script src="../js/queimadas-mapas.js?v=2026"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script src="config.js"></script>
+
 </head>
-<body>
-<div class="layoutPrincipal">
-<header class="topoSistema">
-<div class="topoEsquerda">
-<div class="logoFogo">🔥</div>
+<body class="p-2 md:p-4">
+<img src="assets/bandeira-ro.png" id="bandeiraFlutuante">
+<!--=========================================================
+000 PAINEL GERAL DE ACESSO
+=========================================================-->
+<section id="painel-geral-acesso" class="painel-geral-acesso">
+<div class="painel-geral-overlay"></div>
+<div class="painel-geral-conteudo">
+<div class="painel-geral-titulo">PAINEL GERAL DE ACESSO</div>
+<div class="painel-geral-subtitulo">Escolha um painel para continuar</div>
+<div class="painel-geral-grid">
+<div class="painel-card painel-card-sedam" onclick="abrirPainelSedam()">
+<div class="painel-card-topo painel-topo-sedam">
+<div class="painel-logo-texto">SEDAM</div>
+<div class="painel-logo-ro">RO<br><span>Secretaria de Estado do<br>Desenvolvimento Ambiental</span></div>
+</div>
+<div class="painel-card-img">
+<img src="assets/sedam-card.png" class="painel-img-unificada">
+</div>
+<div class="painel-card-base">
+<div class="painel-card-titulo sedam-cor">Acompanhamento<br>TAG/Sedam-2026</div>
+<button class="painel-card-btn btn-sedam"><span>▣</span><strong>Abrir painéis Sedam</strong><b>→</b></button>
+</div>
+</div>
+<div class="painel-card painel-card-sepat" onclick="abrirPainelSepat()">
+<div class="painel-card-topo painel-topo-sepat">
+<div class="painel-logo-sepat">SEPAT</div>
+<div class="painel-logo-sub">Secretaria de Estado de<br>Patrimônio e Regularização Fundiária</div>
+</div>
+<div class="painel-card-img">
+<img src="assets/sepat-card.png" class="painel-img-unificada">
+</div>
+<div class="painel-card-base">
+<div class="painel-card-titulo sepat-cor">Acompanhamento<br>TAG/Sepat-2026</div>
+<button class="painel-card-btn btn-sepat"><span>▣</span><strong>Abrir painéis Sepat</strong><b>→</b></button>
+</div>
+</div>
+<div class="painel-card painel-card-queimadas" onclick="abrirPainelQueimadas()">
+<div class="painel-card-topo painel-topo-queimadas">
+<div class="painel-logo-fogo">🔥</div>
+</div>
+<div class="painel-card-img painel-img-queimadas"></div>
+<div class="painel-card-base">
+<div class="painel-card-titulo queimadas-cor">Combate às<br>Queimadas</div>
+<button class="painel-card-btn btn-queimadas"><span>▣</span><strong>Abrir Painéis</strong><b>→</b></button>
+</div>
+</div>
+</div>
+</div>
+</section>
+  
+<!-- 001 LOGIN -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center">
+
+<div class="login-card-sedam-img">
+
+<img src="assets/sedam-card.png" class="login-img-unificada">
+
+<div class="login-actions-sedam">
+
+<input type="text" id="u" placeholder="Usuário" class="w-full p-3 mb-3 bg-slate-800 rounded-lg text-white text-sm">
+
+<input type="password" id="p" placeholder="Senha" class="w-full p-3 mb-4 bg-slate-800 rounded-lg text-white text-sm">
+
+<button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-xl font-bold text-sm">
+ACESSAR PAINEL
+</button>
+<button onclick="voltarPainelGeral()" class="w-full bg-slate-700 hover:bg-slate-800 py-3 rounded-xl font-bold text-sm text-white">
+← Voltar ao Painel Geral
+</button>
+</div>
+
+</div>
+
+</div>
+
+<!-- 002 DASHBOARD -->
+<div id="dashboard" class="hidden">
+<header class="topo-sedam-modern">
+
+<div class="topo-esquerda-sedam">
+
 <div>
-<h1>QUEIMADAS 2026</h1>
-<p>Monitoramento Inteligente • TCE-RO • Sedam • CBMRO</p>
+<h1 class="titulo-sedam-modern">
+Painel de Acompanhamento TAG/Sedam 2026
+</h1>
+
+<div id="user-info" class="usuario-sedam-modern"></div>
 </div>
+
 </div>
+
+<div class="topo-direita-sedam">
+
+<div class="mini-kpis-sedam">
+
+<div class="mini-kpi-sedam azul">
+<span id="topTotalItens">0</span>
+<small>ITENS</small>
+</div>
+
+<div class="mini-kpi-sedam verde">
+<span id="topTotalSubitens">0</span>
+<small>SUBITENS</small>
+</div>
+
+</div>
+
+<div class="media-topo-sedam">
+<div>MÉDIA GERAL TAG</div>
+<strong id="total-geral">0%</strong>
+</div>
+
+<button id="btnBackupSedam" style="flex-shrink:0" class="btn-topo-sedam hidden" onclick="backupSedam()">
+BACKUP Sedam
+</button>
+
+<div id="btn-monitoramento" style="display:none;flex-shrink:0">
+<a href="https://projetosetags.github.io/tags/monitoramento/monitoramento.html" target="_blank" class="btn-topo-sedam">
+<span>📊</span>
+<span>Monitoramento</span>
+</a>
+</div>
+
+<button onclick="logout()" class="btn-topo-sedam sair">
+Sair
+</button>
+
+</div>
+
 </header>
-<nav class="menuQueimadas">
-<button id="btnAbaExecutivo" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('executivo')">📊 PAINEL EXECUTIVO</button>
-<button id="btnAbaExecutivoMunicipal" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('executivomunicipal')">🏛️ EXECUTIVO MUNICIPAL</button>
-<button id="btnAbaPlanejamento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('planejamento')">📋 PLANEJAMENTO</button>
-<button id="btnAbaMonitoramento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('monitoramento')">🔥 MONITORAMENTO</button>
-<button id="btnAbaAnalise" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('analise')">🤖 RISCOS IA</button>
-<button id="btnAbaMapa" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('mapa')">🗺 MAPA ESTADUAL</button>
-<button id="btnAbaSituacao" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('situacao')">🚨 SALA DE SITUAÇÃO</button>
-<button id="btnAbaPresidente" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('presidente')">🏛 GERAL</button>
-<button id="btnAbaConselheiro" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('conselheiro')">⚖ RELATOR</button>
-<button id="btnAbaAuditor" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('auditor')">📑 AUDITORIA</button>
 
-<button
-id="btnImprimirPainel"
-class="btnAbaQueimadas btnPdfQueimadas"
-onclick="imprimirAbaAtualQueimadas()">
-🖨 PDF ABA
+<!-- 003 MENU -->
+<nav class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 gap-3 mb-4">
+
+<button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn flex flex-col items-center justify-center rounded-2xl p-3 min-h-[82px] bg-white/90 border border-[#e5d6c3] shadow-[0_4px_14px_rgba(0,0,0,0.08)] hover:scale-[1.01] transition-all duration-300">
+<div class="text-2xl mb-1">📈</div>
+<div class="text-[11px] font-black tracking-wide uppercase text-[#6e5a45] text-center leading-tight">Dashboard</div>
+</button>
+  
+<button onclick="switchTab('resumo')" id="tab-resumo" class="tab-btn tab-active">
+<div>📊</div>
+<div>Resumo</div>
 </button>
 
-<button
-id="btnImprimirExecutivo"
-class="btnAbaQueimadas btnPdfQueimadas"
-onclick="gerarPDFExecutivoQueimadas()">
-📑 PDF EXECUTIVO
+<button onclick="switchTab('mensal')" id="tab-mensal" class="tab-btn">
+<div>📑</div>
+<div>Dados p/Monitoramento</div>
 </button>
+
+<button onclick="switchTab('analise')" id="tab-analise" class="tab-btn">
+<div>📈</div>
+<div>Gráficos</div>
+</button>
+
+<button onclick="switchTab('concluidos')" id="tab-concluidos" class="tab-btn">
+<div>🏆</div>
+<div>100% Cumpridos</div>
+</button>
+
+<button id="tab-perfis" onclick="switchTab('perfis')" class="tab-btn hidden">
+<div>👥</div>
+<div>Perfis Sedam</div>
+</button>
+
+<button id="tab-tcero" onclick="switchTab('tcero')" class="tab-btn hidden">
+<div>🛡️</div>
+<div>Perfis TCE-RO</div>
+</button>
+
+<button id="tab-usuarios" onclick="switchTab('usuarios')" class="tab-btn hidden">
+<div>👤</div>
+<div>Usuários Sedam</div>
+</button>
+
 </nav>
-<!--=========================================================
-001 EXECUTIVO
-=========================================================-->
-<section id="abaExecutivo" class="abaQueimadas">
-<div class="painelTitulo">DASHBOARD EXECUTIVO</div>
-<div id="painelKPIs"></div>
-<div id="cardMapaRO" class="cardExecutivo">
-<h2>MAPA DE RONDÔNIA - RISCO DE QUEIMADAS</h2>
-<button class="btnOcultarMapa" onclick="toggleMapaRO()">👁 OCULTAR / EXIBIR MAPA</button>
-<div id="MapaRO">
-<div id="mapaRO"></div>
+
+<!-- 004 DASHBOARD -->
+<div id="view-dashboard" class="tab-view hidden">
+<div class="flex justify-end items-center gap-2 mb-4 flex-wrap">
+<button onclick="gerarPDFDashboard()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+📄 PDF
+</button>
+<button id="btnWordDashboard" onclick="gerarWordDashboard()" class="hidden text-xs bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+📝 WORD
+</button>
 </div>
-<div class="fonte-card">
-Fonte: OpenStreetMap • INPE • Sedam • Base Municipal RO
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-3 mb-4">
+
+<div id="cardMediaGeral" class="bg-white/90 rounded-3xl p-5 shadow border border-emerald-100">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Média Geral</div>
+<div id="dashboardMediaGeral" class="text-[46px] font-black text-emerald-500 leading-none mt-1">0%</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Desempenho consolidado</div>
 </div>
+
+<div id="cardTotalItens" class="bg-white/90 rounded-3xl p-5 shadow border border-blue-100">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Itens</div>
+<div id="dashboardTotalItensCard" class="text-[46px] font-black text-blue-500 leading-none mt-1">0</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Itens monitorados</div>
 </div>
-<div id="cardIRIQHeatmap" class="cardExecutivo">
-<h2>IRIQ ESTADUAL E HEATMAP ESTADUAL</h2>
-<div id="painelIRIQHeatmapUnificado"></div>
+
+<div id="cardTotalSubitens" class="bg-white/90 rounded-3xl p-5 shadow border border-violet-100">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Subitens</div>
+<div id="dashboardTotalSubitensCard" class="text-[46px] font-black text-violet-500 leading-none mt-1">0</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Subitens cadastrados</div>
 </div>
-<div id="cardMunicipiosPrioritarios" class="cardExecutivo">
-<h2>MUNICÍPIOS PRIORITÁRIOS - RANKING POR NÍVEL DE RISCO (IRIQ)</h2>
-<div id="painelMunicipiosPrioritarios"></div>
+
+<div id="cardCumpridos" class="bg-white/90 rounded-3xl p-5 shadow border border-green-100">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">100%</div>
+<div id="dashboardCumpridos" class="text-[46px] font-black text-green-500 leading-none mt-1">0</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Cumpridos</div>
 </div>
-<div class="exec-duplo">
-<div id="cardFocosCalor" class="cardExecutivo">
-<h2>FOCOS DE CALOR - ÚLTIMOS 7 DIAS</h2>
-<div id="painelFocosCalor"></div>
+
+<div id="cardCriticos" class="bg-white/90 rounded-3xl p-5 shadow border border-red-100">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Críticos</div>
+<div id="dashboardCriticos" class="text-[46px] font-black text-red-500 leading-none mt-1">0</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Abaixo de 30%</div>
 </div>
-<div id="cardAlertas" class="cardExecutivo">
-<h2>ALERTAS AUTOMÁTICOS - RANQUEAMENTO DE MUNICÍPIOS POR RISCO (IRIQ)</h2>
-<div id="painelAlertas"></div>
+
+<div id="cardAndamento" class="bg-white/90 rounded-3xl p-5 shadow border border-orange-100">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Execução</div>
+<div id="dashboardAndamento" class="text-[46px] font-black text-orange-500 leading-none mt-1">0</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Em andamento</div>
 </div>
+
+<div id="cardPendentes" class="bg-white/90 rounded-3xl p-5 shadow border border-slate-200">
+<div class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Pendentes</div>
+<div id="dashPendentes" class="text-[46px] font-black text-slate-400 leading-none mt-1">0</div>
+<div class="text-[12px] font-bold text-slate-600 mt-2">Não iniciados</div>
 </div>
-<div class="exec-duplo">
-<div class="cardExecutivo">
-<h2>UNIDADES DE CONSERVAÇÃO ESTADUAIS</h2>
-<div id="painelUCs"></div>
-</div>
-<div class="cardExecutivo">
-<h2>INDICADORES ESTRATÉGICOS</h2>
-<div id="painelIndicadoresEstrategicos"></div>
-</div>
-</div>
-</section>
-<!--=========================================================
-002 EXECUTIVO MUNICIPAL
-=========================================================-->
-<section id="abaExecutivoMunicipal" class="abaQueimadas hidden">
-<div class="painelTitulo">EXECUTIVO MUNICIPAL</div>
-<div class="cardExecutivo">
-<h2>🏛️ SITUAÇÃO GERAL DOS 52 MUNICÍPIOS</h2>
-<div id="painelSituacaoGeralMunicipios"></div>
-</div>
-<div id="painelKPIsMunicipais"></div>
-<div class="gridMunicipal">
-<div class="cardExecutivo">
-<h2>PLANOS DE AÇÃO APRESENTADOS</h2>
-<div id="painelPlanosApresentados"></div>
-</div>
-<div class="cardExecutivo">
-<h2>DILAÇÕES DE PRAZO</h2>
-<div id="painelDilacoesPrazo"></div>
-</div>
-<div class="cardExecutivo">
-<h2>MUNICÍPIOS SEM RESPOSTA</h2>
-<div id="painelSemResposta"></div>
-</div>
-</div>
-<div class="cardExecutivo">
-<h2>MAPA MUNICIPAL - SITUAÇÃO DOS PLANOS DE AÇÃO</h2>
-<div class="filtroMapaMunicipal">
-<button onclick="renderMapaMunicipalPlanos('TODOS')" class="btnMapaMunicipal">TODOS</button>
-<button onclick="renderMapaMunicipalPlanos('VERDE')" class="btnMapaMunicipal">🟢 COM PLANO</button>
-<button onclick="renderMapaMunicipalPlanos('AMARELO')" class="btnMapaMunicipal">🟡 DILAÇÃO</button>
-<button onclick="renderMapaMunicipalPlanos('VERMELHO')" class="btnMapaMunicipal">🔴 SEM RESPOSTA</button>
-</div>
-<div id="mapaMunicipalPlanos"></div>
-<div class="exec-legenda-municipal">
-<div class="leg-verde">🟢 Plano de Ação Apresentado</div>
-<div class="leg-amarelo">🟡 Dilação de Prazo</div>
-<div class="leg-vermelho">🔴 Sem Resposta</div>
-</div>
-<div class="fonte-card">
-Fonte: Ofício Circular n.16/2026/GABPRES/TCERO • Municípios de Rondônia
-</div>
-</div>
-<div class="exec-duplo">
-<div class="cardExecutivo">
-<h2>DISTRIBUIÇÃO DAS RESPOSTAS</h2>
-<div style="height:420px">
-<canvas id="graficoMunicipiosResposta"></canvas>
-</div>
-<div class="fonte-card">
-Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
-</div>
-</div>
-<div class="cardExecutivo">
-<h2>ESTATÍSTICAS MUNICIPAIS</h2>
-<div id="painelEstatisticasMunicipais"></div>
-</div>
-</div>
-<div class="cardExecutivo">
-<h2>TABELA GERAL DOS MUNICÍPIOS</h2>
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
-<select id="filtroMunicipioSituacao" onchange="renderTabelaMunicipios()">
-<option value="">TODOS</option>
-<option value="VERDE">PLANO APRESENTADO</option>
-<option value="AMARELO">DILAÇÃO DE PRAZO</option>
-<option value="VERMELHO">SEM RESPOSTA</option>
-</select>
-<input
-type="text"
-id="buscaMunicipio"
-placeholder="Pesquisar município..."
-onkeyup="renderTabelaMunicipios()"
->
-</div>
-<div id="painelTabelaMunicipios"></div>
-</div>
-<div class="cardExecutivo cardDestaque">
-<h2>🏛️ CADASTRO MUNICIPAL</h2>
-<div id="painelCadastroMunicipiosResumo"></div>
-</div>
-</section>
-<!--=========================================================
-003 CADASTRO MUNICIPAL
-=========================================================-->
-<section id="abaCadastroMunicipal" class="abaQueimadas hidden">
-<div class="painelTitulo">
-CADASTRO MUNICIPAL
-</div>
-<div class="cardExecutivo">
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
-<input
-type="text"
-id="pesquisaCadastroMunicipio"
-placeholder="Pesquisar município..."
-onkeyup="renderCadastroMunicipios()"
->
-</div>
-<div id="painelCadastroMunicipios"></div>
-</div>
-</section>
-<!--=========================================================
-004 PLANEJAMENTO
-=========================================================-->
-<section id="abaPlanejamento" class="abaQueimadas hidden">
-<div class="painelTitulo">PLANEJAMENTO ESTRATÉGICO</div>
-<div class="cardExecutivo"><h2>PLANO UNIFICADO</h2><div id="painelPlanoUnificado"></div></div>
-<div class="cardExecutivo"><h2>PLANO Sedam</h2><div id="painelPlanoSedam"></div></div>
-<div class="cardExecutivo"><h2>PLANO CBMRO</h2><div id="painelPlanoCBM"></div></div>
-<div class="cardExecutivo"><h2>CADEIA DE VALOR</h2><div id="painelCadeiaValor"></div></div>
-<div class="cardExecutivo"><h2>TEORIA DA MUDANÇA</h2><div id="painelTeoriaMudanca"></div></div>
-<div class="cardExecutivo"><h2>ODS</h2><div id="painelODS"></div></div>
-<div class="cardExecutivo">
-<div id="painelODSEvidencias"></div>
-</div>
-<div class="cardExecutivo">
-<h2>RADAR DE ADERÊNCIA À AGENDA 2030</h2>
-<div style="height:500px">
-<canvas id="graficoRadarODS"></canvas>
-</div>
-</div>
-<div class="cardExecutivo">
-<div id="painelODSMaturidade"></div>
-</div>
-<div class="cardExecutivo">
-<div id="painelODSExplicacaoIA"></div>
-</div>
-<div class="cardExecutivo"><h2>CRONOGRAMA GANTT</h2><div id="painelGantt"></div></div>
-<div class="cardExecutivo"><h2>MARCOS ESTRATÉGICOS</h2><div id="painelMarcos"></div></div>
-</section>
-<!--=========================================================
-005 MONITORAMENTO
-=========================================================-->
-<section id="abaMonitoramento" class="abaQueimadas hidden">
-<div class="painelTitulo">MONITORAMENTO</div>
-<div class="cardExecutivo"><h2>AÇÕES Sedam</h2><div id="painelAcoesSedam"></div></div>
-<div class="cardExecutivo"><h2>AÇÕES CBMRO</h2><div id="painelAcoesCBM"></div></div>
-<div class="cardExecutivo"><h2>AÇÕES TCE-RO</h2><div id="painelAcoesTCERO"></div></div>
-<div class="cardExecutivo"><h2>GOVERNANÇA</h2><div id="painelGovernanca"></div></div>
-<div class="cardExecutivo"><h2>MONITORAMENTO 4D</h2><div id="painelMonitoramento4D"></div></div>
-<div class="cardExecutivo"><h2>EXECUÇÃO FÍSICA</h2><div id="painelExecucaoFisica"></div></div>
-<div class="cardExecutivo"><h2>EXECUÇÃO FINANCEIRA</h2><div id="painelExecucaoFinanceira"></div></div>
-<div class="cardExecutivo"><h2>EVIDÊNCIAS</h2><div id="painelEvidencias"></div></div>
-</section>
-<!--=========================================================
-006 IA E RISCOS
-=========================================================-->
-<section id="abaAnalise" class="abaQueimadas hidden">
-<div class="painelTitulo">IA E RISCOS</div>
-<div class="cardExecutivo"><h2>DASHBOARD CHAP</h2><div id="painelCHAP"></div></div>
-<div class="cardExecutivo"><h2>IA CHAP</h2><div id="painelIAChap"></div></div>
-<div class="cardExecutivo"><h2>MATRIZ DE RISCO 5X5</h2><div id="painelMatriz5x5"></div></div>
-<div class="cardExecutivo"><h2>TOP RISCOS</h2><div id="painelTopRiscos"></div></div>
-<div class="cardExecutivo"><h2>PREDIÇÃO DE QUEIMADAS</h2><div id="painelIARiscos"></div></div>
-<div class="cardExecutivo"><h2>PRIORIZAÇÃO MUNICIPAL</h2><div id="painelIAPriorizacao"></div></div>
-<div class="cardExecutivo"><h2>SUGESTÕES AUTOMÁTICAS</h2><div id="painelIASugestoes"></div></div>
-</section>
-<!--=========================================================
-007 MAPA ESTADUAL
-=========================================================-->
-<section id="abaMapa" class="abaQueimadas hidden">
-<div class="painelTitulo">MAPA ESTADUAL</div>
-<div class="cardExecutivo">
-<div id="mapaROEstadual"></div>
-</div>
-<div class="cardExecutivo">
-<h2>UNIDADES DE CONSERVAÇÃO DE RONDÔNIA</h2>
-<div id="painelUCsMapa"></div>
-</div>
-<div class="cardExecutivo">
-<h2>TERRAS INDÍGENAS</h2>
-<div id="painelTIMapa"></div>
-</div>
-</section>
-<!--=========================================================
-008 SALA DE SITUAÇÃO
-=========================================================-->
-<section id="abaSituacao" class="abaQueimadas hidden">
-<div class="painelTitulo">SALA DE SITUAÇÃO</div>
-<div id="painelTopCriticos"></div>
-<div id="painelTopRiscos"></div>
-<div id="painelSemEvidencias"></div>
-<div id="painelTopIAChap"></div>
-<div id="painelAlertas"></div>
-<div id="painelSalaSituacaoEstadual"></div>
-</section>
-<!--=========================================================
-009 GERAL
-=========================================================-->
-<section id="abaPresidente" class="abaQueimadas hidden">
-<div class="painelTitulo">GERAL</div>
-<div id="painelPresidente"></div>
-<div id="painelIRIQEstadual"></div>
-<div id="painelPlanosMunicipais"></div>
-<div id="painelIndicadoresPresidente"></div>
-</section>
-<!--=========================================================
-010 RELATOR
-=========================================================-->
-<section id="abaConselheiro" class="abaQueimadas hidden">
-<div class="painelTitulo">RELATOR</div>
-<div id="painelRelator"></div>
-<div id="painelPendenciasSedam"></div>
-<div id="painelPendenciasCBM"></div>
-<div id="painelTopMunicipios"></div>
-</section>
-<!--=========================================================
-011 AUDITORIA
-=========================================================-->
-<section id="abaAuditor" class="abaQueimadas hidden">
-<div class="painelTitulo">AUDITORIA CONCOMITANTE</div>
-<div id="painelAuditoria"></div>
-<div class="cardExecutivo cardDestaque">
-<h2>📄 RELATÓRIOS E EXPORTAÇÕES</h2>
-<div class="gridRelatorios">
-<button onclick="gerarPDFExecutivoTCERO()">📕 PDF EXECUTIVO</button>
-<button onclick="gerarWordExecutivoTCERO()">📘 WORD EXECUTIVO</button>
-<button onclick="pdfCompletoQueimadas()">📙 PDF COMPLETO</button>
-<button onclick="gerarWordCompletoQueimadas()">📗 WORD COMPLETO</button>
-</div>
-</div>
-</section>
 
 </div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+<div class="bg-white/90 rounded-3xl p-5 shadow border border-slate-100">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-[13px] font-black uppercase tracking-wide text-slate-700">
+Desempenho por Item
+</h3>
+<div class="text-[10px] font-black text-emerald-500 uppercase">
+Atualizado
+</div>
+</div>
+<div class="chart-container">
+<canvas id="graficoDashboardItens"></canvas>
+</div>
+</div>
+
+<div class="bg-white/90 rounded-3xl p-5 shadow border border-slate-100">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-[13px] font-black uppercase tracking-wide text-slate-700">
+Evolução Mensal
+</h3>
+<div class="text-[10px] font-black text-blue-500 uppercase">
+Média Geral
+</div>
+</div>
+<div class="chart-container">
+<canvas id="graficoDashboardLinha"></canvas>
+</div>
+</div>
+
+<div class="bg-white/90 rounded-3xl p-5 shadow border border-slate-100">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-[13px] font-black uppercase tracking-wide text-slate-700">
+Distribuição
+</h3>
+<div class="text-[10px] font-black text-violet-500 uppercase">
+Subitens
+</div>
+</div>
+<div class="chart-container">
+<canvas id="graficoDashboardPizza"></canvas>
+</div>
+</div>
+
+</div>
+
+<div class="mt-4 bg-blue-50 border border-blue-200 rounded-2xl p-4 text-[12px] font-semibold text-slate-700 leading-relaxed">
+As informações constantes neste painel possuem caráter preliminar e informativo, baseadas nos dados declarados até o momento pelos jurisdicionados envolvidos no monitoramento do TAG SEDAM 2026.
+</div>
+
+</div>
+
+<!-- 005 RESUMO -->
+<div id="view-resumo" class="tab-view">
+
+<div class="barra-topo-resumo">
+
+<div class="box-pesquisa-resumo">
+
+<input
+id="buscaResumo"
+type="text"
+placeholder="Pesquisar..."
+oninput="renderResumo()"
+class="input-busca-resumo">
+
+</div>
+
+<div class="acoes-topo-resumo">
+
+<div class="flex flex-wrap gap-2 items-center">
+
+<button
+onclick="
+window.modoResumo='item';
+this.classList.add('ativo-resumo');
+document.getElementById('btnModoSubitem').classList.remove('ativo-resumo');
+renderResumo();
+"
+id="btnModoItem"
+class="btn-modo-resumo">
+ITEM
+</button>
+
+<button
+onclick="
+window.modoResumo='subitem';
+this.classList.add('ativo-resumo');
+document.getElementById('btnModoItem').classList.remove('ativo-resumo');
+renderResumo();
+"
+id="btnModoSubitem"
+class="btn-modo-resumo ativo-resumo">
+SUBITEM
+</button>
+
+<button
+onclick="gerarPDFResumo()"
+class="btn-pdf-resumo">
+PDF RESUMO
+</button>
+
+<button
+id="btnWordResumo"
+onclick="gerarWordResumo()"
+class="btn-word-resumo">
+WORD RESUMO
+</button>
+</div>
+<div class="ml-auto flex items-center">
+<label class="check-ocultar-resumo">
+<input
+type="checkbox"
+id="ocultar100Resumo"
+onchange="toggleOcultarResumo()">
+OCULTAR 100%
+</label>
+</div>
+</div>
+<div id="cards-container"
+class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+</div>
+</div>
+</div>
+
+<!-- 006 MONITORAMENTO -->
+<div id="view-mensal" class="tab-view hidden">
+
+<div id="view-mensal-filtros" class="flex flex-wrap gap-2 mb-3 items-center justify-between">
+
+<div id="boxModoResumoMensal" class="flex flex-wrap gap-2 items-center">
+
+<button onclick="modoTabela='item';renderTable()" id="btnModoItemMensal" class="text-xs bg-amber-500 hover:bg-amber-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
+ITEM
+</button>
+
+<button onclick="modoTabela='subitem';renderTable()" id="btnModoSubitemMensal" class="text-xs bg-blue-500 hover:bg-blue-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
+SUBITEM
+</button>
+
+</div>
+
+<div class="flex justify-end items-center gap-2 ml-auto flex-wrap w-full md:w-auto">
+
+<input
+id="dataInicioMensal"
+type="date"
+onchange="aplicarFiltroData()"
+class="text-xs bg-white border border-slate-300 text-slate-800 px-4 py-2 rounded-2xl shadow-sm font-bold min-w-[170px]"
+>
+
+<input
+id="dataFimMensal"
+type="date"
+onchange="aplicarFiltroData()"
+class="text-xs bg-white border border-slate-300 text-slate-800 px-4 py-2 rounded-2xl shadow-sm font-bold min-w-[170px]"
+>
+<button onclick="gerarPDFMonitoramento()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+📄 PDF
+</button>
+
+<button id="btnWordMonitoramento" onclick="gerarWordMonitoramento()" class="hidden text-xs bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+📝 WORD
+</button>
+
+<button type="button" onclick="toggleOcultarConcluidos()" class="text-xs bg-slate-700 hover:bg-slate-800 text-white px-5 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center whitespace-nowrap min-w-[170px]">
+OCULTAR 100%
+</button>
+
+<button id="btnOcultarCabecalho" type="button" onclick="toggleCabecalhoMonitoramento()" class="text-xs bg-slate-700 hover:bg-slate-800 text-white px-5 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+OCULTAR CABEÇALHO
+</button>
+
+<button type="button" onclick="restaurarColunasMonitoramento()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+RESTAURAR COLUNAS
+</button>
+
+</div>
+
+</div>
+
+<button id="btn-voltar" onclick="fecharDrill()" style="display:none" class="mb-2 text-xs bg-red-600 px-2 py-1 rounded">
+← VOLTAR
+</button>
+
+<div class="bg-slate-900/40 rounded-xl border border-white/5 overflow-x-auto">
+
+<table class="w-full text-left border-collapse min-w-full">
+
+<thead>
+
+<tr class="text-[8px] text-slate-500 uppercase border-b border-white/10">
+
+<th id="thNumero" onclick="toggleColunaMonitoramento(0)" style="cursor:pointer">
+SUBITEM
+</th>
+
+<th id="thDescricao" onclick="toggleColunaMonitoramento(1)" style="cursor:pointer">
+DESCRIÇÃO
+</th>
+
+<th id="thProduto" onclick="toggleColunaMonitoramento(2)" style="cursor:pointer">
+PRODUTOS
+</th>
+
+<th onclick="toggleColunaMonitoramento(3)" style="cursor:pointer">
+RESPONSÁVEL(IS)
+</th>
+
+<th onclick="toggleColunaMonitoramento(4)" style="cursor:pointer">
+SETOR
+</th>
+
+<th onclick="toggleColunaMonitoramento(5)" style="cursor:pointer">
+DATA INÍCIO
+</th>
+<th class="opacity-40" onclick="toggleColunaMonitoramento(6)" title="Ocultar/Mostrar JAN">
+JAN
+</th>
+
+<th class="opacity-40" onclick="toggleColunaMonitoramento(7)" title="Ocultar/Mostrar FEV">
+FEV
+</th>
+
+<th class="opacity-40" onclick="toggleColunaMonitoramento(8)" title="Ocultar/Mostrar MAR">
+MAR
+</th>
+
+<th class="text-blue-400" onclick="toggleColunaMonitoramento(9)" title="Ocultar/Mostrar ABR">
+ABR
+</th>
+
+<th class="text-yellow-400" onclick="toggleColunaMonitoramento(10)" title="Ocultar/Mostrar MAI">
+MAI
+</th>
+
+<th class="text-emerald-400" title="Mês de referência">
+JUN
+</
+
+</tr>
+
+</thead>
+
+<tbody id="table-body" class="text-[10px]"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- 007 ANALISE -->
+<div id="view-analise" class="tab-view hidden">
+
+<select id="tipoGrafico" class="hidden">
+
+<option value="subitem" selected>
+POR SUBITEM
+</option>
+
+</select>
+<div class="flex justify-between items-center mb-3 gap-2 flex-wrap">
+<button onclick="gerarPDFGraficos()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+📄 PDF Gráficos
+</button>
+<button id="btnWordGraficos" onclick="gerarWordGraficos()" class="hidden text-xs bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+📝 WORD Gráficos
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+<select id="filtroItem" class="bg-slate-800 p-2 rounded text-sm"></select>
+<select id="filtroSubitem" class="bg-slate-800 p-2 rounded text-sm"></select>
+</div>
+
+<div class="bg-slate-900/40 p-4 rounded-xl mb-4">
+
+<canvas id="chartMaster"></canvas>
+
+<div id="descSubitem"></div>
+
+</div>
+
+<div id="ranking" class="mt-6 text-xs"></div>
+
+</div>
+
+<!-- 008 CONCLUIDOS -->
+<div id="view-concluidos" class="tab-view hidden">
+<div class="flex justify-end mb-3 gap-2 flex-wrap">
+<button onclick="gerarPDFCumpridos()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+📄 PDF
+</button>
+<button id="btnWordConcluidos" onclick="gerarWordCumpridos()" class="hidden text-xs bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+📝 WORD
+</button>
+</div>
+<div id="concluidos-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-2 mb-8"></div>
+<div class="bg-slate-900/40 p-6 rounded-xl border border-emerald-500/20">
+
+<h3 style="font-size:22px;font-weight:900;color:#000000;margin-bottom:18px;text-transform:uppercase;">
+Descrição das Ações Cumpridas (100%)
+</h3>
+
+<div id="concluidos-list" class="space-y-2 text-[10px] text-slate-400"></div>
+
+</div>
+
+</div>
+
+<!-- 010 PERFIS -->
+<div id="view-perfis" class="tab-view hidden">
+<div id="boxCadastroPerfis" class="hidden flex-wrap gap-2 mb-4 bg-white/70 rounded-3xl p-4 shadow-[0_4px_18px_rgba(0,0,0,.08)]">
+<input id="pf_nome" placeholder="Nome Completo" class="px-4 py-3 rounded-2xl border border-slate-200 outline-none text-[13px] font-bold min-w-[240px]">
+<input id="pf_user" placeholder="Usuário" class="px-4 py-3 rounded-2xl border border-slate-200 outline-none text-[13px] font-bold min-w-[140px]">
+<input id="pf_senha" placeholder="Senha" class="px-4 py-3 rounded-2xl border border-slate-200 outline-none text-[13px] font-bold min-w-[140px]">
+<input id="pf_cargo" placeholder="Cargo" class="px-4 py-3 rounded-2xl border border-slate-200 outline-none text-[13px] font-bold min-w-[260px]">
+
+<select id="pf_nivel" class="px-4 py-3 rounded-2xl border border-slate-200 outline-none text-[13px] font-black">
+<option value="1">Nível 1</option>
+<option value="2">Nível 2</option>
+<option value="3">Nível 3</option>
+<option value="4" selected>Nível 4</option>
+</select>
+
+<button id="btnInserirPerfil" onclick="salvarNovoPerfil()" class="bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-2xl text-[11px] font-black shadow">
+INSERIR
+</button>
+
+</div>
+
+<div id="listaPerfis"></div>
+</div>
+
+<!-- 011 TCERO -->
+<div id="view-tcero" class="tab-view hidden">
+<div id="boxCadastroTCERO" class="hidden flex-wrap gap-2 mb-4 bg-white/70 rounded-3xl p-4 shadow-[0_4px_18px_rgba(0,0,0,.08)]">
+<input id="tc_nome" placeholder="Nome Completo" class="px-4 py-3 rounded-2xl border border-slate-200 outline-none text-[13px] font-bold min-w-[240px]">
+<input id="tc_user" placeholder="Usuário" class="px-4 py-3 rounded-2xl border border-slate-200 outline-none text-[13px] font-bold min-w-[140px]">
+<input id="tc_senha" placeholder="Senha" class="px-4 py-3 rounded-2xl border border-slate-200 outline-none text-[13px] font-bold min-w-[140px]">
+<input id="tc_cargo" placeholder="Cargo" class="px-4 py-3 rounded-2xl border border-slate-200 outline-none text-[13px] font-bold min-w-[260px]">
+<select id="tc_nivel" class="px-4 py-3 rounded-2xl border border-slate-200 outline-none text-[13px] font-black">
+<option value="1">Nível 1</option>
+<option value="2">Nível 2</option>
+<option value="3">Nível 3</option>
+<option value="4" selected>Nível 4</option>
+</select>
+
+<select id="tc_pdf" class="px-4 py-3 rounded-2xl border border-slate-200 outline-none text-[13px] font-black">
+<option value="true">COM PDF</option>
+<option value="false">SEM PDF</option>
+</select>
+<button id="btnInserirTCERO" onclick="salvarNovoTCERO()" class="bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-2xl text-[11px] font-black shadow">
+INSERIR
+</button>
+</div>
+<div id="listaTCERO"></div>
+</div>
+
+<!-- 012 USUARIOS -->
+<div id="view-usuarios" class="tab-view hidden">
+<div id="listaUsuarios"></div>
+</div>
+
+</div>
+
+<script src="./js/utils.js"></script>
+<script src="./js/sedam-core.js"></script>
+<script src="./js/sedam-monitoramento.js"></script>
+<script src="./js/sedam-graficos.js"></script>
+<script src="./js/sedam-pdf.js"></script>
+<script src="./js/tcero.js"></script>
+
+<div id="modalResumo" class="hidden fixed inset-0 z-[9999] bg-black/70 items-center justify-center p-3">
+<div class="bg-slate-200 w-full max-w-5xl rounded-3xl overflow-auto max-h-[92vh] shadow-2xl">
+
+<div class="flex items-center justify-between p-4 border-b border-slate-300 sticky top-0 bg-slate-100">
+<div class="text-lg font-black text-blue-900">
+DETALHAMENTO DO SUBITEM
+</div>
+
+<button onclick="fecharModalResumo()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-xs font-black">
+FECHAR
+</button>
+</div>
+
+<div id="conteudoResumo" class="p-4">
+</div>
+
+</div>
+</div>
+
+<script>
+
+function aplicarAcessoMonitoramento(){
+let btn=document.getElementById('btn-monitoramento')
+if(!btn)return
+let username=(userP?.username||'').toLowerCase().trim()
+let nome=(userP?.nome_completo||'').toLowerCase().trim()
+const usuariosPermitidos=[
+'manoel',
+'jane'
+]
+const liberado=
+usuariosPermitidos.includes(username)||
+nome.includes('manoel')||
+nome.includes('jane')
+if(liberado){
+btn.style.display='flex'
+btn.style.alignItems='center'
+}else{
+btn.style.display='none'
+}
+}
+
+
+</script>
+ 
 </body>
 </html>
