@@ -1,4 +1,23 @@
 /*=========================================================
+399 RT CAPTURAR ELEMENTO
+=========================================================*/
+async function capturarElemento(idElemento){
+let el=document.getElementById(idElemento)
+if(!el)return null
+if(el.offsetWidth===0)return null
+if(el.offsetHeight===0)return null
+await new Promise(r=>setTimeout(r,1000))
+let canvas=await html2canvas(el,{
+scale:2,
+backgroundColor:'#ffffff',
+useCORS:true
+})
+if(!canvas)return null
+if(!canvas.width)return null
+if(!canvas.height)return null
+return canvas.toDataURL('image/png')
+}
+/*=========================================================
 400 QUEIMADAS RT PDF TECNICO 0501
 =========================================================*/
 async function gerarPDFTecnico0501(){
@@ -198,7 +217,10 @@ doc.setFontSize(12)
 let texto='     O modelo CHAP foi utilizado como instrumento estruturado de análise de riscos, permitindo avaliar cenários relacionados às queimadas e incêndios florestais a partir da combinação de fatores de ameaça, vulnerabilidade e capacidade de resposta institucional.'
 doc.text(doc.splitTextToSize(texto,170),15,35)
 let img=await capturarElemento('painelCHAP')
-if(img){
+if(
+img &&
+img.startsWith('data:image')
+){
 doc.addImage(img,'PNG',10,60,190,80)
 }
 let texto2='     A aplicação do CHAP possibilita identificar fragilidades operacionais, institucionais e ambientais, contribuindo para o aperfeiçoamento das estratégias de prevenção, preparação, resposta e recuperação relacionadas aos eventos críticos monitorados.'
