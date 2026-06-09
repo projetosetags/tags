@@ -33,6 +33,7 @@ let {data,error}=await client
 .from('queimadas_monitoramento')
 .select('*')
 if(error){
+console.log(error)
 box.innerHTML='Erro ao carregar.'
 return
 }
@@ -2081,28 +2082,41 @@ if(typeof renderSemResposta==='function')await renderSemResposta()
 if(typeof renderGraficoMunicipios==='function')await renderGraficoMunicipios()
 if(typeof renderEstatisticasMunicipais==='function')await renderEstatisticasMunicipais()
 if(typeof renderTabelaMunicipios==='function')await renderTabelaMunicipios()
-
+let divMapa=document.getElementById('mapaMunicipalPlanos')
+console.log(
+'ALTURA MAPA:',
+divMapa?.offsetHeight
+)
+console.log(
+'LARGURA MAPA:',
+divMapa?.offsetWidth
+)
 requestAnimationFrame(()=>{
 
 setTimeout(async()=>{
-let div=document.getElementById('mapaMunicipalPlanos')
-if(!div)return
-await renderMapaMunicipalPlanos('TODOS')
-setTimeout(()=>{
-if(window.mapaMunicipalPlanos){
-window.mapaMunicipalPlanos.invalidateSize(true)
-try{
-window.mapaMunicipalPlanos.fitBounds(
-window.layerMunicipiosPlanos.getBounds(),
-{
-padding:[20,20],
-maxZoom:8
-}
+
+let div=document.getElementById(
+'mapaMunicipalPlanos'
 )
-}catch(e){}
+
+if(!div){
+console.log(
+'mapaMunicipalPlanos não encontrado'
+)
+return
 }
+
+await renderMapaMunicipalPlanos('TODOS')
+
+setTimeout(()=>{
+
+window.mapaMunicipalPlanos
+?.invalidateSize(true)
+
 },500)
-},500)
+
+},300)
+
 })
 }
 if(nome==='cadastroMunicipal'){
@@ -2134,6 +2148,7 @@ maxZoom:9
 }
 }
 }catch(e){
+console.log(e)
 }
 },1000)
 }
@@ -2224,48 +2239,152 @@ if(typeof renderAuditoriaConcomitante==='function')await renderAuditoriaConcomit
 /*=========================================================
 999 QUEIMADAS FUNCTION IMPRIMIRPAINEL
 =========================================================*/
-function imprimirPainel(){
-window.print()
+function imprimirPainel(idPainel){
+let painel=typeof idPainel==='string'
+?document.getElementById(idPainel)
+:idPainel
+if(!painel){
+alert('Painel não encontrado.')
+return
+}
+let conteudo=painel.innerHTML
+let tela=window.open('','_blank')
+tela.document.write(`
+<html>
+<head>
+<title>Relatório Queimadas</title>
+<style>
+body{
+font-family:Arial,sans-serif;
+padding:20px;
+}
+table{
+width:100%;
+border-collapse:collapse;
+}
+table,th,td{
+border:1px solid #ccc;
+}
+th,td{
+padding:6px;
+}
+canvas,img{
+max-width:100%;
+height:auto;
+}
+.cardExecutivo,
+.cardMunicipal,
+.cardPainel,
+.cardRelatorio,
+.cardMapa,
+.cardAnalise{
+page-break-inside:avoid;
+break-inside:avoid;
+margin-bottom:20px;
+}
+h1,h2,h3,h4{
+page-break-after:avoid;
+}
+</style>
+</head>
+<body>
+${conteudo}
+</body>
+</html>
+`)
+tela.document.close()
+setTimeout(()=>{
+tela.focus()
+tela.print()
+},800)
 }
 
 /*=========================================================
 998 QUEIMADAS FUNCTION IMPRIMIRABAATUALQUEIMADAS
 =========================================================*/
 function imprimirAbaAtualQueimadas(){
-
 let abas=[
-'abaExecutivo',
-'abaExecutivoMunicipal',
-'abaPlanejamento',
-'abaMonitoramento',
-'abaAnalise',
-'abaMapa',
-'abaSituacao',
-'abaPresidente',
-'abaConselheiro',
-'abaAuditor'
+'executivo',
+'executivomunicipal',
+'planejamento',
+'monitoramento',
+'analise',
+'mapa',
+'situacao',
+'presidente',
+'conselheiro',
+'auditor'
 ]
-
-for(let id of abas){
-
-let painel=document.getElementById(id)
-
-if(
-painel &&
-!painel.classList.contains('hidden')
-){
+for(let aba of abas){
+let painel=document.getElementById('aba'+aba)||document.getElementById(aba)
+if(painel&&painel.style.display!=='none'){
 imprimirPainel(painel)
 return
 }
-
 }
-
 window.print()
-
 }
 /*=========================================================
 997 QUEIMADAS FUNCTION GERARPDFEXECUTIVOQUEIMADAS
 =========================================================*/
-function gerarPDFExecutivoQueimadas(){
-alert('Função temporariamente desativada.')
+async function gerarPDFExecutivoQueimadas(){
+
+const {jsPDF}=window.jspdf
+
+let pdf=new jsPDF(
+'l',
+'mm',
+'a4'
+)
+
+let ids=[
+'cardMapaRO',
+'cardIRIQHeatmap',
+'cardMunicipiosPrioritarios',
+'cardFocosCalor',
+'cardAlertas'
+]
+
+for(let i=0;i<ids.length;i++){
+
+let el=document.getElementById(ids[i])
+
+if(!el)continue
+
+let canvas=await html2canvas(
+el,
+{
+scale:2,
+useCORS:true,
+backgroundColor:'#ffffff'
+}
+)
+
+let img=canvas.toDataURL('image/jpeg',0.95)
+
+let largura=277
+let altura=
+canvas.height*
+largura/
+canvas.width
+
+if(i>0){
+pdf.addPage()
+}
+
+pdf.addImage(
+img,
+'JPEG',
+10,
+10,
+largura,
+altura
+)
+
+}
+
+pdf.save(
+'QUEIMADAS_EXECUTIVO.pdf'
+)
+
 }
