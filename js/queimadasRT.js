@@ -619,3 +619,55 @@ doc.text('Ferramentas Utilizadas:',20,195)
 doc.text('Heatmap Estadual • IRIQ • CHAP • IA-CHAP • Matriz 5x5 • Monitoramento 4D',40,207)
 doc.text('Data de Emissão: '+new Date().toLocaleDateString('pt-BR'),20,235)
 }
+/*=========================================================
+426 RT WORD TECNICO 0501
+=========================================================*/
+async function gerarWordTecnico0501(){
+let html=`
+<h1>RELATÓRIO TÉCNICO - PCe 0501/2026</h1>
+<h2>MONITORAMENTO DAS QUEIMADAS</h2>
+<h2>1. INTRODUÇÃO</h2>
+<p>O presente relatório técnico apresenta os resultados do monitoramento das ações de prevenção, preparação, resposta e mitigação relacionadas às queimadas e incêndios florestais no Estado de Rondônia.</p>
+<h2>2. OBJETO</h2>
+<p>Avaliar a implementação dos planos de ação estaduais e municipais destinados ao enfrentamento das queimadas e incêndios florestais.</p>
+<h2>3. METODOLOGIA</h2>
+<p>Foram utilizados os modelos CHAP, IA-CHAP, Heatmap Estadual, IRIQ, Matriz de Risco 5x5 e monitoramento contínuo das bases de dados institucionais.</p>
+<h2>4. SITUAÇÃO ESTADUAL</h2>
+<p>Análise consolidada da situação das queimadas e incêndios florestais em Rondônia.</p>
+<h2>5. ANÁLISE MUNICIPAL</h2>
+<p>Acompanhamento dos municípios quanto aos planos de ação e atendimento ao Ofício Circular n.16/2026/GABPRES/TCERO.</p>
+<h2>6. HEATMAP ESTADUAL</h2>
+<p>Classificação dos municípios por criticidade e risco.</p>
+<h2>7. IRIQ ESTADUAL</h2>
+<p>Índice de Risco Integrado de Queimadas.</p>
+<h2>8. CHAP</h2>
+<p>Classificação Hierarquizada de Ameaças e Prioridades.</p>
+<h2>9. IA-CHAP</h2>
+<p>Aplicação de Inteligência Artificial para priorização dos riscos.</p>
+<h2>10. MATRIZ DE RISCO 5X5</h2>
+<p>Avaliação dos riscos por probabilidade e impacto.</p>
+<h2>11. MUNICÍPIOS CRÍTICOS</h2>
+<p>Municípios classificados como prioritários para atuação preventiva.</p>
+<h2>12. ACHADOS DE AUDITORIA</h2>
+<p>Principais achados identificados durante o monitoramento.</p>
+<h2>13. EVIDÊNCIAS</h2>
+<p>Evidências documentais e operacionais utilizadas na análise.</p>
+<h2>14. CONCLUSÕES</h2>
+<p>Conclusões técnicas do monitoramento realizado.</p>
+<h2>15. PROPOSTAS DE ENCAMINHAMENTO</h2>
+<p>Propostas para fortalecimento da governança e mitigação dos riscos.</p>
+<h2>16. ANEXOS</h2>
+<p>Mapas, painéis, indicadores e documentos complementares.</p>
+<h2>17. ASSINATURAS</h2>
+<p>Manoel Fernandes Neto • Luís Fernando Bueno • Raimundo Paulo Dias Barros Vieira.</p>
+<h2>18. REFERÊNCIAS</h2>
+<p>INPE • Sedam • CBMRO • TCE-RO • MapBiomas • Plano Unificado.</p>
+<h2>19. SIGLAS</h2>
+<p>CBMRO • CHAP • IA-CHAP • INPE • IRIQ • ODS • PCe • Sedam • TCE-RO.</p>
+<h2>20. GLOSSÁRIO</h2>
+<p>Definições técnicas utilizadas no relatório.</p>
+<h2>21. FICHA TÉCNICA</h2>
+<p>Processo PCe 0501/2026 • Relatório Técnico de Monitoramento das Queimadas.</p>
+`
+baixarWordQueimadas('RT_2026_QUEIMADAS',html)
+}
