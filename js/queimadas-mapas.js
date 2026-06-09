@@ -330,11 +330,23 @@ window.mapaEstadualRO=null
 window.layerUCsEstadual=null
 window.layerTIsEstadual=null
 window.camadasControleEstadual=null
+
 if(div._leaflet_id){
 delete div._leaflet_id
 }
 let mapa=L.map('mapaROEstadual').setView([-10.9,-63.3],7)
 window.mapaEstadualRO=mapa
+setTimeout(()=>{
+mapa.invalidateSize()
+},500)
+
+setTimeout(()=>{
+mapa.invalidateSize()
+},1500)
+
+setTimeout(()=>{
+mapa.invalidateSize()
+},3000)
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 {
@@ -361,12 +373,15 @@ if(window.layerTIsEstadual){
 window.layerTIsEstadual.bringToFront()
 }
 }
+mapa.whenReady(()=>{
 setTimeout(()=>{
 try{
 mapa.invalidateSize(true)
 let layers=[]
-if(window.layerUCsEstadual)layers.push(window.layerUCsEstadual)
-if(window.layerTIsEstadual)layers.push(window.layerTIsEstadual)
+if(window.layerUCsEstadual)
+layers.push(window.layerUCsEstadual)
+if(window.layerTIsEstadual)
+layers.push(window.layerTIsEstadual)
 if(layers.length){
 let grupo=L.featureGroup(layers)
 if(grupo.getBounds().isValid()){
@@ -382,7 +397,8 @@ maxZoom:8
 }catch(e){
 console.log(e)
 }
-},1200)
+},1000)
+})
 }
 /*=========================================================
 111 QUEIMADAS FUNCTION CARREGARTISRO
