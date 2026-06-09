@@ -1958,12 +1958,7 @@ box.innerHTML=`
 ✓ Monitorar fontes de calor
 </div>`
 }
-/*=========================================================
-061 QUEIMADAS FUNCTION PDFCOMPLETO
-=========================================================*/
-async function pdfCompletoQueimadas(){
-await gerarPDFTecnico0501()
-}
+
 /*=========================================================
 062 QUEIMADAS FUNCTION RENDERSTATUSGERAL
 =========================================================*/
