@@ -33,7 +33,6 @@ let {data,error}=await client
 .from('queimadas_monitoramento')
 .select('*')
 if(error){
-console.log(error)
 box.innerHTML='Erro ao carregar.'
 return
 }
@@ -2082,15 +2081,7 @@ if(typeof renderSemResposta==='function')await renderSemResposta()
 if(typeof renderGraficoMunicipios==='function')await renderGraficoMunicipios()
 if(typeof renderEstatisticasMunicipais==='function')await renderEstatisticasMunicipais()
 if(typeof renderTabelaMunicipios==='function')await renderTabelaMunicipios()
-let divMapa=document.getElementById('mapaMunicipalPlanos')
-console.log(
-'ALTURA MAPA:',
-divMapa?.offsetHeight
-)
-console.log(
-'LARGURA MAPA:',
-divMapa?.offsetWidth
-)
+
 requestAnimationFrame(()=>{
 
 setTimeout(async()=>{
@@ -2098,13 +2089,6 @@ setTimeout(async()=>{
 let div=document.getElementById(
 'mapaMunicipalPlanos'
 )
-
-if(!div){
-console.log(
-'mapaMunicipalPlanos não encontrado'
-)
-return
-}
 
 await renderMapaMunicipalPlanos('TODOS')
 
@@ -2148,7 +2132,6 @@ maxZoom:9
 }
 }
 }catch(e){
-console.log(e)
 }
 },1000)
 }
@@ -2284,4 +2267,3 @@ window.print()
 function gerarPDFExecutivoQueimadas(){
 alert('Função temporariamente desativada.')
 }
-console.log('QUEIMADAS.JS CARREGOU ATÉ O FINAL')
