@@ -1402,7 +1402,7 @@ delete div._leaflet_id
 }
 window.overlayUCsExecutivoAdicionado=false
 window.overlayTIsExecutivoAdicionado=false
-let mapa=L.map('mapaRO').setView([-10.9,-63.3],7)
+let mapa=L.map('mapaROEstadual',{preferCanvas:true}).setView([-10.9,-63.3],7)
 window.mapaExecutivoRO=mapa
 window.camadasControleExecutivo=L.control.layers({},{},{collapsed:false}).addTo(mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
@@ -2064,6 +2064,21 @@ if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadu
 if(typeof renderIndicadoresEstrategicos==='function')await renderIndicadoresEstrategicos()
 if(typeof renderPainelUCs==='function')await renderPainelUCs()
 if(typeof renderLegendaHeatmap==='function')await renderLegendaHeatmap()
+setTimeout(()=>{
+if(window.mapaEstadualRO){
+window.mapaEstadualRO.invalidateSize(true)
+try{
+window.mapaEstadualRO.eachLayer(l=>{
+if(l.redraw)l.redraw()
+})
+}catch(e){}
+}
+},800)
+setTimeout(()=>{
+if(window.mapaEstadualRO){
+window.mapaEstadualRO.invalidateSize(true)
+}
+},2000)
 }
 
 if(nome==='executivomunicipal'){
@@ -2087,31 +2102,22 @@ console.log(
 divMapa?.offsetWidth
 )
 requestAnimationFrame(()=>{
-
 setTimeout(async()=>{
-
 let div=document.getElementById(
 'mapaMunicipalPlanos'
 )
-
 if(!div){
 console.log(
 'mapaMunicipalPlanos não encontrado'
 )
 return
 }
-
 await renderMapaMunicipalPlanos('TODOS')
-
 setTimeout(()=>{
-
 window.mapaMunicipalPlanos
 ?.invalidateSize(true)
-
 },500)
-
 },300)
-
 })
 }
 if(nome==='cadastroMunicipal'){
