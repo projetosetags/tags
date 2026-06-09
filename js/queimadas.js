@@ -2247,7 +2247,7 @@ if(!painel){
 alert('Painel não encontrado.')
 return
 }
-let conteudo=painel.innerHTML
+let conteudo=painel.outerHTML
 let tela=window.open('','_blank')
 tela.document.write(`
 <html>
@@ -2284,6 +2284,18 @@ margin-bottom:20px;
 }
 h1,h2,h3,h4{
 page-break-after:avoid;
+}
+@page{
+size:A4 landscape;
+margin:8mm;
+}
+.cardExecutivo{
+page-break-inside:avoid;
+break-inside:avoid;
+}
+.exec-duplo{
+page-break-inside:avoid;
+break-inside:avoid;
 }
 </style>
 </head>
@@ -2327,3 +2339,16 @@ window.print()
 /*=========================================================
 997 QUEIMADAS FUNCTION GERARPDFEXECUTIVOQUEIMADAS
 =========================================================*/
+function gerarPDFExecutivoQueimadas(){
+
+let aba=
+document.getElementById('abaExecutivo')
+
+if(!aba){
+alert('Painel Executivo não encontrado.')
+return
+}
+
+imprimirPainel(aba)
+
+}
