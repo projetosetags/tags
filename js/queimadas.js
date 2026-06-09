@@ -2327,7 +2327,15 @@ window.print()
 /*=========================================================
 997 QUEIMADAS FUNCTION GERARPDFEXECUTIVOQUEIMADAS
 =========================================================*/
-function gerarPDFExecutivoQueimadas(){
+async function gerarPDFExecutivoQueimadas(){
+
+const {jsPDF}=window.jspdf
+
+let pdf=new jsPDF(
+'l',
+'mm',
+'a4'
+)
 
 let ids=[
 'cardMapaRO',
@@ -2337,38 +2345,46 @@ let ids=[
 'cardAlertas'
 ]
 
-let html=''
+for(let i=0;i<ids.length;i++){
 
-ids.forEach(id=>{
-let el=document.getElementById(id)
-if(el)html+=el.outerHTML
-})
+let el=document.getElementById(ids[i])
 
-let tela=window.open('','_blank')
+if(!el)continue
 
-tela.document.write(`
-<html>
-<head>
-<title>Relatório Executivo Queimadas</title>
-<style>
-@page{size:A4 landscape;margin:8mm;}
-body{font-family:Arial,sans-serif;}
-.cardExecutivo{page-break-after:always;break-after:page;page-break-inside:avoid;break-inside:avoid;}
-img,canvas{max-width:100%;height:auto;}
-.leaflet-container{height:180mm!important;}
-</style>
-</head>
-<body>
-${html}
-</body>
-</html>
-`)
+let canvas=await html2canvas(
+el,
+{
+scale:2,
+useCORS:true,
+backgroundColor:'#ffffff'
+}
+)
 
-tela.document.close()
+let img=canvas.toDataURL('image/jpeg',0.95)
 
-setTimeout(()=>{
-tela.focus()
-tela.print()
-},1000)
+let largura=277
+let altura=
+canvas.height*
+largura/
+canvas.width
+
+if(i>0){
+pdf.addPage()
+}
+
+pdf.addImage(
+img,
+'JPEG',
+10,
+10,
+largura,
+altura
+)
+
+}
+
+pdf.save(
+'QUEIMADAS_EXECUTIVO.pdf'
+)
 
 }
