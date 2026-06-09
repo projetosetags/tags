@@ -507,59 +507,14 @@ FUNAI
 console.error(e)
 }
 }
-
 /*=========================================================
 120 AUDITORIA RELATORIOS
 =========================================================*/
 async function renderPainelRelatoriosAuditoria(){
-
 let painel=document.getElementById('painelAuditoria')
-
 if(!painel)return
-
 painel.innerHTML=`
 <div class="chap-grid">
-
-<div class="chap-card">
-<div class="chap-num">📕</div>
-<div class="chap-label">
-RELATÓRIO EXECUTIVO PDF
-</div>
-<button onclick="gerarPDFExecutivoTCERO()">
-GERAR PDF
-</button>
-</div>
-
-<div class="chap-card">
-<div class="chap-num">📘</div>
-<div class="chap-label">
-RELATÓRIO EXECUTIVO WORD
-</div>
-<button onclick="gerarWordExecutivoTCERO()">
-GERAR WORD
-</button>
-</div>
-
-<div class="chap-card">
-<div class="chap-num">📙</div>
-<div class="chap-label">
-RELATÓRIO COMPLETO PDF
-</div>
-<button onclick="pdfCompletoQueimadas()">
-GERAR PDF
-</button>
-</div>
-
-<div class="chap-card">
-<div class="chap-num">📗</div>
-<div class="chap-label">
-RELATÓRIO COMPLETO WORD
-</div>
-<button onclick="gerarWordCompletoQueimadas()">
-GERAR WORD
-</button>
-</div>
-
 <div class="chap-card">
 <div class="chap-num">🔥</div>
 <div class="chap-label">
@@ -572,7 +527,6 @@ PDF TÉCNICO
 WORD TÉCNICO
 </button>
 </div>
-
 <div class="chap-card">
 <div class="chap-num">🏛️</div>
 <div class="chap-label">
@@ -585,7 +539,6 @@ PDF MUNICÍPIOS
 WORD MUNICÍPIOS
 </button>
 </div>
-
 </div>
 `
 }
