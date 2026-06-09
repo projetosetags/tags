@@ -2340,15 +2340,5 @@ window.print()
 997 QUEIMADAS FUNCTION GERARPDFEXECUTIVOQUEIMADAS
 =========================================================*/
 function gerarPDFExecutivoQueimadas(){
-
-let aba=
-document.getElementById('abaExecutivo')
-
-if(!aba){
-alert('Painel Executivo não encontrado.')
-return
-}
-
-imprimirPainel(aba)
-
+alert('Função temporariamente desativada.')
 }
