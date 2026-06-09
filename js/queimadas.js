@@ -2239,102 +2239,44 @@ if(typeof renderAuditoriaConcomitante==='function')await renderAuditoriaConcomit
 /*=========================================================
 999 QUEIMADAS FUNCTION IMPRIMIRPAINEL
 =========================================================*/
-function imprimirPainel(idPainel){
-let painel=typeof idPainel==='string'
-?document.getElementById(idPainel)
-:idPainel
-if(!painel){
-alert('Painel não encontrado.')
-return
-}
-let conteudo=painel.outerHTML
-let tela=window.open('','_blank')
-tela.document.write(`
-<html>
-<head>
-<title>Relatório Queimadas</title>
-<style>
-body{
-font-family:Arial,sans-serif;
-padding:20px;
-}
-table{
-width:100%;
-border-collapse:collapse;
-}
-table,th,td{
-border:1px solid #ccc;
-}
-th,td{
-padding:6px;
-}
-canvas,img{
-max-width:100%;
-height:auto;
-}
-.cardExecutivo,
-.cardMunicipal,
-.cardPainel,
-.cardRelatorio,
-.cardMapa,
-.cardAnalise{
-page-break-inside:avoid;
-break-inside:avoid;
-margin-bottom:20px;
-}
-h1,h2,h3,h4{
-page-break-after:avoid;
-}
-@page{
-size:A4 landscape;
-margin:8mm;
-}
-.cardExecutivo{
-page-break-inside:avoid;
-break-inside:avoid;
-}
-.exec-duplo{
-page-break-inside:avoid;
-break-inside:avoid;
-}
-</style>
-</head>
-<body>
-${conteudo}
-</body>
-</html>
-`)
-tela.document.close()
-setTimeout(()=>{
-tela.focus()
-tela.print()
-},800)
+function imprimirPainel(){
+window.print()
 }
 
 /*=========================================================
 998 QUEIMADAS FUNCTION IMPRIMIRABAATUALQUEIMADAS
 =========================================================*/
 function imprimirAbaAtualQueimadas(){
+
 let abas=[
-'executivo',
-'executivomunicipal',
-'planejamento',
-'monitoramento',
-'analise',
-'mapa',
-'situacao',
-'presidente',
-'conselheiro',
-'auditor'
+'abaExecutivo',
+'abaExecutivoMunicipal',
+'abaPlanejamento',
+'abaMonitoramento',
+'abaAnalise',
+'abaMapa',
+'abaSituacao',
+'abaPresidente',
+'abaConselheiro',
+'abaAuditor'
 ]
-for(let aba of abas){
-let painel=document.getElementById('aba'+aba)||document.getElementById(aba)
-if(painel&&painel.style.display!=='none'){
+
+for(let id of abas){
+
+let painel=document.getElementById(id)
+
+if(
+painel &&
+!painel.classList.contains('hidden')
+){
 imprimirPainel(painel)
 return
 }
+
 }
+
 window.print()
+
 }
 /*=========================================================
 997 QUEIMADAS FUNCTION GERARPDFEXECUTIVOQUEIMADAS
