@@ -54,7 +54,14 @@ if(typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels)}
 id="btnImprimirPainel"
 class="btnAbaQueimadas btnPdfQueimadas"
 onclick="imprimirAbaAtualQueimadas()">
-🖨 PDF
+🖨 PDF ABA
+</button>
+
+<button
+id="btnImprimirExecutivo"
+class="btnAbaQueimadas btnPdfQueimadas"
+onclick="gerarPDFExecutivoQueimadas()">
+📑 PDF EXECUTIVO
 </button>
 </nav>
 <!--=========================================================
@@ -63,7 +70,7 @@ onclick="imprimirAbaAtualQueimadas()">
 <section id="abaExecutivo" class="abaQueimadas">
 <div class="painelTitulo">DASHBOARD EXECUTIVO</div>
 <div id="painelKPIs"></div>
-<div class="cardExecutivo">
+<div id="cardMapaRO" class="cardExecutivo">
 <h2>MAPA DE RONDÔNIA - RISCO DE QUEIMADAS</h2>
 <button class="btnOcultarMapa" onclick="toggleMapaRO()">👁 OCULTAR / EXIBIR MAPA</button>
 <div id="MapaRO">
@@ -73,20 +80,20 @@ onclick="imprimirAbaAtualQueimadas()">
 Fonte: OpenStreetMap • INPE • Sedam • Base Municipal RO
 </div>
 </div>
-<div class="cardExecutivo">
+<div id="cardIRIQHeatmap" class="cardExecutivo">
 <h2>IRIQ ESTADUAL E HEATMAP ESTADUAL</h2>
 <div id="painelIRIQHeatmapUnificado"></div>
 </div>
-<div class="cardExecutivo">
+<div id="cardMunicipiosPrioritarios" class="cardExecutivo">
 <h2>MUNICÍPIOS PRIORITÁRIOS - RANKING POR NÍVEL DE RISCO (IRIQ)</h2>
 <div id="painelMunicipiosPrioritarios"></div>
 </div>
 <div class="exec-duplo">
-<div class="cardExecutivo">
+<div id="cardFocosCalor" class="cardExecutivo">
 <h2>FOCOS DE CALOR - ÚLTIMOS 7 DIAS</h2>
 <div id="painelFocosCalor"></div>
 </div>
-<div class="cardExecutivo">
+<div id="cardAlertas" class="cardExecutivo">
 <h2>ALERTAS AUTOMÁTICOS - RANQUEAMENTO DE MUNICÍPIOS POR RISCO (IRIQ)</h2>
 <div id="painelAlertas"></div>
 </div>
