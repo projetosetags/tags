@@ -2328,98 +2328,43 @@ window.print()
 997 QUEIMADAS FUNCTION GERARPDFEXECUTIVOQUEIMADAS
 =========================================================*/
 async function gerarPDFExecutivoQueimadas(){
-
-const {jsPDF}=window.jspdf
-
-let pdf=new jsPDF(
-'l',
-'mm',
-'a4'
-)
-
-let ids=[
-'cardMapaRO',
-'cardIRIQHeatmap',
-'cardMunicipiosPrioritarios',
-'cardFocosCalor',
-'cardAlertas'
-]
-
-for(let i=0;i<ids.length;i++){
-
-let el=document.getElementById(ids[i])
-
-if(!el)continue
-
-if(
-el.offsetWidth===0 ||
-el.offsetHeight===0
-){
-console.warn(
-'Elemento oculto:',
-ids[i]
-)
-continue
+let html=`
+<div style="font-family:Arial,sans-serif;padding:20px;background:#fff;">
+${document.getElementById('cardMapaRO')?.outerHTML||''}
+${document.getElementById('cardIRIQHeatmap')?.outerHTML||''}
+${document.getElementById('cardMunicipiosPrioritarios')?.outerHTML||''}
+${document.getElementById('cardFocosCalor')?.outerHTML||''}
+${document.getElementById('cardAlertas')?.outerHTML||''}
+</div>
+`
+let tela=window.open('','_blank')
+tela.document.write(`
+<html>
+<head>
+<title>Relatório Executivo Queimadas</title>
+<link rel="stylesheet" href="../css/queimadas.css">
+<style>
+body{
+padding:20px;
+font-family:Arial,sans-serif;
+background:#fff;
+}
+.card{
+page-break-inside:avoid;
+break-inside:avoid;
+margin-bottom:20px;
+}
+</style>
+</head>
+<body>
+${html}
+</body>
+</html>
+`)
+tela.document.close()
+setTimeout(()=>{
+tela.focus()
+tela.print()
+},1000)
 }
 
-let canvas=await html2canvas(
-el,
-{
-scale:2,
-useCORS:true,
-backgroundColor:'#ffffff'
-}
-)
-
-if(
-!canvas.width ||
-!canvas.height
-){
-console.warn(
-'Canvas inválido:',
-ids[i]
-)
-continue
-}
-
-let img=canvas.toDataURL(
-'image/jpeg',
-0.95
-)
-
-let largura=277
-
-let altura=
-(canvas.height*largura)/
-canvas.width
-
-if(
-!isFinite(altura)
-){
-console.warn(
-'Altura inválida:',
-ids[i]
-)
-continue
-}
-
-if(i>0){
-pdf.addPage()
-}
-
-pdf.addImage(
-img,
-'JPEG',
-10,
-10,
-largura,
-altura
-)
-
-}
-
-pdf.save(
-'QUEIMADAS_EXECUTIVO.pdf'
-)
-
-}
