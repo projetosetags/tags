@@ -2085,22 +2085,24 @@ if(typeof renderTabelaMunicipios==='function')await renderTabelaMunicipios()
 requestAnimationFrame(()=>{
 
 setTimeout(async()=>{
-
-let div=document.getElementById(
-'mapaMunicipalPlanos'
-)
-
+let div=document.getElementById('mapaMunicipalPlanos')
+if(!div)return
 await renderMapaMunicipalPlanos('TODOS')
-
 setTimeout(()=>{
-
-window.mapaMunicipalPlanos
-?.invalidateSize(true)
-
+if(window.mapaMunicipalPlanos){
+window.mapaMunicipalPlanos.invalidateSize(true)
+try{
+window.mapaMunicipalPlanos.fitBounds(
+window.layerMunicipiosPlanos.getBounds(),
+{
+padding:[20,20],
+maxZoom:8
+}
+)
+}catch(e){}
+}
 },500)
-
-},300)
-
+},500)
 })
 }
 if(nome==='cadastroMunicipal'){
