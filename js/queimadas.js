@@ -2284,3 +2284,4 @@ window.print()
 function gerarPDFExecutivoQueimadas(){
 alert('Função temporariamente desativada.')
 }
+console.log('QUEIMADAS.JS CARREGOU ATÉ O FINAL')
