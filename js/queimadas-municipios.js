@@ -1927,3 +1927,4 @@ if(typeof renderSituacaoGeralMunicipios==='function')
 await renderSituacaoGeralMunicipios()
 alert('Registro atualizado com sucesso.')
 }
+
