@@ -1962,7 +1962,7 @@ box.innerHTML=`
 061 QUEIMADAS FUNCTION PDFCOMPLETO
 =========================================================*/
 async function pdfCompletoQueimadas(){
-await gerarPDFExecutivoTCERO()
+await gerarPDFTecnico0501()
 }
 /*=========================================================
 062 QUEIMADAS FUNCTION RENDERSTATUSGERAL
