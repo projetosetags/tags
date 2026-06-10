@@ -597,7 +597,12 @@ Fonte: Cadastro Estadual de Unidades de Conservação • Sedam
 081 QUEIMADAS FUNCTION RENDERPAINELFOCOSINPE
 =========================================================*/
 async function renderPainelFocosINPE(){
-
+let periodo=
+document.getElementById(
+'filtroPeriodoFocos'
+)?.value
+||
+'7'
 let box=
 document.getElementById(
 'painelFocosCalor'
@@ -607,14 +612,53 @@ document.getElementById(
 'painelFocosINPE'
 )
 if(!box)return
-
-let {data}=await client
+let consulta=
+client
 .from('queimadas_focos')
 .select('*')
-
+if(periodo==='ano'){
+consulta=
+consulta.gte(
+'data_referencia',
+`${new Date().getFullYear()}-01-01`
+)
+}else if(periodo==='custom'){
+let dataInicial=
+document.getElementById(
+'dataInicialFocos'
+)?.value
+let dataFinal=
+document.getElementById(
+'dataFinalFocos'
+)?.value
+if(dataInicial){
+consulta=
+consulta.gte(
+'data_referencia',
+dataInicial
+)
+}
+if(dataFinal){
+consulta=
+consulta.lte(
+'data_referencia',
+dataFinal
+)
+}
+}else{
+let d=new Date()
+d.setDate(
+d.getDate()-Number(periodo)
+)
+consulta=
+consulta.gte(
+'data_referencia',
+d.toISOString().split('T')[0]
+)
+}
+let {data}=await consulta
 let total=(data||[])
 .reduce((s,i)=>s+Number(i.focos||0),0)
-
 let mapa={}
 ;(data||[]).forEach(i=>{
 let mun=i.municipio||'SEM MUNICÍPIO'
@@ -625,20 +669,16 @@ let top10=Object.entries(mapa)
 .map(([municipio,focos])=>({municipio,focos}))
 .sort((a,b)=>b.focos-a.focos)
 .slice(0,10)
-
 box.innerHTML=`
-
 <div class="chap-grid">
-
 <div class="chap-card">
 <div class="chap-num">
-${total}
+${formatarNumero(total)}
 </div>
 <div class="chap-label">
 FOCOS DE CALOR
 </div>
 </div>
-
 <div class="chap-card">
 <div class="chap-num">
 ${(data||[]).length}
@@ -647,38 +687,52 @@ ${(data||[]).length}
 REGISTROS INPE
 </div>
 </div>
-
 </div>
-
 <div class="card-executivo">
-
 <h2>
-TOP FOCOS DE CALOR
+TOP FOCOS DE CALOR ${
+periodo==='ano'
+?'(ANO ATUAL)'
+:periodo==='custom'
+?'(PERSONALIZADO)'
+:`(${periodo} DIAS)`
+}
 </h2>
-
 ${top10.map(i=>`
-
 <div style="
 display:flex;
 justify-content:space-between;
 padding:6px;
 border-bottom:1px solid #ddd;
 ">
-
 <span>${i.municipio}</span>
-
 <b>${formatarNumero(i.focos)}</b>
-
 </div>
-
 `).join('')}
-
 </div>
-
 `
 }
 /*=========================================================
-082 QUEIMADAS FUNCTION RENDERGRAFICOTOPFOCOS
+082 QUEIMADAS FUNCTION CARREGARFOCOSPERIODO
+=========================================================*/
+function carregarFocosPeriodo(){
+let periodo=
+document.getElementById(
+'filtroPeriodoFocos'
+)?.value
+let box=
+document.getElementById(
+'boxPeriodoPersonalizado'
+)
+if(periodo==='custom'){
+box.style.display='flex'
+}else{
+box.style.display='none'
+}
+renderPainelFocosINPE()
+}
+/*=========================================================
+082 083 QUEIMADAS FUNCTION RENDERGRAFICOTOPFOCOS
 =========================================================*/
 async function renderGraficoTopFocos(){
 
