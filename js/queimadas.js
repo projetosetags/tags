@@ -2325,3 +2325,20 @@ return
 }
 window.print()
 }
+
+function carregarFocosPeriodo(){
+let periodo=
+document.getElementById(
+'filtroPeriodoFocos'
+).value
+let box=
+document.getElementById(
+'boxPeriodoPersonalizado'
+)
+if(periodo==='custom'){
+box.style.display='flex'
+}else{
+box.style.display='none'
+}
+carregarPainelFocosCalor(periodo)
+}
