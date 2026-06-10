@@ -83,7 +83,42 @@ Fonte: OpenStreetMap • INPE • Sedam • Base Municipal RO
 </div>
 <div class="exec-duplo">
 <div id="cardFocosCalor" class="cardExecutivo">
-<h2>FOCOS DE CALOR - ÚLTIMOS 7 DIAS</h2>
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+<h2 style="margin:0">
+FOCOS DE CALOR
+</h2>
+<div style="display:flex;gap:8px;align-items:center">
+<select
+id="filtroPeriodoFocos"
+onchange="carregarFocosPeriodo()"
+>
+<option value="1">Hoje</option>
+<option value="7" selected>7 Dias</option>
+<option value="30">30 Dias</option>
+<option value="365">12 Meses</option>
+<option value="ano">Ano Atual</option>
+<option value="custom">Personalizado</option>
+</select>
+</div>
+</div>
+<div
+id="boxPeriodoPersonalizado"
+style="display:none;margin:10px 0"
+>
+<input
+type="date"
+id="dataInicialFocos"
+>
+<input
+type="date"
+id="dataFinalFocos"
+>
+<button
+onclick="carregarFocosPeriodo()"
+>
+Atualizar
+</button>
+</div>
 <div id="painelFocosCalor"></div>
 </div>
 <div id="cardAlertas" class="cardExecutivo">
