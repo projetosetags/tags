@@ -989,25 +989,32 @@ box.innerHTML=`
 async function renderSalaSituacaoEstadual(){
 let box=document.getElementById('painelSalaSituacaoEstadual')
 if(!box)return
-let {data:heat}=await client
+
+let {data:heat=[]}=await client
 .from('queimadas_heatmap')
 .select('*')
+
 let {data:focos=[]}=await client
 .from('queimadas_focos')
 .select('*')
+
 let focosTotal=focos.reduce(
 (s,i)=>s+Number(i.focos||0),
 0
 )
+
 let criticos=(heat||[])
 .filter(i=>i.classificacao==='CRÍTICO')
 .length
+
 let altos=(heat||[])
 .filter(i=>i.classificacao==='ALTO')
 .length
+
 let semdados=(heat||[])
 .filter(i=>i.classificacao==='SEM DADOS')
 .length
+
 let top10=[...(heat||[])]
 .filter(i=>Number(i.focos||0)>0)
 .sort((a,b)=>Number(b.focos||0)-Number(a.focos||0))
@@ -1016,7 +1023,7 @@ box.innerHTML=`
 <div class="fonte-card">
 <b>Data Base:</b> ${new Date().toLocaleDateString('pt-BR')}<br>
 <b>Fonte:</b> INPE • Heatmap Estadual • IRIQ • CHAP • IA-CHAP<br>
-<b>Municípios Monitorados:</b> ${top10.length}<br>
+<b>Municípios Monitorados:</b> ${(heat||[]).length-semdados}<br>
 <b>Municípios Sem Dados:</b> ${semdados}
 </div>
 <div class="chap-grid">
