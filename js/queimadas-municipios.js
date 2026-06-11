@@ -709,6 +709,17 @@ border-bottom:1px solid #ddd;
 <b>${formatarNumero(i.focos)}</b>
 </div>
 `).join('')}
+
+<div style="
+margin-top:12px;
+font-size:11px;
+font-style:italic;
+color:#6b7280;
+text-align:left;
+">
+Fonte: INPE • Programa Queimadas • Tabela queimadas_focos • Atualização automática
+</div>
+
 </div>
 `
 }
