@@ -901,10 +901,9 @@ beginAtZero:true
 async function renderIndicadoresEstrategicos(){
 let box=document.getElementById('painelIndicadoresEstrategicos')
 if(!box)return
-let {data:heat}=await client
-.from('queimadas_heatmap')
-.select('*')
-let totalFocos=(focos||[]).reduce((s,i)=>s+Number(i.focos||0),0)
+let {data:focos=[]}=await client.from('queimadas_focos').select('*')
+let {data:heat=[]}=await client.from('queimadas_heatmap').select('*')
+let totalFocos=focos.reduce((s,i)=>s+Number(i.focos||0),0)
 let iriqMedio=await calcularIRIQ()
 let faixaIRIQ='BAIXO'
 let corIRIQ='#16a34a'
@@ -918,15 +917,15 @@ corIRIQ='#f97316'
 faixaIRIQ='MODERADO'
 corIRIQ='#facc15'
 }
-let municipiosCriticos=(heat||[]).filter(i=>i.classificacao==='CRÍTICO').length
-let municipiosAlto=(heat||[]).filter(i=>i.classificacao==='ALTO').length
-let municipiosSemDados=(heat||[]).filter(i=>i.classificacao==='SEM DADOS').length
-let municipiosMonitorados=(heat||[]).length-municipiosSemDados
+let municipiosCriticos=heat.filter(i=>i.classificacao==='CRÍTICO').length
+let municipiosAlto=heat.filter(i=>i.classificacao==='ALTO').length
+let municipiosSemDados=heat.filter(i=>i.classificacao==='SEM DADOS').length
+let municipiosMonitorados=heat.length-municipiosSemDados
 let hoje=new Date().toLocaleDateString('pt-BR')
 box.innerHTML=`
 <div class="chap-grid">
 <div class="chap-card">
-<div class="chap-num">${Number(totalFocos||0).toLocaleString('pt-BR')}</div>
+<div class="chap-num">${Number(totalFocos).toLocaleString('pt-BR')}</div>
 <div class="chap-label">FOCOS 2026</div>
 <div style="font-size:11px;color:#64748b">01/01/2026 até ${hoje}</div>
 </div>
@@ -993,6 +992,13 @@ if(!box)return
 let {data:heat}=await client
 .from('queimadas_heatmap')
 .select('*')
+let {data:focos=[]}=await client
+.from('queimadas_focos')
+.select('*')
+let focosTotal=focos.reduce(
+(s,i)=>s+Number(i.focos||0),
+0
+)
 let criticos=(heat||[])
 .filter(i=>i.classificacao==='CRÍTICO')
 .length
@@ -1002,8 +1008,6 @@ let altos=(heat||[])
 let semdados=(heat||[])
 .filter(i=>i.classificacao==='SEM DADOS')
 .length
-let focosTotal=(heat||[])
-.reduce((s,i)=>s+Number(i.focos||0),0)
 let top10=[...(heat||[])]
 .filter(i=>Number(i.focos||0)>0)
 .sort((a,b)=>Number(b.focos||0)-Number(a.focos||0))
