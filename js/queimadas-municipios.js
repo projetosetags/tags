@@ -663,17 +663,13 @@ consulta.gte(
 d.toISOString().split('T')[0]
 )
 }
-let {data}=await consulta
-let {data:heat}=await client
-.from('queimadas_heatmap')
-.select('*')
-let total=(heat||[])
-.reduce(
+let {data:focos}=await consulta
+let total=focos.reduce(
 (s,i)=>s+Number(i.focos||0),
 0
 )
 let mapa={}
-;(data||[]).forEach(i=>{
+;(focos||[]).forEach(i=>{
 let mun=i.municipio||'SEM MUNICÍPIO'
 if(!mapa[mun])mapa[mun]=0
 mapa[mun]+=Number(i.focos||0)
@@ -694,7 +690,7 @@ FOCOS DE CALOR
 </div>
 <div class="chap-card">
 <div class="chap-num">
-${(data||[]).length}
+${(focos||[]).length}
 </div>
 <div class="chap-label">
 REGISTROS INPE
