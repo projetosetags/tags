@@ -58,10 +58,10 @@ overflow-x:auto;
 /*=========================================================
 009 CHAP
 =========================================================*/
-.chap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
-.chap-card{background:#fff;border-radius:18px;padding:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08)}
-.chap-num{font-size:36px;font-weight:900;color:#2563eb}
-.chap-label{font-size:12px;font-weight:800;color:#334155;margin-top:6px}
+.chap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.chap-card{background:#fff;border-radius:14px;padding:10px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1px solid #e5e7eb}
+.chap-num{font-size:26px;font-weight:900;color:#2563eb;line-height:1}
+.chap-label{font-size:10px;font-weight:800;color:#334155;margin-top:4px;line-height:1.1}
 /*=========================================================
 010 HEATMAP
 =========================================================*/
@@ -298,4 +298,8 @@ font-weight:700;
 margin-left:4px;
 }
 .btnExcluirEstado:hover{background:#b91c1c;}
+.legendaMapaExecutivo{display:flex;gap:20px;flex-wrap:wrap;margin-top:10px;font-size:12px;font-weight:700}
+.itemLegenda{display:flex;align-items:center;gap:6px}
+.legCor{width:16px;height:16px;border-radius:4px;display:inline-block;border:1px solid #cbd5e1}
+
 
