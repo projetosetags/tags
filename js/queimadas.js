@@ -11,6 +11,20 @@ let ano=String(d.getFullYear()).slice(-2)
 return `${dia}-${mes}-${ano}`
 }
 /*=========================================================
+00 NormalizarMunicipio
+=========================================================*/
+function normalizarMunicipio(txt){
+return String(txt||'')
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.replace(/[’']/g,'')
+.replace(/\bDO OESTE\b/g,'DOESTE')
+.replace(/\bD OESTE\b/g,'DOESTE')
+.replace(/\s+/g,' ')
+.toUpperCase()
+.trim()
+}
+/*=========================================================
 002 CHART DATALABELS
 =========================================================*/
 if(typeof ChartDataLabels!=='undefined'){
