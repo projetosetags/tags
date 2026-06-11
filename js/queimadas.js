@@ -2095,7 +2095,7 @@ await renderMunicipiosOficio('CADASTRO')
 }
 
 if(typeof renderKPIsMunicipais==='function')await renderKPIsMunicipais()
-if(typeof renderEstadoOficio==='function')await renderEstadoOficio()
+// if(typeof renderEstadoOficio==='function')await renderEstadoOficio()
 if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
 if(typeof renderDilacoesPrazo==='function')await renderDilacoesPrazo()
 if(typeof renderSemResposta==='function')await renderSemResposta()
