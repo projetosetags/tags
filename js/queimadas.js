@@ -2512,7 +2512,7 @@ alert(error.message)
 return
 }
 alert(
-estadoEditando
+Editando
 ?'Órgão estadual atualizado com sucesso.'
 :'Órgão estadual cadastrado com sucesso.'
 )
@@ -2529,8 +2529,8 @@ document.getElementById('estadoDoc1').value=''
 document.getElementById('estadoDoc2').value=''
 document.getElementById('estadoObservacao').value=''
 estadoEditando=null
-let btn=document.querySelector('#painelFormularioEstado button')
-if(btn)btn.innerHTML='💾 SALVAR'
+document.getElementById('btnSalvarEstado').innerHTML='💾 SALVAR'
+document.getElementById('btnExcluirEstado').style.display='none'
 }
 /*=========================================================
 104 QUEIMADAS FUNCTION EDITARESTADO
@@ -2552,8 +2552,8 @@ document.getElementById('estadoDataRec2').value=data.iidatarecebimentodoc||''
 document.getElementById('estadoDoc1').value=data.inumerodocenviado||''
 document.getElementById('estadoDoc2').value=data.iinumerodocenviado||''
 document.getElementById('estadoObservacao').value=data.observacao||''
-let btn=document.querySelector('#painelFormularioEstado button')
-if(btn)btn.innerHTML='💾 ATUALIZAR'
+document.getElementById('btnSalvarEstado').innerHTML='💾 ATUALIZAR'
+document.getElementById('btnExcluirEstado').style.display='block'
 }
 /*=========================================================
 105 QUEIMADAS FUNCTION RENDERFORMULARIOESTADO
@@ -2572,29 +2572,55 @@ box.innerHTML=`
 <input id="estadoDoc1" placeholder="Documento 1">
 <input id="estadoDoc2" placeholder="Documento 2">
 <textarea id="estadoObservacao" placeholder="Observação"></textarea>
-<button onclick="salvarEstado()">💾 SALVAR</button>
+<div style="display:flex;gap:10px">
+<button id="btnSalvarEstado" onclick="salvarEstado()">💾 SALVAR</button>
+<button id="btnExcluirEstado" onclick="excluirEstado()" style="display:none;background:#dc2626">🗑 EXCLUIR</button>
+</div>
 </div>
 `
 }
 /*=========================================================
 106 QUEIMADAS FUNCTION EXCLUIRESTADO
 =========================================================*/
-async function excluirEstado(id){
+async function excluirEstado(){
+
+if(!estadoEditando){
+return
+}
 
 if(!confirm('Deseja excluir este órgão estadual?')){
 return
 }
+
 let {error}=await client
 .from('queimadas_estado_oficio')
 .delete()
-.eq('id',id)
+.eq('id',estadoEditando)
+
 if(error){
 alert(error.message)
 return
 }
+
+estadoEditando=null
+
+document.getElementById('estadoNome').value=''
+document.getElementById('estadoOficio').value=''
+document.getElementById('estadoDataEnvio').value=''
+document.getElementById('estadoPaginaEnvio').value=''
+document.getElementById('estadoDataRec1').value=''
+document.getElementById('estadoDataRec2').value=''
+document.getElementById('estadoDoc1').value=''
+document.getElementById('estadoDoc2').value=''
+document.getElementById('estadoObservacao').value=''
+
+document.getElementById('btnSalvarEstado').innerHTML='💾 SALVAR'
+document.getElementById('btnExcluirEstado').style.display='none'
+
 await renderKPIsEstado()
 await renderCadastroEstado()
 await renderIndicadoresEstado()
-alert('Registro excluído com sucesso.')
-}
 
+alert('Registro excluído com sucesso.')
+
+}
