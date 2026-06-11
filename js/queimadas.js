@@ -2089,19 +2089,22 @@ if(typeof renderFormularioEstado==='function')renderFormularioEstado()
 if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
 
+let tarefas=[]
+
 if(typeof renderMunicipiosOficio==='function'){
-await renderMunicipiosOficio('RESUMO')
-await renderMunicipiosOficio('CADASTRO')
+tarefas.push(renderMunicipiosOficio('RESUMO'))
+tarefas.push(renderMunicipiosOficio('CADASTRO'))
 }
 
-if(typeof renderKPIsMunicipais==='function')await renderKPIsMunicipais()
-// if(typeof renderEstadoOficio==='function')await renderEstadoOficio()
-if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
-if(typeof renderDilacoesPrazo==='function')await renderDilacoesPrazo()
-if(typeof renderSemResposta==='function')await renderSemResposta()
-if(typeof renderGraficoMunicipios==='function')await renderGraficoMunicipios()
-if(typeof renderEstatisticasMunicipais==='function')await renderEstatisticasMunicipais()
-if(typeof renderTabelaMunicipios==='function')await renderTabelaMunicipios()
+if(typeof renderKPIsMunicipais==='function')tarefas.push(renderKPIsMunicipais())
+if(typeof renderPlanosApresentados==='function')tarefas.push(renderPlanosApresentados())
+if(typeof renderDilacoesPrazo==='function')tarefas.push(renderDilacoesPrazo())
+if(typeof renderSemResposta==='function')tarefas.push(renderSemResposta())
+if(typeof renderGraficoMunicipios==='function')tarefas.push(renderGraficoMunicipios())
+if(typeof renderEstatisticasMunicipais==='function')tarefas.push(renderEstatisticasMunicipais())
+if(typeof renderTabelaMunicipios==='function')tarefas.push(renderTabelaMunicipios())
+
+await Promise.all(tarefas)
 
 let divMapa=document.getElementById('mapaMunicipalPlanos')
 
@@ -2119,7 +2122,7 @@ await renderMapaMunicipalPlanos('TODOS')
 setTimeout(()=>{
 window.mapaMunicipalPlanos?.invalidateSize(true)
 },500)
-},300)
+},100)
 })
 }
 if(nome==='cadastroMunicipal'){
