@@ -1402,7 +1402,7 @@ delete div._leaflet_id
 }
 window.overlayUCsExecutivoAdicionado=false
 window.overlayTIsExecutivoAdicionado=false
-let mapa=L.map('mapaROEstadual',{preferCanvas:true}).setView([-10.9,-63.3],7)
+let mapa=L.map(div,{preferCanvas:true}).setView([-10.9,-63.3],7)
 window.mapaExecutivoRO=mapa
 window.camadasControleExecutivo=L.control.layers({},{},{collapsed:false}).addTo(mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
