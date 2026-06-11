@@ -2445,14 +2445,18 @@ let html=`
 html+=`
 <tr>
 <td>${i.estado||'-'}</td>
-<td>${i.nroficioenviadotcero||'-'}</td>
+<td class="colOficio">
+${i.nroficioenviadotcero||'-'}
+</td>
 <td>${formatarDataBR(i.dataenviodoc)}</td>
 <td>${i.paginaenviodoc||'-'}</td>
 <td>${formatarDataBR(i.idatarecebimentodoc)}</td>
 <td>${formatarDataBR(i.iidatarecebimentodoc)}</td>
 <td>${i.inumerodocenviado||'-'}</td>
 <td>${i.iinumerodocenviado||'-'}</td>
-<td>${i.observacao||'-'}</td>
+<td class="colObservacao">
+${i.observacao||'-'}
+</td>
 <td>
 <button class="btnEditarMunicipio" onclick="editarEstado(${i.id})">
 ✏ EDITAR
