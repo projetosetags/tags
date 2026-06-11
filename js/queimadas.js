@@ -264,8 +264,11 @@ return
 
 let municipios=(heat||[]).length
 
-let focos=(heat||[])
-.reduce(
+let {data:focosINPE=[]}=await client
+.from('queimadas_focos')
+.select('*')
+
+let focos=focosINPE.reduce(
 (s,i)=>s+Number(i.focos||0),
 0
 )
