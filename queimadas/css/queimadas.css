@@ -37,7 +37,15 @@ body{overflow-x:hidden}
 /*=========================================================
 007 CARDS
 =========================================================*/
-.cardExecutivo{background:#fff;border-radius:20px;padding:18px;margin-bottom:16px;box-shadow:0 6px 18px rgba(0,0,0,.08);border:1px solid #e5e7eb}
+.cardExecutivo{
+background:#fff;
+border-radius:20px;
+padding:16px;
+margin-bottom:16px;
+box-shadow:0 4px 12px rgba(0,0,0,.06);
+border:1px solid #e5e7eb;
+overflow-x:auto;
+}
 #abaEstado .cardExecutivo{width:100%;}
 .cardExecutivo h2{font-size:18px;font-weight:900;color:#0f172a;margin-bottom:12px;border-bottom:2px solid #e5e7eb;padding-bottom:8px}
 /*=========================================================
@@ -215,160 +223,22 @@ body{overflow-x:hidden}
 .periodo-plano{display:block;margin-top:6px;font-size:11px;font-weight:800;line-height:14px;color:#334155}
 .responsavel-plano{display:block;margin-top:4px;font-size:10px;color:#64748b}
 .status-plano{display:block;margin-top:4px;font-size:10px;font-weight:900;color:#475569}
-
-.tabelaMunicipios{
-width:100%;
-border-collapse:collapse;
-font-size:12px;
-table-layout:fixed;
-}
-.tabelaMunicipios th{
-background:#0f172a;
-color:#fff;
-padding:10px;
-text-align:left;
-}
-.tabelaMunicipios td{
-padding:8px;
-border-bottom:1px solid #e2e8f0;
-vertical-align:top;
-font-size:12px;
-line-height:1.25;
-}
-.tabelaMunicipios tr:hover{
-background:#f8fafc;
-}
-.tabelaMunicipios th:nth-child(1),
-.tabelaMunicipios td:nth-child(1){
-width:14%;
-}
-.tabelaMunicipios th:nth-child(2),
-.tabelaMunicipios td:nth-child(2){
-width:17%;
-}
-.tabelaMunicipios th:nth-child(3),
-.tabelaMunicipios td:nth-child(3){
-width:7%;
-white-space:nowrap;
-}
-.tabelaMunicipios th:nth-child(4),
-.tabelaMunicipios td:nth-child(4){
-width:5%;
-}
-.tabelaMunicipios th:nth-child(5),
-.tabelaMunicipios td:nth-child(5){
-width:7%;
-white-space:nowrap;
-}
-.tabelaMunicipios th:nth-child(6),
-.tabelaMunicipios td:nth-child(6){
-width:7%;
-white-space:nowrap;
-}
-.tabelaMunicipios th:nth-child(7),
-.tabelaMunicipios td:nth-child(7){
-width:5%;
-}
-.tabelaMunicipios th:nth-child(8),
-.tabelaMunicipios td:nth-child(8){
-width:5%;
-}
-.tabelaMunicipios th:nth-child(9),
-.tabelaMunicipios td:nth-child(9){
-width:24%;
-}
-.tabelaMunicipios th:nth-child(10),
-.tabelaMunicipios td:nth-child(10){
-width:9%;
-}
-@media(max-width:900px){
-#painelCadastroMunicipios{
-overflow-x:auto;
-}
-.tabelaMunicipios{
-min-width:1500px;
-}
-}
-.colOficio{
-font-size:10px;
-line-height:1.15;
-font-weight:600;
-}
-.colObservacao{
-font-size:10px;
-line-height:1.15;
-color:#475569;
-}
-.exec-legenda-municipal{display:flex;gap:20px;flex-wrap:wrap;margin-top:10px;font-weight:700}
-.leg-verde{color:#16a34a}
-.leg-amarelo{color:#ca8a04}
-.leg-vermelho{color:#dc2626}
-.filtroMapaMunicipal{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.btnMapaMunicipal{background:#0f172a;color:#fff;border:none;padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer}
-.btnMapaMunicipal:hover{opacity:.9}
-.gridRelatorios{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
-.gridRelatorios button{padding:14px;border:none;border-radius:12px;font-size:14px;font-weight:900;cursor:pointer;background:#0f172a;color:#fff}
-.gridRelatorios button:hover{transform:translateY(-2px)}
-.btnAbaQueimadas{background:#1e293b;color:#fff;border:none;padding:10px 16px;border-radius:10px;font-weight:800;cursor:pointer;transition:.2s}
-.btnAbaQueimadas:hover{background:#334155}
-.btnAbaAtiva{background:#dc2626!important;color:#fff!important;box-shadow:0 0 25px rgba(220,38,38,.60);border:2px solid #facc15!important;transform:translateY(-2px)}
-.cardDestaque{border:3px solid #facc15!important;box-shadow:0 0 25px rgba(250,204,21,.35)!important}
-.boxMapaRO{width:100%}
-.btnOcultarMapa{background:#0f172a;color:#fff;border:none;padding:10px 16px;border-radius:10px;font-weight:800;cursor:pointer;margin-bottom:10px}
-.iriq-heatmap-unificado{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}
-.iriq-box,.heatmap-box{height:100%}
-.heat-legenda{height:52px!important;min-height:52px!important;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;border-radius:10px;margin-bottom:8px;}
-.heatmap-grid-mini{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
-.heatmap-grid-mini .heat-vermelho,
-.heatmap-grid-mini .heat-laranja,
-.heatmap-grid-mini .heat-amarelo,
-.heatmap-grid-mini .heat-verde{padding:12px;border-radius:10px;text-align:center;font-weight:800;min-height:90px;display:flex;flex-direction:column;justify-content:center;align-items:center;}
-
-.tabelaMunicipalExecutiva{width:100%;border-collapse:collapse;font-size:12px}
-.tabelaMunicipalExecutiva th{background:#0f172a;color:#fff;padding:8px;border:1px solid #cbd5e1}
-.tabelaMunicipalExecutiva td{padding:6px;border:1px solid #cbd5e1}
-.tabelaMunicipalExecutiva tr:nth-child(even){background:#f8fafc}
-.tabelaMiniMunicipios{width:100%;border-collapse:collapse;font-size:12px}
-.tabelaMiniMunicipios th{background:#1e293b;color:#fff;padding:6px;border:1px solid #cbd5e1}
-.tabelaMiniMunicipios td{padding:5px;border:1px solid #cbd5e1}
-.tabelaMiniMunicipios tr:nth-child(even){background:#f8fafc}
-.tabelaMunicipalExecutiva th:nth-child(1),
-.tabelaMunicipalExecutiva td:nth-child(1){
-width:55px;
-min-width:55px;
-text-align:center;
-}
-.tabelaMunicipalExecutiva th:nth-child(2),
-.tabelaMunicipalExecutiva td:nth-child(2){
-width:280px;
-min-width:280px;
-}
-.tabelaMunicipalExecutiva th:nth-child(3),
-.tabelaMunicipalExecutiva td:nth-child(3){
-width:220px;
-min-width:220px;
-}
-.tabelaMunicipalExecutiva th:nth-child(4),
-.tabelaMunicipalExecutiva td:nth-child(4){
-width:130px;
-min-width:130px;
-text-align:center;
-}
-.tabelaMunicipalExecutiva th:nth-child(5),
-.tabelaMunicipalExecutiva td:nth-child(5){
-width:180px;
-min-width:180px;
-}
-.tabelaMunicipalExecutiva th:nth-child(6),
-.tabelaMunicipalExecutiva td:nth-child(6){
-min-width:300px;
-}
-.tabelaMunicipios th:nth-child(2),
-.tabelaMunicipios td:nth-child(2){
-min-width:220px;
-width:220px;
-font-weight:700;
-}
+.tabelaMunicipios{width:100%;border-collapse:collapse;font-size:12px}
+.tabelaMunicipios th{background:#0f172a;color:#fff;padding:10px;text-align:left;font-size:13px;font-weight:800}
+.tabelaMunicipios td{padding:6px;border-bottom:1px solid #e2e8f0;vertical-align:top;font-size:11px;line-height:1.2}
+.tabelaMunicipios tr:hover{background:#f8fafc}
+.colOficio{font-size:10px;line-height:1.15;font-weight:700}
+.colObservacao{font-size:10px;line-height:1.15;color:#475569}
+.tabelaMunicipios th:nth-child(1),.tabelaMunicipios td:nth-child(1){width:14%}
+.tabelaMunicipios th:nth-child(2),.tabelaMunicipios td:nth-child(2){width:17%;min-width:220px;font-weight:700}
+.tabelaMunicipios th:nth-child(3),.tabelaMunicipios td:nth-child(3){width:7%;white-space:nowrap}
+.tabelaMunicipios th:nth-child(4),.tabelaMunicipios td:nth-child(4){width:5%}
+.tabelaMunicipios th:nth-child(5),.tabelaMunicipios td:nth-child(5){width:7%;white-space:nowrap}
+.tabelaMunicipios th:nth-child(6),.tabelaMunicipios td:nth-child(6){width:7%;white-space:nowrap}
+.tabelaMunicipios th:nth-child(7),.tabelaMunicipios td:nth-child(7){width:5%}
+.tabelaMunicipios th:nth-child(8),.tabelaMunicipios td:nth-child(8){width:5%}
+.tabelaMunicipios th:nth-child(9),.tabelaMunicipios td:nth-child(9){width:24%}
+.tabelaMunicipios th:nth-child(10),.tabelaMunicipios td:nth-child(10){width:9%}
 .modalMunicipioOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:99999;display:flex;align-items:center;justify-content:center}
 .modalMunicipioBox{background:#fff;width:900px;max-width:95%;max-height:90vh;overflow:auto;padding:20px;border-radius:12px}
 .modalMunicipioBox label{display:block;font-weight:700;margin-top:10px;margin-bottom:4px}
