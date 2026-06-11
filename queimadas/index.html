@@ -40,7 +40,8 @@ if(typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels)}
 </header>
 <nav class="menuQueimadas">
 <button id="btnAbaExecutivo" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('executivo')">📊 PAINEL EXECUTIVO</button>
-<button id="btnAbaExecutivoMunicipal" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('executivomunicipal')">🏛️ EXECUTIVO MUNICIPAL</button>
+<button id="btnAbaExecutivoMunicipal" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('executivomunicipal')">🏛️ MUNICÍPIOS</button>
+<button id="btnAbaEstado" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('estado')">🏛️ ESTADO</button>
 <button id="btnAbaPlanejamento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('planejamento')">📋 PLANEJAMENTO</button>
 <button id="btnAbaMonitoramento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('monitoramento')">🔥 MONITORAMENTO</button>
 <button id="btnAbaAnalise" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('analise')">🤖 RISCOS IA</button>
@@ -49,13 +50,7 @@ if(typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels)}
 <button id="btnAbaPresidente" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('presidente')">🏛 GERAL</button>
 <button id="btnAbaConselheiro" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('conselheiro')">⚖ RELATOR</button>
 <button id="btnAbaAuditor" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('auditor')">📑 AUDITORIA</button>
-
-<button
-id="btnImprimirPainel"
-class="btnAbaQueimadas btnPdfQueimadas"
-onclick="imprimirAbaAtualQueimadas()">
-🖨 PDF ABA
-</button>
+<button id="btnImprimirPainel" class="btnAbaQueimadas btnPdfQueimadas"onclick="imprimirAbaAtualQueimadas()">🖨 PDF ABA</button>
 </nav>
 <!--=========================================================
 001 EXECUTIVO
@@ -138,10 +133,27 @@ Atualizar
 </div>
 </section>
 <!--=========================================================
-002 EXECUTIVO MUNICIPAL
+003 ESTADO
+=========================================================-->
+<section id="abaEstado" class="abaQueimadas hidden">
+<div class="painelTitulo">MONITORAMENTO ESTADUAL</div>
+<div id="painelKPIsEstado"></div>
+<div class="exec-duplo">
+<div class="cardExecutivo">
+<h2>CADASTRO ESTADUAL</h2>
+<div id="painelCadastroEstado"></div>
+</div>
+<div class="cardExecutivo">
+<h2>INDICADORES ESTADUAIS</h2>
+<div id="painelIndicadoresEstado"></div>
+</div>
+</div>
+</section>
+<!--=========================================================
+002 MUNICÍPIOS
 =========================================================-->
 <section id="abaExecutivoMunicipal" class="abaQueimadas hidden">
-<div class="painelTitulo">EXECUTIVO MUNICIPAL</div>
+<div class="painelTitulo">MUNICÍPIOS</div>
 <div class="cardExecutivo">
 <h2>🏛️ SITUAÇÃO GERAL DOS 52 MUNICÍPIOS</h2>
 <div id="painelSituacaoGeralMunicipios"></div>
