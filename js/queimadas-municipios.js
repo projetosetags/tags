@@ -100,57 +100,41 @@ console.log(error)
 return
 }
 let lista=[...(data||[])]
+.filter(i=>Number(i.focos||0)>0)
 .sort((a,b)=>{
-let c1=Number(b.criticidade||0)-Number(a.criticidade||0)
+let c1=Number(b.focos||0)-Number(a.focos||0)
 if(c1!==0)return c1
-let c2=Number(b.focos||0)-Number(a.focos||0)
-if(c2!==0)return c2
 return Number(b.risco||0)-Number(a.risco||0)
 })
 .slice(0,5)
-box.innerHTML=lista.map((i,idx)=>`
+let hoje=new Date().toLocaleDateString('pt-BR')
+box.innerHTML=`
+<div class="fonte-card">
+Período: Acumulado 2026 • Fonte: INPE • Top 5 Municípios com Maior Quantidade de Focos de Calor
+</div>
+`+lista.map((i,idx)=>{
+let cor='#16a34a'
+if(i.classificacao==='CRÍTICO')cor='#dc2626'
+else if(i.classificacao==='ALTO')cor='#f97316'
+else if(i.classificacao==='MODERADO')cor='#facc15'
+return `
 <div class="alerta-ranking">
 <div class="alerta-numero">${idx+1}</div>
 <div class="alerta-texto">
 <b>${i.municipio}</b><br>
-Classificação: ${i.classificacao} |
-Criticidade: ${i.criticidade} |
-Focos: ${i.focos} |
-IRIQ: ${i.risco}
+<span style="color:${cor};font-weight:900">${i.classificacao||'-'}</span><br>
+🔥 Focos: ${Number(i.focos||0).toLocaleString('pt-BR')}<br>
+📈 Risco: ${i.risco||0}
 </div>
 </div>
-`).join('')+`
+`
+}).join('')+`
 <div class="fonte-card">
-Fonte: Heatmap Estadual • IRIQ • Focos de Calor
-</div>`
-}
-
-/*=========================================================
-069 QUEIMADAS FUNCTION RENDERTOPMUNICIPIOS
-=========================================================*/
-async function renderTopMunicipios(){
-let box=document.getElementById(
-'painelTopMunicipios'
-)
-if(!box)return
-let {data}=await client
-.from('queimadas_indice_municipal')
-.select('*')
-.order('indice_final',{ascending:false})
-.limit(10)
-
-box.innerHTML=(data||[])
-.map(i=>`
-<div class="linha-ranking">
-<b>${i.municipio}</b>
--
-IMC ${Number(i.indice_final||0).toFixed(1)}
--
-${i.classificacao}
+Fonte: INPE • Heatmap Estadual • IRIQ • Data Base ${hoje}
 </div>
-`)
-.join('')
+`
 }
+
 /*=========================================================
 070 QUEIMADAS FUNCTION CALCULARIMC
 =========================================================*/
@@ -277,10 +261,14 @@ if(error){
 console.log(error)
 return
 }
-box.innerHTML=(data||[])
-.map(i=>`
+box.innerHTML=`
+<div class="fonte-card">
+Ranking Municipal de Criticidade • Metodologia IMC • Data Base ${new Date().toLocaleDateString('pt-BR')}
+</div>
+`+(data||[])
+.map((i,idx)=>`
 <div class="linha-ranking">
-${i.semaforo||'🟢'}
+${idx+1}º ${i.semaforo||'🟢'}
 <b>${i.municipio}</b>
 -
 IMC ${Number(i.indice_final||0).toFixed(1)}
@@ -288,7 +276,11 @@ IMC ${Number(i.indice_final||0).toFixed(1)}
 ${i.classificacao||'BAIXO'}
 </div>
 `)
-.join('')
+.join('')+`
+<div class="fonte-card">
+Fonte: Queimadas • CHAP • Impacto • Risco • Focos de Calor
+</div>
+`
 }
 /*=========================================================
 074 CALCULAR POPULAÇÃO EXPOSTA
@@ -1140,6 +1132,9 @@ top:0,
 behavior:'smooth'
 })
 }
+/*=========================================================
+071 QUEIMADAS FUNCTION RECALCULARIMC
+=========================================================*/
 async function recalcularIMC(){
 await calcularIMC()
 await renderRankingIMC()
