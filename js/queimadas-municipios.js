@@ -1619,7 +1619,7 @@ async function renderMunicipiosOficio(tipo='CADASTRO'){
 let destino=
 tipo==='RESUMO'
 ?'painelSituacaoGeralMunicipios'
-:'painelCadastroMunicipios'
+:'painelCadastroMunicipiosResumo'
 let box=document.getElementById(destino)
 if(!box)return
 let {data,error}=await client
