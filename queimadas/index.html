@@ -328,6 +328,22 @@ onkeyup="renderCadastroMunicipios()"
 =========================================================-->
 <section id="abaSituacao" class="abaQueimadas hidden">
 <div class="painelTitulo">🚨 SALA DE SITUAÇÃO ESTADUAL</div>
+<div class="cardExecutivo">
+<button onclick="document.getElementById('arquivoINPE').click()">
+🌐 IMPORTAR DADOS INPE
+</button>
+<input
+type="file"
+id="arquivoINPE"
+accept=".csv"
+style="display:none"
+onchange="lerCSVINPE(event)"
+>
+</div>
+<button onclick="atualizarHeatmapManual()">
+🔄 RECALCULAR HEATMAP
+</button>
+
 <div id="painelResumoExecutivoSituacao"></div>
 <div id="painelSituacaoOperacional"></div>
 <div id="painelTopCriticos"></div>
