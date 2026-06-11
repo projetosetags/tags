@@ -1943,11 +1943,11 @@ alert('Erro ao salvar.')
 return
 }
 fecharModalMunicipio()
-await renderMunicipiosOficio('CADASTRO')
 if(typeof renderTabelaMunicipios==='function')
 await renderTabelaMunicipios()
 if(typeof renderSituacaoGeralMunicipios==='function')
 await renderMunicipiosOficio('RESUMO')
+await renderMunicipiosOficio('CADASTRO')
 alert('Registro atualizado com sucesso.')
 }
 
