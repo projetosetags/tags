@@ -2434,9 +2434,7 @@ html+=`
 <button class="btnEditarMunicipio" onclick="editarEstado(${i.id})">
 ✏ EDITAR
 </button>
-<button class="btnExcluirEstado" onclick="excluirEstado(${i.id})">
-🗑 EXCLUIR
-</button>
+
 </td>
 </tr>
 `
@@ -2512,7 +2510,7 @@ alert(error.message)
 return
 }
 alert(
-Editando
+editando
 ?'Órgão estadual atualizado com sucesso.'
 :'Órgão estadual cadastrado com sucesso.'
 )
