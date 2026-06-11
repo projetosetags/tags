@@ -1685,7 +1685,7 @@ html+=`
 <td>${formatarDataBR(i.dataenviodoc)}</td>
 <td>${i.paginaenviodoc||'-'}</td>
 <td>${formatarDataBR(i.ldatarecebimentodoc)}</td>
-<td>${i.lldatarecebimentodoc||'-'}</td>
+<td>${formatarDataBR(i.lldatarecebimentodoc)}</td>
 <td>${i.lnumerodocenviado||'-'}</td>
 <td>${i.llnumerodocenviado||'-'}</td>
 <td>${i.observacao||'-'}</td>
