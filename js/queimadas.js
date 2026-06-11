@@ -2088,9 +2088,11 @@ if(typeof renderFormularioEstado==='function')renderFormularioEstado()
 }
 if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
-if(typeof renderSituacaoGeralMunicipios==='function')await renderSituacaoGeralMunicipios()
+if(typeof renderMunicipiosOficio==='function')
+await renderMunicipiosOficio('RESUMO')
 if(typeof renderKPIsMunicipais==='function')await renderKPIsMunicipais()
-if(typeof renderCadastroMunicipiosResumo==='function')await renderCadastroMunicipiosResumo()
+if(typeof renderEstadoOficio==='function')
+await renderEstadoOficio()
 if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
 if(typeof renderDilacoesPrazo==='function')await renderDilacoesPrazo()
 if(typeof renderSemResposta==='function')await renderSemResposta()
@@ -2127,7 +2129,7 @@ window.mapaMunicipalPlanos
 }
 if(nome==='cadastroMunicipal'){
 document.getElementById('abaCadastroMunicipal')?.classList.remove('hidden')
-await renderCadastroMunicipios()
+await renderMunicipiosOficio('CADASTRO')
 }
 if(nome==='mapa'){
 document.getElementById('abaMapa')?.classList.remove('hidden')
