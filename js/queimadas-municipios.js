@@ -1631,7 +1631,7 @@ console.log(error)
 box.innerHTML='Erro ao carregar.'
 return
 }
-let html='<div style="overflow:auto">'
+let html='<div style="overflow-x:auto;width:100%">'
 html+='<table class="tabelaMunicipios">'
 html+='<thead>'
 if(tipo==='RESUMO'){
@@ -1648,16 +1648,16 @@ html+=`
 }else{
 html+=`
 <tr>
-<th>Município</th>
-<th>Ofício TCE</th>
-<th>Data Envio</th>
-<th>Pág.</th>
-<th>Data Rec.1</th>
-<th>Data Rec.2</th>
-<th>Doc.1</th>
-<th>Doc.2</th>
-<th>Observação</th>
-<th>Ação</th>
+<th style="min-width:220px">Município</th>
+<th style="min-width:130px">Ofício TCE</th>
+<th style="min-width:100px">Data Envio</th>
+<th style="min-width:90px">Pág.</th>
+<th style="min-width:100px">Data Rec.1</th>
+<th style="min-width:100px">Data Rec.2</th>
+<th style="min-width:130px">Doc.1</th>
+<th style="min-width:130px">Doc.2</th>
+<th style="min-width:700px">Observação</th>
+<th style="min-width:120px">Ação</th>
 </tr>
 `
 }
@@ -1945,9 +1945,10 @@ return
 fecharModalMunicipio()
 if(typeof renderTabelaMunicipios==='function')
 await renderTabelaMunicipios()
-if(typeof renderSituacaoGeralMunicipios==='function')
+if(typeof renderMunicipiosOficio==='function'){
 await renderMunicipiosOficio('RESUMO')
 await renderMunicipiosOficio('CADASTRO')
+}
 alert('Registro atualizado com sucesso.')
 }
 
