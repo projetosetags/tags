@@ -1505,8 +1505,6 @@ let chave=String(nome)
 .toUpperCase()
 .trim()
 let classe=risco[chave]||'SEM DADOS'
-let focos=registro?.focos||0
-let riscoValor=registro?.risco||'-'
 let registro=(data||[]).find(m=>
 String(m.municipio||'')
 .normalize('NFD')
@@ -1517,9 +1515,11 @@ String(m.municipio||'')
 .toUpperCase()
 .trim()===chave
 )
+let focos=registro?.focos||0
+let riscoValor=registro?.risco||'-'
 l.bindPopup(`
 <b>${nome}</b><br>
-🔥 Focos: ${focos}<br>
+🔥 Focos: ${Number(focos).toLocaleString('pt-BR')}<br>
 📈 Risco: ${riscoValor}<br>
 🏷 Classificação: ${classe}<br>
 ⚠ Criticidade: ${registro?.criticidade||'-'}
