@@ -2088,41 +2088,36 @@ if(typeof renderFormularioEstado==='function')renderFormularioEstado()
 }
 if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
-if(typeof renderMunicipiosOficio==='function')
+
+if(typeof renderMunicipiosOficio==='function'){
 await renderMunicipiosOficio('RESUMO')
+await renderMunicipiosOficio('CADASTRO')
+}
+
 if(typeof renderKPIsMunicipais==='function')await renderKPIsMunicipais()
-if(typeof renderEstadoOficio==='function')
-await renderEstadoOficio()
+if(typeof renderEstadoOficio==='function')await renderEstadoOficio()
 if(typeof renderPlanosApresentados==='function')await renderPlanosApresentados()
 if(typeof renderDilacoesPrazo==='function')await renderDilacoesPrazo()
 if(typeof renderSemResposta==='function')await renderSemResposta()
 if(typeof renderGraficoMunicipios==='function')await renderGraficoMunicipios()
 if(typeof renderEstatisticasMunicipais==='function')await renderEstatisticasMunicipais()
 if(typeof renderTabelaMunicipios==='function')await renderTabelaMunicipios()
+
 let divMapa=document.getElementById('mapaMunicipalPlanos')
-console.log(
-'ALTURA MAPA:',
-divMapa?.offsetHeight
-)
-console.log(
-'LARGURA MAPA:',
-divMapa?.offsetWidth
-)
+
+console.log('ALTURA MAPA:',divMapa?.offsetHeight)
+console.log('LARGURA MAPA:',divMapa?.offsetWidth)
+
 requestAnimationFrame(()=>{
 setTimeout(async()=>{
-let div=document.getElementById(
-'mapaMunicipalPlanos'
-)
+let div=document.getElementById('mapaMunicipalPlanos')
 if(!div){
-console.log(
-'mapaMunicipalPlanos não encontrado'
-)
+console.log('mapaMunicipalPlanos não encontrado')
 return
 }
 await renderMapaMunicipalPlanos('TODOS')
 setTimeout(()=>{
-window.mapaMunicipalPlanos
-?.invalidateSize(true)
+window.mapaMunicipalPlanos?.invalidateSize(true)
 },500)
 },300)
 })
