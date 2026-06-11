@@ -664,8 +664,14 @@ d.toISOString().split('T')[0]
 )
 }
 let {data}=await consulta
-let total=(data||[])
-.reduce((s,i)=>s+Number(i.focos||0),0)
+let {data:heat}=await client
+.from('queimadas_heatmap')
+.select('*')
+let total=(heat||[])
+.reduce(
+(s,i)=>s+Number(i.focos||0),
+0
+)
 let mapa={}
 ;(data||[]).forEach(i=>{
 let mun=i.municipio||'SEM MUNICÍPIO'
@@ -898,7 +904,7 @@ if(!box)return
 let {data:heat}=await client
 .from('queimadas_heatmap')
 .select('*')
-let totalFocos=(heat||[]).reduce((s,i)=>s+Number(i.focos||0),0)
+let totalFocos=(focos||[]).reduce((s,i)=>s+Number(i.focos||0),0)
 let iriqMedio=await calcularIRIQ()
 let faixaIRIQ='BAIXO'
 let corIRIQ='#16a34a'
