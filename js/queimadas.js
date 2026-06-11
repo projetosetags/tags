@@ -558,21 +558,22 @@ console.log(error)
 return
 }
 let lista=[...(data||[])]
+.filter(i=>Number(i.focos||0)>0)
 .sort((a,b)=>{
-let c1=Number(b.criticidade||0)-Number(a.criticidade||0)
+let c1=Number(b.focos||0)-Number(a.focos||0)
 if(c1!==0)return c1
-let c2=Number(b.focos||0)-Number(a.focos||0)
-if(c2!==0)return c2
 return Number(b.risco||0)-Number(a.risco||0)
 })
 .slice(0,10)
 let html='<div class="ranking-grid">'
 lista.forEach((m,idx)=>{
-let cor='#f97316'
+let cor='#16a34a'
 if((m.classificacao||'').toUpperCase().includes('CRÍTICO'))cor='#dc2626'
+else if((m.classificacao||'').toUpperCase().includes('ALTO'))cor='#f97316'
+else if((m.classificacao||'').toUpperCase().includes('MODERADO'))cor='#facc15'
 html+=`
 <div class="ranking-card">
-<div class="ranking-posicao">${idx+1}</div>
+<div class="ranking-posicao">${idx+1}º</div>
 <div class="ranking-municipio">${m.municipio||'-'}</div>
 <div class="ranking-info">
 Classificação:
@@ -580,14 +581,14 @@ Classificação:
 ${m.classificacao||'-'}
 </span>
 </div>
-<div class="ranking-info">Focos: ${m.focos||0}</div>
-<div class="ranking-info">Risco: ${m.risco||0}</div>
+<div class="ranking-info">🔥 Focos: ${Number(m.focos||0).toLocaleString('pt-BR')}</div>
+<div class="ranking-info">📈 Risco: ${m.risco||0}</div>
 </div>`
 })
 html+=`
 </div>
 <div class="fonte-card">
-Fonte: Heatmap Estadual • IRIQ • Focos de Calor-Tabela queimadas_heatmap • Classificação Municipal de Risco
+Fonte: INPE • Heatmap Estadual • Acumulado 2026 • Ranking por Focos de Calor e Nível de Risco
 </div>`
 box.innerHTML=html
 }
