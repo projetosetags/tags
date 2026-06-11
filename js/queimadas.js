@@ -465,22 +465,28 @@ if(!box)return
 let pop=await calcularPopulacaoExposta()
 let area=await calcularAreaRisco()
 let iriq=await calcularIRIQ()
-let {data}=await client
+let {data:heat=[]}=await client
 .from('queimadas_heatmap')
 .select('*')
-let focos=(data||[]).reduce((s,i)=>s+Number(i.focos||0),0)
-let criticos=(data||[]).filter(i=>i.classificacao==='CRÍTICO').length
-let altos=(data||[]).filter(i=>i.classificacao==='ALTO').length
-let semdados=(data||[]).filter(i=>i.classificacao==='SEM DADOS').length
+let {data:focosINPE=[]}=await client
+.from('queimadas_focos')
+.select('*')
+let focos=focosINPE.reduce(
+(s,i)=>s+Number(i.focos||0),
+0
+)
+let criticos=heat.filter(i=>i.classificacao==='CRÍTICO').length
+let altos=heat.filter(i=>i.classificacao==='ALTO').length
+let semdados=heat.filter(i=>i.classificacao==='SEM DADOS').length
 let cor='#16a34a'
 let faixa='BAIXO'
-if(iriq>=30){
+if(Number(iriq)>=75){
 cor='#dc2626'
 faixa='CRÍTICO'
-}else if(iriq>=20){
+}else if(Number(iriq)>=50){
 cor='#f97316'
 faixa='ALTO'
-}else if(iriq>=10){
+}else if(Number(iriq)>=25){
 cor='#facc15'
 faixa='MODERADO'
 }
