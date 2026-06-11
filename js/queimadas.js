@@ -2037,6 +2037,7 @@ localStorage.setItem('abaQueimadas',nome)
 document.querySelectorAll('.btnAbaQueimadas').forEach(x=>x.classList.remove('btnAbaAtiva'))
 if(nome==='executivo')document.getElementById('btnAbaExecutivo')?.classList.add('btnAbaAtiva')
 if(nome==='executivomunicipal')document.getElementById('btnAbaExecutivoMunicipal')?.classList.add('btnAbaAtiva')
+if(nome==='estado')document.getElementById('btnAbaEstado')?.classList.add('btnAbaAtiva')
 if(nome==='mapa')document.getElementById('btnAbaMapa')?.classList.add('btnAbaAtiva')
 if(nome==='planejamento')document.getElementById('btnAbaPlanejamento')?.classList.add('btnAbaAtiva')
 if(nome==='monitoramento')document.getElementById('btnAbaMonitoramento')?.classList.add('btnAbaAtiva')
@@ -2080,7 +2081,12 @@ window.mapaEstadualRO.invalidateSize(true)
 }
 },2000)
 }
-
+if(nome==='estado'){
+document.getElementById('abaEstado')?.classList.remove('hidden')
+if(typeof renderKPIsEstado==='function')await renderKPIsEstado()
+if(typeof renderCadastroEstado==='function')await renderCadastroEstado()
+if(typeof renderIndicadoresEstado==='function')await renderIndicadoresEstado()
+}
 if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
 if(typeof renderSituacaoGeralMunicipios==='function')await renderSituacaoGeralMunicipios()
@@ -2342,3 +2348,136 @@ box.style.display='none'
 }
 carregarPainelFocosCalor(periodo)
 }
+/*=========================================================
+100 QUEIMADAS FUNCTION RENDERKPISESTADO
+=========================================================*/
+async function renderKPIsEstado(){
+let box=document.getElementById('painelKPIsEstado')
+if(!box)return
+let {data}=await client
+.from('queimadas_estado_oficio')
+.select('*')
+let total=(data||[]).length
+let respondidos=(data||[]).filter(x=>
+x.idatarecebimentodoc||
+x.iidatarecebimentodoc
+).length
+let pendentes=total-respondidos
+let percentual=total?((respondidos/total)*100).toFixed(1):0
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card">
+<div class="chap-num">${total}</div>
+<div class="chap-label">ÓRGÃOS</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${respondidos}</div>
+<div class="chap-label">RESPONDERAM</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${pendentes}</div>
+<div class="chap-label">PENDENTES</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${percentual}%</div>
+<div class="chap-label">RESPOSTA</div>
+</div>
+</div>
+`
+}
+
+/*=========================================================
+101 QUEIMADAS FUNCTION RENDERCADASTROESTADO
+=========================================================*/
+async function renderCadastroEstado(){
+let box=document.getElementById('painelCadastroEstado')
+if(!box)return
+let {data,error}=await client
+.from('queimadas_estado_oficio')
+.select('*')
+.order('estado')
+if(error){
+console.log(error)
+return
+}
+let html=`
+<table class="tabelaMunicipios">
+<thead>
+<tr>
+<th>ÓRGÃO</th>
+<th>OFÍCIO TCE</th>
+<th>DATA ENVIO</th>
+<th>PÁG ENVIO</th>
+<th>DATA REC 1</th>
+<th>DATA REC 2</th>
+<th>DOC 1</th>
+<th>DOC 2</th>
+<th>OBSERVAÇÃO</th>
+<th>AÇÃO</th>
+</tr>
+</thead>
+<tbody>
+`
+;(data||[]).forEach(i=>{
+html+=`
+<tr>
+<td>${i.estado||'-'}</td>
+<td>${i.nroficioenviadotcero||'-'}</td>
+<td>${formatarDataBR(i.dataenviodoc)}</td>
+<td>${i.paginaenviodoc||'-'}</td>
+<td>${formatarDataBR(i.idatarecebimentodoc)}</td>
+<td>${formatarDataBR(i.iidatarecebimentodoc)}</td>
+<td>${i.inumerodocenviado||'-'}</td>
+<td>${i.iinumerodocenviado||'-'}</td>
+<td>${i.observacao||'-'}</td>
+<td>
+<button class="btnEditarMunicipio" onclick="editarEstado(${i.id})">
+✏ EDITAR
+</button>
+</td>
+</tr>
+`
+})
+html+=`
+</tbody>
+</table>
+`
+box.innerHTML=html
+}
+
+/*=========================================================
+102 QUEIMADAS FUNCTION RENDERINDICADORESESTADO
+=========================================================*/
+async function renderIndicadoresEstado(){
+let box=document.getElementById('painelIndicadoresEstado')
+if(!box)return
+let {data}=await client
+.from('queimadas_estado_oficio')
+.select('*')
+box.innerHTML=(data||[])
+.map(i=>{
+let status='🔴 PENDENTE'
+if(i.idatarecebimentodoc||i.iidatarecebimentodoc){
+status='🟢 RESPONDIDO'
+}
+return `
+<div style="
+padding:10px;
+border-bottom:1px solid #e5e7eb;
+display:flex;
+justify-content:space-between;
+align-items:center;
+">
+<b>${i.estado||'-'}</b>
+<span>${status}</span>
+</div>
+`
+}).join('')
+}
+/*=========================================================
+103 QUEIMADAS FUNCTION EDITARESTADO
+=========================================================*/
+function editarEstado(id){
+alert('Editar órgão estadual ID: '+id)
+}
+
