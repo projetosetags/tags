@@ -394,22 +394,10 @@ margin-bottom:8px;
 }
 .btnImprimirPainel:hover{opacity:.9;}
 
-.gridCadastroEstado{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:10px;
-}
+.gridCadastroEstado{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;}
 .gridCadastroEstado input,
-.gridCadastroEstado textarea{
-width:100%;
-padding:10px;
-border:1px solid #cbd5e1;
-border-radius:6px;
-}
-.gridCadastroEstado textarea{
-min-height:90px;
-grid-column:1/-1;
-}
+.gridCadastroEstado textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:6px;}
+.gridCadastroEstado textarea{min-height:90px;grid-column:1/-1;}
 .gridCadastroEstado button{
 background:#16a34a;
 color:#fff;
@@ -419,4 +407,16 @@ border-radius:6px;
 cursor:pointer;
 font-weight:700;
 }
+.btnExcluirEstado{
+background:#dc2626;
+color:#fff;
+border:none;
+padding:4px 6px;
+border-radius:6px;
+cursor:pointer;
+font-size:11px;
+font-weight:700;
+margin-left:4px;
+}
+.btnExcluirEstado:hover{background:#b91c1c;}
 
