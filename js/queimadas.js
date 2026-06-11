@@ -1018,200 +1018,135 @@ box.innerHTML=`
 async function renderIRIQEstadual(){
 let box=document.getElementById('painelIRIQEstadual')
 if(!box)return
-let iriq=await calcularIRIQ()
+let iriq=Number(await calcularIRIQ())
 let cor='#16a34a'
 let faixa='BAIXO'
-
-if(Number(iriq)>=75){
+if(iriq>=75){
 cor='#dc2626'
 faixa='CRÍTICO'
-}else if(Number(iriq)>=50){
+}else if(iriq>=50){
 cor='#f97316'
 faixa='ALTO'
-}else if(Number(iriq)>=25){
+}else if(iriq>=25){
 cor='#facc15'
 faixa='MODERADO'
 }
+let hoje=new Date().toLocaleDateString('pt-BR')
 box.innerHTML=`
 <div class="impacto-box">
 <div class="impacto-score" style="color:${cor}">
-${iriq}
+${iriq.toFixed(1)}
 </div>
-<div style="
-font-size:18px;
-font-weight:900;
-color:${cor};
-margin-top:10px;
-">
+<div style="font-size:18px;font-weight:900;color:${cor};margin-top:10px">
 ${faixa}
 </div>
 <div class="impacto-label">
 ÍNDICE DE RISCO INTEGRADO DE QUEIMADAS
 </div>
 <div style="margin-top:10px;font-size:12px;line-height:18px;color:#475569">
-O IRIQ considera focos de calor, histórico de queimadas, cobertura vegetal, uso do solo, clima e vulnerabilidade ambiental.
+IRIQ = 60% Risco + 40% CHAP
 </div>
 <div style="margin-top:8px;font-size:11px">
-🟢 0-24 Baixo
-<br>
-🟡 25-49 Moderado
-<br>
-🟠 50-74 Alto
-<br>
+🟢 0-24 Baixo<br>
+🟡 25-49 Moderado<br>
+🟠 50-74 Alto<br>
 🔴 75-100 Crítico
 </div>
 <div class="fonte-card">
-Fonte: CHAP • IA-CHAP • Matriz de Risco 5x5
+Fonte: Heatmap Estadual • CHAP • IA-CHAP • Data Base ${hoje}
 </div>
 </div>`
 }
-/*=========================================================
-032 QUEIMADAS FUNCTION RENDERLEGENDAHEATMAP
-=========================================================*/
-function renderLegendaHeatmap(){
-let box=document.getElementById('painelLegendaHeatmap')
-if(!box)return
-box.innerHTML=`
-<div class="cardExecutivo">
-<h2>HEATMAP ESTADUAL - QUANTIDADE DE MUNICÍPIOS POR CLASSE DE RISCO</h2>
-<div class="heat-vermelho">CRÍTICO (30-50)</div>
-<div class="heat-laranja">ALTO (20-30)</div>
-<div class="heat-amarelo">MODERADO (10-20)</div>
-<div class="heat-verde">BAIXO (0-10)</div>
-<p style="margin-top:10px;line-height:22px">
-O Heatmap Estadual considera:
-<br>• Focos de calor
-<br>• Histórico de queimadas
-<br>• Cobertura vegetal
-<br>• Vulnerabilidade ambiental
-<br>• Pressão antrópica
-<br>• Índice IRIQ
-</p>
-</div>`
-}
+
 /*=========================================================
 033 QUEIMADAS FUNCTION RENDERIRIQHEATMAPUNIFICADO
 =========================================================*/
 async function renderIRIQHeatmapUnificado(){
 let box=document.getElementById('painelIRIQHeatmapUnificado')
 if(!box)return
-let iriq=17.4
+let {data:heat}=await client
+.from('queimadas_heatmap')
+.select('*')
+let iriq=Number(await calcularIRIQ())
 let classe='BAIXO'
-let critico=3
-let alto=7
-let moderado=0
-let baixo=42
+let cor='#16a34a'
+if(iriq>=75){
+classe='CRÍTICO'
+cor='#dc2626'
+}else if(iriq>=50){
+classe='ALTO'
+cor='#f97316'
+}else if(iriq>=25){
+classe='MODERADO'
+cor='#facc15'
+}
+let critico=(heat||[]).filter(i=>i.classificacao==='CRÍTICO').length
+let alto=(heat||[]).filter(i=>i.classificacao==='ALTO').length
+let moderado=(heat||[]).filter(i=>i.classificacao==='MODERADO').length
+let baixo=(heat||[]).filter(i=>i.classificacao==='BAIXO').length
+let semdados=(heat||[]).filter(i=>i.classificacao==='SEM DADOS').length
+let hoje=new Date().toLocaleDateString('pt-BR')
 box.innerHTML=`
 <div class="cardExecutivo">
-
 <h2>IRIQ ESTADUAL</h2>
-
 <div style="text-align:center">
-
-<div style="
-font-size:54px;
-font-weight:900;
-color:#16a34a;
-line-height:60px;
-">
+<div style="font-size:54px;font-weight:900;color:${cor};line-height:60px">
 ${iriq}
 </div>
-
-<div style="
-font-size:24px;
-font-weight:900;
-margin-top:4px;
-">
+<div style="font-size:24px;font-weight:900;margin-top:4px;color:${cor}">
 ${classe}
 </div>
-
-<div style="
-font-size:18px;
-margin-top:8px;
-">
+<div style="font-size:18px;margin-top:8px">
 ÍNDICE DE RISCO INTEGRADO DE QUEIMADAS
 </div>
-
 </div>
-
-<div style="
-margin-top:20px;
-font-size:14px;
-line-height:24px;
-">
+<div style="margin-top:20px;font-size:14px;line-height:24px">
 <b>Legenda do IRIQ:</b><br>
-O IRIQ considera:
-• Focos de calor;
-• Histórico de queimadas;
-• Cobertura vegetal;
-• Uso do solo;
-• Clima; e
-• Vulnerabilidade ambiental.
+IRIQ = 60% Risco + 40% CHAP
 </div>
-
 <div class="fonte-card">
-Fonte: CHAP • IA-CHAP • Matriz de Risco 5x5
+Fonte: Heatmap Estadual • CHAP • IA-CHAP • Data Base ${hoje}
 </div>
-
 <hr style="margin:20px 0">
-
-<h2>HEATMAP ESTADUAL - QUANTIDADE DE MUNICÍPIOS POR CLASSE DE RISCO</h2>
-
+<h2>HEATMAP ESTADUAL - MUNICÍPIOS POR CLASSE</h2>
 <div class="heatmap-grid-mini">
-
 <div class="heat-vermelho">
 <div style="font-size:34px;font-weight:900">${critico}</div>
 <div>CRÍTICO</div>
 <div>75-100</div>
 </div>
-
 <div class="heat-laranja">
 <div style="font-size:34px;font-weight:900">${alto}</div>
 <div>ALTO</div>
 <div>50-74</div>
 </div>
-
 <div class="heat-amarelo">
 <div style="font-size:34px;font-weight:900">${moderado}</div>
 <div>MODERADO</div>
 <div>25-49</div>
 </div>
-
 <div class="heat-verde">
 <div style="font-size:34px;font-weight:900">${baixo}</div>
 <div>BAIXO</div>
 <div>0-24</div>
 </div>
-
 </div>
-
-<div style="
-margin-top:20px;
-font-size:14px;
-line-height:24px;
-">
-
+<div style="margin-top:12px">
+<div style="background:#94a3b8;color:#fff;padding:12px;border-radius:10px;text-align:center;font-weight:800">
+SEM DADOS: ${semdados}
+</div>
+</div>
+<div style="margin-top:20px;font-size:14px;line-height:24px">
 <b>Legenda do Heatmap:</b><br>
-
-🔴 75 - 100 - Crítico<br>
-🟠 50 - 74 - Alto<br>
-🟡 25 - 49 - Moderado<br>
-🟢 0 - 24 - Baixo<br><br>
-
-O Heatmap Estadual considera:
-• Focos de calor;
-• Histórico de queimadas;
-• Cobertura vegetal;
-• Vulnerabilidade ambiental;
-• Pressão antrópica; e
-• Índice IRIQ.
-
+🔴 75-100 Crítico<br>
+🟠 50-74 Alto<br>
+🟡 25-49 Moderado<br>
+🟢 0-24 Baixo<br>
+⚪ Sem Dados
 </div>
-
 <div class="fonte-card">
-Fonte: Heatmap Estadual • CHAP • IA-CHAP
+Fonte: INPE • Heatmap Estadual • IRIQ • Data Base ${hoje}
 </div>
-
 </div>
 `
 }
@@ -2145,7 +2080,6 @@ if(typeof renderPainelFocosINPE==='function')await renderPainelFocosINPE()
 if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadual()
 if(typeof renderIndicadoresEstrategicos==='function')await renderIndicadoresEstrategicos()
 if(typeof renderPainelUCs==='function')await renderPainelUCs()
-if(typeof renderLegendaHeatmap==='function')await renderLegendaHeatmap()
 setTimeout(()=>{
 if(window.mapaEstadualRO){
 window.mapaEstadualRO.invalidateSize(true)
