@@ -334,31 +334,28 @@ return total.toFixed(0)
 076 CALCULAR IRIQ
 =========================================================*/
 async function calcularIRIQ(){
-let {data:riscos}=await client
-.from('queimadas_riscos')
+let {data:heat}=await client
+.from('queimadas_heatmap')
 .select('*')
+let municipiosValidos=(heat||[])
+.filter(i=>i.classificacao!=='SEM DADOS')
+if(!municipiosValidos.length){
+return '0.0'
+}
+let somaRisco=0
+municipiosValidos.forEach(i=>{
+somaRisco+=Number(i.risco||0)
+})
+let mediaRisco=somaRisco/municipiosValidos.length
 let {data:chap}=await client
 .from('queimadas_chap')
 .select('*')
-let totalRisco=0
-let totalChap=0
-;(riscos||[]).forEach(r=>{
-totalRisco+=Number(r.nivel_risco||0)
-})
+let somaChap=0
 ;(chap||[]).forEach(c=>{
-totalChap+=Number(c.resultado||0)
+somaChap+=Number(c.resultado||0)
 })
-let mediaRisco=
-(riscos||[]).length
-?totalRisco/(riscos||[]).length
-:0
-let mediaChap=
-(chap||[]).length
-?totalChap/(chap||[]).length
-:0
-let iriq=
-(mediaRisco*0.60)+
-(mediaChap*0.40)
+let mediaChap=(chap||[]).length?somaChap/(chap||[]).length:0
+let iriq=(mediaRisco*0.60)+(mediaChap*0.40)
 if(iriq>100)iriq=100
 if(iriq<0)iriq=0
 return iriq.toFixed(1)
@@ -906,18 +903,13 @@ beginAtZero:true
 async function renderIndicadoresEstrategicos(){
 let box=document.getElementById('painelIndicadoresEstrategicos')
 if(!box)return
-let {data:focos}=await client
-.from('queimadas_focos')
-.select('*')
 let {data:heat}=await client
 .from('queimadas_heatmap')
 .select('*')
-let totalFocos=(focos||[])
-.reduce((s,i)=>s+Number(i.focos||0),0)
+let totalFocos=(heat||[]).reduce((s,i)=>s+Number(i.focos||0),0)
 let iriqMedio=await calcularIRIQ()
 let faixaIRIQ='BAIXO'
 let corIRIQ='#16a34a'
-
 if(Number(iriqMedio)>=75){
 faixaIRIQ='CRÍTICO'
 corIRIQ='#dc2626'
@@ -928,47 +920,22 @@ corIRIQ='#f97316'
 faixaIRIQ='MODERADO'
 corIRIQ='#facc15'
 }
-let municipiosCriticos=(heat||[])
-.filter(i=>i.classificacao==='CRÍTICO')
-.length
-let municipiosAlto=(heat||[])
-.filter(i=>i.classificacao==='ALTO')
-.length
+let municipiosCriticos=(heat||[]).filter(i=>i.classificacao==='CRÍTICO').length
+let municipiosAlto=(heat||[]).filter(i=>i.classificacao==='ALTO').length
+let municipiosSemDados=(heat||[]).filter(i=>i.classificacao==='SEM DADOS').length
+let municipiosMonitorados=(heat||[]).length-municipiosSemDados
 let hoje=new Date().toLocaleDateString('pt-BR')
 box.innerHTML=`
 <div class="chap-grid">
 <div class="chap-card">
 <div class="chap-num">${Number(totalFocos||0).toLocaleString('pt-BR')}</div>
-<div class="chap-label">FOCOS ACUMULADOS</div>
-<div style="font-size:11px;margin-top:6px;color:#64748b">
-Período analisado
-</div>
-<div style="font-size:11px;font-weight:700">
-01/01/2026 até ${hoje}
-</div>
+<div class="chap-label">FOCOS 2026</div>
+<div style="font-size:11px;color:#64748b">01/01/2026 até ${hoje}</div>
 </div>
 <div class="chap-card">
-<div class="chap-num" style="color:${corIRIQ}">
-${iriqMedio}
-</div>
-<div class="chap-label">
-IRIQ MÉDIO ESTADUAL
-</div>
-<div style="
-font-size:13px;
-font-weight:900;
-color:${corIRIQ};
-margin-top:6px;
-">
-${faixaIRIQ}
-</div>
-<div style="
-font-size:11px;
-margin-top:6px;
-color:#64748b;
-">
-60% Risco + 40% CHAP
-</div>
+<div class="chap-num" style="color:${corIRIQ}">${iriqMedio}</div>
+<div class="chap-label">IRIQ ESTADUAL</div>
+<div style="font-size:12px;font-weight:900;color:${corIRIQ}">${faixaIRIQ}</div>
 </div>
 <div class="chap-card">
 <div class="chap-num">${municipiosCriticos}</div>
@@ -978,9 +945,17 @@ color:#64748b;
 <div class="chap-num">${municipiosAlto}</div>
 <div class="chap-label">ALTO RISCO</div>
 </div>
+<div class="chap-card">
+<div class="chap-num">${municipiosMonitorados}</div>
+<div class="chap-label">MONITORADOS</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${municipiosSemDados}</div>
+<div class="chap-label">SEM DADOS</div>
+</div>
 </div>
 <div class="fonte-card">
-Fonte: TCE-RO • Sedam • CBMRO • INPE
+Fonte: INPE • Heatmap Estadual • IRIQ • CHAP • Sedam • CBMRO • TCE-RO • Data Base ${hoje}
 </div>`
 }
 /*=========================================================
