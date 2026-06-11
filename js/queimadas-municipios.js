@@ -1,25 +1,43 @@
 /*=========================================================
-065 QUEIMADAS FUNCTION RENDERTOPCRITICOS
+132 QUEIMADAS FUNCTION RENDERTOPCRITICOS
 =========================================================*/
 async function renderTopCriticos(){
 let box=document.getElementById('painelTopCriticos')
 if(!box)return
-let {data,error}=await client
-.from('queimadas_municipios')
+let {data}=await client
+.from('queimadas_heatmap')
 .select('*')
-.order('focos_calor',{ascending:false})
-.limit(10)
-if(error){
-console.log(error)
-return
-}
-box.innerHTML=(data||[]).map(i=>`
-<div class="linha-queimadas">
-🔥 <b>${i.municipio||'-'}</b>
- | Focos: ${i.focos_calor||0}
- | Risco: ${i.risco||'-'}
+.eq('classificacao','CRÍTICO')
+.order('focos',{ascending:false})
+
+let html=`
+<div class="cardExecutivo">
+<h2>🚨 MUNICÍPIOS CRÍTICOS</h2>
+`
+
+if(!data?.length){
+html+=`<div>Nenhum município crítico identificado.</div>`
+}else{
+data.forEach((m,i)=>{
+html+=`
+<div style="padding:10px;border-bottom:1px solid #e5e7eb">
+<b>${i+1}º ${m.municipio}</b><br>
+🔥 Focos: ${m.focos||0}<br>
+📈 Risco: ${m.risco||0}<br>
+🔴 Classificação: ${m.classificacao}
 </div>
-`).join('')
+`
+})
+}
+
+html+=`
+<div class="fonte-card">
+Fonte: Heatmap Estadual • INPE • Acumulado 2026
+</div>
+</div>
+`
+
+box.innerHTML=html
 }
 /*=========================================================
 066 QUEIMADAS FUNCTION RENDERTOPRISCOS
@@ -1016,14 +1034,15 @@ let altos=(heat||[])
 .filter(i=>i.classificacao==='ALTO')
 .length
 
-let focosTotal=(focos||[])
+let focosTotal=(heat||[])
 .reduce(
 (s,i)=>s+Number(i.focos||0),
 0
 )
 
 let top10=[...(heat||[])]
-.sort((a,b)=>b.criticidade-a.criticidade)
+.filter(i=>Number(i.focos||0)>0)
+.sort((a,b)=>b.focos-a.focos)
 .slice(0,10)
 
 box.innerHTML=`
@@ -1050,14 +1069,25 @@ CRÍTICOS
 ALTO RISCO
 </div>
 </div>
-
+<div class="chap-card">
+<div class="chap-num">
+${(heat||[]).filter(i=>i.classificacao==='SEM DADOS').length}
+</div>
+<div class="chap-label">
+SEM DADOS
+</div>
+</div>
 </div>
 
 <div class="card-executivo">
 
 <h2>
-TOP 10 MUNICÍPIOS
+🔥 TOP 10 FOCOS DE CALOR
 </h2>
+
+<div class="fonte-card">
+Período: Acumulado 2026 • Fonte: INPE
+</div>
 
 ${top10.map(i=>`
 
@@ -1068,12 +1098,17 @@ padding:6px;
 border-bottom:1px solid #ddd;
 ">
 
-<span>
-${i.municipio}
+<div>
+<b>${i.municipio}</b><br>
+<span style="font-size:11px">
+🔥 ${i.focos||0} focos •
+📈 ${i.risco||0} risco •
+${i.classificacao||'-'}
 </span>
+</div>
 
 <b>
-${i.criticidade}
+${i.focos||0}
 </b>
 
 </div>
@@ -1085,23 +1120,25 @@ ${i.criticidade}
 <div class="card-executivo">
 
 <h2>
-ALERTAS AUTOMÁTICOS
+🚨 ALERTAS AUTOMÁTICOS
 </h2>
+<div class="fonte-card">
+Fonte: Heatmap Estadual • INPE • Atualização Automática
+</div>
 
 <div style="padding:10px">
 
 ${criticos>0
-?'🚨 Existem municípios críticos.<br>'
-:'✅ Sem municípios críticos.<br>'}
+?`🚨 ${criticos} municípios classificados como CRÍTICOS.<br>`
+:'✅ Nenhum município crítico.<br>'}
 
 ${focosTotal>500
 ?'🔥 Quantidade elevada de focos detectados.<br>'
 :'✅ Focos sob controle.<br>'}
 
-${altos>5
-?'⚠ Diversos municípios em alto risco.<br>'
-:'✅ Risco controlado.<br>'}
-
+${altos>0
+?`⚠ ${altos} municípios classificados como ALTO RISCO.<br>`
+:'✅ Sem municípios em alto risco.<br>'}
 </div>
 
 </div>
