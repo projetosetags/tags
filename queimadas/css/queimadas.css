@@ -363,7 +363,7 @@ vertical-align:top;
 }
 #painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(1),
 #painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(1){
-min-width:220px;
+min-width:200px;
 }
 #painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(2),
 #painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(2){
@@ -379,17 +379,17 @@ min-width:100px;
 }
 #painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(4),
 #painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(4){
-min-width:80px;
-}
 #painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(7),
 #painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(7),
+min-width:80px;
+}
 #painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(8),
 #painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(8){
 min-width:120px;
 }
 #painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(9),
 #painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(9){
-min-width:700px;
+min-width:500px;
 white-space:normal;
 word-break:break-word;
 }
