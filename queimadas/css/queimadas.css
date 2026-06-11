@@ -232,8 +232,8 @@ text-align:left;
 padding:8px;
 border-bottom:1px solid #e2e8f0;
 vertical-align:top;
-word-break:break-word;
-overflow-wrap:break-word;
+font-size:12px;
+line-height:1.25;
 }
 .tabelaMunicipios tr:hover{
 background:#f8fafc;
@@ -289,7 +289,16 @@ overflow-x:auto;
 min-width:1500px;
 }
 }
-
+.colOficio{
+font-size:10px;
+line-height:1.15;
+font-weight:600;
+}
+.colObservacao{
+font-size:10px;
+line-height:1.15;
+color:#475569;
+}
 .exec-legenda-municipal{display:flex;gap:20px;flex-wrap:wrap;margin-top:10px;font-weight:700}
 .leg-verde{color:#16a34a}
 .leg-amarelo{color:#ca8a04}
