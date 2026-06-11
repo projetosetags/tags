@@ -1613,48 +1613,71 @@ Fonte: Ofício Circular n.16/2026/GABPRES/TCERO • Respostas dos Municípios
 `
 }
 /*=========================================================
-099 QUEIMADAS FUNCTION RENDERCADASTROMUNICIPIOS
+099 QUEIMADAS FUNCTION RENDERMUNICIPIOSOFICIO
 =========================================================*/
-async function renderCadastroMunicipios(){
-let box=document.getElementById('painelCadastroMunicipios')
+async function renderMunicipiosOficio(tipo='CADASTRO'){
+let destino=
+tipo==='RESUMO'
+?'painelSituacaoGeralMunicipios'
+:'painelCadastroMunicipios'
+let box=document.getElementById(destino)
 if(!box)return
-let busca=(document.getElementById('pesquisaCadastroMunicipio')?.value||'').toUpperCase()
 let {data,error}=await client
 .from('queimadas_municipios_oficio')
 .select('*')
 .order('municipio')
 if(error){
 console.log(error)
+box.innerHTML='Erro ao carregar.'
 return
 }
-let lista=(data||[])
-if(busca){
-lista=lista.filter(i=>
-String(i.municipio||'')
-.toUpperCase()
-.includes(busca)
-)
-}
-let html=''
+let html='<div style="overflow:auto">'
+html+='<table class="tabelaMunicipios">'
+html+='<thead>'
+if(tipo==='RESUMO'){
 html+=`
-<table class="tabelaMunicipios">
-<thead>
 <tr>
-<th>MUNICÍPIO</th>
-<th>OFÍCIO TCE</th>
-<th>DATA ENVIO</th>
-<th>PÁG ENVIO</th>
-<th>DATA REC 1</th>
-<th>DATA REC 2</th>
-<th>DOC 1</th>
-<th>DOC 2</th>
-<th>OBSERVAÇÃO</th>
-<th>AÇÃO</th>
+<th>Nº</th>
+<th>Município</th>
+<th>Situação</th>
+<th>Data</th>
+<th>Documento</th>
+<th>Observação</th>
 </tr>
-</thead>
-<tbody>
 `
-lista.forEach(i=>{
+}else{
+html+=`
+<tr>
+<th>Município</th>
+<th>Ofício TCE</th>
+<th>Data Envio</th>
+<th>Pág.</th>
+<th>Data Rec.1</th>
+<th>Data Rec.2</th>
+<th>Doc.1</th>
+<th>Doc.2</th>
+<th>Observação</th>
+<th>Ação</th>
+</tr>
+`
+}
+html+='</thead><tbody>'
+;(data||[]).forEach((i,idx)=>{
+if(tipo==='RESUMO'){
+let situacao='🔴 Sem Plano de Ação'
+if(i.classificacao_cor==='VERDE')situacao='🟢 Com Plano de Ação'
+if(i.classificacao_cor==='AMARELO')situacao='🟡 Dilação de Prazo'
+html+=`
+<tr>
+<td>${idx+1}</td>
+<td>${i.municipio||'-'}</td>
+<td>${situacao}</td>
+<td>${formatarDataBR(i.ldatarecebimentodoc)}</td>
+<td>${i.lnumerodocenviado||i.llnumerodocenviado||'-'}</td>
+<td>${i.observacao||'-'}</td>
+</tr>
+`
+}else{
 html+=`
 <tr>
 <td>${i.municipio||'-'}</td>
@@ -1669,11 +1692,9 @@ html+=`
 <td><button class="btnEditarMunicipio" onclick="editarMunicipio(${i.id})">✏ EDITAR</button></td>
 </tr>
 `
+}
 })
-html+=`
-</tbody>
-</table>
-`
+html+='</tbody></table></div>'
 box.innerHTML=html
 }
 /*=========================================================
@@ -1755,83 +1776,45 @@ box.style.display='none'
 if(btn)btn.innerHTML='👁 EXIBIR MAPA'
 }
 }
+
 /*=========================================================
-103 EXECUTIVO MUNICIPAL TABELA GERAL
+104 QUEIMADAS FUNCTION RENDERESTADOOFICIO
 =========================================================*/
-async function renderSituacaoGeralMunicipios(){
-let box=document.getElementById('painelSituacaoGeralMunicipios')
+async function renderEstadoOficio(){
+let box=document.getElementById('painelCadastroEstado')
 if(!box)return
-let {data,error}=await client.from('queimadas_municipios_oficio').select('*').order('municipio')
+let {data,error}=await client
+.from('queimadas_estado_oficio')
+.select('*')
+.order('orgao')
 if(error){
 console.log(error)
 box.innerHTML='Erro ao carregar.'
 return
 }
-let html=''
-html+='<div style="overflow:auto">'
-html+='<table class="tabelaMunicipalExecutiva">'
-html+='<thead>'
-html+='<tr>'
-html+='<th>Nº</th>'
-html+='<th>Município</th>'
-html+='<th>Situação</th>'
-html+='<th>Data</th>'
-html+='<th>Documento</th>'
-html+='<th>Observação</th>'
-html+='</tr>'
-html+='</thead>'
-html+='<tbody>'
-;(data||[]).forEach((i,idx)=>{
-let situacao='🔴 Sem Plano de Ação'
-if(i.classificacao_cor==='VERDE')situacao='🟢 Com Plano de Ação'
-if(i.classificacao_cor==='AMARELO')situacao='🟡 Dilação de Prazo'
-html+=`
-<tr>
-<td>${idx+1}</td>
-<td>${i.municipio||'-'}</td>
-<td>${situacao}</td>
-<td>${formatarDataBR(i.ldatarecebimentodoc)}</td>
-<td>${i.lnumerodocenviado||i.llnumerodocenviado||'-'}</td>
-<td>${i.observacao||'-'}</td>
-</tr>`
-})
-html+='</tbody>'
-html+='</table>'
-html+='</div>'
-box.innerHTML=html
-}
-/*=========================================================
-104 QUEIMADAS FUNCTION RESUMO CADASTRO MUNICIPAL
-=========================================================*/
-async function renderCadastroMunicipiosResumo(){
-let box=document.getElementById('painelCadastroMunicipiosResumo')
-if(!box)return
-let {data,error}=await client.from('queimadas_municipios_oficio').select('*').order('municipio')
-if(error){
-console.log(error)
-return
-}
 let html='<div style="overflow:auto">'
 html+='<table class="tabelaMunicipios">'
-html+='<thead>'
-html+='<tr>'
-html+='<th>Município</th>'
-html+='<th>Ofício TCE-RO</th>'
-html+='<th>Data Envio</th>'
-html+='<th>Página Envio</th>'
-html+='<th>Data Rec. 1</th>'
-html+='<th>Data Rec. 2</th>'
-html+='<th>Doc. 1</th>'
-html+='<th>Doc. 2</th>'
-html+='<th>Observação</th>'
-html+='<th>Ação</th>'
-html+='</tr>'
-html+='</thead>'
-html+='<tbody>'
+html+=`
+<thead>
+<tr>
+<th>Órgão</th>
+<th>Ofício TCE</th>
+<th>Data Envio</th>
+<th>Pág.</th>
+<th>Data Rec.1</th>
+<th>Data Rec.2</th>
+<th>Doc.1</th>
+<th>Doc.2</th>
+<th>Observação</th>
+<th>Ação</th>
+</tr>
+</thead>
+<tbody>
+`
 ;(data||[]).forEach(i=>{
 html+=`
 <tr>
-<td>${i.municipio||'-'}</td>
+<td>${i.orgao||'-'}</td>
 <td>${i.nroficioenviadotcero||'-'}</td>
 <td>${formatarDataBR(i.dataenviodoc)}</td>
 <td>${i.paginaenviodoc||'-'}</td>
@@ -1840,12 +1823,11 @@ html+=`
 <td>${i.lnumerodocenviado||'-'}</td>
 <td>${i.llnumerodocenviado||'-'}</td>
 <td>${i.observacao||'-'}</td>
-<td><button class="btnEditarMunicipio" onclick="editarMunicipio(${i.id})">✏ EDITAR</button></td>
-</tr>`
+<td><button class="btnEditarEstado" onclick="editarEstado(${i.id})">✏ EDITAR</button></td>
+</tr>
+`
 })
-html+='</tbody>'
-html+='</table>'
-html+='</div>'
+html+='</tbody></table></div>'
 box.innerHTML=html
 }
 /*=========================================================
@@ -1961,11 +1943,11 @@ alert('Erro ao salvar.')
 return
 }
 fecharModalMunicipio()
-await renderCadastroMunicipios()
+await renderMunicipiosOficio('CADASTRO')
 if(typeof renderTabelaMunicipios==='function')
 await renderTabelaMunicipios()
 if(typeof renderSituacaoGeralMunicipios==='function')
-await renderSituacaoGeralMunicipios()
+await renderMunicipiosOficio('RESUMO')
 alert('Registro atualizado com sucesso.')
 }
 
