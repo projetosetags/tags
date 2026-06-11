@@ -1471,14 +1471,18 @@ f.properties.NM_MUN||f.properties.nome||f.properties.NOME||'')
 .replace(/`/g,'')
 .toUpperCase()
 .trim()
-let classe=risco[nome]||'BAIXO'
-let cor='#16a34a'
+let classe=risco[nome]||'SEM DADOS'
+let cor='#94a3b8'
 if(classe==='CRITICO'){
 cor='#dc2626'
 }else if(classe==='ALTO'){
 cor='#f97316'
 }else if(classe==='MODERADO'){
 cor='#facc15'
+}else if(classe==='BAIXO'){
+cor='#16a34a'
+}else{
+cor='#94a3b8'
 }
 return{
 color:'#1e293b',
@@ -1506,6 +1510,8 @@ let chave=String(nome)
 .toUpperCase()
 .trim()
 let classe=risco[chave]||'SEM DADOS'
+let focos=registro?.focos||0
+let riscoValor=registro?.risco||'-'
 let registro=(data||[]).find(m=>
 String(m.municipio||'')
 .normalize('NFD')
@@ -1518,13 +1524,10 @@ String(m.municipio||'')
 )
 l.bindPopup(`
 <b>${nome}</b><br>
-Classificação: ${classe}<br>
-Criticidade: ${registro?.criticidade||'-'}<br>
-Focos: ${
-Number(registro?.focos||0)>0
-?registro.focos
-:'Sem dados'
-}
+🔥 Focos: ${focos}<br>
+📈 Risco: ${riscoValor}<br>
+🏷 Classificação: ${classe}<br>
+⚠ Criticidade: ${registro?.criticidade||'-'}
 `)
 }
 }).addTo(mapa)
