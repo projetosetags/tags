@@ -2475,9 +2475,58 @@ align-items:center;
 }).join('')
 }
 /*=========================================================
-103 QUEIMADAS FUNCTION EDITARESTADO
+103 QUEIMADAS FUNCTION SALVARESTADO
 =========================================================*/
-function editarEstado(id){
-alert('Editar órgão estadual ID: '+id)
+async function salvarEstado(){
+let registro={
+estado:document.getElementById('estadoNome')?.value||'',
+nroficioenviadotcero:document.getElementById('estadoOficio')?.value||'',
+dataenviodoc:document.getElementById('estadoDataEnvio')?.value||null,
+paginaenviodoc:document.getElementById('estadoPaginaEnvio')?.value||'',
+idatarecebimentodoc:document.getElementById('estadoDataRec1')?.value||null,
+iidatarecebimentodoc:document.getElementById('estadoDataRec2')?.value||null,
+inumerodocenviado:document.getElementById('estadoDoc1')?.value||'',
+iinumerodocenviado:document.getElementById('estadoDoc2')?.value||'',
+observacao:document.getElementById('estadoObservacao')?.value||''
 }
-
+let {error}=await client
+.from('queimadas_estado_oficio')
+.insert([registro])
+if(error){
+alert(error.message)
+return
+}
+alert('Órgão estadual cadastrado com sucesso.')
+await renderKPIsEstado()
+await renderCadastroEstado()
+await renderIndicadoresEstado()
+document.getElementById('estadoNome').value=''
+document.getElementById('estadoOficio').value=''
+document.getElementById('estadoDataEnvio').value=''
+document.getElementById('estadoPaginaEnvio').value=''
+document.getElementById('estadoDataRec1').value=''
+document.getElementById('estadoDataRec2').value=''
+document.getElementById('estadoDoc1').value=''
+document.getElementById('estadoDoc2').value=''
+document.getElementById('estadoObservacao').value=''
+}
+/*=========================================================
+104 QUEIMADAS FUNCTION EDITARESTADO
+=========================================================*/
+async function editarEstado(id){
+let {data}=await client
+.from('queimadas_estado_oficio')
+.select('*')
+.eq('id',id)
+.single()
+if(!data)return
+document.getElementById('estadoNome').value=data.estado||''
+document.getElementById('estadoOficio').value=data.nroficioenviadotcero||''
+document.getElementById('estadoDataEnvio').value=data.dataenviodoc||''
+document.getElementById('estadoPaginaEnvio').value=data.paginaenviodoc||''
+document.getElementById('estadoDataRec1').value=data.idatarecebimentodoc||''
+document.getElementById('estadoDataRec2').value=data.iidatarecebimentodoc||''
+document.getElementById('estadoDoc1').value=data.inumerodocenviado||''
+document.getElementById('estadoDoc2').value=data.iinumerodocenviado||''
+document.getElementById('estadoObservacao').value=data.observacao||''
+}
