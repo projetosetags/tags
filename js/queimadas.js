@@ -2086,6 +2086,7 @@ document.getElementById('abaEstado')?.classList.remove('hidden')
 if(typeof renderKPIsEstado==='function')await renderKPIsEstado()
 if(typeof renderCadastroEstado==='function')await renderCadastroEstado()
 if(typeof renderIndicadoresEstado==='function')await renderIndicadoresEstado()
+if(typeof renderFormularioEstado==='function')renderFormularioEstado()
 }
 if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
@@ -2385,7 +2386,6 @@ box.innerHTML=`
 </div>
 `
 }
-
 /*=========================================================
 101 QUEIMADAS FUNCTION RENDERCADASTROESTADO
 =========================================================*/
@@ -2401,7 +2401,7 @@ console.log(error)
 return
 }
 let html=`
-<table class="tabelaMunicipios">
+<table class="tabelaEstado">
 <thead>
 <tr>
 <th>ÓRGÃO</th>
@@ -2529,4 +2529,25 @@ document.getElementById('estadoDataRec2').value=data.iidatarecebimentodoc||''
 document.getElementById('estadoDoc1').value=data.inumerodocenviado||''
 document.getElementById('estadoDoc2').value=data.iinumerodocenviado||''
 document.getElementById('estadoObservacao').value=data.observacao||''
+}
+/*=========================================================
+105 QUEIMADAS FUNCTION RENDERFORMULARIOESTADO
+=========================================================*/
+function renderFormularioEstado(){
+let box=document.getElementById('painelFormularioEstado')
+if(!box)return
+box.innerHTML=`
+<div class="gridCadastroEstado">
+<input id="estadoNome" placeholder="Órgão Estadual">
+<input id="estadoOficio" placeholder="Ofício TCE-RO">
+<input id="estadoDataEnvio" type="date">
+<input id="estadoPaginaEnvio" placeholder="Página Envio">
+<input id="estadoDataRec1" type="date">
+<input id="estadoDataRec2" type="date">
+<input id="estadoDoc1" placeholder="Documento 1">
+<input id="estadoDoc2" placeholder="Documento 2">
+<textarea id="estadoObservacao" placeholder="Observação"></textarea>
+<button onclick="salvarEstado()">💾 SALVAR</button>
+</div>
+`
 }
