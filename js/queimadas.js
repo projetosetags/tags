@@ -252,74 +252,52 @@ riscos:[...new Set(riscos)]
 009 QUEIMADAS FUNCTION CARREGARKPISEXECUTIVOS
 =========================================================*/
 async function carregarKPIsExecutivos(){
-
-let {data:heat,error}=await client
+let {data:heat=[],error}=await client
 .from('queimadas_heatmap')
 .select('*')
-
 if(error){
 console.log(error)
 return
 }
-
-let municipios=(heat||[]).length
-
 let {data:focosINPE=[]}=await client
 .from('queimadas_focos')
 .select('*')
-
+let municipios=(heat||[]).length
 let focos=focosINPE.reduce(
 (s,i)=>s+Number(i.focos||0),
 0
 )
-
 let criticos=(heat||[])
 .filter(i=>i.classificacao==='CRÍTICO')
 .length
-
 let altos=(heat||[])
 .filter(i=>i.classificacao==='ALTO')
 .length
-
 let semdados=(heat||[])
 .filter(i=>i.classificacao==='SEM DADOS')
 .length
-
-let monitorados=
-municipios-semdados
-
-let execucao=
-municipios
-?Math.round(
-(monitorados/municipios)*100
-)
+let monitorados=municipios-semdados
+let execucao=municipios
+?Math.round((monitorados/municipios)*100)
 :0
-
 let el1=document.getElementById('kpiMunicipios')
 let el2=document.getElementById('kpiFocos')
 let el3=document.getElementById('kpiRiscos')
 let el4=document.getElementById('kpiExecucao')
-
 if(el1)el1.innerText=municipios
 if(el2)el2.innerText=formatarNumero(focos)
 if(el3)el3.innerText=criticos
 if(el4)el4.innerText=execucao+'%'
-
 let pop=await calcularPopulacaoExposta()
 let area=await calcularAreaRisco()
 let iriq=await calcularIRIQ()
-
 let k1=document.getElementById('kpiPopulacaoExposta')
 if(k1){
-k1.innerText=
-pop.toLocaleString('pt-BR')
+k1.innerText=pop.toLocaleString('pt-BR')
 }
-
 let k2=document.getElementById('kpiAreaRisco')
 if(k2){
-k2.innerText=
-(Number(area||0)/1000000)
-.toLocaleString(
+k2.innerText=(Number(area||0)/1000000).toLocaleString(
 'pt-BR',
 {
 minimumFractionDigits:2,
@@ -327,22 +305,18 @@ maximumFractionDigits:2
 }
 )+' km²'
 }
-
 let k3=document.getElementById('kpiIRIQ')
 if(k3){
 k3.innerText=iriq
 }
-
 let k4=document.getElementById('kpiAltoRisco')
 if(k4){
 k4.innerText=altos
 }
-
 let k5=document.getElementById('kpiSemDados')
 if(k5){
 k5.innerText=semdados
 }
-
 }
 /*=========================================================
 010 QUEIMADAS FUNCTION RENDERPLANOUNIFICADO
