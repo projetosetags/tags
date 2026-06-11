@@ -511,40 +511,35 @@ box.innerHTML=`
 <div class="chap-grid">
 <div class="chap-card">
 <div class="chap-num">${formatarNumero(focos)}</div>
-<div class="chap-label">FOCOS ACUMULADOS</div>
-<div class="fonte-card">Fonte: INPE • Acumulado 2026</div>
+<div class="chap-label">FOCOS</div>
 </div>
 <div class="chap-card">
 <div class="chap-num">${criticos}</div>
-<div class="chap-label">MUNICÍPIOS CRÍTICOS</div>
-<div class="fonte-card">Fonte: Heatmap Estadual</div>
+<div class="chap-label">CRÍTICOS</div>
 </div>
 <div class="chap-card">
 <div class="chap-num">${altos}</div>
 <div class="chap-label">ALTO RISCO</div>
-<div class="fonte-card">Fonte: Heatmap Estadual</div>
 </div>
 <div class="chap-card">
 <div class="chap-num">${semdados}</div>
 <div class="chap-label">SEM DADOS</div>
-<div class="fonte-card">Municípios sem carga de focos</div>
 </div>
 <div class="chap-card">
 <div class="chap-num">${formatarNumero(pop)}</div>
-<div class="chap-label">POPULAÇÃO EXPOSTA</div>
-<div class="fonte-card">Fonte: IBGE 2022</div>
+<div class="chap-label">POPULAÇÃO</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">${(Number(area||0)/1000000).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-<div class="chap-label">KM² SOB RISCO</div>
-<div style="font-size:11px;color:#64748b">${formatarNumero(area)} m²</div>
-<div class="fonte-card">Fonte: Heatmap Estadual • Sedam • INPE</div>
+<div class="chap-num">${(Number(area||0)/1000000).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})}</div>
+<div class="chap-label">KM² RISCO</div>
 </div>
 <div class="chap-card">
-<div class="chap-num" style="color:${cor}">${iriq}</div>
-<div class="chap-label">IRIQ ESTADUAL</div>
-<div style="font-size:12px;font-weight:700;color:${cor}">${faixa}</div>
-<div class="fonte-card">IRIQ = 60% Risco + 40% CHAP</div>
+<div class="chap-num" style="color:${cor}">
+${iriq}
+</div>
+<div class="chap-label">
+IRIQ ${faixa}
+</div>
 </div>
 </div>
 `
