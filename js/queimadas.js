@@ -2434,6 +2434,9 @@ html+=`
 <button class="btnEditarMunicipio" onclick="editarEstado(${i.id})">
 ✏ EDITAR
 </button>
+<button class="btnExcluirEstado" onclick="excluirEstado(${i.id})">
+🗑 EXCLUIR
+</button>
 </td>
 </tr>
 `
@@ -2573,3 +2576,25 @@ box.innerHTML=`
 </div>
 `
 }
+/*=========================================================
+106 QUEIMADAS FUNCTION EXCLUIRESTADO
+=========================================================*/
+async function excluirEstado(id){
+
+if(!confirm('Deseja excluir este órgão estadual?')){
+return
+}
+let {error}=await client
+.from('queimadas_estado_oficio')
+.delete()
+.eq('id',id)
+if(error){
+alert(error.message)
+return
+}
+await renderKPIsEstado()
+await renderCadastroEstado()
+await renderIndicadoresEstado()
+alert('Registro excluído com sucesso.')
+}
+
