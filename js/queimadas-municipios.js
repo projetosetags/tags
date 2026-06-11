@@ -1772,12 +1772,19 @@ await renderUCs()
 102 TOGGLE MAPA RO
 =========================================================*/
 function toggleMapaRO(){
-let box=document.getElementById('boxMapaRO')
+let box=document.getElementById('MapaRO')
+let btn=document.querySelector('.btnOcultarMapa')
 if(!box)return
-box.style.display=
-box.style.display==='none'
-?'block'
-:'none'
+if(box.style.display==='none'){
+box.style.display='block'
+if(btn)btn.innerHTML='👁 OCULTAR MAPA'
+setTimeout(()=>{
+window.mapaExecutivoRO?.invalidateSize()
+},300)
+}else{
+box.style.display='none'
+if(btn)btn.innerHTML='👁 EXIBIR MAPA'
+}
 }
 /*=========================================================
 103 EXECUTIVO MUNICIPAL TABELA GERAL
