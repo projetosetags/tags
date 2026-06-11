@@ -1689,7 +1689,7 @@ html+=`
 <td>${i.lnumerodocenviado||'-'}</td>
 <td>${i.llnumerodocenviado||'-'}</td>
 <td>${i.observacao||'-'}</td>
-<td><button class="btnEditarMunicipio" onclick="editarMunicipio(${i.id})">✏ EDITAR</button></td>
+<td><button class="btnEditarMunicipio" onclick="editarMunicipio(${i.id})">✏</button></td>
 </tr>
 `
 }
