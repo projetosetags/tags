@@ -347,4 +347,27 @@ margin-left:4px;
 .itemLegenda{display:flex;align-items:center;gap:6px}
 .legCor{width:16px;height:16px;border-radius:4px;display:inline-block;border:1px solid #cbd5e1}
 
-
+#painelCadastroMunicipiosResumo{
+overflow-x:auto;
+}
+#painelCadastroMunicipiosResumo .tabelaMunicipios{
+min-width:2400px;
+table-layout:auto;
+}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th,
+#painelCadastroMunicipiosResumo .tabelaMunicipios td{
+padding:8px;
+vertical-align:top;
+}
+#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(1){
+min-width:220px;
+font-weight:700;
+}
+#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(9){
+min-width:700px;
+white-space:normal;
+word-break:break-word;
+}
+#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(10){
+text-align:center;
+}
