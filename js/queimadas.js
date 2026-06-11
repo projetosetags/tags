@@ -1520,7 +1520,11 @@ l.bindPopup(`
 <b>${nome}</b><br>
 Classificação: ${classe}<br>
 Criticidade: ${registro?.criticidade||'-'}<br>
-Focos: ${registro?.focos||'-'}
+Focos: ${
+Number(registro?.focos||0)>0
+?registro.focos
+:'Sem dados'
+}
 `)
 }
 }).addTo(mapa)
@@ -2673,20 +2677,34 @@ let critico=0
 let alto=0
 let moderado=0
 let baixo=0
+let semdados=0
 ;(data||[]).forEach(i=>{
-let r=Number(i.risco||0)
-if(r>=75)critico++
-else if(r>=50)alto++
-else if(r>=25)moderado++
-else baixo++
+if(i.classificacao==='SEM DADOS'){
+semdados++
+return
+}
+if(i.classificacao==='CRÍTICO'){
+critico++
+return
+}
+if(i.classificacao==='ALTO'){
+alto++
+return
+}
+if(i.classificacao==='MODERADO'){
+moderado++
+return
+}
+baixo++
 })
 box.innerHTML=`
 <div class="cardExecutivo">
-<h2>🚨 SITUAÇÃO OPERACIONAL</h2>
+<h2>🚨 SITUAÇÃO OPERACIONAL DO ESTADO</h2>
 <div>🔴 Crítico: ${critico}</div>
 <div>🟠 Alto: ${alto}</div>
 <div>🟡 Moderado: ${moderado}</div>
 <div>🟢 Baixo: ${baixo}</div>
+<div>⚪ Sem Dados: ${semdados}</div>
 </div>
 `
 }
@@ -2790,3 +2808,153 @@ ${(data||[]).map(i=>`
 </div>
 `
 }
+/*=========================================================
+203 QUEIMADAS FUNCTION LERCSVINPE
+=========================================================*/
+function lerCSVINPE(ev){
+let arquivo=ev.target.files[0]
+if(!arquivo){
+return
+}
+let reader=new FileReader()
+reader.onload=async e=>{
+await importarCSVINPE(
+e.target.result
+)
+}
+reader.readAsText(
+arquivo,
+'utf-8'
+)
+}
+/*=========================================================
+204 QUEIMADAS FUNCTION IMPORTARCSVINPE
+=========================================================*/
+async function importarCSVINPE(texto){
+
+let linhas=texto.split('\n')
+
+for(let i=1;i<linhas.length;i++){
+
+let c=linhas[i].split(';')
+
+if(c.length<5){
+continue
+}
+
+await client
+.from('queimadas_focos_historico')
+.insert([{
+municipio:c[0],
+ano:Number(c[1]),
+mes:Number(c[2]),
+data_referencia:c[3],
+focos:Number(c[4]),
+fonte:'INPE'
+}])
+
+}
+
+await recalcularHeatmap()
+
+alert(
+'Importação concluída.'
+)
+
+}
+/*=========================================================
+205 QUEIMADAS FUNCTION RECALCULARHEATMAP
+=========================================================*/
+async function recalcularHeatmap(){
+
+let {data,error}=await client
+.from(
+'vw_queimadas_focos_consolidado'
+)
+.select('*')
+
+if(error){
+console.log(error)
+return
+}
+
+for(let item of (data||[])){
+
+let focos=
+Number(item.focos||0)
+
+let risco=null
+
+if(focos>=900){
+risco=100
+}else if(focos>=400){
+risco=90
+}else if(focos>=300){
+risco=75
+}else if(focos>=200){
+risco=60
+}else if(focos>=100){
+risco=40
+}else if(focos>0){
+risco=20
+}
+
+let classificacao='SEM DADOS'
+
+if(risco>=75){
+classificacao='CRÍTICO'
+}else if(risco>=50){
+classificacao='ALTO'
+}else if(risco>=25){
+classificacao='MODERADO'
+}else if(risco>0){
+classificacao='BAIXO'
+}
+
+await client
+.from('queimadas_heatmap')
+.update({
+focos:focos,
+risco:risco,
+criticidade:risco,
+classificacao:classificacao
+})
+.eq(
+'municipio',
+item.municipio
+)
+
+}
+
+}
+/*=========================================================
+206 QUEIMADAS FUNCTION ATUALIZARHEATMAPMANUAL
+=========================================================*/
+async function atualizarHeatmapManual(){
+
+await recalcularHeatmap()
+
+if(typeof renderSalaSituacaoEstadual==='function'){
+await renderSalaSituacaoEstadual()
+}
+
+if(typeof renderTopFocosSituacao==='function'){
+await renderTopFocosSituacao()
+}
+
+if(typeof renderTopCriticos==='function'){
+await renderTopCriticos()
+}
+
+if(typeof renderTopRiscos==='function'){
+await renderTopRiscos()
+}
+
+if(typeof renderMapaMunicipios==='function'){
+await renderMapaMunicipios()
+}
+
+alert('Heatmap atualizado com sucesso.')
+
+}
+
