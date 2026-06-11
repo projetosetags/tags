@@ -347,54 +347,55 @@ margin-left:4px;
 .itemLegenda{display:flex;align-items:center;gap:6px}
 .legCor{width:16px;height:16px;border-radius:4px;display:inline-block;border:1px solid #cbd5e1}
 
-#painelCadastroMunicipiosResumo{
-overflow-x:auto;
-}
-#painelCadastroMunicipiosResumo .tabelaMunicipios{
-width:100%;
-min-width:2200px;
-border-collapse:collapse;
-table-layout:auto;
-}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th,
-#painelCadastroMunicipiosResumo .tabelaMunicipios td{
-padding:8px;
-vertical-align:top;
-}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(1),
-#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(1){
-min-width:200px;
-}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(2),
-#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(2){
-min-width:120px;
-}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(3),
-#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(3),
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(5),
-#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(5),
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(6),
-#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(6){
-min-width:100px;
-}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(4),
-#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(4){
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(7),
-#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(7),
-min-width:80px;
-}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(8),
-#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(8){
-min-width:120px;
-}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(9),
-#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(9){
-min-width:500px;
-white-space:normal;
-word-break:break-word;
-}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(10),
-#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(10){
-min-width:120px;
-text-align:center;
-}
+/*=========================================================
+CADASTRO MUNICIPAL - CONTAINER
+=========================================================*/
+#painelCadastroMunicipiosResumo{overflow-x:auto;}
+/*=========================================================
+CADASTRO MUNICIPAL - TABELA GERAL
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios{width:100%;min-width:2200px;border-collapse:collapse;table-layout:auto;}
+/*=========================================================
+CADASTRO MUNICIPAL - CÉLULAS
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios th,#painelCadastroMunicipiosResumo .tabelaMunicipios td{padding:8px;vertical-align:top;}
+/*=========================================================
+CADASTRO MUNICIPAL - MUNICÍPIO
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(1),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(1){min-width:180px;}
+/*=========================================================
+CADASTRO MUNICIPAL - OFÍCIO TCE
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(2),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(2){min-width:140px;}
+/*=========================================================
+CADASTRO MUNICIPAL - DATA ENVIO
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(3),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(3){min-width:90px;}
+/*=========================================================
+CADASTRO MUNICIPAL - PÁGINA ENVIO
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(4),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(4){min-width:80px;}
+/*=========================================================
+CADASTRO MUNICIPAL - DATA RECEBIMENTO 1
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(5),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(5){min-width:90px;}
+/*=========================================================
+CADASTRO MUNICIPAL - DATA RECEBIMENTO 2
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(6),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(6){min-width:75px;max-width:75px;}
+/*=========================================================
+CADASTRO MUNICIPAL - DOCUMENTO 1
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(7),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(7){min-width:90px;max-width:90px;}
+/*=========================================================
+CADASTRO MUNICIPAL - DOCUMENTO 2
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(8),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(8){min-width:90px;}
+/*=========================================================
+CADASTRO MUNICIPAL - OBSERVAÇÃO
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(9),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(9){min-width:500px;white-space:normal;word-break:break-word;}
+/*=========================================================
+CADASTRO MUNICIPAL - AÇÃO
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(10),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(10){min-width:110px;text-align:center;}
