@@ -2474,6 +2474,7 @@ align-items:center;
 `
 }).join('')
 }
+let estadoEditando=null
 /*=========================================================
 103 QUEIMADAS FUNCTION SALVARESTADO
 =========================================================*/
@@ -2489,14 +2490,29 @@ inumerodocenviado:document.getElementById('estadoDoc1')?.value||'',
 iinumerodocenviado:document.getElementById('estadoDoc2')?.value||'',
 observacao:document.getElementById('estadoObservacao')?.value||''
 }
-let {error}=await client
+let error=null
+let editando=estadoEditando
+if(estadoEditando){
+let retorno=await client
+.from('queimadas_estado_oficio')
+.update(registro)
+.eq('id',estadoEditando)
+error=retorno.error
+}else{
+let retorno=await client
 .from('queimadas_estado_oficio')
 .insert([registro])
+error=retorno.error
+}
 if(error){
 alert(error.message)
 return
 }
-alert('Órgão estadual cadastrado com sucesso.')
+alert(
+estadoEditando
+?'Órgão estadual atualizado com sucesso.'
+:'Órgão estadual cadastrado com sucesso.'
+)
 await renderKPIsEstado()
 await renderCadastroEstado()
 await renderIndicadoresEstado()
@@ -2509,11 +2525,15 @@ document.getElementById('estadoDataRec2').value=''
 document.getElementById('estadoDoc1').value=''
 document.getElementById('estadoDoc2').value=''
 document.getElementById('estadoObservacao').value=''
+estadoEditando=null
+let btn=document.querySelector('#painelFormularioEstado button')
+if(btn)btn.innerHTML='💾 SALVAR'
 }
 /*=========================================================
 104 QUEIMADAS FUNCTION EDITARESTADO
 =========================================================*/
 async function editarEstado(id){
+estadoEditando=id
 let {data}=await client
 .from('queimadas_estado_oficio')
 .select('*')
@@ -2529,6 +2549,8 @@ document.getElementById('estadoDataRec2').value=data.iidatarecebimentodoc||''
 document.getElementById('estadoDoc1').value=data.inumerodocenviado||''
 document.getElementById('estadoDoc2').value=data.iinumerodocenviado||''
 document.getElementById('estadoObservacao').value=data.observacao||''
+let btn=document.querySelector('#painelFormularioEstado button')
+if(btn)btn.innerHTML='💾 ATUALIZAR'
 }
 /*=========================================================
 105 QUEIMADAS FUNCTION RENDERFORMULARIOESTADO
