@@ -1012,14 +1012,13 @@ let top10=[...(heat||[])]
 .filter(i=>Number(i.focos||0)>0)
 .sort((a,b)=>b.focos-a.focos)
 .slice(0,10)
+box.innerHTML=`
 <div class="fonte-card">
 <b>Data Base:</b> ${new Date().toLocaleDateString('pt-BR')}<br>
 <b>Fonte:</b> INPE • Heatmap Estadual • IRIQ • CHAP • IA-CHAP<br>
 <b>Municípios Monitorados:</b> ${top10.length}<br>
 <b>Municípios Sem Dados:</b> ${(heat||[]).filter(i=>i.classificacao==='SEM DADOS').length}
 </div>
-box.innerHTML=`
-
 <div class="chap-grid">
 
 <div class="chap-card">
