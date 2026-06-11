@@ -2213,12 +2213,17 @@ await renderGraficoGovernanca()
 
 if(nome==='situacao'){
 document.getElementById('abaSituacao')?.classList.remove('hidden')
-await renderTopCriticos()
-await renderTopRiscos()
-await renderMunicipiosSemEvidencias()
-await renderTopIAChap()
-await renderAlertas()
-await renderSalaSituacaoEstadual()
+if(typeof renderResumoExecutivoSituacao==='function')await renderResumoExecutivoSituacao()
+if(typeof renderSituacaoOperacional==='function')await renderSituacaoOperacional()
+if(typeof renderTopCriticos==='function')await renderTopCriticos()
+if(typeof renderTopRiscos==='function')await renderTopRiscos()
+if(typeof renderAlertas==='function')await renderAlertas()
+if(typeof renderTopFocosSituacao==='function')await renderTopFocosSituacao()
+if(typeof renderSemPlano==='function')await renderSemPlano()
+if(typeof renderSemResposta==='function')await renderSemResposta()
+if(typeof renderTopIAChap==='function')await renderTopIAChap()
+if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadual()
+if(typeof renderQuadroMunicipiosSituacao==='function')await renderQuadroMunicipiosSituacao()
 }
 
 if(nome==='presidente'){
@@ -2621,4 +2626,153 @@ await renderIndicadoresEstado()
 
 alert('Registro excluído com sucesso.')
 
+}
+/*=========================================================
+130 QUEIMADAS FUNCTION RENDERRESUMOEXECUTIVOSITUACAO
+=========================================================*/
+async function renderResumoExecutivoSituacao(){
+let box=document.getElementById('painelResumoExecutivoSituacao')
+if(!box)return
+let {data}=await client.from('queimadas_heatmap').select('*')
+let focos=(data||[]).reduce((s,i)=>s+Number(i.focos||0),0)
+let criticos=(data||[]).filter(i=>Number(i.risco||0)>=75).length
+let altos=(data||[]).filter(i=>{
+let r=Number(i.risco||0)
+return r>=50&&r<75
+}).length
+box.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card"><div class="chap-num">${focos}</div><div class="chap-label">FOCOS ACUMULADOS</div></div>
+<div class="chap-card"><div class="chap-num">${criticos}</div><div class="chap-label">CRÍTICOS</div></div>
+<div class="chap-card"><div class="chap-num">${altos}</div><div class="chap-label">ALTO RISCO</div></div>
+</div>
+`
+}
+/*=========================================================
+131 QUEIMADAS FUNCTION RENDERSITUACAOOPERACIONAL
+=========================================================*/
+async function renderSituacaoOperacional(){
+let box=document.getElementById('painelSituacaoOperacional')
+if(!box)return
+let {data}=await client.from('queimadas_heatmap').select('*')
+let critico=0
+let alto=0
+let moderado=0
+let baixo=0
+;(data||[]).forEach(i=>{
+let r=Number(i.risco||0)
+if(r>=75)critico++
+else if(r>=50)alto++
+else if(r>=25)moderado++
+else baixo++
+})
+box.innerHTML=`
+<div class="cardExecutivo">
+<h2>🚨 SITUAÇÃO OPERACIONAL</h2>
+<div>🔴 Crítico: ${critico}</div>
+<div>🟠 Alto: ${alto}</div>
+<div>🟡 Moderado: ${moderado}</div>
+<div>🟢 Baixo: ${baixo}</div>
+</div>
+`
+}
+/*=========================================================
+132 QUEIMADAS FUNCTION RENDERTOPFOCOSSITUACAO
+=========================================================*/
+async function renderTopFocosSituacao(){
+let box=document.getElementById('painelTopFocosSituacao')
+if(!box)return
+let {data}=await client.from('queimadas_focos').select('*')
+let mapa={}
+;(data||[]).forEach(i=>{
+let m=i.municipio||'SEM MUNICÍPIO'
+if(!mapa[m])mapa[m]=0
+mapa[m]+=Number(i.focos||0)
+})
+let top=Object.entries(mapa)
+.map(([municipio,focos])=>({municipio,focos}))
+.sort((a,b)=>b.focos-a.focos)
+.slice(0,10)
+box.innerHTML=`
+<div class="cardExecutivo">
+<h2>🔥 TOP 10 FOCOS DE CALOR</h2>
+<div style="font-size:12px;margin-bottom:10px">Fonte: INPE</div>
+${top.map((i,n)=>`
+<div style="display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid #eee">
+<span>${n+1}º ${i.municipio}</span>
+<b>${i.focos}</b>
+</div>
+`).join('')}
+</div>
+`
+}
+/*=========================================================
+133 QUEIMADAS FUNCTION RENDERSEMPLANO
+=========================================================*/
+async function renderSemPlano(){
+let box=document.getElementById('painelSemPlano')
+if(!box)return
+let {data}=await client.from('queimadas_municipios_oficio').select('*')
+let lista=(data||[]).filter(i=>
+!i.plano_acao||
+i.plano_acao==='N'
+)
+box.innerHTML=`
+<div class="cardExecutivo">
+<h2>📄 MUNICÍPIOS SEM PLANO</h2>
+${lista.map(i=>`
+<div>${i.municipio}</div>
+`).join('')}
+</div>
+`
+}
+/*=========================================================
+134 QUEIMADAS FUNCTION RENDERSEMRESPOSTA
+=========================================================*/
+async function renderSemResposta(){
+let box=document.getElementById('painelSemResposta')
+if(!box)return
+let {data}=await client.from('queimadas_municipios_oficio').select('*')
+let lista=(data||[]).filter(i=>
+!i.ldatarecebimentodoc
+)
+box.innerHTML=`
+<div class="cardExecutivo">
+<h2>📭 MUNICÍPIOS SEM RESPOSTA</h2>
+${lista.map(i=>`
+<div>${i.municipio}</div>
+`).join('')}
+</div>
+`
+}
+/*=========================================================
+135 QUEIMADAS FUNCTION RENDERQUADROMUNICIPIOSSITUACAO
+=========================================================*/
+async function renderQuadroMunicipiosSituacao(){
+let box=document.getElementById('painelQuadroMunicipiosSituacao')
+if(!box)return
+let {data}=await client.from('queimadas_heatmap').select('*')
+box.innerHTML=`
+<div class="cardExecutivo">
+<h2>📍 SITUAÇÃO DOS 52 MUNICÍPIOS</h2>
+<table class="tabelaMunicipios">
+<thead>
+<tr>
+<th>Município</th>
+<th>Focos</th>
+<th>Risco</th>
+</tr>
+</thead>
+<tbody>
+${(data||[]).map(i=>`
+<tr>
+<td>${i.municipio||'-'}</td>
+<td>${i.focos||0}</td>
+<td>${i.classificacao||'-'}</td>
+</tr>
+`).join('')}
+</tbody>
+</table>
+</div>
+`
 }
