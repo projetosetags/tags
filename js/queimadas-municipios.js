@@ -982,143 +982,83 @@ box.innerHTML=`
 086 QUEIMADAS FUNCTION RENDERSALASITUACAOESTADUAL
 =========================================================*/
 async function renderSalaSituacaoEstadual(){
-
 let box=document.getElementById('painelSalaSituacaoEstadual')
 if(!box)return
-
 let {data:heat}=await client
 .from('queimadas_heatmap')
 .select('*')
-
-let {data:focos}=await client
-.from('queimadas_focos')
-.select('*')
-
 let criticos=(heat||[])
 .filter(i=>i.classificacao==='CRÍTICO')
 .length
-
 let altos=(heat||[])
 .filter(i=>i.classificacao==='ALTO')
 .length
-
+let semdados=(heat||[])
+.filter(i=>i.classificacao==='SEM DADOS')
+.length
 let focosTotal=(heat||[])
-.reduce(
-(s,i)=>s+Number(i.focos||0),
-0
-)
-
+.reduce((s,i)=>s+Number(i.focos||0),0)
 let top10=[...(heat||[])]
 .filter(i=>Number(i.focos||0)>0)
-.sort((a,b)=>b.focos-a.focos)
+.sort((a,b)=>Number(b.focos||0)-Number(a.focos||0))
 .slice(0,10)
 box.innerHTML=`
 <div class="fonte-card">
 <b>Data Base:</b> ${new Date().toLocaleDateString('pt-BR')}<br>
 <b>Fonte:</b> INPE • Heatmap Estadual • IRIQ • CHAP • IA-CHAP<br>
 <b>Municípios Monitorados:</b> ${top10.length}<br>
-<b>Municípios Sem Dados:</b> ${(heat||[]).filter(i=>i.classificacao==='SEM DADOS').length}
+<b>Municípios Sem Dados:</b> ${semdados}
 </div>
 <div class="chap-grid">
-
 <div class="chap-card">
-<div class="chap-num">${focosTotal}</div>
-<div class="chap-label">
-FOCOS ACUMULADOS
+<div class="chap-num">${Number(focosTotal).toLocaleString('pt-BR')}</div>
+<div class="chap-label">FOCOS ACUMULADOS</div>
 </div>
-</div>
-
 <div class="chap-card">
 <div class="chap-num">${criticos}</div>
-<div class="chap-label">
-CRÍTICOS
+<div class="chap-label">CRÍTICOS</div>
 </div>
-</div>
-
 <div class="chap-card">
 <div class="chap-num">${altos}</div>
-<div class="chap-label">
-ALTO RISCO
-</div>
+<div class="chap-label">ALTO RISCO</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">
-${(heat||[]).filter(i=>i.classificacao==='SEM DADOS').length}
-</div>
-<div class="chap-label">
-SEM DADOS
+<div class="chap-num">${semdados}</div>
+<div class="chap-label">SEM DADOS</div>
 </div>
 </div>
-</div>
-
-<div class="card-executivo">
-
-<h2>
-🔥 TOP 10 FOCOS DE CALOR
-</h2>
-
+<div class="cardExecutivo">
+<h2>🔥 TOP 10 FOCOS DE CALOR</h2>
 <div class="fonte-card">
 Período: Acumulado 2026 • Fonte: INPE
 </div>
-
-${top10.map(i=>`
-
-<div style="
-display:flex;
-justify-content:space-between;
-padding:6px;
-border-bottom:1px solid #ddd;
-">
-
+${top10.map((i,idx)=>`
+<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #ddd">
 <div>
-<b>${i.municipio}</b><br>
+<b>${idx+1}º ${i.municipio||'-'}</b><br>
 <span style="font-size:11px">
-🔥 ${i.focos||0} focos •
-📈 ${i.risco||0} risco •
-${i.classificacao||'-'}
+🔥 ${Number(i.focos||0).toLocaleString('pt-BR')} focos • 📈 ${i.risco||0} risco • ${i.classificacao||'-'}
 </span>
 </div>
-
-<b>
-${i.focos||0}
-</b>
-
+<b>${Number(i.focos||0).toLocaleString('pt-BR')}</b>
 </div>
-
 `).join('')}
-
 </div>
-
-<div class="card-executivo">
-
-<h2>
-🚨 ALERTAS AUTOMÁTICOS
-</h2>
+<div class="cardExecutivo">
+<h2>🚨 ALERTAS AUTOMÁTICOS</h2>
 <div class="fonte-card">
 Fonte: Heatmap Estadual • INPE • Atualização Automática
 </div>
-
-<div style="
-padding:10px;
-font-size:13px;
-line-height:1.6;
-">
-
-${criticos>0
-?`🚨 ${criticos} municípios classificados como CRÍTICOS.<br>`
-:'✅ Nenhum município crítico.<br>'}
-
-${focosTotal>500
-?'🔥 Quantidade elevada de focos detectados.<br>'
-:'✅ Focos sob controle.<br>'}
-
-${altos>0
-?`⚠ ${altos} municípios classificados como ALTO RISCO.<br>`
-:'✅ Sem municípios em alto risco.<br>'}
+<div style="padding:10px;font-size:13px;line-height:1.6">
+${criticos>0?`🚨 ${criticos} municípios classificados como CRÍTICOS.<br>`:'✅ Nenhum município crítico.<br>'}
+${focosTotal>500?'🔥 Quantidade elevada de focos detectados.<br>':'✅ Focos sob controle.<br>'}
+${altos>0?`⚠ ${altos} municípios classificados como ALTO RISCO.<br>`:'✅ Sem municípios em alto risco.<br>'}
+${semdados>0?`📋 ${semdados} municípios sem dados suficientes para classificação.<br>`:'✅ Todos os municípios possuem classificação.<br>'}
 </div>
-
 </div>
-
+<div class="fonte-card">
+Fonte: INPE • Heatmap Estadual • IRIQ • CHAP • IA-CHAP • Atualizado automaticamente
+</div>
 `
 }
 /*=========================================================
