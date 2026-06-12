@@ -489,7 +489,9 @@ CADASTRO ESTADUAL - DATA RECEBIMENTO 1
 =========================================================*/
 #painelCadastroEstado .tabelaEstado th:nth-child(5),
 #painelCadastroEstado .tabelaEstado td:nth-child(5){
-width:90px;
+width:65px;
+min-width:65px;
+max-width:65px;
 text-align:center;
 }
 /*=========================================================
@@ -497,7 +499,9 @@ CADASTRO ESTADUAL - DATA RECEBIMENTO 2
 =========================================================*/
 #painelCadastroEstado .tabelaEstado th:nth-child(6),
 #painelCadastroEstado .tabelaEstado td:nth-child(6){
-width:90px;
+width:65px;
+min-width:65px;
+max-width:65px;
 text-align:center;
 }
 /*=========================================================
@@ -505,7 +509,9 @@ CADASTRO ESTADUAL - DOCUMENTO 1
 =========================================================*/
 #painelCadastroEstado .tabelaEstado th:nth-child(7),
 #painelCadastroEstado .tabelaEstado td:nth-child(7){
-width:120px;
+width:80px;
+min-width:80px;
+max-width:80px;
 text-align:center;
 }
 /*=========================================================
@@ -513,7 +519,9 @@ CADASTRO ESTADUAL - DOCUMENTO 2
 =========================================================*/
 #painelCadastroEstado .tabelaEstado th:nth-child(8),
 #painelCadastroEstado .tabelaEstado td:nth-child(8){
-width:120px;
+width:80px;
+min-width:80px;
+max-width:80px;
 text-align:center;
 }
 /*=========================================================
@@ -528,14 +536,25 @@ CADASTRO ESTADUAL - AÇÃO
 =========================================================*/
 #painelCadastroEstado .tabelaEstado th:nth-child(10),
 #painelCadastroEstado .tabelaEstado td:nth-child(10){
-width:80px;
+width:60px;
+min-width:60px;
+max-width:60px;
 text-align:center;
 }
 /*=========================================================
 CADASTRO ESTADUAL - BOTÃO EDITAR
 =========================================================*/
 #painelCadastroEstado .btnEditarEstado{
-padding:3px 8px;
-font-size:11px;
-min-width:70px;
+padding:2px 4px;
+font-size:10px;
+min-width:50px;
+height:22px;
+}
+/*=========================================================
+CADASTRO ESTADUAL - OBSERVAÇÃO MOBILE
+=========================================================*/
+@media(max-width:768px){
+#painelCadastroEstado .tabelaEstado{
+min-width:1200px;
+}
 }
