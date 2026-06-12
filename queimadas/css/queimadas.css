@@ -631,3 +631,29 @@ CADASTRO ESTADUAL - OBSERVAÇÃO MOBILE
 min-width:1200px;
 }
 }
+/*=========================================================
+ABAS QUEIMADAS - BOTÃO NORMAL
+=========================================================*/
+.btnAbaQueimadas{
+background:#1e293b;
+color:#fff;
+border:2px solid transparent;
+transition:.2s;
+}
+/*=========================================================
+ABAS QUEIMADAS - BOTÃO ATIVO
+=========================================================*/
+.btnAbaAtiva{
+background:#dc2626!important;
+color:#fff!important;
+border:2px solid #facc15!important;
+box-shadow:0 0 18px rgba(250,204,21,.7);
+transform:translateY(-2px);
+font-weight:900;
+}
+/*=========================================================
+ABAS QUEIMADAS - HOVER
+=========================================================*/
+.btnAbaQueimadas:hover{
+transform:translateY(-1px);
+}
