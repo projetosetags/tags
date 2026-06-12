@@ -424,3 +424,118 @@ min-width:60px;
 height:22px;
 line-height:18px;
 }
+/*=========================================================
+CADASTRO ESTADUAL - TABELA GERAL
+=========================================================*/
+#painelCadastroEstado .tabelaEstado{
+width:100%;
+border-collapse:collapse;
+table-layout:fixed;
+}
+/*=========================================================
+CADASTRO ESTADUAL - CABEÇALHO
+=========================================================*/
+#painelCadastroEstado .tabelaEstado th{
+background:#0f172a;
+color:#fff;
+padding:8px;
+font-size:13px;
+font-weight:800;
+border:1px solid #cbd5e1;
+text-align:center;
+}
+/*=========================================================
+CADASTRO ESTADUAL - CÉLULAS
+=========================================================*/
+#painelCadastroEstado .tabelaEstado td{
+padding:8px;
+border:1px solid #cbd5e1;
+vertical-align:top;
+font-size:12px;
+line-height:1.25;
+}
+/*=========================================================
+CADASTRO ESTADUAL - ÓRGÃO
+=========================================================*/
+#painelCadastroEstado .tabelaEstado th:nth-child(1),
+#painelCadastroEstado .tabelaEstado td:nth-child(1){
+width:140px;
+}
+/*=========================================================
+CADASTRO ESTADUAL - OFÍCIO TCE
+=========================================================*/
+#painelCadastroEstado .tabelaEstado th:nth-child(2),
+#painelCadastroEstado .tabelaEstado td:nth-child(2){
+width:230px;
+}
+/*=========================================================
+CADASTRO ESTADUAL - DATA ENVIO
+=========================================================*/
+#painelCadastroEstado .tabelaEstado th:nth-child(3),
+#painelCadastroEstado .tabelaEstado td:nth-child(3){
+width:90px;
+text-align:center;
+}
+/*=========================================================
+CADASTRO ESTADUAL - PÁGINA
+=========================================================*/
+#painelCadastroEstado .tabelaEstado th:nth-child(4),
+#painelCadastroEstado .tabelaEstado td:nth-child(4){
+width:90px;
+text-align:center;
+}
+/*=========================================================
+CADASTRO ESTADUAL - DATA RECEBIMENTO 1
+=========================================================*/
+#painelCadastroEstado .tabelaEstado th:nth-child(5),
+#painelCadastroEstado .tabelaEstado td:nth-child(5){
+width:90px;
+text-align:center;
+}
+/*=========================================================
+CADASTRO ESTADUAL - DATA RECEBIMENTO 2
+=========================================================*/
+#painelCadastroEstado .tabelaEstado th:nth-child(6),
+#painelCadastroEstado .tabelaEstado td:nth-child(6){
+width:90px;
+text-align:center;
+}
+/*=========================================================
+CADASTRO ESTADUAL - DOCUMENTO 1
+=========================================================*/
+#painelCadastroEstado .tabelaEstado th:nth-child(7),
+#painelCadastroEstado .tabelaEstado td:nth-child(7){
+width:120px;
+text-align:center;
+}
+/*=========================================================
+CADASTRO ESTADUAL - DOCUMENTO 2
+=========================================================*/
+#painelCadastroEstado .tabelaEstado th:nth-child(8),
+#painelCadastroEstado .tabelaEstado td:nth-child(8){
+width:120px;
+text-align:center;
+}
+/*=========================================================
+CADASTRO ESTADUAL - OBSERVAÇÃO
+=========================================================*/
+#painelCadastroEstado .tabelaEstado th:nth-child(9),
+#painelCadastroEstado .tabelaEstado td:nth-child(9){
+text-align:left;
+}
+/*=========================================================
+CADASTRO ESTADUAL - AÇÃO
+=========================================================*/
+#painelCadastroEstado .tabelaEstado th:nth-child(10),
+#painelCadastroEstado .tabelaEstado td:nth-child(10){
+width:80px;
+text-align:center;
+}
+/*=========================================================
+CADASTRO ESTADUAL - BOTÃO EDITAR
+=========================================================*/
+#painelCadastroEstado .btnEditarEstado{
+padding:3px 8px;
+font-size:11px;
+min-width:70px;
+}
