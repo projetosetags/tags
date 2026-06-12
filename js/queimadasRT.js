@@ -1,16 +1,24 @@
 /*=========================================================
-399 RT CAPTURAR ELEMENTO
+399 RT FUNCTION CAPTURARELEMENTO
+CAPTURA MAPAS GRAFICOS TABELAS
+PAINEIS E EVIDENCIAS EM ALTA RESOLUCAO
 =========================================================*/
 async function capturarElemento(idElemento){
 let el=document.getElementById(idElemento)
 if(!el)return null
 if(el.offsetWidth===0)return null
 if(el.offsetHeight===0)return null
-await new Promise(r=>setTimeout(r,1000))
+await new Promise(r=>setTimeout(r,1500))
 let canvas=await html2canvas(el,{
-scale:2,
+scale:3,
 backgroundColor:'#ffffff',
-useCORS:true
+useCORS:true,
+allowTaint:true,
+logging:false,
+scrollX:0,
+scrollY:0,
+windowWidth:document.body.scrollWidth,
+windowHeight:document.body.scrollHeight
 })
 if(!canvas)return null
 if(!canvas.width)return null
@@ -21,6 +29,20 @@ return canvas.toDataURL('image/png')
 400 QUEIMADAS RT PDF TECNICO 0501
 =========================================================*/
 async function gerarPDFTecnico0501(){
+await mostrarAbaQueimadas('executivo')
+await new Promise(r=>setTimeout(r,3000))
+
+await mostrarAbaQueimadas('executivomunicipal')
+await new Promise(r=>setTimeout(r,3000))
+
+await mostrarAbaQueimadas('monitoramento')
+await new Promise(r=>setTimeout(r,3000))
+
+await mostrarAbaQueimadas('analise')
+await new Promise(r=>setTimeout(r,3000))
+
+await mostrarAbaQueimadas('mapa')
+await new Promise(r=>setTimeout(r,3000))
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4')
 await rtCapa(doc)
@@ -642,54 +664,150 @@ doc.text('Heatmap Estadual • IRIQ • CHAP • IA-CHAP • Matriz 5x5 • Moni
 doc.text('Data de Emissão: '+new Date().toLocaleDateString('pt-BR'),20,235)
 }
 /*=========================================================
-426 RT WORD TECNICO 0501
+426 RT FUNCTION GERARWORDTECNICO0501
+RELATORIO TECNICO COMPLETO
+TEXTO + PAINEIS + MAPAS + GRAFICOS
 =========================================================*/
 async function gerarWordTecnico0501(){
-let html=`
-<h1>RELATÓRIO TÉCNICO - PCe 0501/2026</h1>
-<h2>MONITORAMENTO DAS QUEIMADAS</h2>
-<h2>1. INTRODUÇÃO</h2>
-<p>O presente relatório técnico apresenta os resultados do monitoramento das ações de prevenção, preparação, resposta e mitigação relacionadas às queimadas e incêndios florestais no Estado de Rondônia.</p>
-<h2>2. OBJETO</h2>
-<p>Avaliar a implementação dos planos de ação estaduais e municipais destinados ao enfrentamento das queimadas e incêndios florestais.</p>
-<h2>3. METODOLOGIA</h2>
-<p>Foram utilizados os modelos CHAP, IA-CHAP, Heatmap Estadual, IRIQ, Matriz de Risco 5x5 e monitoramento contínuo das bases de dados institucionais.</p>
-<h2>4. SITUAÇÃO ESTADUAL</h2>
-<p>Análise consolidada da situação das queimadas e incêndios florestais em Rondônia.</p>
-<h2>5. ANÁLISE MUNICIPAL</h2>
-<p>Acompanhamento dos municípios quanto aos planos de ação e atendimento ao Ofício Circular n.16/2026/GABPRES/TCERO.</p>
-<h2>6. HEATMAP ESTADUAL</h2>
-<p>Classificação dos municípios por criticidade e risco.</p>
-<h2>7. IRIQ ESTADUAL</h2>
-<p>Índice de Risco Integrado de Queimadas.</p>
-<h2>8. CHAP</h2>
-<p>Classificação Hierarquizada de Ameaças e Prioridades.</p>
-<h2>9. IA-CHAP</h2>
-<p>Aplicação de Inteligência Artificial para priorização dos riscos.</p>
-<h2>10. MATRIZ DE RISCO 5X5</h2>
-<p>Avaliação dos riscos por probabilidade e impacto.</p>
-<h2>11. MUNICÍPIOS CRÍTICOS</h2>
-<p>Municípios classificados como prioritários para atuação preventiva.</p>
-<h2>12. ACHADOS DE AUDITORIA</h2>
-<p>Principais achados identificados durante o monitoramento.</p>
-<h2>13. EVIDÊNCIAS</h2>
-<p>Evidências documentais e operacionais utilizadas na análise.</p>
-<h2>14. CONCLUSÕES</h2>
-<p>Conclusões técnicas do monitoramento realizado.</p>
-<h2>15. PROPOSTAS DE ENCAMINHAMENTO</h2>
-<p>Propostas para fortalecimento da governança e mitigação dos riscos.</p>
-<h2>16. ANEXOS</h2>
-<p>Mapas, painéis, indicadores e documentos complementares.</p>
-<h2>17. ASSINATURAS</h2>
-<p>Manoel Fernandes Neto • Luís Fernando Bueno • Raimundo Paulo Dias Barros Vieira.</p>
-<h2>18. REFERÊNCIAS</h2>
-<p>INPE • Sedam • CBMRO • TCE-RO • MapBiomas • Plano Unificado.</p>
-<h2>19. SIGLAS</h2>
-<p>CBMRO • CHAP • IA-CHAP • INPE • IRIQ • ODS • PCe • Sedam • TCE-RO.</p>
-<h2>20. GLOSSÁRIO</h2>
-<p>Definições técnicas utilizadas no relatório.</p>
-<h2>21. FICHA TÉCNICA</h2>
-<p>Processo PCe 0501/2026 • Relatório Técnico de Monitoramento das Queimadas.</p>
-`
-baixarWordQueimadas('RT_2026_QUEIMADAS',html)
+
+let html=''
+
+html+='<html>'
+html+='<head>'
+html+='<meta charset="utf-8">'
+html+='</head>'
+html+='<body style="font-family:Arial;padding:30px">'
+
+html+='<h1>RELATÓRIO TÉCNICO - PCe 0501/2026</h1>'
+html+='<h2>MONITORAMENTO DAS QUEIMADAS</h2>'
+
+html+='<h2>1. INTRODUÇÃO</h2>'
+html+='<p>O presente relatório técnico apresenta os resultados do monitoramento das ações de prevenção, preparação, resposta e mitigação relacionadas às queimadas e incêndios florestais no Estado de Rondônia.</p>'
+
+html+='<h2>2. OBJETO</h2>'
+html+='<p>Avaliar a implementação dos planos de ação estaduais e municipais destinados ao enfrentamento das queimadas e incêndios florestais.</p>'
+
+html+='<h2>3. METODOLOGIA</h2>'
+html+='<p>Foram utilizados os modelos CHAP, IA-CHAP, Heatmap Estadual, IRIQ, Matriz de Risco 5x5 e monitoramento contínuo das bases institucionais.</p>'
+
+html+='<h2>4. SITUAÇÃO ESTADUAL</h2>'
+html+='<p>Análise consolidada da situação das queimadas em Rondônia.</p>'
+
+let imgSituacao=await capturarElemento('painelIRIQHeatmapUnificado')
+if(imgSituacao){
+html+=`<img src="${imgSituacao}" style="width:100%;margin:15px 0">`
+}
+
+html+='<p>O painel acima consolida os indicadores estaduais de risco, criticidade e monitoramento das queimadas.</p>'
+
+html+='<h2>5. ANÁLISE MUNICIPAL</h2>'
+html+='<p>Acompanhamento dos municípios quanto aos planos de ação e atendimento ao Ofício Circular n.16/2026/GABPRES/TCERO.</p>'
+
+let imgMunicipios=await capturarElemento('painelEstatisticasMunicipais')
+if(imgMunicipios){
+html+=`<img src="${imgMunicipios}" style="width:100%;margin:15px 0">`
+}
+
+html+='<p>Os indicadores municipais demonstram diferentes níveis de maturidade institucional.</p>'
+
+html+='<h2>6. HEATMAP ESTADUAL</h2>'
+
+let imgHeat=await capturarElemento('painelIRIQHeatmapUnificado')
+if(imgHeat){
+html+=`<img src="${imgHeat}" style="width:100%;margin:15px 0">`
+}
+
+html+='<p>O Heatmap Estadual classifica os municípios conforme o nível de criticidade identificado.</p>'
+
+html+='<h2>7. IRIQ ESTADUAL</h2>'
+
+let imgIRIQ=await capturarElemento('painelMunicipiosPrioritarios')
+if(imgIRIQ){
+html+=`<img src="${imgIRIQ}" style="width:100%;margin:15px 0">`
+}
+
+html+='<p>O Índice de Risco Integrado de Queimadas subsidia a priorização territorial das ações preventivas.</p>'
+
+html+='<h2>8. CHAP</h2>'
+
+let imgCHAP=await capturarElemento('painelCHAP')
+if(imgCHAP){
+html+=`<img src="${imgCHAP}" style="width:100%;margin:15px 0">`
+}
+
+html+='<p>O modelo CHAP permite avaliar ameaças, vulnerabilidades e capacidade de resposta.</p>'
+
+html+='<h2>9. IA-CHAP</h2>'
+
+let imgIA=await capturarElemento('painelIAChap')
+if(imgIA){
+html+=`<img src="${imgIA}" style="width:100%;margin:15px 0">`
+}
+
+html+='<p>A inteligência artificial amplia a capacidade preditiva da análise dos riscos.</p>'
+
+html+='<h2>10. MATRIZ DE RISCO 5X5</h2>'
+
+let imgMatriz=await capturarElemento('painelMatriz5x5')
+if(imgMatriz){
+html+=`<img src="${imgMatriz}" style="width:100%;margin:15px 0">`
+}
+
+html+='<p>A Matriz 5x5 classifica os eventos segundo probabilidade e impacto.</p>'
+
+html+='<h2>11. EVIDÊNCIAS</h2>'
+
+let imgEvid=await capturarElemento('painelEvidencias')
+if(imgEvid){
+html+=`<img src="${imgEvid}" style="width:100%;margin:15px 0">`
+}
+
+html+='<p>As evidências documentais sustentam os achados e conclusões do monitoramento.</p>'
+
+html+='<h2>12. MONITORAMENTO 4D</h2>'
+
+let img4D=await capturarElemento('painelMonitoramento4D')
+if(img4D){
+html+=`<img src="${img4D}" style="width:100%;margin:15px 0">`
+}
+
+html+='<p>O Monitoramento 4D consolida execução, evidências, resultados e riscos.</p>'
+
+html+='<h2>13. MAPA ESTADUAL</h2>'
+
+let imgMapaEstadual=await capturarElemento('mapaROEstadual')
+if(imgMapaEstadual){
+html+=`<img src="${imgMapaEstadual}" style="width:100%;margin:15px 0">`
+}
+
+html+='<p>Mapa estadual contendo UCs, Terras Indígenas e áreas monitoradas.</p>'
+
+html+='<h2>14. MAPA MUNICIPAL</h2>'
+
+let imgMapaMunicipal=await capturarElemento('mapaMunicipalPlanos')
+if(imgMapaMunicipal){
+html+=`<img src="${imgMapaMunicipal}" style="width:100%;margin:15px 0">`
+}
+
+html+='<p>Mapa municipal demonstrando a situação dos planos de ação dos 52 municípios.</p>'
+
+html+='<h2>15. CONCLUSÕES</h2>'
+html+='<p>Os resultados demonstram a necessidade de monitoramento contínuo, fortalecimento da governança e atuação preventiva integrada.</p>'
+
+html+='<h2>16. PROPOSTAS</h2>'
+html+='<p>Fortalecer governança, ampliar monitoramento, integrar bases e priorizar municípios críticos.</p>'
+
+html+='<h2>17. ASSINATURAS</h2>'
+html+='<p>Manoel Fernandes Neto</p>'
+html+='<p>Luís Fernando Bueno</p>'
+html+='<p>Raimundo Paulo Dias Barros Vieira</p>'
+
+html+='</body>'
+html+='</html>'
+
+baixarWordQueimadas(
+'Relatório Técnico 2026 QUEIMADAS',
+html
+)
+
 }
