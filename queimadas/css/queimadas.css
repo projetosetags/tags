@@ -361,68 +361,141 @@ CADASTRO MUNICIPAL - CONTAINER
 /*=========================================================
 CADASTRO MUNICIPAL - TABELA GERAL
 =========================================================*/
-#painelCadastroMunicipiosResumo .tabelaMunicipios{width:100%;min-width:1600px;border-collapse:collapse;table-layout:fixed;}
+#painelCadastroMunicipiosResumo .tabelaMunicipios{
+width:100%;
+min-width:1400px;
+border-collapse:collapse;
+table-layout:fixed;
+}
+/*=========================================================
+CADASTRO MUNICIPAL - CABEÇALHO
+=========================================================*/
+#painelCadastroMunicipiosResumo .tabelaMunicipios th{
+border:1px solid #cbd5e1;
+text-align:center;
+}
 /*=========================================================
 CADASTRO MUNICIPAL - CÉLULAS
 =========================================================*/
-#painelCadastroMunicipiosResumo .tabelaMunicipios th,#painelCadastroMunicipiosResumo .tabelaMunicipios td{padding:8px;vertical-align:top;}
+#painelCadastroMunicipiosResumo .tabelaMunicipios td{
+border:1px solid #cbd5e1;
+}
 /*=========================================================
 CADASTRO MUNICIPAL - MUNICÍPIO
 =========================================================*/
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(1),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(1){min-width:280px;width:280px;}
-
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(1),
+#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(1){
+width:180px;
+min-width:180px;
+max-width:180px;
+}
 /*=========================================================
 CADASTRO MUNICIPAL - OFÍCIO TCE
 =========================================================*/
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(2),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(2){min-width:180px;width:180px;}
-
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(2),
+#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(2){
+width:120px;
+min-width:120px;
+max-width:120px;
+}
 /*=========================================================
 CADASTRO MUNICIPAL - DATA ENVIO
 =========================================================*/
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(3),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(3){min-width:90px;}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(3),
+#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(3){
+width:80px;
+min-width:80px;
+max-width:80px;
+text-align:center;
+}
 /*=========================================================
-CADASTRO MUNICIPAL - PÁGINA ENVIO
+CADASTRO MUNICIPAL - PÁGINA
 =========================================================*/
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(4),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(4){min-width:80px;}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(4),
+#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(4){
+width:60px;
+min-width:60px;
+max-width:60px;
+text-align:center;
+}
 /*=========================================================
 CADASTRO MUNICIPAL - DATA RECEBIMENTO 1
 =========================================================*/
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(5),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(5){min-width:90px;}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(5),
+#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(5){
+width:65px;
+min-width:65px;
+max-width:65px;
+text-align:center;
+}
 /*=========================================================
 CADASTRO MUNICIPAL - DATA RECEBIMENTO 2
 =========================================================*/
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(6),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(6){width:65px;min-width:65px;max-width:65px;padding-left:4px;padding-right:4px;}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(6),
+#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(6){
+width:65px;
+min-width:65px;
+max-width:65px;
+text-align:center;
+}
 /*=========================================================
 CADASTRO MUNICIPAL - DOCUMENTO 1
 =========================================================*/
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(7),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(7){width:70px;min-width:70px;max-width:70px;padding-left:4px;padding-right:4px;}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(7),
+#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(7){
+width:80px;
+min-width:80px;
+max-width:80px;
+text-align:center;
+}
 /*=========================================================
 CADASTRO MUNICIPAL - DOCUMENTO 2
 =========================================================*/
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(8),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(8){width:70px;min-width:70px;max-width:70px;padding-left:4px;padding-right:4px;}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(8),
+#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(8){
+width:80px;
+min-width:80px;
+max-width:80px;
+text-align:center;
+}
 /*=========================================================
 CADASTRO MUNICIPAL - OBSERVAÇÃO
 =========================================================*/
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(9),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(9){width:250px;min-width:250px;max-width:250px;white-space:normal;word-break:break-word;}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(9),
+#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(9){
+word-break:break-word;
+white-space:normal;
+line-height:1.25;
+}
 /*=========================================================
 CADASTRO MUNICIPAL - AÇÃO
 =========================================================*/
 #painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(10),
 #painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(10){
-width:440px;
-min-width:40px;
-max-width:40px;
+width:60px;
+min-width:60px;
+max-width:60px;
 text-align:center;
 }
 /*=========================================================
 CADASTRO MUNICIPAL - BOTÃO EDITAR
 =========================================================*/
 #painelCadastroMunicipiosResumo .btnEditarMunicipio{
-padding:2px 6px;
+padding:2px 4px;
 font-size:10px;
-min-width:60px;
+min-width:50px;
 height:22px;
-line-height:18px;
+}
+/*=========================================================
+CADASTRO MUNICIPAL - MOBILE
+=========================================================*/
+@media(max-width:768px){
+#painelCadastroMunicipiosResumo{
+overflow-x:auto;
+}
+#painelCadastroMunicipiosResumo .tabelaMunicipios{
+min-width:1200px;
+}
 }
 /*=========================================================
 CADASTRO ESTADUAL - TABELA GERAL
