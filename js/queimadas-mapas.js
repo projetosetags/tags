@@ -525,36 +525,56 @@ console.error(e)
 }
 /*=========================================================
 120 AUDITORIA RELATORIOS
+RELATORIOS PDF E WORD
 =========================================================*/
 async function renderPainelRelatoriosAuditoria(){
 let painel=document.getElementById('painelAuditoria')
 if(!painel)return
 painel.innerHTML=`
 <div class="chap-grid">
+
 <div class="chap-card">
 <div class="chap-num">🔥</div>
 <div class="chap-label">
-RELATÓRIO TÉCNICO PCe 0501
+RELATÓRIO TÉCNICO COMPLETO
 </div>
+
 <button onclick="gerarPDFTecnico0501()">
-PDF TÉCNICO
+📄 PDF TÉCNICO
 </button>
+
 <button onclick="gerarWordTecnico0501()">
-WORD TÉCNICO
+📝 WORD TÉCNICO
 </button>
+
+<div class="fonte-card">
+IRIQ • Heatmap • CHAP • IA-CHAP • Matriz 5x5 • Evidências • Mapas
 </div>
+
+</div>
+
 <div class="chap-card">
+
 <div class="chap-num">🏛️</div>
+
 <div class="chap-label">
-RELATÓRIO MUNICIPAL
+RELATÓRIO MUNICIPAL COMPLETO
 </div>
+
 <button onclick="gerarPDFMunicipios0501()">
-PDF MUNICÍPIOS
+📄 PDF MUNICÍPIOS
 </button>
+
 <button onclick="gerarWordMunicipios0501()">
-WORD MUNICÍPIOS
+📝 WORD MUNICÍPIOS
 </button>
+
+<div class="fonte-card">
+52 Municípios • Planos • Dilação • Sem Resposta • Estatísticas • Mapas
 </div>
+
+</div>
+
 </div>
 `
 }
