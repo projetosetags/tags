@@ -2411,10 +2411,10 @@ let html=`
 <th>OFÍCIO TCE</th>
 <th>DATA ENVIO</th>
 <th>PÁG ENVIO</th>
-<th>DATA REC 1</th>
-<th>DATA REC 2</th>
-<th>DOC 1</th>
-<th>DOC 2</th>
+<th>DATA REC.<br>1</th>
+<th>DATA REC.<br>2</th>
+<th>DOC.<br>1</th>
+<th>DOC.<br>2</th>
 <th>OBSERVAÇÃO</th>
 <th>AÇÃO</th>
 </tr>
