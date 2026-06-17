@@ -674,3 +674,29 @@ transform:scale(1.03);
 box-shadow:0 0 20px rgba(220,38,38,.45);
 border:2px solid #ffffff;
 }
+
+.kpiCard{
+min-height:130px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+.kpiNumero{
+font-size:34px;
+font-weight:900;
+line-height:1;
+}
+.kpiTitulo{
+margin-top:8px;
+font-size:12px;
+font-weight:800;
+text-align:center;
+}
+.linha-ranking{
+padding:8px;
+border-bottom:1px solid #e5e7eb;
+font-size:13px;
+font-weight:700;
+}
+
