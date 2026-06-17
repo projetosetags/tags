@@ -28,3 +28,4 @@ return`
 <button onclick="${botoes[tipo][1]}()" class="btn-pdf btn-word">${botoes[tipo][3]}</button>
 `
 }
+
