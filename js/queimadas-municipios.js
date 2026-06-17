@@ -5,11 +5,10 @@ async function renderTopCriticos(){
 let box=document.getElementById('painelTopCriticos')
 if(!box)return
 let {data}=await client
-.from('queimadas_heatmap')
+.from('vw_queimadas_sala_situacao')
 .select('*')
 .eq('classificacao','CRÍTICO')
-.order('focos',{ascending:false})
-
+.order('indice_final',{ascending:false})
 let html=`
 <div class="cardExecutivo">
 <h2>🚨 MUNICÍPIOS CRÍTICOS</h2>
@@ -232,17 +231,51 @@ box.innerHTML=lista.map(i=>`
 072 QUEIMADAS FUNCTION RENDERPRESIDENTE
 =========================================================*/
 async function renderPresidente(){
+
 let box=document.getElementById('painelPresidente')
 if(!box)return
-let iriq=await calcularIRIQ()
+
+let {data}=await client
+.from('vw_queimadas_painel_presidente')
+.select('*')
+.single()
+
+if(!data)return
+
 box.innerHTML=`
-<div class="chap-grid">
-<div class="chap-card">
-<div class="chap-num">${iriq}</div>
-<div class="chap-label">
-IRIQ ESTADUAL
+
+<div class="kpiGrid">
+
+<div class="kpiCard">
+<div class="kpiNumero">${data.total_municipios}</div>
+<div class="kpiTitulo">MUNICÍPIOS</div>
 </div>
+
+<div class="kpiCard">
+<div class="kpiNumero">${data.municipios_criticos}</div>
+<div class="kpiTitulo">🔴 CRÍTICOS</div>
 </div>
+
+<div class="kpiCard">
+<div class="kpiNumero">${data.municipios_moderados}</div>
+<div class="kpiTitulo">🟡 MODERADOS</div>
+</div>
+
+<div class="kpiCard">
+<div class="kpiNumero">${Number(data.desmatamento_total_ha).toLocaleString('pt-BR')}</div>
+<div class="kpiTitulo">🌳 DESMATAMENTO</div>
+</div>
+
+<div class="kpiCard">
+<div class="kpiNumero">${Number(data.area_queimada_total_ha).toLocaleString('pt-BR')}</div>
+<div class="kpiTitulo">🔥 ÁREA QUEIMADA</div>
+</div>
+
+<div class="kpiCard">
+<div class="kpiNumero">${Number(data.iriq_estadual).toFixed(2)}</div>
+<div class="kpiTitulo">🤖 IRIQ</div>
+</div>
+
 </div>
 `
 }
@@ -250,38 +283,42 @@ IRIQ ESTADUAL
 073 QUEIMADAS FUNCTION RENDERRANKINGIMC
 =========================================================*/
 async function renderRankingIMC(){
+
 let box=document.getElementById('painelTopMunicipios')
 if(!box)return
+
 let {data,error}=await client
-.from('queimadas_indice_municipal')
+.from('vw_queimadas_ranking_estadual')
 .select('*')
-.order('indice_final',{ascending:false})
-.limit(10)
+.limit(52)
+
 if(error){
 console.log(error)
 return
 }
+
 box.innerHTML=`
 <div class="fonte-card">
-Ranking Municipal de Criticidade • Metodologia IMC • Data Base ${new Date().toLocaleDateString('pt-BR')}
+Ranking Estadual IRIQ • TCERO • INPE • PRODES • MAPBIOMAS • CHAP
 </div>
 `+(data||[])
-.map((i,idx)=>`
+.map((m,i)=>`
 <div class="linha-ranking">
-${idx+1}º ${i.semaforo||'🟢'}
-<b>${i.municipio}</b>
+${i+1}º ${m.semaforo||'🟢'}
+<b>${m.municipio}</b>
 -
-IMC ${Number(i.indice_final||0).toFixed(1)}
+IRIQ ${Number(m.indice_final||0).toFixed(2)}
 -
-${i.classificacao||'BAIXO'}
+${m.classificacao||'BAIXO'}
 </div>
 `)
 .join('')+`
 <div class="fonte-card">
-Fonte: Queimadas • CHAP • Impacto • Risco • Focos de Calor
+Fonte: IRIQ Ambiental • INPE • PRODES • MAPBIOMAS • CHAP
 </div>
 `
 }
+
 /*=========================================================
 074 CALCULAR POPULAÇÃO EXPOSTA
 =========================================================*/
