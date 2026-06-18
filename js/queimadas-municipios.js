@@ -942,59 +942,69 @@ beginAtZero:true
 async function renderIndicadoresEstrategicos(){
 let box=document.getElementById('painelIndicadoresEstrategicos')
 if(!box)return
-let {data:focos=[]}=await client.from('queimadas_focos').select('*')
-let {data:heat=[]}=await client.from('queimadas_heatmap').select('*')
-let totalFocos=focos.reduce((s,i)=>s+Number(i.focos||0),0)
-let iriqMedio=await calcularIRIQ()
-let faixaIRIQ='BAIXO'
-let corIRIQ='#16a34a'
-if(Number(iriqMedio)>=75){
-faixaIRIQ='CRÍTICO'
-corIRIQ='#dc2626'
-}else if(Number(iriqMedio)>=50){
-faixaIRIQ='ALTO'
-corIRIQ='#f97316'
-}else if(Number(iriqMedio)>=25){
-faixaIRIQ='MODERADO'
-corIRIQ='#facc15'
+
+let {data,error}=await client
+.from('vw_queimadas_executivo')
+.select('*')
+.single()
+
+if(error||!data)return
+
+let iriq=Number(data.iriq_estadual||0)
+
+let faixa='BAIXO'
+let cor='#16a34a'
+
+if(iriq>=75){
+faixa='CRÍTICO'
+cor='#dc2626'
+}else if(iriq>=50){
+faixa='ALTO'
+cor='#f97316'
+}else if(iriq>=25){
+faixa='MODERADO'
+cor='#facc15'
 }
-let municipiosCriticos=heat.filter(i=>i.classificacao==='CRÍTICO').length
-let municipiosAlto=heat.filter(i=>i.classificacao==='ALTO').length
-let municipiosSemDados=heat.filter(i=>i.classificacao==='SEM DADOS').length
-let municipiosMonitorados=heat.length-municipiosSemDados
+
 let hoje=new Date().toLocaleDateString('pt-BR')
+
 box.innerHTML=`
 <div class="chap-grid">
 <div class="chap-card">
-<div class="chap-num">${Number(totalFocos).toLocaleString('pt-BR')}</div>
+<div class="chap-num">${Number(data.focos_estado||0).toLocaleString('pt-BR')}</div>
 <div class="chap-label">FOCOS 2026</div>
-<div style="font-size:11px;color:#64748b">01/01/2026 até ${hoje}</div>
+<div style="font-size:11px;color:#64748b">${hoje}</div>
 </div>
 <div class="chap-card">
-<div class="chap-num" style="color:${corIRIQ}">${iriqMedio}</div>
+<div class="chap-num" style="color:${cor}">
+${iriq.toFixed(2)}
+</div>
 <div class="chap-label">IRIQ ESTADUAL</div>
-<div style="font-size:12px;font-weight:900;color:${corIRIQ}">${faixaIRIQ}</div>
+<div style="font-size:12px;font-weight:900;color:${cor}">
+${faixa}
+</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">${municipiosCriticos}</div>
+<div class="chap-num">${data.municipios_criticos||0}</div>
 <div class="chap-label">CRÍTICOS</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">${municipiosAlto}</div>
-<div class="chap-label">ALTO RISCO</div>
+<div class="chap-num">${data.municipios_prioritarios||0}</div>
+<div class="chap-label">PRIORITÁRIOS</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">${municipiosMonitorados}</div>
+<div class="chap-num">52</div>
 <div class="chap-label">MONITORADOS</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">${municipiosSemDados}</div>
+<div class="chap-num">0</div>
 <div class="chap-label">SEM DADOS</div>
 </div>
 </div>
 <div class="fonte-card">
-Fonte: INPE • Heatmap Estadual • IRIQ • CHAP • Sedam • CBMRO • TCE-RO • Data Base ${hoje}
-</div>`
+Fonte: vw_queimadas_executivo • INPE • PRODES • MAPBIOMAS • CHAP
+</div>
+`
 }
 /*=========================================================
 085 QUEIMADAS FUNCTION RENDERINDICADORESPRESIDENTE
@@ -1002,28 +1012,31 @@ Fonte: INPE • Heatmap Estadual • IRIQ • CHAP • Sedam • CBMRO • TCE-R
 async function renderIndicadoresPresidente(){
 let box=document.getElementById('painelIndicadoresPresidente')
 if(!box)return
-let {data:heat=[]}=await client.from('queimadas_heatmap').select('*')
-let {data:focos=[]}=await client.from('queimadas_focos').select('*')
-let totalFocos=focos.reduce((s,i)=>s+Number(i.focos||0),0)
-let criticos=heat.filter(i=>i.classificacao==='CRÍTICO').length
-let alto=heat.filter(i=>i.classificacao==='ALTO').length
+
+let {data,error}=await client
+.from('vw_queimadas_executivo')
+.select('*')
+.single()
+
+if(error||!data)return
+
 box.innerHTML=`
 <div class="chap-grid">
 <div class="chap-card">
-<div class="chap-num">${formatarNumero(totalFocos)}</div>
+<div class="chap-num">${Number(data.focos_estado||0).toLocaleString('pt-BR')}</div>
 <div class="chap-label">FOCOS ACUMULADOS</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">${criticos}</div>
+<div class="chap-num">${data.municipios_criticos||0}</div>
 <div class="chap-label">CRÍTICOS</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">${alto}</div>
-<div class="chap-label">ALTO RISCO</div>
+<div class="chap-num">${data.municipios_prioritarios||0}</div>
+<div class="chap-label">PRIORITÁRIOS</div>
 </div>
-</div>`
+</div>
+`
 }
-
 /*=========================================================
 086 QUEIMADAS FUNCTION RENDERSALASITUACAOESTADUAL
 =========================================================*/
@@ -1031,96 +1044,138 @@ async function renderSalaSituacaoEstadual(){
 let box=document.getElementById('painelSalaSituacaoEstadual')
 if(!box)return
 
-let {data:heat=[]}=await client
-.from('queimadas_heatmap')
+let {data:executivo,error}=await client
+.from('vw_queimadas_executivo')
+.select('*')
+.single()
+
+if(error||!executivo)return
+
+let {data:ranking=[]}=await client
+.from('vw_queimadas_ranking_estadual')
 .select('*')
 
-let {data:focos=[]}=await client
-.from('queimadas_focos')
-.select('*')
+let focosTotal=Number(executivo.focos_estado||0)
+let criticos=Number(executivo.municipios_criticos||0)
+let prioritarios=Number(executivo.municipios_prioritarios||0)
+let iriq=Number(executivo.iriq_estadual||0)
 
-let focosTotal=focos.reduce(
-(s,i)=>s+Number(i.focos||0),
-0
-)
+let faixa='BAIXO'
+let cor='#16a34a'
 
-let criticos=(heat||[])
-.filter(i=>i.classificacao==='CRÍTICO')
-.length
+if(iriq>=75){
+faixa='CRÍTICO'
+cor='#dc2626'
+}else if(iriq>=50){
+faixa='ALTO'
+cor='#f97316'
+}else if(iriq>=25){
+faixa='MODERADO'
+cor='#facc15'
+}
 
-let altos=(heat||[])
-.filter(i=>i.classificacao==='ALTO')
-.length
-
-let semdados=(heat||[])
-.filter(i=>i.classificacao==='SEM DADOS')
-.length
-
-let top10=[...(heat||[])]
-.filter(i=>Number(i.focos||0)>0)
+let top10=[...(ranking||[])]
 .sort((a,b)=>Number(b.focos||0)-Number(a.focos||0))
 .slice(0,10)
+
 box.innerHTML=`
 <div class="fonte-card">
 <b>Data Base:</b> ${new Date().toLocaleDateString('pt-BR')}<br>
-<b>Fonte:</b> INPE • Heatmap Estadual • IRIQ • CHAP • IA-CHAP<br>
-<b>Municípios Monitorados:</b> ${(heat||[]).length-semdados}<br>
-<b>Municípios Sem Dados:</b> ${semdados}
+<b>Fonte Oficial:</b> vw_queimadas_executivo • vw_queimadas_ranking_estadual<br>
+<b>Municípios Monitorados:</b> 52<br>
+<b>IRIQ Estadual:</b> ${iriq.toFixed(2)} (${faixa})
 </div>
+
 <div class="chap-grid">
+
 <div class="chap-card">
-<div class="chap-num">${Number(focosTotal).toLocaleString('pt-BR')}</div>
+<div class="chap-num">${focosTotal.toLocaleString('pt-BR')}</div>
 <div class="chap-label">FOCOS ACUMULADOS</div>
 </div>
+
 <div class="chap-card">
 <div class="chap-num">${criticos}</div>
 <div class="chap-label">CRÍTICOS</div>
 </div>
+
 <div class="chap-card">
-<div class="chap-num">${altos}</div>
-<div class="chap-label">ALTO RISCO</div>
+<div class="chap-num">${prioritarios}</div>
+<div class="chap-label">PRIORITÁRIOS</div>
 </div>
+
 <div class="chap-card">
-<div class="chap-num">${semdados}</div>
-<div class="chap-label">SEM DADOS</div>
+<div class="chap-num" style="color:${cor}">
+${iriq.toFixed(2)}
 </div>
+<div class="chap-label">IRIQ ESTADUAL</div>
 </div>
+
+</div>
+
 <div class="cardExecutivo">
+
 <h2>🔥 TOP 10 FOCOS DE CALOR</h2>
+
 <div class="fonte-card">
 Período: Acumulado 2026 • Fonte: INPE
 </div>
+
 ${top10.map((i,idx)=>`
+
 <div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #ddd">
+
 <div>
 <b>${idx+1}º ${i.municipio||'-'}</b><br>
 <span style="font-size:11px">
 🔥 ${Number(i.focos||0).toLocaleString('pt-BR')} focos • 📈 ${i.risco||0} risco • ${i.classificacao||'-'}
 </span>
 </div>
-<b>${Number(i.focos||0).toLocaleString('pt-BR')}</b>
+
+<b>
+${Number(i.focos||0).toLocaleString('pt-BR')}
+</b>
+
 </div>
+
 `).join('')}
+
 </div>
+
 <div class="cardExecutivo">
+
 <h2>🚨 ALERTAS AUTOMÁTICOS</h2>
+
 <div class="fonte-card">
-Fonte: Heatmap Estadual • INPE • Atualização Automática
+Fonte: Ranking Estadual • IRIQ • INPE
 </div>
+
 <div style="padding:10px;font-size:13px;line-height:1.6">
-${criticos>0?`🚨 ${criticos} municípios classificados como CRÍTICOS.<br>`:'✅ Nenhum município crítico.<br>'}
-${focosTotal>500?'🔥 Quantidade elevada de focos detectados.<br>':'✅ Focos sob controle.<br>'}
-${altos>0?`⚠ ${altos} municípios classificados como ALTO RISCO.<br>`:'✅ Sem municípios em alto risco.<br>'}
-${semdados>0?`📋 ${semdados} municípios sem dados suficientes para classificação.<br>`:'✅ Todos os municípios possuem classificação.<br>'}
+
+${criticos>0?`🚨 ${criticos} município(s) classificados como CRÍTICOS.<br>`:'✅ Nenhum município crítico.<br>'}
+
+${focosTotal>3000?`🔥 ${focosTotal.toLocaleString('pt-BR')} focos acumulados em 2026.<br>`:'✅ Quantidade de focos sob controle.<br>'}
+
+${prioritarios>0?`⚠ ${prioritarios} município(s) prioritários para atuação imediata.<br>`:'✅ Nenhum município prioritário.<br>'}
+
+${iriq<25?'🟢 Situação estadual classificada como BAIXO RISCO.<br>':''}
+
+${iriq>=25&&iriq<50?'🟡 Situação estadual classificada como RISCO MODERADO.<br>':''}
+
+${iriq>=50&&iriq<75?'🟠 Situação estadual classificada como ALTO RISCO.<br>':''}
+
+${iriq>=75?'🔴 Situação estadual classificada como RISCO CRÍTICO.<br>':''}
+
 </div>
+
 </div>
+
 <div class="fonte-card">
-Fonte: INPE • Heatmap Estadual • IRIQ • CHAP • IA-CHAP • Atualizado automaticamente
+Fonte: vw_queimadas_executivo • vw_queimadas_ranking_estadual • INPE • PRODES • MAPBIOMAS • CHAP
 </div>
 `
 }
 /*=========================================================
-087 QUEIMADAS FUNCTION ABRIR ABA CARD
+087 QUEIMADAS FUNCTION ABRIRCARDQUEIMADAS
 =========================================================*/
 function abrirCardQueimadas(aba){
 mostrarAbaQueimadas(aba)
@@ -1130,23 +1185,24 @@ behavior:'smooth'
 })
 }
 /*=========================================================
-071 QUEIMADAS FUNCTION RECALCULARIMC
+088 QUEIMADAS FUNCTION RECALCULARIMC
 =========================================================*/
 async function recalcularIMC(){
 await calcularIMC()
 await renderRankingIMC()
 }
-
+/*=========================================================
+089 QUEIMADAS FUNCTION FORMATARAREA
+=========================================================*/
 function formatarArea(v){
 return Number(v||0)
 .toLocaleString('pt-BR',{
 minimumFractionDigits:2,
 maximumFractionDigits:2
-})
-+' km²'
+})+' km²'
 }
 /*=========================================================
-088 QUEIMADAS FUNCTION RENDERMUNICIPIOSOFICIO
+090 QUEIMADAS FUNCTION RENDERMUNICIPIOSOFICIO
 =========================================================*/
 async function renderMunicipiosOficio(){
 let box=document.getElementById('painelMunicipiosOficio')
@@ -1187,7 +1243,7 @@ box.innerHTML=`
 `
 }
 /*=========================================================
-089 QUEIMADAS FUNCTION RENDERMUNICIPIOSSEMRESPOSTA
+091 QUEIMADAS FUNCTION RENDERMUNICIPIOSSEMRESPOSTA
 =========================================================*/
 async function renderMunicipiosSemResposta(){
 let box=document.getElementById('painelMunicipiosSemResposta')
@@ -1220,7 +1276,7 @@ html+='</div>'
 box.innerHTML=html
 }
 /*=========================================================
-090 QUEIMADAS FUNCTION RENDERKPISMUNICIPAIS
+092 QUEIMADAS FUNCTION RENDERKPISMUNICIPAIS
 =========================================================*/
 async function renderKPIsMunicipais(){
 let box=document.getElementById('painelKPIsMunicipais')
@@ -1287,7 +1343,7 @@ Classificação Vermelha
 `
 }
 /*=========================================================
-091 QUEIMADAS FUNCTION RENDERPLANOSAPRESENTADOS
+093 QUEIMADAS FUNCTION RENDERPLANOSAPRESENTADOS
 =========================================================*/
 async function renderPlanosApresentados(){
 let box=document.getElementById('painelPlanosApresentados')
@@ -1305,7 +1361,7 @@ html+='</table>'
 box.innerHTML=html
 }
 /*=========================================================
-092 QUEIMADAS FUNCTION RENDERDILACOESPRAZO
+094 QUEIMADAS FUNCTION RENDERDILACOESPRAZO
 =========================================================*/
 async function renderDilacoesPrazo(){
 let box=document.getElementById('painelDilacoesPrazo')
@@ -1323,7 +1379,7 @@ html+='</table>'
 box.innerHTML=html
 }
 /*=========================================================
-093 QUEIMADAS FUNCTION RENDERSEMRESPOSTA
+095 QUEIMADAS FUNCTION RENDERSEMRESPOSTA
 =========================================================*/
 async function renderSemResposta(){
 let box=document.getElementById('painelSemResposta')
@@ -1341,7 +1397,7 @@ html+='</table>'
 box.innerHTML=html
 }
 /*=========================================================
-094 QUEIMADAS FUNCTION RENDERGRAFICOMUNICIPIOS
+096 QUEIMADAS FUNCTION RENDERGRAFICOMUNICIPIOS
 =========================================================*/
 async function renderGraficoMunicipios(){
 
@@ -1416,7 +1472,7 @@ formatter:(v)=>v
 
 }
 /*=========================================================
-095 QUEIMADAS FUNCTION RENDERTABELAMUNICIPIOS
+097 QUEIMADAS FUNCTION RENDERTABELAMUNICIPIOS
 =========================================================*/
 async function renderTabelaMunicipios(){
 let box=document.getElementById('painelTabelaMunicipios')
@@ -1490,7 +1546,7 @@ Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
 box.innerHTML=html
 }
 /*=========================================================
-096 QUEIMADAS FUNCTION RENDERMAPAMUNICIPAL
+098 QUEIMADAS FUNCTION RENDERMAPAMUNICIPAL
 =========================================================*/
 async function renderMapaMunicipal(){
 let box=document.getElementById('mapaMunicipalRO')
@@ -1590,7 +1646,7 @@ window.layerMunicipios.getBounds()
 )
 }
 /*=========================================================
-097 QUEIMADAS FUNCTION FILTRARMAPAMUNICIPAL
+099 QUEIMADAS FUNCTION FILTRARMAPAMUNICIPAL
 =========================================================*/
 function filtrarMapaMunicipal(tipo){
 let layer=window.layerMunicipiosPlanos||window.layerMunicipios
@@ -1613,7 +1669,7 @@ l.setStyle({fillOpacity:.10,weight:1})
 })
 }
 /*=========================================================
-098 QUEIMADAS FUNCTION RENDERESTATISTICASMUNICIPAIS
+100 QUEIMADAS FUNCTION RENDERESTATISTICASMUNICIPAIS
 =========================================================*/
 async function renderEstatisticasMunicipais(){
 let box=document.getElementById('painelEstatisticasMunicipais')
