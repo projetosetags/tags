@@ -1180,20 +1180,46 @@ formatter:v=>v
 async function renderSalaSituacao(){
 let {data=[]}=await client.from('queimadas_sala_situacao').select('*').order('criticidade',{ascending:false})
 let {data:municipios=[]}=await client.from('queimadas_municipios_oficio').select('*')
+
 let semPlano=document.getElementById('painelSemPlano')
 if(semPlano){
-let lista=municipios.filter(i=>!i.classificacao_ia||String(i.classificacao_ia).trim()==='')
-semPlano.innerHTML=`<div class="cardExecutivo"><h2>📄 SEM PLANOS</h2>${lista.length?lista.slice(0,10).map(i=>`<div class="linha-ranking">${i.municipio||'-'}</div>`).join(''):'<div class="linha-ranking">Nenhum município</div>'}</div>`
+let listaSemPlano=municipios.filter(i=>{
+let cls=String(i.classificacao_ia||i.classificacao||'').toUpperCase().trim()
+return cls.includes('SEM PLANO')
+})
+semPlano.innerHTML=`<div class="cardExecutivo"><h2>📄 SEM PLANOS</h2>${listaSemPlano.length?listaSemPlano.slice(0,10).map(i=>`<div class="linha-ranking">${i.municipio||'-'}</div>`).join(''):'<div class="linha-ranking">Nenhum município</div>'}</div>`
 }
+
+let dilacao=document.getElementById('painelDilacaoPrazo')
+if(dilacao){
+let listaDilacao=municipios.filter(i=>{
+let cls=String(i.classificacao_ia||i.classificacao||'').toUpperCase().trim()
+return cls.includes('DILAÇÃO')||cls.includes('DILACAO')||cls.includes('AMARELO')
+})
+dilacao.innerHTML=`<div class="cardExecutivo"><h2>⏳ DILAÇÃO DE PRAZO</h2>${listaDilacao.length?listaDilacao.slice(0,10).map(i=>`<div class="linha-ranking">${i.municipio||'-'}</div>`).join(''):'<div class="linha-ranking">Nenhum município</div>'}</div>`
+}
+
 let semResposta=document.getElementById('painelSemResposta')
 if(semResposta){
-let lista=municipios.filter(i=>!i.ldatarecebimentodoc)
-semResposta.innerHTML=`<div class="cardExecutivo"><h2>📬 SEM RESPOSTAS</h2>${lista.length?lista.slice(0,10).map(i=>`<div class="linha-ranking">${i.municipio||'-'}</div>`).join(''):'<div class="linha-ranking">Nenhum município</div>'}</div>`
+let listaSemResposta=municipios.filter(i=>{
+let cls=String(i.classificacao_ia||i.classificacao||'').toUpperCase().trim()
+return cls.includes('SEM RESPOSTA')
+})
+semResposta.innerHTML=`<div class="cardExecutivo"><h2>📬 SEM RESPOSTAS</h2>${listaSemResposta.length?listaSemResposta.slice(0,10).map(i=>`<div class="linha-ranking">${i.municipio||'-'}</div>`).join(''):'<div class="linha-ranking">Nenhum município</div>'}</div>`
 }
+
 let quadro=document.getElementById('painelQuadroMunicipiosSituacao')
 if(quadro){
-quadro.innerHTML=`<div class="cardExecutivo"><h2>🏛 QUADRO GERAL</h2>${data.slice(0,10).map(i=>`<div class="linha-ranking"><span>${i.municipio||'-'}</span><b>${i.classificacao||'-'}</b></div>`).join('')}</div>`
+quadro.innerHTML=`<div class="cardExecutivo"><h2>🏛 QUADRO GERAL</h2>${data.slice(0,10).map(i=>{
+let focos=Number(i.focos||i.focos_calor||0)
+let cor='#16a34a'
+if(focos>=80)cor='#dc2626'
+else if(focos>=50)cor='#f97316'
+else if(focos>=20)cor='#facc15'
+return `<div class="linha-ranking"><span style="color:${cor};font-weight:900">${i.municipio||'-'}</span><b style="color:${cor}">${focos.toLocaleString('pt-BR')}</b></div>`
+}).join('')}</div>`
 }
+
 if(typeof renderTopIAChap==='function')await renderTopIAChap()
 if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadual()
 }
