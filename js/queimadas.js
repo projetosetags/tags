@@ -1185,20 +1185,6 @@ let altos=data.filter(i=>Number(i.criticidade||0)>=50&&Number(i.criticidade||0)<
 let moderados=data.filter(i=>Number(i.criticidade||0)>=25&&Number(i.criticidade||0)<50)
 let baixos=data.filter(i=>Number(i.criticidade||0)<25)
 
-let topCriticos=document.getElementById('painelTopCriticos')
-if(topCriticos){
-topCriticos.innerHTML=`
-<div class="cardExecutivo">
-<h2>🔥 TOP 10 MUNICÍPIOS CRÍTICOS</h2>
-${criticos.slice(0,10).map((i,idx)=>`
-<div class="linha-ranking">
-<span>${idx+1}º ${i.municipio||'-'}</span>
-<b>${i.criticidade||0}</b>
-</div>
-`).join('')}
-</div>`
-}
-
 let semPlano=document.getElementById('painelSemPlano')
 if(semPlano){
 let lista=data.filter(i=>String(i.classificacao||'').toUpperCase().includes('SEM PLANO'))
@@ -1237,10 +1223,7 @@ ${data.slice(0,10).map(i=>`
 </div>`
 }
 
-if(typeof renderTopRiscos==='function')await renderTopRiscos()
-if(typeof renderAlertas==='function')await renderAlertas()
 if(typeof renderTopIAChap==='function')await renderTopIAChap()
-if(typeof renderTopFocosSituacao==='function')await renderTopFocosSituacao()
 if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadual()
 }
 /*=========================================================
