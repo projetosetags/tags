@@ -1187,46 +1187,64 @@ formatter:v=>v
 047 QUEIMADAS FUNCTION RENDERSALASITUACAO
 =========================================================*/
 async function renderSalaSituacao(){
-let {data=[]}=await client.from('queimadas_sala_situacao').select('*').order('criticidade',{ascending:false})
 let {data:municipios=[]}=await client.from('queimadas_municipios_oficio').select('*')
+let total=52
 
-let semPlano=document.getElementById('painelSemPlano')
-if(semPlano){
 let listaSemPlano=municipios.filter(i=>{
 let cls=String(i.classificacao_ia||i.classificacao||'').toUpperCase().trim()
 return cls.includes('SEM PLANO')
-})
-semPlano.innerHTML=`<div class="cardExecutivo"><h2>📄 SEM PLANOS</h2>${listaSemPlano.length?listaSemPlano.slice(0,10).map(i=>`<div class="linha-ranking">${i.municipio||'-'}</div>`).join(''):'<div class="linha-ranking">Nenhum município</div>'}</div>`
-}
+}).sort((a,b)=>(a.municipio||'').localeCompare(b.municipio||''))
 
-let dilacao=document.getElementById('painelDilacaoPrazo')
-if(dilacao){
 let listaDilacao=municipios.filter(i=>{
 let cls=String(i.classificacao_ia||i.classificacao||'').toUpperCase().trim()
 return cls.includes('DILAÇÃO')||cls.includes('DILACAO')||cls.includes('AMARELO')
-})
-dilacao.innerHTML=`<div class="cardExecutivo"><h2>⏳ DILAÇÃO DE PRAZO</h2>${listaDilacao.length?listaDilacao.slice(0,10).map(i=>`<div class="linha-ranking">${i.municipio||'-'}</div>`).join(''):'<div class="linha-ranking">Nenhum município</div>'}</div>`
-}
+}).sort((a,b)=>(a.municipio||'').localeCompare(b.municipio||''))
 
-let semResposta=document.getElementById('painelSemResposta')
-if(semResposta){
 let listaSemResposta=municipios.filter(i=>{
 let cls=String(i.classificacao_ia||i.classificacao||'').toUpperCase().trim()
 return cls.includes('SEM RESPOSTA')
-})
-semResposta.innerHTML=`<div class="cardExecutivo"><h2>📬 SEM RESPOSTAS</h2>${listaSemResposta.length?listaSemResposta.slice(0,10).map(i=>`<div class="linha-ranking">${i.municipio||'-'}</div>`).join(''):'<div class="linha-ranking">Nenhum município</div>'}</div>`
+}).sort((a,b)=>(a.municipio||'').localeCompare(b.municipio||''))
+
+let painelIndicadores=document.getElementById('painelIndicadoresSituacao')
+if(painelIndicadores){
+painelIndicadores.innerHTML=`
+<div class="ranking-grid">
+<div class="cardPainel">
+<div style="font-size:34px;font-weight:900;color:#2563eb">${listaSemPlano.length}</div>
+<div style="font-size:12px;font-weight:700">SEM PLANO</div>
+<div style="font-size:11px;color:#64748b">${((listaSemPlano.length/total)*100).toFixed(2)}%</div>
+</div>
+<div class="cardPainel">
+<div style="font-size:34px;font-weight:900;color:#f59e0b">${listaDilacao.length}</div>
+<div style="font-size:12px;font-weight:700">DILAÇÃO DE PRAZO</div>
+<div style="font-size:11px;color:#64748b">${((listaDilacao.length/total)*100).toFixed(2)}%</div>
+</div>
+<div class="cardPainel">
+<div style="font-size:34px;font-weight:900;color:#dc2626">${listaSemResposta.length}</div>
+<div style="font-size:12px;font-weight:700">SEM RESPOSTA</div>
+<div style="font-size:11px;color:#64748b">${((listaSemResposta.length/total)*100).toFixed(2)}%</div>
+</div>
+</div>`
 }
 
-let quadro=document.getElementById('painelQuadroMunicipiosSituacao')
-if(quadro){
-quadro.innerHTML=`<div class="cardExecutivo"><h2>🏛 QUADRO GERAL</h2>${data.slice(0,10).map(i=>{
-let focos=Number(i.focos||i.focos_calor||0)
-let cor='#16a34a'
-if(focos>=80)cor='#dc2626'
-else if(focos>=50)cor='#f97316'
-else if(focos>=20)cor='#facc15'
-return `<div class="linha-ranking"><span style="color:${cor};font-weight:900">${i.municipio||'-'}</span><b style="color:${cor}">${focos.toLocaleString('pt-BR')}</b></div>`
-}).join('')}</div>`
+let painelDilacao=document.getElementById('painelMunicipiosDilacao')
+if(painelDilacao){
+painelDilacao.innerHTML=`
+<div class="cardExecutivo">
+<h2>⏳ MUNICÍPIOS COM DILAÇÃO DE PRAZO</h2>
+${listaDilacao.length?listaDilacao.map(i=>`<div class="linha-ranking">${i.municipio||'-'}</div>`).join(''):'<div class="linha-ranking">Nenhum município</div>'}
+<div class="fonte-card">Total: ${listaDilacao.length} município(s)</div>
+</div>`
+}
+
+let painelSemResposta=document.getElementById('painelMunicipiosSemResposta')
+if(painelSemResposta){
+painelSemResposta.innerHTML=`
+<div class="cardExecutivo">
+<h2>📬 MUNICÍPIOS SEM RESPOSTA AO TCERO</h2>
+${listaSemResposta.length?listaSemResposta.map(i=>`<div class="linha-ranking">${i.municipio||'-'}</div>`).join(''):'<div class="linha-ranking">Nenhum município</div>'}
+<div class="fonte-card">Total: ${listaSemResposta.length} município(s)</div>
+</div>`
 }
 
 if(typeof renderTopIAChap==='function')await renderTopIAChap()
@@ -1764,73 +1782,9 @@ ${data.slice(0,10).map((i,idx)=>`
 `).join('')}
 </div>`
 }
-/*=========================================================
-067 QUEIMADAS FUNCTION RENDERSEMPLANO
-=========================================================*/
-async function renderSemPlano(){
-let box=document.getElementById('painelSemPlano')
-if(!box)return
-let{data=[]}=await client.from('queimadas_municipios_oficio').select('*')
-let lista=data.filter(i=>{
-let cor=String(i.classificacao_cor||'').toUpperCase()
-return cor==='VERMELHO'||(!i.ldatarecebimentodoc&&!i.lldatarecebimentodoc)
-})
-box.innerHTML=`
-<div class="cardExecutivo">
-<h2>📄 MUNICÍPIOS SEM PLANO</h2>
-${lista.map(i=>`<div>${i.municipio}</div>`).join('')}
-</div>`
-}
-/*=========================================================
-068 QUEIMADAS FUNCTION RENDERSEMRESPOSTA
-=========================================================*/
-async function renderSemResposta(){
-let box=document.getElementById('painelSemResposta')
-if(!box)return
-let{data=[]}=await client.from('queimadas_municipios_oficio').select('*')
-let lista=data.filter(i=>!i.ldatarecebimentodoc&&!i.lldatarecebimentodoc)
-box.innerHTML=`
-<div class="cardExecutivo">
-<h2>📭 MUNICÍPIOS SEM RESPOSTA</h2>
-${lista.map(i=>`<div>${i.municipio}</div>`).join('')}
-</div>`
-}
-/*=========================================================
-069 QUEIMADAS FUNCTION RENDERQUADROMUNICIPIOSSITUACAO
-=========================================================*/
-async function renderQuadroMunicipiosSituacao(){
-let box=document.getElementById('painelQuadroMunicipiosSituacao')
-if(!box)return
-let{data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*').order('indice_final',{ascending:false})
-box.innerHTML=`
-<div class="cardExecutivo">
-<h2>📍 SITUAÇÃO DOS 52 MUNICÍPIOS</h2>
-<table class="tabelaMunicipios">
-<thead>
-<tr>
-<th>Município</th>
-<th>Focos</th>
-<th>Área Queimada (ha)</th>
-<th>Desmatamento (ha)</th>
-<th>IRIQ</th>
-<th>Classificação</th>
-</tr>
-</thead>
-<tbody>
-${data.map(i=>`
-<tr>
-<td>${i.municipio||'-'}</td>
-<td>${Number(i.focos||0).toLocaleString('pt-BR')}</td>
-<td>${Number(i.area_queimada_ha||0).toLocaleString('pt-BR')}</td>
-<td>${Number(i.desmatamento_ha||0).toLocaleString('pt-BR')}</td>
-<td>${Number(i.indice_final||i.iriq||0).toFixed(2)}</td>
-<td>${i.classificacao||'-'}</td>
-</tr>
-`).join('')}
-</tbody>
-</table>
-</div>`
-}
+
+
+
 /*=========================================================
 070 QUEIMADAS FUNCTION LERCSVINPE
 =========================================================*/
