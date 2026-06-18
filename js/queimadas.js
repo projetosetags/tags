@@ -1125,28 +1125,128 @@ maintainAspectRatio:false
 044 QUEIMADAS FUNCTION RENDERDASHBOARDPRESIDENTE
 =========================================================*/
 async function renderDashboardPresidente(){
-let box=document.getElementById('painelGeral')
+let box=document.getElementById('painelPresidente')
 if(!box)return
-let[{data:heat=[]},{data:sedam=[]},{data:cbm=[]},{data:monitoramento=[]}]=await Promise.all([
+
+let[
+{data:heat=[]},
+{data:sedam=[]},
+{data:cbm=[]},
+{data:monitoramento=[]},
+{data:municipios=[]}
+]=await Promise.all([
 client.from('vw_queimadas_ranking_estadual').select('*'),
 client.from('queimadas_acoes_sedam').select('*'),
 client.from('queimadas_acoes_cbm').select('*'),
-client.from('queimadas_monitoramento').select('*')
+client.from('queimadas_monitoramento').select('*'),
+client.from('queimadas_municipios_oficio').select('*')
 ])
-let areaQueimada=heat.reduce((s,i)=>s+Number(i.area_queimada_ha||i.area_queimada||0),0)
-let desmatamento=heat.reduce((s,i)=>s+Number(i.desmatamento_ha||i.area_desmatada||0),0)
+
+let areaQueimada=heat.reduce((s,i)=>s+Number(i.area_queimada_hectares||i.area_queimada_ha||i.area_queimada||0),0)
+
+let desmatamento=heat.reduce((s,i)=>s+Number(i.desmatamento_hectares||i.desmatamento_ha||i.area_desmatada||0),0)
+
 let criticos=heat.filter(i=>Number(i.indice_final||i.iriq||0)>=75).length
-let alto=heat.filter(i=>Number(i.indice_final||i.iriq||0)>=50&&Number(i.indice_final||i.iriq||0)<75).length
-let execucao=monitoramento.length?Math.round(monitoramento.reduce((s,i)=>s+Number(i.percentual||0),0)/monitoramento.length):0
+
+let alto=heat.filter(i=>{
+let v=Number(i.indice_final||i.iriq||0)
+return v>=50&&v<75
+}).length
+
+let execucao=monitoramento.length
+?Math.round(
+monitoramento.reduce((s,i)=>s+Number(i.percentual||0),0)
+/monitoramento.length
+)
+:0
+
+let comPlano=municipios.filter(i=>{
+let cls=String(i.classificacao_ia||i.classificacao||'').toUpperCase().trim()
+return cls.includes('COM PLANO')||
+cls.includes('PLANO')||
+cls.includes('VERDE')
+}).length
+
+let dilacao=municipios.filter(i=>{
+let cls=String(i.classificacao_ia||i.classificacao||'').toUpperCase().trim()
+return cls.includes('DILAÇÃO')||
+cls.includes('DILACAO')||
+cls.includes('AMARELO')
+}).length
+
+let semResposta=municipios.filter(i=>{
+let cls=String(i.classificacao_ia||i.classificacao||'').toUpperCase().trim()
+return cls.includes('SEM RESPOSTA')||
+cls.includes('VERMELHO')
+}).length
+
+let totalMunicipios=municipios.length||52
+
+let percPlano=((comPlano/totalMunicipios)*100).toFixed(1)
+let percDilacao=((dilacao/totalMunicipios)*100).toFixed(1)
+let percSemResposta=((semResposta/totalMunicipios)*100).toFixed(1)
+
 box.innerHTML=`
 <div class="chap-grid">
-<div class="chap-card"><div class="chap-num">${formatarNumero(areaQueimada)}</div><div class="chap-label">ÁREA QUEIMADA (ha)</div></div>
-<div class="chap-card"><div class="chap-num">${formatarNumero(desmatamento)}</div><div class="chap-label">DESMATAMENTO (ha)</div></div>
-<div class="chap-card"><div class="chap-num">${criticos}</div><div class="chap-label">MUNICÍPIOS CRÍTICOS</div></div>
-<div class="chap-card"><div class="chap-num">${alto}</div><div class="chap-label">ALTO RISCO</div></div>
-<div class="chap-card"><div class="chap-num">${execucao}%</div><div class="chap-label">EXECUÇÃO GERAL</div></div>
-<div class="chap-card"><div class="chap-num">${sedam.length+cbm.length}</div><div class="chap-label">AÇÕES MONITORADAS</div></div>
-</div>`
+
+<div class="chap-card">
+<div class="chap-num">${formatarNumero(areaQueimada)}</div>
+<div class="chap-label">ÁREA QUEIMADA (ha)</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${formatarNumero(desmatamento)}</div>
+<div class="chap-label">DESMATAMENTO (ha)</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${criticos}</div>
+<div class="chap-label">MUNICÍPIOS CRÍTICOS</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${alto}</div>
+<div class="chap-label">ALTO RISCO</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${execucao}%</div>
+<div class="chap-label">EXECUÇÃO GERAL</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">${sedam.length+cbm.length}</div>
+<div class="chap-label">AÇÕES MONITORADAS</div>
+</div>
+
+</div>
+
+<div class="chap-grid" style="margin-top:15px">
+
+<div class="chap-card">
+<div class="chap-num" style="color:#16a34a">${comPlano}</div>
+<div class="chap-label">COM PLANO</div>
+<div style="font-size:22px;font-weight:900;color:#16a34a">${percPlano}%</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num" style="color:#f59e0b">${dilacao}</div>
+<div class="chap-label">DILAÇÃO DE PRAZO</div>
+<div style="font-size:22px;font-weight:900;color:#f59e0b">${percDilacao}%</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num" style="color:#dc2626">${semResposta}</div>
+<div class="chap-label">SEM RESPOSTA</div>
+<div style="font-size:22px;font-weight:900;color:#dc2626">${percSemResposta}%</div>
+</div>
+
+</div>
+
+<div class="fonte-card">
+Fonte: INPE • MAPBIOMAS 2021-2025 • PRODES 2021-2025 • Monitoramento TCE-RO • Municípios Respondentes
+</div>
+`
 }
 /*=========================================================
 045 QUEIMADAS FUNCTION RENDERGRAFICOGOVERNANCA
