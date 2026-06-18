@@ -665,13 +665,25 @@ box.innerHTML=html
 023 QUEIMADAS FUNCTION RECALCULARODSIA
 =========================================================*/
 async function recalcularODSIA(){
-let {data:heat}=await client.from('queimadas_heatmap').select('*')
+let {data:ranking=[]}=await client
+.from('vw_queimadas_ranking_estadual')
+.select('*')
+let {data:executivo}=await client
+.from('vw_queimadas_executivo')
+.select('*')
+.single()
 let {data:chap}=await client.from('queimadas_chap').select('*')
 let {data:riscos}=await client.from('queimadas_riscos').select('*')
 let {data:monitoramento}=await client.from('queimadas_monitoramento').select('*')
-let focos=(heat||[]).reduce((s,i)=>s+Number(i.focos||0),0)
-let criticidade=(heat||[]).reduce((s,i)=>s+Number(i.criticidade||0),0)
-let mediaCriticidade=(heat||[]).length?criticidade/(heat||[]).length:0
+let focos=(ranking||[])
+.reduce((s,i)=>s+Number(i.focos||0),0)
+
+let criticidade=(ranking||[])
+.reduce((s,i)=>s+Number(i.indice_final||0),0)
+
+let mediaCriticidade=(ranking||[]).length
+?criticidade/(ranking||[]).length
+:0
 let totalChap=(chap||[]).reduce((s,i)=>s+Number(i.resultado||0),0)
 let mediaChap=(chap||[]).length?totalChap/(chap||[]).length:0
 let totalMonitoramento=(monitoramento||[]).length
@@ -692,14 +704,15 @@ await client.from('queimadas_ods').update({peso:peso17}).eq('ods','ODS 17')
 024 QUEIMADAS FUNCTION RECALCULARODSIAAVANCADO
 =========================================================*/
 async function recalcularODSIAAvancado(){
-let {data:heat}=await client.from('queimadas_heatmap').select('*')
+let {data:executivo}=await client.from('vw_queimadas_executivo').select('*').single()
+let {data:ranking=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
 let {data:chap}=await client.from('queimadas_chap').select('*')
 let {data:riscos}=await client.from('queimadas_riscos').select('*')
 let {data:monitoramento}=await client.from('queimadas_monitoramento').select('*')
 let {data:ucs}=await client.from('queimadas_ucs').select('*').limit(1000).then(r=>r).catch(()=>({data:[]}))
-let totalFocos=(heat||[]).reduce((s,i)=>s+Number(i.focos||0),0)
-let totalCriticidade=(heat||[]).reduce((s,i)=>s+Number(i.criticidade||0),0)
-let mediaCriticidade=(heat||[]).length?totalCriticidade/(heat||[]).length:0
+let totalFocos=Number(executivo?.focos_estado||0)
+let totalCriticidade=(ranking||[]).reduce((s,i)=>s+Number(i.indice_final||0),0)
+let mediaCriticidade=(ranking||[]).length?totalCriticidade/(ranking||[]).length:0
 let totalRisco=(riscos||[]).reduce((s,i)=>s+Number(i.nivel_risco||0),0)
 let mediaRisco=(riscos||[]).length?totalRisco/(riscos||[]).length:0
 let totalChap=(chap||[]).reduce((s,i)=>s+Number(i.resultado||0),0)
@@ -709,8 +722,9 @@ let concluidos=(monitoramento||[]).filter(i=>Number(i.percentual||0)>=100).lengt
 let andamento=(monitoramento||[]).filter(i=>Number(i.percentual||0)>0&&Number(i.percentual||0)<100).length
 let desempenho=totalMonitoramento?(concluidos/totalMonitoramento)*100:0
 let execucao=totalMonitoramento?((concluidos+(andamento*0.5))/totalMonitoramento)*100:0
-let municipiosCriticos=(heat||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('CRÍT')).length
-let municipiosAlto=(heat||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('ALTO')).length
+let municipiosCriticos=Number(executivo?.municipios_criticos||0)
+let municipiosPrioritarios=Number(executivo?.municipios_prioritarios||0)
+let iriqEstadual=Number(executivo?.iriq_estadual||0)
 let totalUCs=(ucs||[]).length||49
 let pressaoAmbiental=Math.min(100,(mediaCriticidade*0.40)+(mediaRisco*0.30)+(mediaChap*0.30))
 let governanca=Math.min(100,(desempenho*0.50)+(execucao*0.30)+(mediaChap*0.20))
@@ -719,7 +733,7 @@ let parceria=Math.min(100,(execucao*0.40)+(governanca*0.60))
 let peso13=Math.min(100,(pressaoAmbiental*0.60)+(governanca*0.20)+(execucao*0.20))
 let peso15=Math.min(100,(conservacao*0.50)+(pressaoAmbiental*0.30)+(execucao*0.20))
 let peso16=Math.min(100,(governanca*0.70)+(execucao*0.30))
-let peso11=Math.min(100,(municipiosCriticos*2)+(municipiosAlto*1)+(execucao*0.50))
+let peso11=Math.min(100,(municipiosCriticos*10)+(municipiosPrioritarios*3)+(iriqEstadual*2)+(execucao*0.30))
 let peso17=Math.min(100,(parceria*0.60)+(governanca*0.40))
 await client.from('queimadas_ods').update({
 peso:peso13,
@@ -742,7 +756,7 @@ origem:'IA-CHAP AVANÇADO'
 await client.from('queimadas_ods').update({
 peso:peso11,
 resultado:peso11,
-justificativa:`IA-CHAP: ${municipiosCriticos} municípios críticos e ${municipiosAlto} municípios em alto risco.`,
+justificativa:`IA-CHAP: ${municipiosCriticos} município(s) crítico(s), ${municipiosPrioritarios} prioritário(s) e IRIQ Estadual ${iriqEstadual.toFixed(2)}.`,
 origem:'IA-CHAP AVANÇADO'
 }).eq('ods','ODS 11')
 await client.from('queimadas_ods').update({
@@ -2361,6 +2375,7 @@ box.innerHTML=`
 131 QUEIMADAS FUNCTION RENDERSITUACAOOPERACIONAL
 =========================================================*/
 async function renderSituacaoOperacional(){
+
 let box=document.getElementById('painelSituacaoOperacional')
 if(!box)return
 
@@ -2380,22 +2395,10 @@ let c=String(i.classificacao||'')
 .replace(/[\u0300-\u036f]/g,'')
 .toUpperCase()
 
-if(c==='CRITICO'){
-critico++
-return
-}
-
-if(c==='ALTO'){
-alto++
-return
-}
-
-if(c==='MODERADO'){
-moderado++
-return
-}
-
-baixo++
+if(c==='CRITICO')critico++
+else if(c==='ALTO')alto++
+else if(c==='MODERADO')moderado++
+else baixo++
 
 })
 
