@@ -1355,6 +1355,7 @@ ${listaSemResposta.length?listaSemResposta.map(i=>`<div class="linha-ranking">${
 
 if(typeof renderTopIAChap==='function')await renderTopIAChap()
 if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadual()
+if(typeof renderIndicadoresGovernanca==='function')await renderIndicadoresGovernanca()
 }
 /*=========================================================
 048 QUEIMADAS FUNCTION IAPREVERRISCOS
@@ -1888,8 +1889,29 @@ ${data.slice(0,10).map((i,idx)=>`
 `).join('')}
 </div>`
 }
-
-
+/*=========================================================
+068 QUEIMADAS FUNCTION RENDERINDICADORESGOVERNANCA
+=========================================================*/
+async function renderIndicadoresGovernanca(){
+let box=document.getElementById('painelIndicadoresGovernanca')
+if(!box)return
+let {data:ranking=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
+let criticos=ranking.filter(i=>Number(i.indice_final||i.iriq||0)>=75).length
+let altos=ranking.filter(i=>{
+let v=Number(i.indice_final||i.iriq||0)
+return v>=50&&v<75
+}).length
+let moderados=ranking.filter(i=>{
+let v=Number(i.indice_final||i.iriq||0)
+return v>=25&&v<50
+}).length
+box.innerHTML=`
+<div class="linha-ranking"><span>🚨 Municípios Críticos</span><b>${criticos}</b></div>
+<div class="linha-ranking"><span>⚠️ Alto Risco</span><b>${altos}</b></div>
+<div class="linha-ranking"><span>🟡 Risco Moderado</span><b>${moderados}</b></div>
+<div class="linha-ranking"><span>🤖 Metodologia</span><b>CHAP + M-RAIG</b></div>
+`
+}
 
 /*=========================================================
 070 QUEIMADAS FUNCTION LERCSVINPE
