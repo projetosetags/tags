@@ -795,7 +795,7 @@ Data Base: ${new Date().toLocaleDateString('pt-BR')} • INPE • PRODES • MAP
 </div>
 </div>
 <div class="cardExecutivo">
-<h2>🔥 TOP 10 MUNICÍPIOS</h2>
+<h2>🔥 TOP 10 MUNICÍPIOS - FOCOS DE CALOR</h2>
 ${top10.map((i,idx)=>`
 <div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #ddd">
 <span>${idx+1}º ${i.municipio||'-'}</span>
