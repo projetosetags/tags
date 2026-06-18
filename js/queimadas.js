@@ -922,32 +922,39 @@ box.innerHTML=html
 036 QUEIMADAS FUNCTION IACHAPANALISAR
 =========================================================*/
 async function iaChapAnalisar(){
+
 let box=document.getElementById('painelIAChap')
+
 if(!box)return
+
 let {data,error}=await client
 .from('queimadas_chap')
 .select('*')
-if(error){
-console.log(error)
-return
-}
-let html=''
-data.forEach(i=>{
+.order('resultado',{ascending:false})
+
+if(error)return
+
+box.innerHTML=(data||[])
+.map(i=>{
+
 let score=Math.round(
 (
-Number(i.conhecimento||0)+
-Number(i.habilidade||0)+
-Number(i.atitude||0)+
-Number(i.proposito||0)
-)/4
+Number(i.criticidade||0)+
+Number(i.historico||0)+
+Number(i.abrangencia||0)+
+Number(i.prioridade||0)
+)/4*20
 )
-html+=`
+
+return `
 <div class="chap-card">
 <div class="chap-num">${score}%</div>
 <div class="chap-label">${i.municipio||'-'}</div>
-</div>`
-})
-box.innerHTML=html
+</div>
+`
+
+}).join('')
+
 }
 /*=========================================================
 037 QUEIMADAS FUNCTION RENDERGOVERNANCA
@@ -1709,9 +1716,8 @@ let score=Math.round(
 Number(i.criticidade||0)+
 Number(i.historico||0)+
 Number(i.abrangencia||0)+
-Number(i.prioridade||0)+
-Number(i.resultado||0)
-)/5
+Number(i.prioridade||0)
+)/4*20
 )
 return `
 <div class="chap-card">
