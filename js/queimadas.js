@@ -1160,25 +1160,17 @@ monitoramento.reduce((s,i)=>s+Number(i.percentual||0),0)
 )
 :0
 
-let comPlano=municipios.filter(i=>{
-let cls=String(i.classificacao_ia||i.classificacao||'').toUpperCase().trim()
-return cls.includes('COM PLANO')||
-cls.includes('PLANO')||
-cls.includes('VERDE')
-}).length
+let comPlano=municipios.filter(i=>
+String(i.classificacao_cor||'').toUpperCase().trim()==='VERDE'
+).length
 
-let dilacao=municipios.filter(i=>{
-let cls=String(i.classificacao_ia||i.classificacao||'').toUpperCase().trim()
-return cls.includes('DILAÇÃO')||
-cls.includes('DILACAO')||
-cls.includes('AMARELO')
-}).length
+let dilacao=municipios.filter(i=>
+String(i.classificacao_cor||'').toUpperCase().trim()==='AMARELO'
+).length
 
-let semResposta=municipios.filter(i=>{
-let cls=String(i.classificacao_ia||i.classificacao||'').toUpperCase().trim()
-return cls.includes('SEM RESPOSTA')||
-cls.includes('VERMELHO')
-}).length
+let semResposta=municipios.filter(i=>
+String(i.classificacao_cor||'').toUpperCase().trim()==='VERMELHO'
+).length
 
 let totalMunicipios=municipios.length||52
 
