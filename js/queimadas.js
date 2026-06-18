@@ -1858,3 +1858,9 @@ if(typeof renderMapaMunicipios==='function')await renderMapaMunicipios()
 alert('Heatmap atualizado com sucesso.')
 }
 
+/*=========================================================
+074 GERAR SUMARIO EXECUTIVO
+=========================================================*/
+async function gerarPDFSumarioExecutivo0501(){
+await gerarPDFSumarioExecutivo()
+}
