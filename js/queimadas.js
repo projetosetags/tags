@@ -422,15 +422,12 @@ client.from('vw_queimadas_ranking_estadual').select('*'),
 client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
 ])
-let lista=[...(ranking||[])].sort((a,b)=>{
-let bq=Number(b.area_queimada_hectares||b.area_queimada_ha||b.area_queimada||0)
-let aq=Number(a.area_queimada_hectares||a.area_queimada_ha||a.area_queimada||0)
-let bd=Number(b.desmatamento_hectares||b.desmatamento_ha||b.area_desmatada||0)
-let ad=Number(a.desmatamento_hectares||a.desmatamento_ha||a.area_desmatada||0)
-let bi=Number(b.indice_final||b.iriq||0)
-let ai=Number(a.indice_final||a.iriq||0)
-return(bi+bd+bq)-(ai+ad+aq)
-}).slice(0,10)
+let lista=[...(ranking||[])]
+.sort((a,b)=>
+Number(b.indice_final||b.iriq||0)-
+Number(a.indice_final||a.iriq||0)
+)
+.slice(0,10)
 let html='<div class="ranking-grid">'
 lista.forEach((m,idx)=>{
 let score=Number(m.indice_final||m.iriq||0)
@@ -451,6 +448,18 @@ html+=`
 })
 html+='</div>'
 html+=`<div class="fonte-card">Fonte: MAPBIOMAS (Áreas Queimadas 2021-2025 • ${formatarNumero(mapbiomas.length)} registros) • PRODES (Desmatamento 2021-2025 • ${formatarNumero(prodes.length)} registros) • Ranking Ambiental Estadual</div>`
+html+=`
+<div class="fonte-card" style="font-size:10px;line-height:1.4">
+<b>Metodologia IRIQ Estadual:</b><br>
+IRIQ = (Risco × 30%) + (CHAP × 10%) + (Área Queimada Normalizada × 35%) + (Desmatamento Normalizado × 25%).<br>
+A normalização utiliza o maior valor estadual observado no período 2021-2025, atribuindo 100 pontos ao município de maior impacto e calculando proporcionalmente os demais municípios.<br><br>
+<b>Classificação HeatMap Estadual:</b><br>
+🔴 Crítico: IRIQ ≥ 75<br>
+🟠 Alto: IRIQ de 50 a 74,99<br>
+🟡 Moderado: IRIQ de 25 a 49,99<br>
+🟢 Baixo: IRIQ abaixo de 25<br><br>
+<b>Fontes:</b> INPE (Focos de Calor), MAPBIOMAS (Áreas Queimadas 2021-2025), PRODES (Desmatamento 2021-2025), CHAP e Painéis de Monitoramento TCE-RO.
+</div>`  
 box.innerHTML=html
 }
 /*=========================================================
