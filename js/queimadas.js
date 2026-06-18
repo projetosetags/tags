@@ -1175,42 +1175,6 @@ formatter:v=>v
 })
 }
 /*=========================================================
-046 QUEIMADAS FUNCTION RENDERDASHBOARDCONSELHEIRO
-=========================================================*/
-async function renderDashboardConselheiro(){
-let box=document.getElementById('painelRelator')
-if(!box)return
-let[{data:heat=[]},{data:riscos=[]},{data:sedam=[]},{data:cbm=[]}]=await Promise.all([
-client.from('vw_queimadas_ranking_estadual').select('*'),
-client.from('queimadas_riscos').select('*'),
-client.from('queimadas_acoes_sedam').select('*'),
-client.from('queimadas_acoes_cbm').select('*')
-])
-let criticos=heat.filter(i=>Number(i.indice_final||i.iriq||0)>=75).length
-let altos=heat.filter(i=>Number(i.indice_final||i.iriq||0)>=50&&Number(i.indice_final||i.iriq||0)<75).length
-let riscosAltos=riscos.filter(i=>Number(i.nivel_risco||0)>=20).length
-let sedamPendentes=sedam.filter(i=>String(i.status||'').toUpperCase()!=='CONCLUÍDO'&&String(i.status||'').toUpperCase()!=='CONCLUIDO').length
-let cbmPendentes=cbm.filter(i=>String(i.status||'').toUpperCase()!=='CONCLUÍDO'&&String(i.status||'').toUpperCase()!=='CONCLUIDO').length
-let top10=[...heat].sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0)).slice(0,10)
-box.innerHTML=`
-<div class="chap-grid">
-<div class="chap-card"><div class="chap-num">${criticos}</div><div class="chap-label">MUNICÍPIOS CRÍTICOS</div></div>
-<div class="chap-card"><div class="chap-num">${altos}</div><div class="chap-label">ALTO RISCO</div></div>
-<div class="chap-card"><div class="chap-num">${riscosAltos}</div><div class="chap-label">RISCOS ELEVADOS</div></div>
-<div class="chap-card"><div class="chap-num">${sedamPendentes}</div><div class="chap-label">PENDÊNCIAS SEDAM</div></div>
-<div class="chap-card"><div class="chap-num">${cbmPendentes}</div><div class="chap-label">PENDÊNCIAS CBMRO</div></div>
-</div>
-<div class="card-executivo">
-<h2>TOP 10 MUNICÍPIOS CRÍTICOS</h2>
-${top10.map(i=>`
-<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #ddd">
-<span>${i.municipio}</span>
-<b>${Number(i.indice_final||i.iriq||0).toFixed(2)}</b>
-</div>
-`).join('')}
-</div>`
-}
-/*=========================================================
 047 QUEIMADAS FUNCTION RENDERSALASITUACAO
 =========================================================*/
 async function renderSalaSituacao(){
@@ -1378,7 +1342,6 @@ monitoramento:'btnAbaMonitoramento',
 analise:'btnAbaAnalise',
 situacao:'btnAbaSituacao',
 presidente:'btnAbaPresidente',
-conselheiro:'btnAbaConselheiro',
 auditor:'btnAbaAuditor',
 relatorios:'btnAbaRelatorios'
 }
@@ -1466,10 +1429,6 @@ await renderDashboardPresidente()
 await renderUCsPresidente()
 await renderSituacaoEstrategica()
 }
-if(nome==='conselheiro'){
-document.getElementById('abaConselheiro')?.classList.remove('hidden')
-await renderDashboardConselheiro()
-}
 if(nome==='auditor'){
 document.getElementById('abaAuditor')?.classList.remove('hidden')
 await renderAuditoriaConcomitante()
@@ -1524,7 +1483,6 @@ let abas=[
 'abaMapa',
 'abaSituacao',
 'abaPresidente',
-'abaConselheiro',
 'abaAuditor',
 'abaRelatorios'
 ]
