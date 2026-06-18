@@ -49,13 +49,6 @@ overflow-x:auto;
 #abaEstado .cardExecutivo{width:100%;}
 .cardExecutivo h2{font-size:18px;font-weight:900;color:#0f172a;margin-bottom:12px;border-bottom:2px solid #e5e7eb;padding-bottom:8px}
 /*=========================================================
-008 KPI GRID
-=========================================================*/
-.kpiGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-bottom:18px}
-.kpiCard{background:linear-gradient(135deg,#ffffff,#f8fafc);border-radius:18px;padding:18px;text-align:center;box-shadow:0 5px 14px rgba(0,0,0,.08)}
-.kpiNumero{font-size:clamp(24px,2.5vw,42px);font-weight:900;line-height:1;color:#2563eb;word-break:break-word;}
-.kpiTitulo{font-size:15px;font-weight:800;text-align:center;margin-top:8px;}
-/*=========================================================
 009 CHAP
 =========================================================*/
 .chap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
@@ -675,28 +668,12 @@ box-shadow:0 0 20px rgba(220,38,38,.45);
 border:2px solid #ffffff;
 }
 
-.kpiCard{
-min-height:130px;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-}
-.kpiNumero{
-font-size:34px;
-font-weight:900;
-line-height:1;
-}
-.kpiTitulo{
-margin-top:8px;
-font-size:12px;
-font-weight:800;
-text-align:center;
-}
-.linha-ranking{
-padding:8px;
-border-bottom:1px solid #e5e7eb;
-font-size:13px;
-font-weight:700;
-}
+.kpiGrid{display:grid;grid-template-columns:2fr 2fr 2fr 1fr 1fr 1fr;gap:14px;align-items:stretch;width:100%;}
+.kpiCard{padding:20px;border-radius:18px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.08);display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:120px;}
+.kpiNumero{font-size:clamp(24px,2vw,34px);font-weight:900;line-height:1;color:#2563eb;text-align:center;word-break:break-word;}
+.kpiTitulo{margin-top:8px;font-size:12px;font-weight:800;text-align:center;line-height:1.2;}
+.linha-ranking{padding:8px;border-bottom:1px solid #e5e7eb;font-size:13px;font-weight:700;}
+@media(max-width:1200px){.kpiGrid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:768px){.kpiGrid{grid-template-columns:repeat(2,1fr);}.kpiNumero{font-size:28px;}}
+@media(max-width:480px){.kpiGrid{grid-template-columns:1fr;}.kpiNumero{font-size:24px;}}
 
