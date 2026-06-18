@@ -1,8 +1,3 @@
-/*=========================================================
-399 RT FUNCTION CAPTURARELEMENTO
-CAPTURA MAPAS GRAFICOS TABELAS
-PAINEIS E EVIDENCIAS EM ALTA RESOLUCAO
-=========================================================*/
 async function capturarElemento(idElemento){
 let el=document.getElementById(idElemento)
 if(!el)return null
@@ -25,22 +20,16 @@ if(!canvas.width)return null
 if(!canvas.height)return null
 return canvas.toDataURL('image/png')
 }
-/*=========================================================
-400 QUEIMADAS RT PDF TECNICO 0501
-=========================================================*/
+
 async function gerarPDFTecnico0501(){
 await mostrarAbaQueimadas('executivo')
 await new Promise(r=>setTimeout(r,3000))
-
 await mostrarAbaQueimadas('executivomunicipal')
 await new Promise(r=>setTimeout(r,3000))
-
 await mostrarAbaQueimadas('monitoramento')
 await new Promise(r=>setTimeout(r,3000))
-
 await mostrarAbaQueimadas('analise')
 await new Promise(r=>setTimeout(r,3000))
-
 await mostrarAbaQueimadas('mapa')
 await new Promise(r=>setTimeout(r,3000))
 const {jsPDF}=window.jspdf
@@ -94,13 +83,10 @@ doc.addPage()
 await rtFichaTecnica(doc)
 doc.addPage()
 await rtAssinaturas(doc)
-doc.save(
-'RT_PCe_0501_2026_QUEIMADAS.pdf'
-)
+doc.save('RT_PCe_0501_2026_QUEIMADAS.pdf')
 }
-/*=========================================================
-401 RT CAPA
-=========================================================*/
+
+
 async function rtCapa(doc){
 doc.setFont('helvetica','bold')
 doc.setFontSize(18)
@@ -113,8 +99,9 @@ doc.text('RELATÓRIO TÉCNICO',105,105,{align:'center'})
 doc.setFontSize(10)
 doc.text(new Date().toLocaleDateString('pt-BR'),105,260,{align:'center'})
 }
+
 /*=========================================================
-402 RT INTRODUCAO
+303 RT INTRODUCAO
 =========================================================*/
 async function rtIntroducao(doc){
 doc.setFontSize(16)
@@ -126,7 +113,7 @@ let linhas=doc.splitTextToSize(texto,180)
 doc.text(linhas,15,35)
 }
 /*=========================================================
-403 RT OBJETO
+304 RT OBJETO
 =========================================================*/
 async function rtObjeto(doc){
 doc.setFontSize(16)
@@ -137,7 +124,7 @@ Avaliar a implementação dos planos de ação estaduais e municipais destinados
 doc.text(doc.splitTextToSize(texto,180),15,35)
 }
 /*=========================================================
-404 RT METODOLOGIA
+305 RT METODOLOGIA
 =========================================================*/
 async function rtMetodologia(doc){
 doc.setFontSize(16)
@@ -148,7 +135,7 @@ Foram utilizados os modelos CHAP, IA-CHAP, Heatmap Estadual, IRIQ, Matriz de Ris
 doc.text(doc.splitTextToSize(texto,180),15,35)
 }
 /*=========================================================
-405 RT SITUACAO ESTADUAL
+306 RT SITUACAO ESTADUAL
 =========================================================*/
 async function rtSituacaoEstadual(doc){
 doc.setFont('helvetica','bold')
@@ -168,7 +155,7 @@ let texto3='     Considerando os cenários analisados, conclui-se que o Estado d
 doc.text(doc.splitTextToSize(texto3,170),15,205)
 }
 /*=========================================================
-406 RT ANALISE MUNICIPAL
+307 RT ANALISE MUNICIPAL
 =========================================================*/
 async function rtAnaliseMunicipal(doc){
 doc.setFontSize(16)
@@ -190,7 +177,7 @@ doc.text(doc.splitTextToSize('Os resultados demonstram diferentes níveis de mat
 }
 
 /*=========================================================
-407 RT HEATMAP
+308 RT HEATMAP
 =========================================================*/
 async function rtHeatmap(doc){
 doc.setFont('helvetica','bold')
@@ -209,7 +196,7 @@ doc.setFontSize(12)
 doc.text(doc.splitTextToSize(texto2,170),15,155)
 }
 /*=========================================================
-408 RT IRIQ
+309 RT IRIQ
 =========================================================*/
 async function rtIRIQ(doc){
 doc.setFont('helvetica','bold')
@@ -226,9 +213,8 @@ doc.addImage(img,'PNG',10,60,190,80)
 let texto2='     Os resultados obtidos permitem hierarquizar os municípios segundo sua criticidade relativa, subsidiando a tomada de decisão, a alocação de recursos públicos e a definição de estratégias preventivas durante o período crítico de queimadas.'
 doc.text(doc.splitTextToSize(texto2,170),15,155)
 }
-
 /*=========================================================
-409 RT CHAP
+310 RT CHAP
 =========================================================*/
 async function rtCHAP(doc){
 doc.setFont('helvetica','bold')
@@ -239,18 +225,14 @@ doc.setFontSize(12)
 let texto='     O modelo CHAP foi utilizado como instrumento estruturado de análise de riscos, permitindo avaliar cenários relacionados às queimadas e incêndios florestais a partir da combinação de fatores de ameaça, vulnerabilidade e capacidade de resposta institucional.'
 doc.text(doc.splitTextToSize(texto,170),15,35)
 let img=await capturarElemento('painelCHAP')
-if(
-img &&
-img.startsWith('data:image')
-){
+if(img&&img.startsWith('data:image')){
 doc.addImage(img,'PNG',10,60,190,80)
 }
 let texto2='     A aplicação do CHAP possibilita identificar fragilidades operacionais, institucionais e ambientais, contribuindo para o aperfeiçoamento das estratégias de prevenção, preparação, resposta e recuperação relacionadas aos eventos críticos monitorados.'
 doc.text(doc.splitTextToSize(texto2,170),15,155)
 }
-
 /*=========================================================
-410 RT IA-CHAP
+311 RT IA-CHAP
 =========================================================*/
 async function rtIACHAP(doc){
 doc.setFont('helvetica','bold')
@@ -268,7 +250,7 @@ let texto2='     Os resultados produzidos pela IA permitem identificar padrões 
 doc.text(doc.splitTextToSize(texto2,170),15,155)
 }
 /*=========================================================
-411 RT MATRIZ 5X5
+312 RT MATRIZ 5X5
 =========================================================*/
 async function rtMatrizRisco(doc){
 doc.setFont('helvetica','bold')
@@ -286,7 +268,7 @@ let texto2='     Os riscos enquadrados nas categorias Alta e Crítica exigem mon
 doc.text(doc.splitTextToSize(texto2,170),15,155)
 }
 /*=========================================================
-412 RT MUNICIPIOS CRITICOS
+313 RT MUNICIPIOS CRITICOS
 =========================================================*/
 async function rtMunicipiosCriticos(doc){
 doc.setFont('helvetica','bold')
@@ -329,7 +311,7 @@ let texto2='     Observa-se que os municípios constantes na tabela acima demand
 doc.text(doc.splitTextToSize(texto2,170),15,y)
 }
 /*=========================================================
-413 RT ACHADOS
+314 RT ACHADOS
 =========================================================*/
 async function rtAchados(doc){
 doc.setFontSize(16)
@@ -352,7 +334,7 @@ let texto='Os achados demonstram fragilidades na capacidade institucional de par
 doc.text(doc.splitTextToSize(texto,180),15,y)
 }
 /*=========================================================
-414 RT EVIDENCIAS
+315 RT EVIDENCIAS
 =========================================================*/
 async function rtEvidencias(doc){
 doc.setFont('helvetica','bold')
@@ -409,7 +391,7 @@ let conclusao='     As evidências coletadas e analisadas demonstram a rastreabi
 doc.text(doc.splitTextToSize(conclusao,170),15,y+5)
 }
 /*=========================================================
-415 RT CONCLUSOES
+316 RT CONCLUSOES
 =========================================================*/
 async function rtConclusoes(doc){
 doc.setFontSize(16)
@@ -421,7 +403,7 @@ doc.text(doc.splitTextToSize('O Heatmap Estadual, o IRIQ, o CHAP, o IA-CHAP e a 
 doc.text(doc.splitTextToSize('Conclui-se pela necessidade de continuidade do acompanhamento técnico e institucional das medidas previstas nos planos de ação, especialmente nos municípios classificados com risco alto e crítico.',180),15,115)
 }
 /*=========================================================
-416 RT PROPOSTAS
+317 RT PROPOSTAS
 =========================================================*/
 async function rtPropostas(doc){
 doc.setFontSize(16)
@@ -446,7 +428,7 @@ y+=10
 })
 }
 /*=========================================================
-417 RT ANEXOS
+318 RT ANEXOS
 =========================================================*/
 async function rtAnexos(doc){
 doc.setFont('helvetica','bold')
@@ -480,7 +462,7 @@ doc.setFontSize(9)
 doc.text(doc.splitTextToSize('Os anexos integram o presente relatório técnico e constituem parte das evidências e informações utilizadas para fundamentação das análises, conclusões e propostas apresentadas.',180),15,220)
 }
 /*=========================================================
-418 RT ASSINATURAS
+319 RT ASSINATURAS
 =========================================================*/
 async function rtAssinaturas(doc){
 doc.setFont('helvetica','bold')
@@ -503,7 +485,7 @@ doc.text('Auditor de Controle Externo',20,170)
 doc.text('Supervisor',20,178)
 }
 /*=========================================================
-419 RT MAPA ESTADUAL
+320 RT MAPA ESTADUAL
 =========================================================*/
 async function rtMapaEstadual(doc){
 doc.setFont('helvetica','bold')
@@ -520,7 +502,7 @@ doc.setFontSize(9)
 doc.text('Fonte: TCE-RO • INPE • Sedam • Base Cartográfica Estadual',15,200)
 }
 /*=========================================================
-420 RT MAPA MUNICIPAL
+321 RT MAPA MUNICIPAL
 =========================================================*/
 async function rtMapaMunicipal(doc){
 doc.setFont('helvetica','bold')
@@ -537,7 +519,7 @@ doc.setFontSize(9)
 doc.text('Fonte: Municípios de Rondônia • TCE-RO',15,200)
 }
 /*=========================================================
-421 RT MONITORAMENTO 4D
+322 RT MONITORAMENTO 4D
 =========================================================*/
 async function rtMonitoramento4D(doc){
 doc.setFont('helvetica','bold')
@@ -554,7 +536,7 @@ doc.setFontSize(9)
 doc.text('Fonte: Sistema de Monitoramento Inteligente de Queimadas',15,200)
 }
 /*=========================================================
-422 RT REFERENCIAS
+323 RT REFERENCIAS
 =========================================================*/
 async function rtReferencias(doc){
 doc.setFont('helvetica','bold')
@@ -585,7 +567,7 @@ y+=10
 })
 }
 /*=========================================================
-423 RT SIGLAS
+324 RT SIGLAS
 =========================================================*/
 async function rtSiglas(doc){
 doc.setFont('helvetica','bold')
@@ -615,7 +597,7 @@ headStyles:{fillColor:[15,23,42]}
 })
 }
 /*=========================================================
-424 RT GLOSSARIO
+325 RT GLOSSARIO
 =========================================================*/
 async function rtGlossario(doc){
 doc.setFont('helvetica','bold')
@@ -642,7 +624,7 @@ y+=18
 })
 }
 /*=========================================================
-425 RT FICHA TECNICA
+326 RT FICHA TECNICA
 =========================================================*/
 async function rtFichaTecnica(doc){
 doc.setFont('helvetica','bold')
@@ -664,7 +646,7 @@ doc.text('Heatmap Estadual • IRIQ • CHAP • IA-CHAP • Matriz 5x5 • Moni
 doc.text('Data de Emissão: '+new Date().toLocaleDateString('pt-BR'),20,235)
 }
 /*=========================================================
-426 RT FUNCTION GERARWORDTECNICO0501
+327 RT FUNCTION GERARWORDTECNICO0501
 RELATORIO TECNICO COMPLETO
 TEXTO + PAINEIS + MAPAS + GRAFICOS
 =========================================================*/
