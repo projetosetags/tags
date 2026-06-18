@@ -421,10 +421,31 @@ window.camadasControle?.addOverlay(window.layerUC,'🌳 UCs')
 async function renderPainelUCs(){
 let box=document.getElementById('painelUCs')
 if(!box)return
-let{data=[]}=await client.from('queimadas_ucs').select('*')
-let estaduais=data.filter(i=>String(i.esfera||'').toUpperCase()==='ESTADUAL').length||49
-let federais=data.filter(i=>String(i.esfera||'').toUpperCase()==='FEDERAL').length
-let municipais=data.filter(i=>String(i.esfera||'').toUpperCase()==='MUNICIPAL').length
+try{
+let resp=await fetch('./assets/geojson/ucs-ro.geojson')
+if(!resp.ok)return
+let geo=await resp.json()
+
+let estaduais=(geo.features||[]).filter(f=>
+String(f.properties?.esfera||'')
+.toUpperCase()
+.trim()==='ESTADUAL'
+).length
+
+let federais=(geo.features||[]).filter(f=>
+String(f.properties?.esfera||'')
+.toUpperCase()
+.trim()==='FEDERAL'
+).length
+
+let municipais=(geo.features||[]).filter(f=>
+String(f.properties?.esfera||'')
+.toUpperCase()
+.trim()==='MUNICIPAL'
+).length
+
+let total=(geo.features||[]).length
+
 box.innerHTML=`
 <div class="chap-grid">
 <div class="chap-card">
@@ -440,13 +461,20 @@ box.innerHTML=`
 <div class="chap-label">UCs MUNICIPAIS</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">${data.length}</div>
+<div class="chap-num">${total}</div>
 <div class="chap-label">TOTAL UCs</div>
 </div>
 </div>
 <div class="fonte-card">
-Fonte: CNUC • SEDAM • TCGeo
+Fonte: TCGeo • CNUC • SEDAM
 </div>`
+}catch(e){
+console.error('Erro painel UCs',e)
+box.innerHTML=`
+<div class="alerta-vermelho">
+Erro ao carregar Unidades de Conservação
+</div>`
+}
 }
 /*=========================================================
 115 QUEIMADAS FUNCTION RENDERPAINELFOCOSINPE
