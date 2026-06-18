@@ -120,8 +120,6 @@ overflow-x:auto;
 /*=========================================================
 015 ODS
 =========================================================*/
-.ods-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-.ods-card{padding:16px;border-radius:16px;text-align:center;color:#fff;font-weight:900}
 .ods13{background:#22c55e}
 .ods15{background:#15803d}
 .ods16{background:#2563eb}
@@ -154,7 +152,6 @@ overflow-x:auto;
 /*=========================================================
 019 LINHAS
 =========================================================*/
-.linha-ranking{padding:10px;border-bottom:1px solid #e5e7eb;font-weight:700}
 .linha-queimadas{padding:10px;border-bottom:1px solid #e5e7eb;font-weight:700}
 .alerta-vermelho{background:#dc2626;color:#fff;padding:12px;border-radius:12px;font-weight:900;margin-bottom:8px}
 /*=========================================================
@@ -299,54 +296,22 @@ TABELA MUNICÍPIOS - BOTÃO AÇÃO
 #painelCadastroMunicipiosResumo table{min-width:1600px;}
 #mapaRO{width:100%;height:700px;min-height:700px;border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;display:block}
 #mapaROEstadual{width:100%;height:700px;min-height:700px;border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;display:block}
-#mapaMunicipalPlanos{width:100%;height:700px;min-height:700px;border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;display:block}
 #boxMapaRO{width:100%;display:block}
 .leaflet-container{font-family:Arial,sans-serif}
 #abaExecutivo .leaflet-container,#abaExecutivoMunicipal .leaflet-container,#abaMapa .leaflet-container{background:#f8fafc}
-#mapaMunicipalPlanos{width:100%;height:650px;min-height:650px;display:block;}
-
-.btnImprimirPainel{
-float:right;
-background:#c62828;
-color:#fff;
-border:none;
-padding:8px 14px;
-border-radius:6px;
-cursor:pointer;
-font-weight:700;
-margin-bottom:8px;
-}
+#mapaMunicipalPlanos{width:100%;height:700px;min-height:700px;border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;display:block;}
+.btnImprimirPainel{float:right;background:#c62828;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:700;margin-bottom:8px;}
 .btnImprimirPainel:hover{opacity:.9;}
-
 .gridCadastroEstado{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;}
 .gridCadastroEstado input,
 .gridCadastroEstado textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:6px;}
 .gridCadastroEstado textarea{min-height:90px;grid-column:1/-1;}
-.gridCadastroEstado button{
-background:#16a34a;
-color:#fff;
-border:none;
-padding:10px;
-border-radius:6px;
-cursor:pointer;
-font-weight:700;
-}
-.btnExcluirEstado{
-background:#dc2626;
-color:#fff;
-border:none;
-padding:4px 6px;
-border-radius:6px;
-cursor:pointer;
-font-size:11px;
-font-weight:700;
-margin-left:4px;
-}
+.gridCadastroEstado button{background:#16a34a;color:#fff;border:none;padding:10px;border-radius:6px;cursor:pointer;font-weight:700;}
+.btnExcluirEstado{background:#dc2626;color:#fff;border:none;padding:4px 6px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;margin-left:4px;}
 .btnExcluirEstado:hover{background:#b91c1c;}
 .legendaMapaExecutivo{display:flex;gap:20px;flex-wrap:wrap;margin-top:10px;font-size:12px;font-weight:700}
 .itemLegenda{display:flex;align-items:center;gap:6px}
 .legCor{width:16px;height:16px;border-radius:4px;display:inline-block;border:1px solid #cbd5e1}
-
 /*=========================================================
 CADASTRO MUNICIPAL - CONTAINER
 =========================================================*/
@@ -623,26 +588,6 @@ CADASTRO ESTADUAL - OBSERVAÇÃO MOBILE
 #painelCadastroEstado .tabelaEstado{
 min-width:1200px;
 }
-}
-/*=========================================================
-ABAS QUEIMADAS - BOTÃO NORMAL
-=========================================================*/
-.btnAbaQueimadas{
-background:#1e293b;
-color:#fff;
-border:2px solid transparent;
-transition:.2s;
-}
-/*=========================================================
-ABAS QUEIMADAS - BOTÃO ATIVO
-=========================================================*/
-.btnAbaAtiva{
-background:#dc2626!important;
-color:#fff!important;
-border:2px solid #facc15!important;
-box-shadow:0 0 18px rgba(250,204,21,.7);
-transform:translateY(-2px);
-font-weight:900;
 }
 /*=========================================================
 ABAS QUEIMADAS - HOVER
