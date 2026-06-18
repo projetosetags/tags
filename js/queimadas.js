@@ -1962,5 +1962,32 @@ alert('Heatmap atualizado com sucesso.')
 074 GERAR SUMARIO EXECUTIVO
 =========================================================*/
 async function gerarPDFSumarioExecutivo0501(){
-await gerarPDFSumarioExecutivo()
+const {jsPDF}=window.jspdf
+let doc=new jsPDF('p','mm','a4')
+doc.setFont('helvetica','bold')
+doc.setFontSize(24)
+doc.text('SUMÁRIO EXECUTIVO',105,25,{align:'center'})
+doc.setFontSize(16)
+doc.text('PREVENÇÃO E COMBATE ÀS QUEIMADAS',105,38,{align:'center'})
+doc.setFontSize(12)
+doc.text('Governança • Gestão de Riscos • CHAP • M-RAIG',105,48,{align:'center'})
+doc.line(20,55,190,55)
+doc.setFont('helvetica','normal')
+doc.setFontSize(11)
+let texto=[
+'Este Sumário Executivo apresenta os principais resultados do monitoramento das queimadas e incêndios florestais no Estado de Rondônia.',
+'',
+'O documento consolida informações provenientes do INPE, MAPBIOMAS, PRODES, CHAP, IA-CHAP e dos painéis de monitoramento do Tribunal de Contas do Estado de Rondônia.',
+'',
+'Os indicadores permitem identificar municípios prioritários, riscos ambientais, áreas queimadas, desmatamento acumulado e a situação dos planos municipais de prevenção e combate às queimadas.',
+'',
+'A metodologia adota os princípios CHAP e M-RAIG, com foco em governança, monitoramento, gestão de riscos, prevenção, resposta e geração de valor público.'
+]
+let y=70
+texto.forEach(linha=>{
+doc.text(linha,20,y)
+y+=8
+})
+doc.save('sumario-executivo-queimadas-2026.pdf')
 }
+
