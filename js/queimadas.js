@@ -253,8 +253,8 @@ client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
 ])
 if(!exec)return
-let areaQueimada=mapbiomas.reduce((s,i)=>s+Number(i.area_queimada||i.area||0),0)
-let areaDesmatada=prodes.reduce((s,i)=>s+Number(i.area_desmatada||i.area||0),0)
+let areaQueimada=mapbiomas.reduce((s,i)=>s+Number(i.area_queimada_hectares||i.area_queimada||i.area||0),0)
+let areaDesmatada=prodes.reduce((s,i)=>s+Number(i.desmatamento_hectares||i.area_desmatada||i.area||0),0)
 document.getElementById('painelKPIs').innerHTML=`
 <div class="kpiGrid">
 <div class="kpiCard">
@@ -263,11 +263,11 @@ document.getElementById('painelKPIs').innerHTML=`
 </div>
 <div class="kpiCard">
 <div class="kpiNumero">${areaDesmatada.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-<div class="kpiTitulo">🌳 DESMATAMENTO (ha)</div>
+<div class="kpiTitulo">🌳 DESMATAMENTO 2021-2025(ha)</div>
 </div>
 <div class="kpiCard">
 <div class="kpiNumero">${areaQueimada.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-<div class="kpiTitulo">🔥 ÁREA QUEIMADA (ha)</div>
+<div class="kpiTitulo">🔥 ÁREA QUEIMADA 2021-2025 (ha)</div>
 </div>
 <div class="kpiCard kpiCardPequeno">
 <div class="kpiNumero">${exec.municipios_criticos||0}</div>
@@ -423,10 +423,10 @@ client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
 ])
 let lista=[...(ranking||[])].sort((a,b)=>{
-let bq=Number(b.area_queimada_ha||b.area_queimada||0)
-let aq=Number(a.area_queimada_ha||a.area_queimada||0)
-let bd=Number(b.desmatamento_ha||b.area_desmatada||0)
-let ad=Number(a.desmatamento_ha||a.area_desmatada||0)
+let bq=Number(b.area_queimada_hectares||b.area_queimada_ha||b.area_queimada||0)
+let aq=Number(a.area_queimada_hectares||a.area_queimada_ha||a.area_queimada||0)
+let bd=Number(b.desmatamento_hectares||b.desmatamento_ha||b.area_desmatada||0)
+let ad=Number(a.desmatamento_hectares||a.desmatamento_ha||a.area_desmatada||0)
 let bi=Number(b.indice_final||b.iriq||0)
 let ai=Number(a.indice_final||a.iriq||0)
 return(bi+bd+bq)-(ai+ad+aq)
@@ -445,12 +445,12 @@ html+=`
 <div class="ranking-municipio">${m.municipio||'-'}</div>
 <div class="ranking-info">Classificação: <span style="color:${cor};font-weight:900">${classe}</span></div>
 <div class="ranking-info">🤖 IRIQ: ${Number(score).toFixed(2)}</div>
-<div class="ranking-info">🔥 Área Queimada: ${formatarNumero(m.area_queimada_ha||m.area_queimada||0)} ha</div>
-<div class="ranking-info">🌳 Desmatamento: ${formatarNumero(m.desmatamento_ha||m.area_desmatada||0)} ha</div>
+<div class="ranking-info">🔥 Área Queimada: ${formatarNumero(m.area_queimada_hectares||m.area_queimada_ha||m.area_queimada||0)} ha</div>
+<div class="ranking-info">🌳 Desmatamento: ${formatarNumero(m.desmatamento_hectares||m.desmatamento_ha||m.area_desmatada||0)} ha</div>
 </div>`
 })
 html+='</div>'
-html+=`<div class="fonte-card">Fonte: MAPBIOMAS (${formatarNumero(mapbiomas.length)} registros) • PRODES (${formatarNumero(prodes.length)} registros) • Ranking Ambiental Estadual</div>`
+html+=`<div class="fonte-card">Fonte: MAPBIOMAS (Áreas Queimadas 2021-2025 • ${formatarNumero(mapbiomas.length)} registros) • PRODES (Desmatamento 2021-2025 • ${formatarNumero(prodes.length)} registros) • Ranking Ambiental Estadual</div>`
 box.innerHTML=html
 }
 /*=========================================================
