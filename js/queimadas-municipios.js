@@ -78,12 +78,13 @@ if(!box)return
 let{data=[]}=await client
 .from('vw_queimadas_ranking_estadual')
 .select('*')
-.order('indice_final',{ascending:false})
-let lista=data.slice(0,5)
+let lista=[...(data||[])]
+.sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0))
+.slice(0,5)
 let hoje=new Date().toLocaleDateString('pt-BR')
 box.innerHTML=`
 <div class="fonte-card">
-Período: Exercício 2026 • Fontes: MAPBIOMAS • PRODES • IRIQ
+Período de Referência: 2021-2025 • MAPBIOMAS (Áreas Queimadas) • PRODES (Desmatamento) • IRIQ
 </div>
 ${lista.map((i,idx)=>{
 let cor='#16a34a'
@@ -97,14 +98,14 @@ return`
 <div class="alerta-texto">
 <b>${i.municipio}</b><br>
 <span style="color:${cor};font-weight:900">${i.classificacao||'-'}</span><br>
-🔥 Área Queimada: ${Number(i.area_queimada_ha||0).toLocaleString('pt-BR')} ha<br>
-🌳 Desmatamento: ${Number(i.desmatamento_ha||0).toLocaleString('pt-BR')} ha<br>
+🔥 Área Queimada: ${Number(i.area_queimada_hectares||i.area_queimada_ha||i.area_queimada||0).toLocaleString('pt-BR')} ha<br>
+🌳 Desmatamento: ${Number(i.desmatamento_hectares||i.desmatamento_ha||i.area_desmatada||0).toLocaleString('pt-BR')} ha<br>
 🤖 IRIQ: ${score.toFixed(2)}
 </div>
 </div>`
 }).join('')}
 <div class="fonte-card">
-Fonte: MAPBIOMAS • PRODES • Atualizado em ${hoje}
+Fonte: MAPBIOMAS (2021-2025) • PRODES (2021-2025) • Atualizado em ${hoje}
 </div>`
 }
 /*=========================================================
@@ -114,12 +115,34 @@ async function calcularIRIQMunicipal(){
 let{data:ranking=[]}=await client
 .from('vw_queimadas_ranking_estadual')
 .select('*')
+let maiorArea=Math.max(...ranking.map(i=>
+Number(i.area_queimada_hectares||i.area_queimada_ha||i.area_queimada||0)
+),1)
+let maiorDesmatamento=Math.max(...ranking.map(i=>
+Number(i.desmatamento_hectares||i.desmatamento_ha||i.area_desmatada||0)
+),1)
 for(let m of ranking){
-let areaQueimada=Number(m.area_queimada_ha||0)
-let desmatamento=Number(m.desmatamento_ha||0)
+let areaQueimada=Number(
+m.area_queimada_hectares||
+m.area_queimada_ha||
+m.area_queimada||
+0
+)
+let desmatamento=Number(
+m.desmatamento_hectares||
+m.desmatamento_ha||
+m.area_desmatada||
+0
+)
 let chap=Number(m.chap_score||50)
 let risco=Number(m.risco_score||50)
-let indice=(risco*0.30)+(chap*0.10)+(Math.min(areaQueimada/1000,100)*0.35)+(Math.min(desmatamento/1000,100)*0.25)
+let scoreQueimada=(areaQueimada/maiorArea)*100
+let scoreDesmatamento=(desmatamento/maiorDesmatamento)*100
+let indice=
+(risco*0.30)+
+(chap*0.10)+
+(scoreQueimada*0.35)+
+(scoreDesmatamento*0.25)
 let classificacao='BAIXO'
 let semaforo='🟢'
 if(indice>=75){
@@ -136,12 +159,18 @@ await client
 .from('queimadas_heatmap')
 .upsert([{
 municipio:m.municipio,
+area_queimada_hectares:areaQueimada,
+desmatamento_hectares:desmatamento,
 area_queimada_ha:areaQueimada,
 desmatamento_ha:desmatamento,
+score_queimada:Number(scoreQueimada.toFixed(2)),
+score_desmatamento:Number(scoreDesmatamento.toFixed(2)),
 indice_final:Number(indice.toFixed(2)),
 classificacao,
 semaforo
-}],{onConflict:'municipio'})
+}],{
+onConflict:'municipio'
+})
 }
 }
 /*=========================================================
