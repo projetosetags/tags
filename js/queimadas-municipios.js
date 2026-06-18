@@ -1006,9 +1006,115 @@ html+=`<tr><td>${i.municipio||'-'}</td><td>${formatarDataBR(i.ldatarecebimentodo
 html+='</table>'
 box.innerHTML=html
 }
-
 /*=========================================================
-130 QUEIMADAS FUNCTION RENDERGRAFICOMUNICIPIOS
+130 QUEIMADAS FUNCTION RENDERDASHBOARDPRESIDENTE
+=========================================================*/
+async function renderDashboardPresidente(){
+
+let[
+{data:ranking=[]},
+{data:municipios=[]},
+{data:exec}
+]=await Promise.all([
+client.from('vw_queimadas_ranking_estadual').select('*'),
+client.from('queimadas_municipios_oficio').select('*'),
+client.from('vw_queimadas_executivo').select('*').single()
+])
+
+let criticos=ranking.filter(i=>Number(i.indice_final||i.iriq||0)>=75).length
+let altos=ranking.filter(i=>{
+let v=Number(i.indice_final||i.iriq||0)
+return v>=50&&v<75
+}).length
+let moderados=ranking.filter(i=>{
+let v=Number(i.indice_final||i.iriq||0)
+return v>=25&&v<50
+}).length
+let baixos=ranking.filter(i=>Number(i.indice_final||i.iriq||0)<25).length
+
+let comPlano=municipios.filter(i=>{
+let c=String(i.classificacao_ia||'').toUpperCase()
+return c.includes('VERDE')
+}).length
+
+let dilacao=municipios.filter(i=>{
+let c=String(i.classificacao_ia||'').toUpperCase()
+return c.includes('AMARELO')||c.includes('DILA')
+}).length
+
+let semResposta=municipios.filter(i=>{
+let c=String(i.classificacao_ia||'').toUpperCase()
+return c.includes('VERMELHO')||c.includes('SEM RESPOSTA')
+}).length
+
+document.getElementById('painelResumoExecutivoGeral').innerHTML=`
+<div class="kpiGrid">
+<div class="kpiCard">
+<div class="kpiNumero">${Number(exec.focos_estado||0).toLocaleString('pt-BR')}</div>
+<div class="kpiTitulo">🔥 FOCOS DE CALOR</div>
+</div>
+<div class="kpiCard">
+<div class="kpiNumero">${Number(exec.iriq_estadual||0).toFixed(2)}</div>
+<div class="kpiTitulo">🤖 IRIQ ESTADUAL</div>
+</div>
+<div class="kpiCard">
+<div class="kpiNumero">${criticos}</div>
+<div class="kpiTitulo">🚨 CRÍTICOS</div>
+</div>
+<div class="kpiCard">
+<div class="kpiNumero">${municipios.length}</div>
+<div class="kpiTitulo">🏛 MUNICÍPIOS</div>
+</div>
+</div>
+`
+
+document.getElementById('painelTopCriticosGeral').innerHTML=
+ranking
+.sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0))
+.slice(0,10)
+.map((i,idx)=>`
+<div class="linha-ranking">
+<span>${idx+1}º ${i.municipio}</span>
+<b>${Number(i.indice_final||i.iriq||0).toFixed(2)}</b>
+</div>
+`).join('')
+
+document.getElementById('painelDistribuicaoRisco').innerHTML=`
+<div class="chap-grid">
+<div class="chap-card"><div class="chap-num">${criticos}</div><div class="chap-label">CRÍTICOS</div></div>
+<div class="chap-card"><div class="chap-num">${altos}</div><div class="chap-label">ALTOS</div></div>
+<div class="chap-card"><div class="chap-num">${moderados}</div><div class="chap-label">MODERADOS</div></div>
+<div class="chap-card"><div class="chap-num">${baixos}</div><div class="chap-label">BAIXOS</div></div>
+</div>
+`
+
+document.getElementById('painelPlanosMunicipais').innerHTML=`
+<div class="chap-grid">
+<div class="chap-card"><div class="chap-num">${comPlano}</div><div class="chap-label">COM PLANO</div></div>
+<div class="chap-card"><div class="chap-num">${dilacao}</div><div class="chap-label">DILAÇÃO</div></div>
+<div class="chap-card"><div class="chap-num">${semResposta}</div><div class="chap-label">SEM RESPOSTA</div></div>
+</div>
+`
+
+let governanca=((comPlano*100)+(dilacao*50))/(municipios.length||1)
+
+document.getElementById('painelGovernancaEstadual').innerHTML=`
+<div class="chap-card">
+<div class="chap-num">${governanca.toFixed(1)}%</div>
+<div class="chap-label">ÍNDICE DE GOVERNANÇA</div>
+</div>
+`
+
+document.getElementById('painelRecomendacaoExecutiva').innerHTML=`
+<div style="padding:10px;line-height:1.6">
+A análise integrada dos dados do INPE, MAPBIOMAS, PRODES, CHAP e IRIQ indica prioridade máxima para os municípios de
+<b>${ranking.slice(0,3).map(i=>i.municipio).join(', ')}</b>,
+em razão da concentração de focos de calor, áreas queimadas, desmatamento acumulado e risco ambiental elevado.
+</div>
+`
+}
+/*=========================================================
+130-A QUEIMADAS FUNCTION RENDERGRAFICOMUNICIPIOS
 =========================================================*/
 async function renderGraficoMunicipios(){
 let canvas=document.getElementById('graficoMunicipiosResposta')
