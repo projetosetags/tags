@@ -2342,34 +2342,18 @@ if(error||!data)return
 
 box.innerHTML=`
 <div class="chap-grid">
-
 <div class="chap-card">
-<div class="chap-num">
-${Number(data.focos_estado||0).toLocaleString('pt-BR')}
+<div class="chap-num">${Number(data.focos_estado||0).toLocaleString('pt-BR')}</div>
+<div class="chap-label">FOCOS ACUMULADOS</div>
 </div>
-<div class="chap-label">
-FOCOS ACUMULADOS
-</div>
-</div>
-
 <div class="chap-card">
-<div class="chap-num">
-${Number(data.municipios_criticos||0)}
+<div class="chap-num">${Number(data.municipios_criticos||0)}</div>
+<div class="chap-label">CRÍTICOS</div>
 </div>
-<div class="chap-label">
-CRÍTICOS
-</div>
-</div>
-
 <div class="chap-card">
-<div class="chap-num">
-${Number(data.municipios_prioritarios||0)}
+<div class="chap-num">${Number(data.municipios_prioritarios||0)}</div>
+<div class="chap-label">PRIORITÁRIOS</div>
 </div>
-<div class="chap-label">
-PRIORITÁRIOS
-</div>
-</div>
-
 </div>
 `
 }
@@ -2389,22 +2373,24 @@ let alto=0
 let moderado=0
 let baixo=0
 
-;(data||[]).forEach(i=>{
+data.forEach(i=>{
 
-let cls=String(i.classificacao||'')
+let c=String(i.classificacao||'')
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
 .toUpperCase()
 
-if(cls.includes('CRÍTICO')||cls.includes('CRITICO')){
+if(c==='CRITICO'){
 critico++
 return
 }
 
-if(cls==='ALTO'){
+if(c==='ALTO'){
 alto++
 return
 }
 
-if(cls==='MODERADO'){
+if(c==='MODERADO'){
 moderado++
 return
 }
@@ -2434,27 +2420,24 @@ if(!box)return
 let {data=[]}=await client
 .from('vw_queimadas_ranking_estadual')
 .select('*')
-
-let top=[...(data||[])]
-.sort((a,b)=>
-Number(b.focos_score||0)-
-Number(a.focos_score||0)
-)
-.slice(0,10)
+.order('ranking')
 
 box.innerHTML=`
 <div class="cardExecutivo">
-
 <h2>🔥 TOP 10 FOCOS DE CALOR</h2>
-
 <div style="font-size:12px;margin-bottom:10px">
 Fonte: INPE • Ranking Estadual
 </div>
 
-${top.map((i,n)=>`
-<div style="display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid #eee">
-<span>${n+1}º ${i.municipio||'-'}</span>
-<b>${Number(i.focos_score||0).toLocaleString('pt-BR')}</b>
+${data.slice(0,10).map(i=>`
+<div style="
+display:flex;
+justify-content:space-between;
+padding:6px;
+border-bottom:1px solid #eee;
+">
+<span>${i.ranking}º ${i.municipio}</span>
+<b>${Number(i.focos||0).toLocaleString('pt-BR')}</b>
 </div>
 `).join('')}
 
