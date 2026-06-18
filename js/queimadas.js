@@ -1179,50 +1179,21 @@ formatter:v=>v
 =========================================================*/
 async function renderSalaSituacao(){
 let {data=[]}=await client.from('queimadas_sala_situacao').select('*').order('criticidade',{ascending:false})
-let total=data.length
-let criticos=data.filter(i=>Number(i.criticidade||0)>=75)
-let altos=data.filter(i=>Number(i.criticidade||0)>=50&&Number(i.criticidade||0)<75)
-let moderados=data.filter(i=>Number(i.criticidade||0)>=25&&Number(i.criticidade||0)<50)
-let baixos=data.filter(i=>Number(i.criticidade||0)<25)
-
+let {data:municipios=[]}=await client.from('queimadas_municipios_oficio').select('*')
 let semPlano=document.getElementById('painelSemPlano')
 if(semPlano){
-let lista=data.filter(i=>String(i.classificacao||'').toUpperCase().includes('SEM PLANO'))
-semPlano.innerHTML=`
-<div class="cardExecutivo">
-<h2>📄 MUNICÍPIOS SEM PLANO</h2>
-${lista.length?lista.slice(0,10).map(i=>`
-<div class="linha-ranking">${i.municipio||'-'}</div>
-`).join(''):'<div class="linha-ranking">Nenhum município</div>'}
-</div>`
+let lista=municipios.filter(i=>!i.classificacao_ia||String(i.classificacao_ia).trim()==='')
+semPlano.innerHTML=`<div class="cardExecutivo"><h2>📄 SEM PLANOS</h2>${lista.length?lista.slice(0,10).map(i=>`<div class="linha-ranking">${i.municipio||'-'}</div>`).join(''):'<div class="linha-ranking">Nenhum município</div>'}</div>`
 }
-
 let semResposta=document.getElementById('painelSemResposta')
 if(semResposta){
-let lista=data.filter(i=>String(i.classificacao||'').toUpperCase().includes('SEM RESPOSTA'))
-semResposta.innerHTML=`
-<div class="cardExecutivo">
-<h2>📬 MUNICÍPIOS SEM RESPOSTA</h2>
-${lista.length?lista.slice(0,10).map(i=>`
-<div class="linha-ranking">${i.municipio||'-'}</div>
-`).join(''):'<div class="linha-ranking">Nenhum município</div>'}
-</div>`
+let lista=municipios.filter(i=>!i.ldatarecebimentodoc)
+semResposta.innerHTML=`<div class="cardExecutivo"><h2>📬 SEM RESPOSTAS</h2>${lista.length?lista.slice(0,10).map(i=>`<div class="linha-ranking">${i.municipio||'-'}</div>`).join(''):'<div class="linha-ranking">Nenhum município</div>'}</div>`
 }
-
 let quadro=document.getElementById('painelQuadroMunicipiosSituacao')
 if(quadro){
-quadro.innerHTML=`
-<div class="cardExecutivo">
-<h2>🏛 QUADRO GERAL DOS MUNICÍPIOS</h2>
-${data.slice(0,10).map(i=>`
-<div class="linha-ranking">
-<span>${i.municipio||'-'}</span>
-<b>${i.classificacao||'-'}</b>
-</div>
-`).join('')}
-</div>`
+quadro.innerHTML=`<div class="cardExecutivo"><h2>🏛 QUADRO GERAL</h2>${data.slice(0,10).map(i=>`<div class="linha-ranking"><span>${i.municipio||'-'}</span><b>${i.classificacao||'-'}</b></div>`).join('')}</div>`
 }
-
 if(typeof renderTopIAChap==='function')await renderTopIAChap()
 if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadual()
 }
