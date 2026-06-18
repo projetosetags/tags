@@ -1016,7 +1016,9 @@ ${top10.map((i,idx)=>`
 <div>
 <b>${idx+1}º ${i.municipio||'-'}</b><br>
 <span style="font-size:11px">
-🔥 ${Number(i.focos||0).toLocaleString('pt-BR')} focos • 📈 ${i.risco||0} risco • ${String(i.classificacao||'-')
+🔥 ${Number(i.focos||0).toLocaleString('pt-BR')} focos
+• 🎯 ${Number(i.indice_final||0).toFixed(2)}
+• ${String(i.classificacao||'-')}
 .replace('CRITICO','CRÍTICO')}
 </span>
 </div>
