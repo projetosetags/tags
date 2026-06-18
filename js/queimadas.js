@@ -1965,29 +1965,120 @@ async function gerarPDFSumarioExecutivo0501(){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4')
 doc.setFont('helvetica','bold')
-doc.setFontSize(24)
-doc.text('SUMÁRIO EXECUTIVO',105,25,{align:'center'})
-doc.setFontSize(16)
-doc.text('PREVENÇÃO E COMBATE ÀS QUEIMADAS',105,38,{align:'center'})
-doc.setFontSize(12)
-doc.text('Governança • Gestão de Riscos • CHAP • M-RAIG',105,48,{align:'center'})
-doc.line(20,55,190,55)
-doc.setFont('helvetica','normal')
+doc.setFontSize(26)
+doc.setTextColor(15,61,145)
+doc.text('SUMÁRIO EXECUTIVO',105,22,{align:'center'})
+doc.setFontSize(14)
+doc.setTextColor(34,84,61)
+doc.text('GUIA EXECUTIVO PARA PREVENÇÃO E COMBATE ÀS QUEIMADAS',105,32,{align:'center'})
 doc.setFontSize(11)
-let texto=[
-'Este Sumário Executivo apresenta os principais resultados do monitoramento das queimadas e incêndios florestais no Estado de Rondônia.',
-'',
-'O documento consolida informações provenientes do INPE, MAPBIOMAS, PRODES, CHAP, IA-CHAP e dos painéis de monitoramento do Tribunal de Contas do Estado de Rondônia.',
-'',
-'Os indicadores permitem identificar municípios prioritários, riscos ambientais, áreas queimadas, desmatamento acumulado e a situação dos planos municipais de prevenção e combate às queimadas.',
-'',
-'A metodologia adota os princípios CHAP e M-RAIG, com foco em governança, monitoramento, gestão de riscos, prevenção, resposta e geração de valor público.'
-]
-let y=70
-texto.forEach(linha=>{
-doc.text(linha,20,y)
+doc.setTextColor(0,0,0)
+doc.text('Governança • Gestão de Riscos • Resiliência Municipal • Rondônia',105,40,{align:'center'})
+doc.setDrawColor(15,61,145)
+doc.line(15,45,195,45)
+let y=55
+doc.setFont('helvetica','bold')
+doc.setFontSize(14)
+doc.text('APRESENTAÇÃO',15,y)
 y+=8
+doc.setFont('helvetica','normal')
+doc.setFontSize(10)
+let apresentacao=[
+'As queimadas e incêndios florestais representam um dos principais desafios',
+'ambientais e sociais do Estado de Rondônia.',
+'',
+'Este Sumário Executivo consolida informações provenientes do INPE,',
+'MAPBIOMAS, PRODES, CHAP, IA-CHAP e painéis de monitoramento do TCE-RO.',
+'',
+'Seu objetivo é apoiar gestores públicos na tomada de decisões e no',
+'fortalecimento das ações preventivas, mitigadoras e corretivas.'
+]
+apresentacao.forEach(l=>{
+doc.text(l,15,y)
+y+=5
 })
-doc.save('sumario-executivo-queimadas-2026.pdf')
+y+=5
+doc.setFont('helvetica','bold')
+doc.setFontSize(14)
+doc.text('OBJETIVOS ESTRATÉGICOS',15,y)
+y+=8
+doc.setFont('helvetica','normal')
+doc.setFontSize(10)
+[
+'• Fortalecer a governança ambiental.',
+'• Reduzir áreas queimadas e desmatadas.',
+'• Integrar órgãos estaduais e municipais.',
+'• Melhorar monitoramento e resposta.',
+'• Gerar evidências para tomada de decisão.',
+'• Proteger a população e os recursos naturais.'
+].forEach(l=>{
+doc.text(l,20,y)
+y+=5
+})
+y+=5
+doc.setFont('helvetica','bold')
+doc.setFontSize(14)
+doc.text('METODOLOGIA CHAP',15,y)
+y+=8
+doc.setFont('helvetica','normal')
+doc.setFontSize(10)
+doc.text('C – Capacidade Institucional',20,y);y+=5
+doc.text('H – Harmonização Institucional',20,y);y+=5
+doc.text('A – Atuação Preventiva',20,y);y+=5
+doc.text('P – Propósito',20,y);y+=8
+doc.setFont('helvetica','bold')
+doc.setFontSize(14)
+doc.text('METODOLOGIA M-RAIG',15,y)
+y+=8
+doc.setFont('helvetica','normal')
+doc.setFontSize(10)
+doc.text('M – Mitigar',20,y);y+=5
+doc.text('R – Reduzir',20,y);y+=5
+doc.text('A – Antecipar',20,y);y+=5
+doc.text('I – Integrar',20,y);y+=5
+doc.text('G – Gerenciar',20,y);y+=8
+doc.setFont('helvetica','bold')
+doc.setFontSize(14)
+doc.text('FÓRMULA IRIQ ESTADUAL',15,y)
+y+=8
+doc.setFont('helvetica','normal')
+doc.setFontSize(10)
+doc.text('IRIQ = (30% Risco) + (10% CHAP) + (35% Área Queimada) + (25% Desmatamento)',15,y)
+y+=10
+doc.setFont('helvetica','bold')
+doc.setFontSize(14)
+doc.text('RESULTADOS ESPERADOS',15,y)
+y+=8
+doc.setFont('helvetica','normal')
+doc.setFontSize(10)
+[
+'• Ampliação da capacidade institucional.',
+'• Fortalecimento da governança ambiental.',
+'• Redução das áreas queimadas.',
+'• Redução do desmatamento.',
+'• Proteção da saúde da população.',
+'• Aumento da integração institucional.',
+'• Transparência e prestação de contas.',
+'• Aprimoramento da tomada de decisão.'
+].forEach(l=>{
+doc.text(l,20,y)
+y+=5
+})
+y+=8
+doc.setFont('helvetica','bold')
+doc.setFontSize(14)
+doc.text('FONTES DE INFORMAÇÃO',15,y)
+y+=8
+doc.setFont('helvetica','normal')
+doc.setFontSize(10)
+doc.text('• INPE',20,y);y+=5
+doc.text('• MAPBIOMAS FOGO',20,y);y+=5
+doc.text('• PRODES',20,y);y+=5
+doc.text('• CENSIPAM',20,y);y+=5
+doc.text('• Defesa Civil',20,y);y+=5
+doc.text('• TCE-RO',20,y);y+=5
+doc.setFontSize(8)
+doc.setTextColor(120,120,120)
+doc.text('Sumário Executivo Gerado Automaticamente • Painel Queimadas 2026 • Tribunal de Contas do Estado de Rondônia',105,285,{align:'center'})
+doc.save('Sumario_Executivo_Queimadas_2026.pdf')
 }
-
