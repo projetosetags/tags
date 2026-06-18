@@ -252,49 +252,38 @@ riscos:[...new Set(riscos)]
 009 QUEIMADAS FUNCTION CARREGARKPISEXECUTIVOS
 =========================================================*/
 async function carregarKPIsExecutivos(){
-
 let {data,error}=await client
 .from('vw_queimadas_executivo')
 .select('*')
 .single()
-
 if(error||!data)return
-
 document.getElementById('painelKPIs').innerHTML=`
 <div class="kpiGrid">
-
-<div class="kpiCard" style="grid-column:span 1">
-<div class="kpiNumero">${Number(data.focos_estado||0).toLocaleString('pt-BR')}</div>
+<div class="kpiCard">
+<div class="kpiNumero">${Number(data.focos_total||0).toLocaleString('pt-BR')}</div>
 <div class="kpiTitulo">🔥 FOCOS DE CALOR</div>
 </div>
-
-<div class="kpiCard" style="grid-column:span 1">
-<div class="kpiNumero">${Number(data.desmatamento_estado_ha||0).toLocaleString('pt-BR')}</div>
+<div class="kpiCard">
+<div class="kpiNumero">${Number(data.desmatamento_total_ha||0).toLocaleString('pt-BR')}</div>
 <div class="kpiTitulo">🌳 DESMATAMENTO (ha)</div>
 </div>
-
-<div class="kpiCard" style="grid-column:span 1">
-<div class="kpiNumero">${Number(data.area_queimada_estado_ha||0).toLocaleString('pt-BR')}</div>
+<div class="kpiCard">
+<div class="kpiNumero">${Number(data.area_queimada_total_ha||0).toLocaleString('pt-BR')}</div>
 <div class="kpiTitulo">🔥 ÁREA QUEIMADA (ha)</div>
 </div>
-
-<div class="kpiCard" style="grid-column:span 1">
+<div class="kpiCard">
 <div class="kpiNumero">${data.municipios_criticos||0}</div>
 <div class="kpiTitulo">🚨 CRÍTICOS</div>
 </div>
-
-<div class="kpiCard" style="grid-column:span 1">
-<div class="kpiNumero">${data.municipios_prioritarios||0}</div>
-<div class="kpiTitulo">⚠️ PRIORITÁRIOS</div>
+<div class="kpiCard">
+<div class="kpiNumero">${data.municipios_moderados||0}</div>
+<div class="kpiTitulo">⚠️ MODERADOS</div>
 </div>
-
-<div class="kpiCard" style="grid-column:span 1">
+<div class="kpiCard">
 <div class="kpiNumero">${Number(data.iriq_estadual||0).toFixed(2)}</div>
 <div class="kpiTitulo">🤖 IRIQ ESTADUAL</div>
 </div>
-
-</div>
-`
+</div>`
 }
 /*=========================================================
 010 QUEIMADAS FUNCTION RENDERPLANOUNIFICADO
@@ -434,77 +423,7 @@ box.innerHTML=`
 <div class="impacto-label">EXECUÇÃO FINANCEIRA</div>
 </div>`
 }
-/*=========================================================
-016 QUEIMADAS FUNCTION RENDERKPISEXECUTIVOS
-=========================================================*/
-async function renderKPIsExecutivos(){
-let box=document.getElementById('painelKPIs')
-if(!box)return
-let pop=await calcularPopulacaoExposta()
-let area=await calcularAreaRisco()
-let iriq=await calcularIRIQ()
-let {data:heat=[]}=await client
-.from('queimadas_heatmap')
-.select('*')
-let {data:focosINPE=[]}=await client
-.from('queimadas_focos')
-.select('*')
-let focos=focosINPE.reduce(
-(s,i)=>s+Number(i.focos||0),
-0
-)
-let criticos=heat.filter(i=>i.classificacao==='CRÍTICO').length
-let altos=heat.filter(i=>i.classificacao==='ALTO').length
-let semdados=heat.filter(i=>i.classificacao==='SEM DADOS').length
-let cor='#16a34a'
-let faixa='BAIXO'
-if(Number(iriq)>=75){
-cor='#dc2626'
-faixa='CRÍTICO'
-}else if(Number(iriq)>=50){
-cor='#f97316'
-faixa='ALTO'
-}else if(Number(iriq)>=25){
-cor='#facc15'
-faixa='MODERADO'
-}
-box.innerHTML=`
-<div class="chap-grid">
-<div class="chap-card">
-<div class="chap-num">${formatarNumero(focos)}</div>
-<div class="chap-label">FOCOS</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${criticos}</div>
-<div class="chap-label">CRÍTICOS</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${altos}</div>
-<div class="chap-label">ALTO RISCO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${semdados}</div>
-<div class="chap-label">SEM DADOS</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${formatarNumero(pop)}</div>
-<div class="chap-label">POPULAÇÃO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${(Number(area||0)/1000000).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})}</div>
-<div class="chap-label">KM² RISCO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num" style="color:${cor}">
-${iriq}
-</div>
-<div class="chap-label">
-IRIQ ${faixa}
-</div>
-</div>
-</div>
-`
-}
+
 /*=========================================================
 017 QUEIMADAS FUNCTION RENDERMUNICIPIOSPRIORITARIOS
 =========================================================*/
@@ -560,16 +479,13 @@ async function renderHeatMapExecutivo(){
 let box=document.getElementById('painelHeatMapExecutivo')
 if(!box)return
 let {data,error}=await client
-.from('queimadas_heatmap')
+.from('vw_queimadas_ranking_estadual')
 .select('*')
-if(error){
-console.log(error)
-return
-}
-let critico=(data||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('CRÍTICO')).length
-let alto=(data||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('ALTO')).length
-let moderado=(data||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('MODERADO')).length
-let baixo=(data||[]).filter(i=>(i.classificacao||'').toUpperCase().includes('BAIXO')).length
+if(error)return
+let critico=(data||[]).filter(i=>Number(i.indice_final||0)>=75).length
+let alto=(data||[]).filter(i=>Number(i.indice_final||0)>=50&&Number(i.indice_final||0)<75).length
+let moderado=(data||[]).filter(i=>Number(i.indice_final||0)>=25&&Number(i.indice_final||0)<50).length
+let baixo=(data||[]).filter(i=>Number(i.indice_final||0)<25).length
 box.innerHTML=`
 <div class="heatmap-grid-mini">
 <div class="heat-vermelho">
@@ -594,7 +510,7 @@ box.innerHTML=`
 </div>
 </div>
 <div class="fonte-card">
-Fonte: Tabela queimadas_heatmap • Classificação Municipal de Risco
+Fonte: IRIQ Ambiental • INPE • PRODES • MAPBIOMAS • CHAP
 </div>`
 }
 /*=========================================================
@@ -949,169 +865,6 @@ box.innerHTML=`
 </div>
 </div>`
 }
-/*=========================================================
-030 QUEIMADAS FUNCTION CALCULARIMPACTO
-=========================================================*/
-async function calcularImpacto(){
-let box=document.getElementById('painelImpacto')
-if(!box)return
-let {data,error}=await client
-.from('queimadas_monitoramento')
-.select('*')
-if(error){
-console.log(error)
-return
-}
-let soma=0
-data.forEach(i=>{
-soma+=Number(i.percentual||0)
-})
-let impacto=data.length?Math.round(soma/data.length):0
-box.innerHTML=`
-<div class="impacto-box">
-<div class="impacto-score">${impacto}</div>
-<div class="impacto-label">ÍNDICE DE IMPACTO AO CIDADÃO</div>
-</div>`
-}
-/*=========================================================
-031 QUEIMADAS FUNCTION RENDERIRIQESTADUAL
-=========================================================*/
-async function renderIRIQEstadual(){
-let box=document.getElementById('painelIRIQEstadual')
-if(!box)return
-let iriq=Number(await calcularIRIQ())
-let cor='#16a34a'
-let faixa='BAIXO'
-if(iriq>=75){
-cor='#dc2626'
-faixa='CRÍTICO'
-}else if(iriq>=50){
-cor='#f97316'
-faixa='ALTO'
-}else if(iriq>=25){
-cor='#facc15'
-faixa='MODERADO'
-}
-let hoje=new Date().toLocaleDateString('pt-BR')
-box.innerHTML=`
-<div class="impacto-box">
-<div class="impacto-score" style="color:${cor}">
-${iriq.toFixed(1)}
-</div>
-<div style="font-size:18px;font-weight:900;color:${cor};margin-top:10px">
-${faixa}
-</div>
-<div class="impacto-label">
-ÍNDICE DE RISCO INTEGRADO DE QUEIMADAS
-</div>
-<div style="margin-top:10px;font-size:12px;line-height:18px;color:#475569">
-IRIQ = 60% Risco + 40% CHAP
-</div>
-<div style="margin-top:8px;font-size:11px">
-🟢 0-24 Baixo<br>
-🟡 25-49 Moderado<br>
-🟠 50-74 Alto<br>
-🔴 75-100 Crítico
-</div>
-<div class="fonte-card">
-Fonte: Heatmap Estadual • CHAP • IA-CHAP • Data Base ${hoje}
-</div>
-</div>`
-}
-
-/*=========================================================
-033 QUEIMADAS FUNCTION RENDERIRIQHEATMAPUNIFICADO
-=========================================================*/
-async function renderIRIQHeatmapUnificado(){
-let box=document.getElementById('painelIRIQHeatmapUnificado')
-if(!box)return
-let {data:heat}=await client
-.from('queimadas_heatmap')
-.select('*')
-let iriq=Number(await calcularIRIQ())
-let classe='BAIXO'
-let cor='#16a34a'
-if(iriq>=75){
-classe='CRÍTICO'
-cor='#dc2626'
-}else if(iriq>=50){
-classe='ALTO'
-cor='#f97316'
-}else if(iriq>=25){
-classe='MODERADO'
-cor='#facc15'
-}
-let critico=(heat||[]).filter(i=>i.classificacao==='CRÍTICO').length
-let alto=(heat||[]).filter(i=>i.classificacao==='ALTO').length
-let moderado=(heat||[]).filter(i=>i.classificacao==='MODERADO').length
-let baixo=(heat||[]).filter(i=>i.classificacao==='BAIXO').length
-let semdados=(heat||[]).filter(i=>i.classificacao==='SEM DADOS').length
-let hoje=new Date().toLocaleDateString('pt-BR')
-box.innerHTML=`
-<div class="cardExecutivo">
-<h2>IRIQ ESTADUAL</h2>
-<div style="text-align:center">
-<div style="font-size:54px;font-weight:900;color:${cor};line-height:60px">
-${iriq}
-</div>
-<div style="font-size:24px;font-weight:900;margin-top:4px;color:${cor}">
-${classe}
-</div>
-<div style="font-size:18px;margin-top:8px">
-ÍNDICE DE RISCO INTEGRADO DE QUEIMADAS
-</div>
-</div>
-<div style="margin-top:20px;font-size:14px;line-height:24px">
-<b>Legenda do IRIQ:</b><br>
-IRIQ = 60% Risco + 40% CHAP
-</div>
-<div class="fonte-card">
-Fonte: Heatmap Estadual • CHAP • IA-CHAP • Data Base ${hoje}
-</div>
-<hr style="margin:20px 0">
-<h2>HEATMAP ESTADUAL - MUNICÍPIOS POR CLASSE</h2>
-<div class="heatmap-grid-mini">
-<div class="heat-vermelho">
-<div style="font-size:34px;font-weight:900">${critico}</div>
-<div>CRÍTICO</div>
-<div>75-100</div>
-</div>
-<div class="heat-laranja">
-<div style="font-size:34px;font-weight:900">${alto}</div>
-<div>ALTO</div>
-<div>50-74</div>
-</div>
-<div class="heat-amarelo">
-<div style="font-size:34px;font-weight:900">${moderado}</div>
-<div>MODERADO</div>
-<div>25-49</div>
-</div>
-<div class="heat-verde">
-<div style="font-size:34px;font-weight:900">${baixo}</div>
-<div>BAIXO</div>
-<div>0-24</div>
-</div>
-</div>
-<div style="margin-top:12px">
-<div style="background:#94a3b8;color:#fff;padding:12px;border-radius:10px;text-align:center;font-weight:800">
-SEM DADOS: ${semdados}
-</div>
-</div>
-<div style="margin-top:20px;font-size:14px;line-height:24px">
-<b>Legenda do Heatmap:</b><br>
-🔴 75-100 Crítico<br>
-🟠 50-74 Alto<br>
-🟡 25-49 Moderado<br>
-🟢 0-24 Baixo<br>
-⚪ Sem Dados
-</div>
-<div class="fonte-card">
-Fonte: INPE • Heatmap Estadual • IRIQ • Data Base ${hoje}
-</div>
-</div>
-`
-}
-
 /*=========================================================
 034 QUEIMADAS FUNCTION RENDERSITUACAOESTRATEGICA
 =========================================================*/
@@ -1937,45 +1690,6 @@ box.innerHTML=`
 }
 
 /*=========================================================
-062 QUEIMADAS FUNCTION RENDERSTATUSGERAL
-=========================================================*/
-async function renderStatusGeral(){
-let box=document.getElementById('painelStatusGeral')
-if(!box)return
-let {data}=await client
-.from('queimadas_monitoramento')
-.select('*')
-let executado=0
-let andamento=0
-let critico=0
-data.forEach(i=>{
-if(Number(i.percentual||0)>=80){
-executado++
-}else
-if(Number(i.percentual||0)>=20){
-andamento++
-}else{
-critico++
-}
-})
-box.innerHTML=`
-<div class="chap-grid">
-<div class="chap-card">
-<div class="chap-num">${executado}</div>
-<div class="chap-label">EXECUTADO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${andamento}</div>
-<div class="chap-label">EM ANDAMENTO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${critico}</div>
-<div class="chap-label">CRÍTICO</div>
-</div>
-</div>
-`
-}
-/*=========================================================
 063 QUEIMADAS FUNCTION RENDERDASHBOARDCHAP
 =========================================================*/
 async function renderDashboardCHAP(){
@@ -2029,13 +1743,11 @@ document.querySelectorAll('.abaQueimadas').forEach(x=>x.classList.add('hidden'))
 if(nome==='executivo'){
 document.getElementById('abaExecutivo')?.classList.remove('hidden')
 if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
-if(typeof renderIRIQHeatmapUnificado==='function')await renderIRIQHeatmapUnificado()
 if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
 if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
 if(typeof renderTopRiscos==='function')await renderTopRiscos()
 if(typeof renderTopIAChap==='function')await renderTopIAChap()
 if(typeof renderAlertas==='function')await renderAlertas()
-if(typeof renderIRIQEstadual==='function')await renderIRIQEstadual()
 if(typeof renderPainelFocosINPE==='function')await renderPainelFocosINPE()
 if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadual()
 if(typeof renderIndicadoresEstrategicos==='function')await renderIndicadoresEstrategicos()
