@@ -87,17 +87,26 @@ box.innerHTML=`
 Período de Referência: 2021-2025 • MAPBIOMAS (Áreas Queimadas) • PRODES (Desmatamento) • IRIQ
 </div>
 ${lista.map((i,idx)=>{
-let cor='#16a34a'
 let score=Number(i.indice_final||i.iriq||0)
-if(score>=75)cor='#dc2626'
-else if(score>=50)cor='#f97316'
-else if(score>=25)cor='#facc15'
+let classificacao='BAIXO'
+let cor='#16a34a'
+
+if(score>=75){
+classificacao='CRÍTICO'
+cor='#dc2626'
+}else if(score>=50){
+classificacao='ALTO'
+cor='#f97316'
+}else if(score>=25){
+classificacao='MODERADO'
+cor='#facc15'
+}
 return`
 <div class="alerta-ranking">
 <div class="alerta-numero">${idx+1}</div>
 <div class="alerta-texto">
 <b>${i.municipio}</b><br>
-<span style="color:${cor};font-weight:900">${i.classificacao||'-'}</span><br>
+<span style="color:${cor};font-weight:900">${classificacao}</span><br>
 🔥 Área Queimada: ${Number(i.area_queimada_hectares||i.area_queimada_ha||i.area_queimada||0).toLocaleString('pt-BR')} ha<br>
 🌳 Desmatamento: ${Number(i.desmatamento_hectares||i.desmatamento_ha||i.area_desmatada||0).toLocaleString('pt-BR')} ha<br>
 🤖 IRIQ: ${score.toFixed(2)}
