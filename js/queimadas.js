@@ -1340,6 +1340,9 @@ if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPriori
 if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
 if(typeof renderPainelFocosINPE==='function')await renderPainelFocosINPE()
 if(typeof renderPainelUCs==='function')await renderPainelUCs()
+if(typeof renderIRIQHeatmapUnificado==='function')await renderIRIQHeatmapUnificado()
+if(typeof renderAlertas==='function')await renderAlertas()
+if(typeof renderIndicadoresEstrategicos==='function')await renderIndicadoresEstrategicos()
 }
 if(nome==='estado'){
 document.getElementById('abaEstado')?.classList.remove('hidden')
