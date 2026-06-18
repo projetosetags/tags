@@ -2086,3 +2086,32 @@ doc.setTextColor(120,120,120)
 doc.text('Sumário Executivo Gerado Automaticamente • Painel Queimadas 2026 • Tribunal de Contas do Estado de Rondônia',105,285,{align:'center'})
 doc.save('Sumario_Executivo_Queimadas_2026.pdf')
 }
+
+/*=========================================================
+UTF8 CORRIGIR TEXTO
+=========================================================*/
+function corrigirUTF8(txt){
+if(!txt)return''
+return String(txt)
+.replace(/Ã/g,'Á')
+.replace(/Ã‰/g,'É')
+.replace(/Ã/g,'Í')
+.replace(/Ã“/g,'Ó')
+.replace(/Ãš/g,'Ú')
+.replace(/Ã /g,'à')
+.replace(/Ã¡/g,'á')
+.replace(/Ã¢/g,'â')
+.replace(/Ã£/g,'ã')
+.replace(/Ã¤/g,'ä')
+.replace(/Ã§/g,'ç')
+.replace(/Ã©/g,'é')
+.replace(/Ãª/g,'ê')
+.replace(/Ã­/g,'í')
+.replace(/Ã³/g,'ó')
+.replace(/Ã´/g,'ô')
+.replace(/Ãµ/g,'õ')
+.replace(/Ãº/g,'ú')
+.replace(/Ã‡/g,'Ç')
+.replace(/Ãƒ/g,'Ã')
+.replace(/Â/g,'')
+}
