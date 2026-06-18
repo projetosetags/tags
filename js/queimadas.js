@@ -432,7 +432,7 @@ async function renderMunicipiosPrioritarios(){
 let box=document.getElementById('painelMunicipiosPrioritarios')
 if(!box)return
 let {data,error}=await client
-.from('queimadas_heatmap')
+.from('vw_queimadas_ranking_estadual')
 .select('*')
 if(error){
 console.log(error)
@@ -872,7 +872,7 @@ box.innerHTML=`
 async function renderSituacaoEstrategica(){
 let box=document.getElementById('painelSalaSituacaoEstadual')
 if(!box)return
-let {data=[]}=await client.from('queimadas_heatmap').select('*')
+let {data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
 let criticos=data.filter(i=>i.classificacao==='CRÍTICO').length
 let alto=data.filter(i=>i.classificacao==='ALTO').length
 let moderado=data.filter(i=>i.classificacao==='MODERADO').length
@@ -1053,7 +1053,7 @@ let {data:riscos}=await client
 .from('queimadas_riscos')
 .select('*')
 let {data:heat}=await client
-.from('queimadas_heatmap')
+.from('vw_queimadas_ranking_estadual')
 .select('*')
 let semEvidencia=(evidencias||[])
 .filter(i=>
@@ -1137,7 +1137,7 @@ let mapa=L.map(div,{preferCanvas:true}).setView([-10.9,-63.3],7)
 window.mapaExecutivoRO=mapa
 window.camadasControleExecutivo=L.control.layers({},{},{collapsed:false}).addTo(mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
-let {data,error}=await client.from('queimadas_heatmap').select('*')
+let {data,error}=await client.from('vw_queimadas_ranking_estadual').select('*')
 if(error){
 console.log(error)
 return
@@ -1409,7 +1409,7 @@ async function renderDashboardPresidente(){
 let box=document.getElementById('painelGeral')
 if(!box)return
 let {data:heat=[]}=await client
-.from('queimadas_heatmap')
+.from('vw_queimadas_ranking_estadual')
 .select('*')
 let {data:sedam=[]}=await client
 .from('queimadas_acoes_sedam')
@@ -1513,7 +1513,7 @@ let box=document.getElementById('painelRelator')
 if(!box)return
 
 let {data:heat}=await client
-.from('queimadas_heatmap')
+.from('vw_queimadas_ranking_estadual')
 .select('*')
 
 let {data:riscos}=await client
@@ -2489,7 +2489,7 @@ ${lista.map(i=>`
 async function renderQuadroMunicipiosSituacao(){
 let box=document.getElementById('painelQuadroMunicipiosSituacao')
 if(!box)return
-let {data}=await client.from('queimadas_heatmap').select('*')
+let {data}=await client.from('vw_queimadas_ranking_estadual').select('*')
 box.innerHTML=`
 <div class="cardExecutivo">
 <h2>📍 SITUAÇÃO DOS 52 MUNICÍPIOS</h2>
@@ -2597,7 +2597,7 @@ classificacao='MODERADO'
 }
 
 await client
-.from('queimadas_heatmap')
+.from('vw_queimadas_ranking_estadual')
 .update({
 focos:Number(item.focos||0),
 risco:risco,
