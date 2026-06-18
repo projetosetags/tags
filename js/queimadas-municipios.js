@@ -649,194 +649,69 @@ Fonte: Cadastro Estadual de Unidades de Conservação • Sedam
 081 QUEIMADAS FUNCTION RENDERPAINELFOCOSINPE
 =========================================================*/
 async function renderPainelFocosINPE(){
-let periodo=
-document.getElementById(
-'filtroPeriodoFocos'
-)?.value
-||
-'7'
-let box=
-document.getElementById(
-'painelFocosCalor'
-)
-||
-document.getElementById(
-'painelFocosINPE'
-)
+let box=document.getElementById('painelFocosCalor')||document.getElementById('painelFocosINPE')
 if(!box)return
-let consulta=
-client
-.from('queimadas_focos')
-.select('*')
-if(periodo==='ano'){
-consulta=
-consulta.gte(
-'data_referencia',
-`${new Date().getFullYear()}-01-01`
-)
-}else if(periodo==='custom'){
-let dataInicial=
-document.getElementById(
-'dataInicialFocos'
-)?.value
-let dataFinal=
-document.getElementById(
-'dataFinalFocos'
-)?.value
-if(dataInicial){
-consulta=
-consulta.gte(
-'data_referencia',
-dataInicial
-)
-}
-if(dataFinal){
-consulta=
-consulta.lte(
-'data_referencia',
-dataFinal
-)
-}
-}else{
-let d=new Date()
-d.setDate(
-d.getDate()-Number(periodo)
-)
-consulta=
-consulta.gte(
-'data_referencia',
-d.toISOString().split('T')[0]
-)
-}
-let {data:focos}=await consulta
-let total=focos.reduce(
-(s,i)=>s+Number(i.focos||0),
-0
-)
-let mapa={}
-;(focos||[]).forEach(i=>{
-let mun=i.municipio||'SEM MUNICÍPIO'
-if(!mapa[mun])mapa[mun]=0
-mapa[mun]+=Number(i.focos||0)
-})
-let top10=Object.entries(mapa)
-.map(([municipio,focos])=>({municipio,focos}))
-.sort((a,b)=>b.focos-a.focos)
-.slice(0,10)
+let {data:executivo,error}=await client.from('vw_queimadas_executivo').select('*').single()
+if(error||!executivo)return
+let {data:ranking=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
+let periodo=document.getElementById('filtroPeriodoFocos')?.value||'ano'
+let top10=[...(ranking||[])].sort((a,b)=>Number(b.focos||0)-Number(a.focos||0)).slice(0,10)
 box.innerHTML=`
 <div class="chap-grid">
 <div class="chap-card">
-<div class="chap-num">
-${formatarNumero(total)}
-</div>
-<div class="chap-label">
-FOCOS DE CALOR
-</div>
+<div class="chap-num">${Number(executivo.focos_estado||0).toLocaleString('pt-BR')}</div>
+<div class="chap-label">FOCOS DE CALOR</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">
-${(focos||[]).length}
-</div>
-<div class="chap-label">
-REGISTROS INPE
-</div>
+<div class="chap-num">${ranking.length}</div>
+<div class="chap-label">MUNICÍPIOS MONITORADOS</div>
 </div>
 </div>
 <div class="card-executivo">
-<h2>
-TOP FOCOS DE CALOR ${
-periodo==='ano'
-?'(ANO ATUAL)'
-:periodo==='custom'
-?'(PERSONALIZADO)'
-:`(${periodo} DIAS)`
-}
-</h2>
+<h2>TOP FOCOS DE CALOR ${periodo==='ano'?'(ANO ATUAL)':periodo==='custom'?'(PERSONALIZADO)':`(${periodo} DIAS)`}</h2>
 ${top10.map(i=>`
-<div style="
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:8px;
-border-bottom:1px solid #ddd;
-">
-<span>${i.municipio}</span>
-<b>${formatarNumero(i.focos)}</b>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #ddd">
+<span>${i.municipio||'-'}</span>
+<b>${Number(i.focos||0).toLocaleString('pt-BR')}</b>
 </div>
 `).join('')}
-
-<div style="
-margin-top:12px;
-font-size:11px;
-font-style:italic;
-color:#6b7280;
-text-align:left;
-">
-Fonte: INPE • Programa Queimadas • Tabela queimadas_focos • Atualização automática
+<div style="margin-top:12px;font-size:11px;font-style:italic;color:#6b7280;text-align:left">
+Fonte: vw_queimadas_executivo • vw_queimadas_ranking_estadual • INPE
 </div>
-
 </div>
 `
 }
+
 /*=========================================================
 082 QUEIMADAS FUNCTION CARREGARFOCOSPERIODO
 =========================================================*/
 function carregarFocosPeriodo(){
-let periodo=
-document.getElementById(
-'filtroPeriodoFocos'
-)?.value
-let box=
-document.getElementById(
-'boxPeriodoPersonalizado'
-)
-if(periodo==='custom'){
-box.style.display='flex'
-}else{
-box.style.display='none'
+let periodo=document.getElementById('filtroPeriodoFocos')?.value
+let box=document.getElementById('boxPeriodoPersonalizado')
+if(box){
+box.style.display=periodo==='custom'?'flex':'none'
 }
 renderPainelFocosINPE()
 }
+
 /*=========================================================
-082 083 QUEIMADAS FUNCTION RENDERGRAFICOTOPFOCOS
+083 QUEIMADAS FUNCTION RENDERGRAFICOTOPFOCOS
 =========================================================*/
 async function renderGraficoTopFocos(){
-
-let canvas=
-document.getElementById('graficoTopFocosExecutivo')
-||
-document.getElementById('graficoTopFocosRelatorio')
-
+let canvas=document.getElementById('graficoTopFocosExecutivo')||document.getElementById('graficoTopFocosRelatorio')
 if(!canvas)return
-
-let {data=[]}=await client
-.from('queimadas_focos')
-.select('*')
-
-let mapa={}
-
-data.forEach(i=>{
-let mun=i.municipio||'SEM MUNICÍPIO'
-if(!mapa[mun])mapa[mun]=0
-mapa[mun]+=Number(i.focos||0)
-})
-
-let top10=Object.entries(mapa)
-.map(([municipio,focos])=>({municipio,focos}))
-.sort((a,b)=>b.focos-a.focos)
-.slice(0,10)
-
+let {data:ranking=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
+let top10=[...(ranking||[])].sort((a,b)=>Number(b.focos||0)-Number(a.focos||0)).slice(0,10)
 if(window.chartTopFocos){
 window.chartTopFocos.destroy()
 }
-
 window.chartTopFocos=new Chart(canvas,{
 type:'bar',
 data:{
 labels:top10.map(i=>i.municipio),
 datasets:[{
 label:'Focos de Calor',
-data:top10.map(i=>i.focos)
+data:top10.map(i=>Number(i.focos||0))
 }]
 },
 options:{
@@ -848,7 +723,6 @@ legend:{display:false}
 }
 }
 })
-
 }
 
 /*=========================================================
@@ -860,41 +734,12 @@ let canvas=
 document.getElementById('graficoFocosHistorico')
 ||
 document.getElementById('graficoEvolucaoMensalRelatorio')
+
 if(!canvas)return
 
-let {data,error}=await client
-.from('queimadas_focos')
+let {data=[]}=await client
+.from('vw_queimadas_ranking_estadual')
 .select('*')
-.order('data_referencia',{ascending:true})
-
-if(error){
-console.log(error)
-return
-}
-
-let mapa={}
-
-;(data||[]).forEach(i=>{
-
-let dataRef=new Date(i.data_referencia)
-
-let chave=
-String(dataRef.getMonth()+1)
-.padStart(2,'0')
-+'/'+
-dataRef.getFullYear()
-
-if(!mapa[chave]){
-mapa[chave]=0
-}
-
-mapa[chave]+=Number(i.focos||0)
-
-})
-
-let labels=Object.keys(mapa)
-
-let valores=Object.values(mapa)
 
 if(window.chartFocosHistorico){
 window.chartFocosHistorico.destroy()
@@ -902,37 +747,25 @@ window.chartFocosHistorico.destroy()
 
 window.chartFocosHistorico=
 new Chart(canvas,{
-
-type:'line',
-
+type:'bar',
 data:{
-labels:labels,
+labels:data.map(i=>i.municipio),
 datasets:[
 {
 label:'Focos de Calor',
-data:valores,
-borderWidth:3,
-tension:0.3,
-fill:false
+data:data.map(i=>Number(i.focos||0))
 }
 ]
 },
-
 options:{
 responsive:true,
 maintainAspectRatio:false,
 plugins:{
 legend:{
-display:true
-}
-},
-scales:{
-y:{
-beginAtZero:true
+display:false
 }
 }
 }
-
 })
 
 }
@@ -977,7 +810,7 @@ box.innerHTML=`
 </div>
 <div class="chap-card">
 <div class="chap-num" style="color:${cor}">
-${iriq.toFixed(2)}
+${Number(data.iriq_estadual||0).toFixed(2)}
 </div>
 <div class="chap-label">IRIQ ESTADUAL</div>
 <div style="font-size:12px;font-weight:900;color:${cor}">
@@ -985,11 +818,11 @@ ${faixa}
 </div>
 </div>
 <div class="chap-card">
-<div class="chap-num">${data.municipios_criticos||0}</div>
+<div class="chap-num">${Number(data.municipios_criticos||0)}</div>
 <div class="chap-label">CRÍTICOS</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">${data.municipios_prioritarios||0}</div>
+<div class="chap-num">${Number(data.municipios_prioritarios||0)}</div>
 <div class="chap-label">PRIORITÁRIOS</div>
 </div>
 <div class="chap-card">
@@ -1010,7 +843,9 @@ Fonte: vw_queimadas_executivo • INPE • PRODES • MAPBIOMAS • CHAP
 085 QUEIMADAS FUNCTION RENDERINDICADORESPRESIDENTE
 =========================================================*/
 async function renderIndicadoresPresidente(){
+
 let box=document.getElementById('painelIndicadoresPresidente')
+
 if(!box)return
 
 let {data,error}=await client
@@ -1022,18 +857,43 @@ if(error||!data)return
 
 box.innerHTML=`
 <div class="chap-grid">
+
 <div class="chap-card">
-<div class="chap-num">${Number(data.focos_estado||0).toLocaleString('pt-BR')}</div>
-<div class="chap-label">FOCOS ACUMULADOS</div>
+<div class="chap-num">
+${Number(data.focos_estado||0).toLocaleString('pt-BR')}
 </div>
+<div class="chap-label">
+FOCOS ACUMULADOS
+</div>
+</div>
+
 <div class="chap-card">
-<div class="chap-num">${data.municipios_criticos||0}</div>
-<div class="chap-label">CRÍTICOS</div>
+<div class="chap-num">
+${Number(data.municipios_criticos||0)}
 </div>
+<div class="chap-label">
+CRÍTICOS
+</div>
+</div>
+
 <div class="chap-card">
-<div class="chap-num">${data.municipios_prioritarios||0}</div>
-<div class="chap-label">PRIORITÁRIOS</div>
+<div class="chap-num">
+${Number(data.municipios_prioritarios||0)}
 </div>
+<div class="chap-label">
+PRIORITÁRIOS
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+${Number(data.iriq_estadual||0).toFixed(2)}
+</div>
+<div class="chap-label">
+IRIQ ESTADUAL
+</div>
+</div>
+
 </div>
 `
 }
@@ -1075,7 +935,10 @@ cor='#facc15'
 }
 
 let top10=[...(ranking||[])]
-.sort((a,b)=>Number(b.focos||0)-Number(a.focos||0))
+.sort((a,b)=>
+Number(b.indice_final||b.risco||0)-
+Number(a.indice_final||a.risco||0)
+)
 .slice(0,10)
 
 box.innerHTML=`
@@ -1091,6 +954,32 @@ box.innerHTML=`
 <div class="chap-card">
 <div class="chap-num">${focosTotal.toLocaleString('pt-BR')}</div>
 <div class="chap-label">FOCOS ACUMULADOS</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+${Number(executivo.desmatamento_estado_ha||0)
+.toLocaleString('pt-BR',{
+minimumFractionDigits:0,
+maximumFractionDigits:0
+})}
+</div>
+<div class="chap-label">
+DESMATAMENTO (ha)
+</div>
+</div>
+
+<div class="chap-card">
+<div class="chap-num">
+${Number(executivo.area_queimada_estado_ha||0)
+.toLocaleString('pt-BR',{
+minimumFractionDigits:0,
+maximumFractionDigits:0
+})}
+</div>
+<div class="chap-label">
+ÁREA QUEIMADA (ha)
+</div>
 </div>
 
 <div class="chap-card">
@@ -1127,7 +1016,8 @@ ${top10.map((i,idx)=>`
 <div>
 <b>${idx+1}º ${i.municipio||'-'}</b><br>
 <span style="font-size:11px">
-🔥 ${Number(i.focos||0).toLocaleString('pt-BR')} focos • 📈 ${i.risco||0} risco • ${i.classificacao||'-'}
+🔥 ${Number(i.focos||0).toLocaleString('pt-BR')} focos • 📈 ${i.risco||0} risco • ${String(i.classificacao||'-')
+.replace('CRITICO','CRÍTICO')}
 </span>
 </div>
 
