@@ -1,5 +1,5 @@
 /*=========================================================
-001 QUEIMADAS BOTOES PDF WORD
+205 QUEIMADAS BOTOES PDF WORD
 =========================================================*/
 function montarBotoesPDFQueimadas(tipo){
 const botoes={
@@ -28,4 +28,3 @@ return`
 <button onclick="${botoes[tipo][1]}()" class="btn-pdf btn-word">${botoes[tipo][3]}</button>
 `
 }
-
