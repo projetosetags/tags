@@ -311,7 +311,65 @@ let texto2='     Observa-se que os municípios constantes na tabela acima demand
 doc.text(doc.splitTextToSize(texto2,170),15,y)
 }
 /*=========================================================
-314 RT ACHADOS
+314 TOP 10 RISCOS PDF
+=========================================================*/
+async function adicionarTop10RiscosPDF(doc){
+let {data,error}=await client
+.from('queimadas_heatmap')
+.select('*')
+if(error)return
+let lista=[...(data||[])]
+.sort((a,b)=>Number(b.risco||0)-Number(a.risco||0))
+.slice(0,10)
+doc.addPage()
+doc.setFont('helvetica','bold')
+doc.setFontSize(16)
+doc.text('TOP 10 MUNICÍPIOS DE MAIOR RISCO',15,20)
+doc.autoTable({
+startY:30,
+head:[['POS','MUNICÍPIO','RISCO','FOCOS','CLASSIFICAÇÃO']],
+body:lista.map((i,idx)=>[
+idx+1,
+i.municipio||'-',
+i.risco||0,
+i.focos||0,
+i.classificacao||'-'
+]),
+styles:{fontSize:8},
+headStyles:{fillColor:[127,29,29]}
+})
+}
+
+/*=========================================================
+315 TABELA MUNICIPIOS PDF
+=========================================================*/
+async function adicionarTabelaMunicipiosPDF(doc){
+let {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+.order('municipio')
+if(error)return
+doc.addPage()
+doc.setFont('helvetica','bold')
+doc.setFontSize(16)
+doc.text('SITUAÇÃO DOS MUNICÍPIOS',15,20)
+doc.autoTable({
+startY:30,
+head:[['Nº','MUNICÍPIO','SITUAÇÃO','DOCUMENTO','RECEBIMENTO']],
+body:(data||[]).map((i,idx)=>[
+idx+1,
+i.municipio||'-',
+i.classificacao_ia||'-',
+i.lnumerodocenviado||i.llnumerodocenviado||'-',
+formatarDataBR(i.ldatarecebimentodoc)
+]),
+styles:{fontSize:7},
+headStyles:{fillColor:[15,23,42]},
+alternateRowStyles:{fillColor:[245,245,245]}
+})
+}
+/*=========================================================
+316 RT ACHADOS
 =========================================================*/
 async function rtAchados(doc){
 doc.setFontSize(16)
@@ -334,7 +392,7 @@ let texto='Os achados demonstram fragilidades na capacidade institucional de par
 doc.text(doc.splitTextToSize(texto,180),15,y)
 }
 /*=========================================================
-315 RT EVIDENCIAS
+317 RT EVIDENCIAS
 =========================================================*/
 async function rtEvidencias(doc){
 doc.setFont('helvetica','bold')
@@ -391,7 +449,7 @@ let conclusao='     As evidências coletadas e analisadas demonstram a rastreabi
 doc.text(doc.splitTextToSize(conclusao,170),15,y+5)
 }
 /*=========================================================
-316 RT CONCLUSOES
+318 RT CONCLUSOES
 =========================================================*/
 async function rtConclusoes(doc){
 doc.setFontSize(16)
@@ -403,7 +461,7 @@ doc.text(doc.splitTextToSize('O Heatmap Estadual, o IRIQ, o CHAP, o IA-CHAP e a 
 doc.text(doc.splitTextToSize('Conclui-se pela necessidade de continuidade do acompanhamento técnico e institucional das medidas previstas nos planos de ação, especialmente nos municípios classificados com risco alto e crítico.',180),15,115)
 }
 /*=========================================================
-317 RT PROPOSTAS
+319 RT PROPOSTAS
 =========================================================*/
 async function rtPropostas(doc){
 doc.setFontSize(16)
@@ -428,7 +486,7 @@ y+=10
 })
 }
 /*=========================================================
-318 RT ANEXOS
+320 RT ANEXOS
 =========================================================*/
 async function rtAnexos(doc){
 doc.setFont('helvetica','bold')
@@ -462,7 +520,7 @@ doc.setFontSize(9)
 doc.text(doc.splitTextToSize('Os anexos integram o presente relatório técnico e constituem parte das evidências e informações utilizadas para fundamentação das análises, conclusões e propostas apresentadas.',180),15,220)
 }
 /*=========================================================
-319 RT ASSINATURAS
+321 RT ASSINATURAS
 =========================================================*/
 async function rtAssinaturas(doc){
 doc.setFont('helvetica','bold')
@@ -485,7 +543,7 @@ doc.text('Auditor de Controle Externo',20,170)
 doc.text('Supervisor',20,178)
 }
 /*=========================================================
-320 RT MAPA ESTADUAL
+322 RT MAPA ESTADUAL
 =========================================================*/
 async function rtMapaEstadual(doc){
 doc.setFont('helvetica','bold')
@@ -502,7 +560,7 @@ doc.setFontSize(9)
 doc.text('Fonte: TCE-RO • INPE • Sedam • Base Cartográfica Estadual',15,200)
 }
 /*=========================================================
-321 RT MAPA MUNICIPAL
+323 RT MAPA MUNICIPAL
 =========================================================*/
 async function rtMapaMunicipal(doc){
 doc.setFont('helvetica','bold')
@@ -519,7 +577,7 @@ doc.setFontSize(9)
 doc.text('Fonte: Municípios de Rondônia • TCE-RO',15,200)
 }
 /*=========================================================
-322 RT MONITORAMENTO 4D
+324 RT MONITORAMENTO 4D
 =========================================================*/
 async function rtMonitoramento4D(doc){
 doc.setFont('helvetica','bold')
@@ -536,7 +594,7 @@ doc.setFontSize(9)
 doc.text('Fonte: Sistema de Monitoramento Inteligente de Queimadas',15,200)
 }
 /*=========================================================
-323 RT REFERENCIAS
+325 RT REFERENCIAS
 =========================================================*/
 async function rtReferencias(doc){
 doc.setFont('helvetica','bold')
@@ -567,7 +625,7 @@ y+=10
 })
 }
 /*=========================================================
-324 RT SIGLAS
+326 RT SIGLAS
 =========================================================*/
 async function rtSiglas(doc){
 doc.setFont('helvetica','bold')
@@ -597,7 +655,7 @@ headStyles:{fillColor:[15,23,42]}
 })
 }
 /*=========================================================
-325 RT GLOSSARIO
+327 RT GLOSSARIO
 =========================================================*/
 async function rtGlossario(doc){
 doc.setFont('helvetica','bold')
@@ -624,7 +682,7 @@ y+=18
 })
 }
 /*=========================================================
-326 RT FICHA TECNICA
+328 RT FICHA TECNICA
 =========================================================*/
 async function rtFichaTecnica(doc){
 doc.setFont('helvetica','bold')
@@ -646,7 +704,7 @@ doc.text('Heatmap Estadual • IRIQ • CHAP • IA-CHAP • Matriz 5x5 • Moni
 doc.text('Data de Emissão: '+new Date().toLocaleDateString('pt-BR'),20,235)
 }
 /*=========================================================
-327 RT FUNCTION GERARWORDTECNICO0501
+329 RT FUNCTION GERARWORDTECNICO0501
 RELATORIO TECNICO COMPLETO
 TEXTO + PAINEIS + MAPAS + GRAFICOS
 =========================================================*/
