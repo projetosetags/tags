@@ -609,3 +609,17 @@ MENU QUEIMADAS BOTAO ATIVO
 #painelSalaSituacao .chap-card{background:#fff;border-radius:12px;padding:15px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 #painelSalaSituacao .chap-num{font-size:32px;font-weight:900;color:#2563eb}
 #painelSalaSituacao .chap-label{font-size:12px;font-weight:800;color:#475569;margin-top:5px}
+
+.bannerExecutivoQueimadas{background:linear-gradient(135deg,#0f3d91,#14532d);border-radius:20px;padding:25px;color:#fff;text-align:center;margin:15px 0;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.bannerTitulo{font-size:34px;font-weight:900;letter-spacing:1px}
+.bannerSubtitulo{font-size:18px;font-weight:800;margin-top:8px}
+.bannerRodape{font-size:13px;margin-top:10px;opacity:.95}
+.boxRelatoriosExecutivos{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:15px}
+.btnRelatorioPDF,.btnRelatorioWORD,.btnSumarioExecutivo{border:none;border-radius:18px;padding:25px 15px;color:#fff;font-size:18px;font-weight:900;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px;box-shadow:0 10px 25px rgba(0,0,0,.18);transition:.25s}
+.btnRelatorioPDF{background:linear-gradient(135deg,#0f3d91,#1e40af)}
+.btnRelatorioWORD{background:linear-gradient(135deg,#166534,#22c55e)}
+.btnSumarioExecutivo{background:linear-gradient(135deg,#0f766e,#14b8a6)}
+.btnRelatorioPDF div,.btnRelatorioWORD div,.btnSumarioExecutivo div{font-size:18px;font-weight:900;margin-top:8px}
+.btnRelatorioPDF span,.btnRelatorioWORD span,.btnSumarioExecutivo span{font-size:12px;font-weight:700;margin-top:8px;opacity:.95}
+.btnRelatorioPDF:hover,.btnRelatorioWORD:hover,.btnSumarioExecutivo:hover{transform:translateY(-4px) scale(1.02)}
+@media(max-width:900px){.boxRelatoriosExecutivos{grid-template-columns:1fr}}
