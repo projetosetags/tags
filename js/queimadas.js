@@ -1171,17 +1171,18 @@ monitoramento.reduce((s,i)=>s+Number(i.percentual||0),0)
 )
 :0
 
-let comPlano=municipios.filter(i=>
-String(i.classificacao_cor||'').toUpperCase().trim()==='VERDE'
-).length
+let comPlano=municipios.filter(i=>{
+return i.ldatarecebimentodoc||i.lldatarecebimentodoc
+}).length
 
-let dilacao=municipios.filter(i=>
-String(i.classificacao_cor||'').toUpperCase().trim()==='AMARELO'
-).length
+let dilacao=municipios.filter(i=>{
+let cor=String(i.classificacao_cor||'').toUpperCase().trim()
+return cor==='AMARELO'
+}).length
 
-let semResposta=municipios.filter(i=>
-String(i.classificacao_cor||'').toUpperCase().trim()==='VERMELHO'
-).length
+let semResposta=municipios.filter(i=>{
+return !i.ldatarecebimentodoc&&!i.lldatarecebimentodoc
+}).length
 
 let totalMunicipios=municipios.length||52
 
