@@ -357,34 +357,74 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 =========================================================-->
 <section id="abaSituacao" class="abaQueimadas hidden">
 <div class="painelTitulo">🚨 SALA DE SITUAÇÃO ESTADUAL</div>
+
 <div class="cardExecutivo">
 <button onclick="document.getElementById('arquivoINPE').click()">
 🌐 IMPORTAR DADOS INPE
 </button>
-<input
-type="file"
-id="arquivoINPE"
-accept=".csv"
-style="display:none"
-onchange="lerCSVINPE(event)"
->
+<input type="file" id="arquivoINPE" accept=".csv" style="display:none" onchange="lerCSVINPE(event)">
 </div>
+
+<div class="cardExecutivo">
 <button onclick="atualizarHeatmapManual()">
 🔄 RECALCULAR HEATMAP
 </button>
+</div>
 
-<div id="painelResumoExecutivoSituacao"></div>
-<div id="painelSituacaoOperacional"></div>
+<div class="ranking-grid">
+<div class="cardPainel">
+<h3>🔥 TOP CRÍTICOS</h3>
 <div id="painelTopCriticos"></div>
+</div>
+
+<div class="cardPainel">
+<h3>⚠️ TOP RISCOS</h3>
 <div id="painelTopRiscos"></div>
+</div>
+
+<div class="cardPainel">
+<h3>🚨 ALERTAS</h3>
 <div id="painelAlertas"></div>
-<div id="painelTopFocosSituacao"></div>
-<div id="painelSemPlano"></div>
-<div id="painelSemResposta"></div>
+</div>
+</div>
+
+<div class="ranking-grid">
+<div class="cardPainel">
+<h3>🤖 IA-CHAP</h3>
 <div id="painelTopIAChap"></div>
+</div>
+
+<div class="cardPainel">
+<h3>🔥 TOP FOCOS DE CALOR</h3>
+<div id="painelTopFocosSituacao"></div>
+</div>
+
+<div class="cardPainel">
+<h3>📊 SITUAÇÃO ESTADUAL</h3>
 <div id="painelSalaSituacaoEstadual"></div>
+</div>
+</div>
+
+<div class="ranking-grid">
+<div class="cardPainel">
+<h3>📄 SEM PLANO</h3>
+<div id="painelSemPlano"></div>
+</div>
+
+<div class="cardPainel">
+<h3>📬 SEM RESPOSTA</h3>
+<div id="painelSemResposta"></div>
+</div>
+
+<div class="cardPainel">
+<h3>🏛 MUNICÍPIOS</h3>
 <div id="painelQuadroMunicipiosSituacao"></div>
-<div class="fonte-card">Fonte: INPE • Heatmap Estadual • IRIQ • CHAP • IA-CHAP • Plano SEDAM • POTIF CBMRO • Plano Unificado TCE-RO • Atualização Automática</div>
+</div>
+</div>
+
+<div class="fonte-card">
+Fonte: INPE • Heatmap Estadual • IRIQ • CHAP • IA-CHAP • Plano SEDAM • POTIF CBMRO • Plano Unificado TCE-RO • Atualização Automática
+</div>
 </section>
 <!--=========================================================
 009 GERAL
