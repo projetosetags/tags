@@ -936,8 +936,8 @@ cor='#facc15'
 
 let top10=[...(ranking||[])]
 .sort((a,b)=>
-Number(b.indice_final||b.risco||0)-
-Number(a.indice_final||a.risco||0)
+Number(a.ranking||999)-
+Number(b.ranking||999)
 )
 .slice(0,10)
 
