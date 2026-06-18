@@ -978,6 +978,10 @@ window.overlayUCsExecutivoAdicionado=false
 window.overlayTIsExecutivoAdicionado=false
 let mapa=L.map(div,{preferCanvas:true}).setView([-10.9,-63.3],7)
 window.mapaExecutivoRO=mapa
+setTimeout(()=>{
+mapa.invalidateSize()
+mapa.setView([-10.9,-63.3],7)
+},500)
 window.camadasControleExecutivo=L.control.layers({},{},{collapsed:false}).addTo(mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
 let{data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
@@ -1027,8 +1031,15 @@ if(typeof carregarTIsRO==='function'){
 await carregarTIsRO(mapa,'executivo')
 if(window.layerTIsExecutivo&&mapa.hasLayer(window.layerTIsExecutivo))mapa.removeLayer(window.layerTIsExecutivo)
 }
-try{mapa.fitBounds(window.layerMunicipiosPoligonos.getBounds())}catch(e){}
-setTimeout(()=>mapa.invalidateSize(),500)
+setTimeout(()=>{
+mapa.invalidateSize()
+mapa.fitBounds([
+[-13.4,-65.8],
+[-8.0,-60.0]
+],{
+padding:[5,5]
+})
+},500)
 }
 /*=========================================================
 039 QUEIMADAS FUNCTION RENDERACOESSEDAM
