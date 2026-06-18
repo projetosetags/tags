@@ -2029,7 +2029,6 @@ document.querySelectorAll('.abaQueimadas').forEach(x=>x.classList.add('hidden'))
 if(nome==='executivo'){
 document.getElementById('abaExecutivo')?.classList.remove('hidden')
 if(typeof carregarKPIsExecutivos==='function')await carregarKPIsExecutivos()
-if(typeof renderKPIsExecutivos==='function')await renderKPIsExecutivos()
 if(typeof renderIRIQHeatmapUnificado==='function')await renderIRIQHeatmapUnificado()
 if(typeof renderMunicipiosPrioritarios==='function')await renderMunicipiosPrioritarios()
 if(typeof renderHeatMapExecutivo==='function')await renderHeatMapExecutivo()
