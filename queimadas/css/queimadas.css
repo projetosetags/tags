@@ -625,3 +625,5 @@ MENU QUEIMADAS BOTAO ATIVO
 .btnRelatorioPDF .btnSubtitulo,.btnRelatorioWORD .btnSubtitulo,.btnSumarioExecutivo .btnSubtitulo{font-size:13px;font-weight:700;opacity:.95;margin-top:10px}
 @media(max-width:900px){.boxRelatoriosExecutivos{flex-direction:column;align-items:center}.btnRelatorioPDF,.btnRelatorioWORD,.btnSumarioExecutivo{width:100%;max-width:360px;height:160px}}
 
+#MapaRO{width:100%;height:700px;display:block}
+#mapaRO{width:100%;height:700px;border-radius:12px}
