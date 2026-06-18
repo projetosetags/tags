@@ -2437,8 +2437,8 @@ let {data=[]}=await client
 
 let top=[...(data||[])]
 .sort((a,b)=>
-Number(b.focos||0)-
-Number(a.focos||0)
+Number(b.focos_score||0)-
+Number(a.focos_score||0)
 )
 .slice(0,10)
 
@@ -2454,7 +2454,7 @@ Fonte: INPE • Ranking Estadual
 ${top.map((i,n)=>`
 <div style="display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid #eee">
 <span>${n+1}º ${i.municipio||'-'}</span>
-<b>${Number(i.focos||0).toLocaleString('pt-BR')}</b>
+<b>${Number(i.focos_score||0).toLocaleString('pt-BR')}</b>
 </div>
 `).join('')}
 
