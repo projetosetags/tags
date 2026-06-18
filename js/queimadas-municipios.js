@@ -304,10 +304,18 @@ Ranking Estadual IRIQ • TCERO • INPE • PRODES • MAPBIOMAS • CHAP
 `+(data||[])
 .map((m,i)=>`
 <div class="linha-ranking">
-${i+1}º ${m.semaforo||'🟢'}
+<div class="linha-ranking">
+<span style="font-weight:900;width:40px;display:inline-block">
+${i+1}º
+</span>
+<span style="font-size:18px">
+${m.semaforo}
+</span>
 <b>${m.municipio}</b>
--
+<span style="float:right">
 IRIQ ${Number(m.indice_final||0).toFixed(2)}
+</span>
+</div>
 -
 ${m.classificacao||'BAIXO'}
 </div>
