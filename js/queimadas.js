@@ -263,17 +263,17 @@ if(error||!data)return
 document.getElementById('painelKPIs').innerHTML=`
 <div class="kpiGrid">
 
-<div class="kpiCard">
+<div class="kpiCard" style="flex:2 1 280px">
 <div class="kpiNumero">${Number(data.focos_estado||0).toLocaleString('pt-BR')}</div>
 <div class="kpiTitulo">🔥 FOCOS DE CALOR</div>
 </div>
 
-<div class="kpiCard">
+<div class="kpiCard" style="flex:2 1 280px">
 <div class="kpiNumero">${Number(data.desmatamento_estado_ha||0).toLocaleString('pt-BR')}</div>
 <div class="kpiTitulo">🌳 DESMATAMENTO (ha)</div>
 </div>
 
-<div class="kpiCard">
+<div class="kpiCard" style="flex:2 1 280px">
 <div class="kpiNumero">${Number(data.area_queimada_estado_ha||0).toLocaleString('pt-BR')}</div>
 <div class="kpiTitulo">🔥 ÁREA QUEIMADA (ha)</div>
 </div>
