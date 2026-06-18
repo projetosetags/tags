@@ -2591,9 +2591,7 @@ alert(
 async function recalcularHeatmap(){
 
 let {data,error}=await client
-.from(
-'vw_queimadas_focos_consolidado'
-)
+.from('vw_queimadas_ranking_estadual')
 .select('*')
 
 if(error){
@@ -2603,26 +2601,9 @@ return
 
 for(let item of (data||[])){
 
-let focos=
-Number(item.focos||0)
+let risco=Number(item.indice_final||0)
 
-let risco=null
-
-if(focos>=900){
-risco=100
-}else if(focos>=400){
-risco=90
-}else if(focos>=300){
-risco=75
-}else if(focos>=200){
-risco=60
-}else if(focos>=100){
-risco=40
-}else if(focos>0){
-risco=20
-}
-
-let classificacao='SEM DADOS'
+let classificacao='BAIXO'
 
 if(risco>=75){
 classificacao='CRÍTICO'
@@ -2630,22 +2611,18 @@ classificacao='CRÍTICO'
 classificacao='ALTO'
 }else if(risco>=25){
 classificacao='MODERADO'
-}else if(risco>0){
-classificacao='BAIXO'
 }
 
 await client
 .from('queimadas_heatmap')
 .update({
-focos:focos,
+focos:Number(item.focos||0),
 risco:risco,
 criticidade:risco,
-classificacao:classificacao
+classificacao:classificacao,
+iriq:risco
 })
-.eq(
-'municipio',
-item.municipio
-)
+.eq('municipio',item.municipio)
 
 }
 
