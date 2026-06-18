@@ -45,8 +45,7 @@ if(typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels)}
 <button id="btnAbaMonitoramento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('monitoramento')">🔥 MONITORAMENTO</button>
 <button id="btnAbaAnalise" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('analise')">🤖 RISCOS IA</button>
 <button id="btnAbaMapa" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('mapa')">🗺 MAPA ESTADUAL</button>
-<button id="btnAbaSituacao" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('situacao')">🚨 SALA DE SITUAÇÃO</button>
-<button id="btnAbaPresidente" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('presidente')">🏛 CSA TCERO</button>
+<button id="btnAbaSituacao" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('situacao')">🚨SITUAÇÃO E GOVERNANÇA</button>
 <button id="btnAbaAuditor" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('auditor')">📑 AUDITORIA</button>
 <button id="btnImprimirPainel" class="btnAbaQueimadas btnPdfQueimadas"onclick="imprimirAbaAtualQueimadas()">🖨 PDF ABA</button>
 </nav>
@@ -354,8 +353,7 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 008 SALA DE SITUAÇÃO
 =========================================================-->
 <section id="abaSituacao" class="abaQueimadas hidden">
-<div class="painelTitulo">🚨 SALA DE SITUAÇÃO ESTADUAL</div>
-
+<div class="painelTitulo">🚨SITUAÇÃO E GOVERNANÇA ESTADUAL</div>
 <div class="ranking-grid">
 <div class="cardPainel">
 <h3>🤖 IA-CHAP</h3>
@@ -379,68 +377,36 @@ Os <b>Focos de Calor</b> representam registros identificados por sensoriamento r
 </div>
 
 <div id="painelIndicadoresSituacao"></div>
-
 <div class="ranking-grid">
 <div class="cardPainel">
 <h3>⏳ MUNICÍPIOS COM DILAÇÃO DE PRAZO</h3>
 <div id="painelMunicipiosDilacao"></div>
 </div>
-
 <div class="cardPainel">
 <h3>📬 MUNICÍPIOS SEM RESPOSTA AO TCERO</h3>
 <div id="painelMunicipiosSemResposta"></div>
 </div>
 </div>
-
+<div class="ranking-grid">
+<div class="cardPainel">
+<h3>🤖 IA-CHAP</h3>
+<div id="painelTopIAChap"></div>
+</div>
+<div class="cardPainel">
+<h3>📊 IRIQ E GOVERNANÇA</h3>
+<div id="painelSalaSituacaoEstadual"></div>
+</div>
+<div class="cardPainel">
+<h3>📈 INDICADORES ESTRATÉGICOS</h3>
+<div id="painelIndicadoresGovernanca"></div>
+</div>
+</div>
 <div class="fonte-card">
 Fonte: INPE • Heatmap Estadual • IRIQ • CHAP • IA-CHAP • Plano SEDAM • POTIF CBMRO • Plano Unificado TCE-RO • Atualização Automática
 </div>
 </section>
 <!--=========================================================
-009 GERAL
-=========================================================-->
-<section id="abaPresidente" class="abaQueimadas hidden">
-<div class="painelTitulo">🏛 CENTRAL EXECUTIVA ESTADUAL</div>
-
-<div id="painelResumoExecutivoGeral"></div>
-
-<div class="ranking-grid">
-<div class="cardPainel">
-<h3>🚨 MUNICÍPIOS CRÍTICOS</h3>
-<div id="painelTopCriticosGeral"></div>
-</div>
-
-<div class="cardPainel">
-<h3>📊 DISTRIBUIÇÃO DE RISCO</h3>
-<div id="painelDistribuicaoRisco"></div>
-</div>
-</div>
-
-<div class="ranking-grid">
-<div class="cardPainel">
-<h3>📄 SITUAÇÃO DOS PLANOS MUNICIPAIS</h3>
-<div id="painelPlanosMunicipais"></div>
-</div>
-
-<div class="cardPainel">
-<h3>🏛 GOVERNANÇA ESTADUAL</h3>
-<div id="painelGovernancaEstadual"></div>
-</div>
-</div>
-
-<div class="cardPainel">
-<h3>🤖 RECOMENDAÇÃO EXECUTIVA IA-CHAP</h3>
-<div id="painelRecomendacaoExecutiva"></div>
-</div>
-
-<div class="fonte-card">
-Fonte: INPE • MAPBIOMAS 2021-2025 • PRODES 2021-2025 • CHAP • IA-CHAP • M-RAIG • TCE-RO
-</div>
-
-</section>
-
-<!--=========================================================
-011 AUDITORIA
+009 AUDITORIA
 =========================================================-->
 <section id="abaAuditor" class="abaQueimadas hidden">
 <div class="painelTitulo">AUDITORIA CONCOMITANTE</div>
@@ -472,9 +438,7 @@ Fonte: INPE • MAPBIOMAS 2021-2025 • PRODES 2021-2025 • CHAP • IA-CHAP �
 <div class="btnTitulo">SUMÁRIO EXECUTIVO</div>
 <div class="btnSubtitulo">Versão Executiva PDF</div>
 </button>
-
 </div>
-  
 </div>
 </section>
 
