@@ -1207,22 +1207,24 @@ return cls.includes('SEM RESPOSTA')
 
 let painelIndicadores=document.getElementById('painelIndicadoresSituacao')
 if(painelIndicadores){
+let total=52
+let totalComPlano=total-(listaDilacao.length+listaSemResposta.length)
 painelIndicadores.innerHTML=`
 <div class="ranking-grid">
-<div class="cardPainel">
-<div style="font-size:34px;font-weight:900;color:#2563eb">${listaSemPlano.length}</div>
-<div style="font-size:12px;font-weight:700">SEM PLANO</div>
-<div style="font-size:11px;color:#64748b">${((listaSemPlano.length/total)*100).toFixed(2)}%</div>
+<div class="cardPainel" style="text-align:center">
+<div style="font-size:52px;font-weight:900;color:#16a34a;line-height:1">${total-(listaDilacao.length+listaSemResposta.length)}</div>
+<div style="font-size:14px;font-weight:800;margin-top:8px">COM PLANO</div>
+<div style="font-size:28px;font-weight:900;color:#16a34a;margin-top:10px">${(((total-(listaDilacao.length+listaSemResposta.length))/total)*100).toFixed(2)}%</div>
 </div>
-<div class="cardPainel">
-<div style="font-size:34px;font-weight:900;color:#f59e0b">${listaDilacao.length}</div>
-<div style="font-size:12px;font-weight:700">DILAÇÃO DE PRAZO</div>
-<div style="font-size:11px;color:#64748b">${((listaDilacao.length/total)*100).toFixed(2)}%</div>
+<div class="cardPainel" style="text-align:center">
+<div style="font-size:52px;font-weight:900;color:#f59e0b;line-height:1">${listaDilacao.length}</div>
+<div style="font-size:14px;font-weight:800;margin-top:8px">DILAÇÃO DE PRAZO</div>
+<div style="font-size:28px;font-weight:900;color:#f59e0b;margin-top:10px">${((listaDilacao.length/total)*100).toFixed(2)}%</div>
 </div>
-<div class="cardPainel">
-<div style="font-size:34px;font-weight:900;color:#dc2626">${listaSemResposta.length}</div>
-<div style="font-size:12px;font-weight:700">SEM RESPOSTA</div>
-<div style="font-size:11px;color:#64748b">${((listaSemResposta.length/total)*100).toFixed(2)}%</div>
+<div class="cardPainel" style="text-align:center">
+<div style="font-size:52px;font-weight:900;color:#dc2626;line-height:1">${listaSemResposta.length}</div>
+<div style="font-size:14px;font-weight:800;margin-top:8px">SEM RESPOSTA</div>
+<div style="font-size:28px;font-weight:900;color:#dc2626;margin-top:10px">${((listaSemResposta.length/total)*100).toFixed(2)}%</div>
 </div>
 </div>`
 }
