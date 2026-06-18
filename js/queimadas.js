@@ -1178,66 +1178,70 @@ formatter:v=>v
 047 QUEIMADAS FUNCTION RENDERSALASITUACAO
 =========================================================*/
 async function renderSalaSituacao(){
-let {data=[]}=await client
-.from('queimadas_sala_situacao')
-.select('*')
-.order('criticidade',{ascending:false})
-
-let criticos=data.filter(i=>(i.criticidade||0)>=75)
-let riscos=data.slice(0,10)
+let {data=[]}=await client.from('queimadas_sala_situacao').select('*').order('criticidade',{ascending:false})
+let total=data.length
+let criticos=data.filter(i=>Number(i.criticidade||0)>=75)
+let altos=data.filter(i=>Number(i.criticidade||0)>=50&&Number(i.criticidade||0)<75)
+let moderados=data.filter(i=>Number(i.criticidade||0)>=25&&Number(i.criticidade||0)<50)
+let baixos=data.filter(i=>Number(i.criticidade||0)<25)
 
 let topCriticos=document.getElementById('painelTopCriticos')
 if(topCriticos){
-topCriticos.innerHTML=criticos.slice(0,10).map(i=>`
+topCriticos.innerHTML=`
+<div class="cardExecutivo">
+<h2>🔥 TOP 10 MUNICÍPIOS CRÍTICOS</h2>
+${criticos.slice(0,10).map((i,idx)=>`
 <div class="linha-ranking">
-<b>${i.municipio||'-'}</b>
-<span>${i.criticidade||0}</span>
+<span>${idx+1}º ${i.municipio||'-'}</span>
+<b>${i.criticidade||0}</b>
 </div>
-`).join('')
+`).join('')}
+</div>`
 }
 
-let topRiscos=document.getElementById('painelTopRiscos')
-if(topRiscos){
-topRiscos.innerHTML=riscos.slice(0,10).map(i=>`
+let semPlano=document.getElementById('painelSemPlano')
+if(semPlano){
+let lista=data.filter(i=>String(i.classificacao||'').toUpperCase().includes('SEM PLANO'))
+semPlano.innerHTML=`
+<div class="cardExecutivo">
+<h2>📄 MUNICÍPIOS SEM PLANO</h2>
+${lista.length?lista.slice(0,10).map(i=>`
+<div class="linha-ranking">${i.municipio||'-'}</div>
+`).join(''):'<div class="linha-ranking">Nenhum município</div>'}
+</div>`
+}
+
+let semResposta=document.getElementById('painelSemResposta')
+if(semResposta){
+let lista=data.filter(i=>String(i.classificacao||'').toUpperCase().includes('SEM RESPOSTA'))
+semResposta.innerHTML=`
+<div class="cardExecutivo">
+<h2>📬 MUNICÍPIOS SEM RESPOSTA</h2>
+${lista.length?lista.slice(0,10).map(i=>`
+<div class="linha-ranking">${i.municipio||'-'}</div>
+`).join(''):'<div class="linha-ranking">Nenhum município</div>'}
+</div>`
+}
+
+let quadro=document.getElementById('painelQuadroMunicipiosSituacao')
+if(quadro){
+quadro.innerHTML=`
+<div class="cardExecutivo">
+<h2>🏛 QUADRO GERAL DOS MUNICÍPIOS</h2>
+${data.slice(0,10).map(i=>`
 <div class="linha-ranking">
-<b>${i.municipio||'-'}</b>
-<span>${i.classificacao||'-'}</span>
+<span>${i.municipio||'-'}</span>
+<b>${i.classificacao||'-'}</b>
 </div>
-`).join('')
+`).join('')}
+</div>`
 }
 
-let alertas=document.getElementById('painelAlertas')
-if(alertas){
-alertas.innerHTML=criticos.slice(0,5).map(i=>`
-<div class="linha-ranking">
-🚨 ${i.municipio}
-</div>
-`).join('')
-}
-
-let situacao=document.getElementById('painelSalaSituacaoEstadual')
-if(situacao){
-situacao.innerHTML=`
-<div class="chap-grid">
-<div class="chap-card">
-<div class="chap-num">${data.length}</div>
-<div class="chap-label">MUNICÍPIOS</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${criticos.length}</div>
-<div class="chap-label">CRÍTICOS</div>
-</div>
-</div>
-`
-}
-
-if(typeof renderTopIAChap==='function'){
-await renderTopIAChap()
-}
-
-if(typeof renderAlertas==='function'){
-await renderAlertas()
-}
+if(typeof renderTopRiscos==='function')await renderTopRiscos()
+if(typeof renderAlertas==='function')await renderAlertas()
+if(typeof renderTopIAChap==='function')await renderTopIAChap()
+if(typeof renderTopFocosSituacao==='function')await renderTopFocosSituacao()
+if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadual()
 }
 /*=========================================================
 048 QUEIMADAS FUNCTION IAPREVERRISCOS
