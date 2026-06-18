@@ -1214,16 +1214,66 @@ ${top10.map(i=>`
 047 QUEIMADAS FUNCTION RENDERSALASITUACAO
 =========================================================*/
 async function renderSalaSituacao(){
-let box=document.getElementById('painelSalaSituacao')
-if(!box)return
-let{data=[]}=await client.from('queimadas_sala_situacao').select('*').order('criticidade',{ascending:false})
-box.innerHTML=data.map(i=>`
-<div class="chap-card">
-<div class="chap-num">${i.criticidade||0}</div>
-<div class="chap-label">${i.municipio||'-'}</div>
-<div style="font-size:11px;font-weight:700">${i.classificacao||'-'}</div>
+let {data=[]}=await client
+.from('queimadas_sala_situacao')
+.select('*')
+.order('criticidade',{ascending:false})
+
+let criticos=data.filter(i=>(i.criticidade||0)>=75)
+let riscos=data.slice(0,10)
+
+let topCriticos=document.getElementById('painelTopCriticos')
+if(topCriticos){
+topCriticos.innerHTML=criticos.slice(0,10).map(i=>`
+<div class="linha-ranking">
+<b>${i.municipio||'-'}</b>
+<span>${i.criticidade||0}</span>
 </div>
 `).join('')
+}
+
+let topRiscos=document.getElementById('painelTopRiscos')
+if(topRiscos){
+topRiscos.innerHTML=riscos.slice(0,10).map(i=>`
+<div class="linha-ranking">
+<b>${i.municipio||'-'}</b>
+<span>${i.classificacao||'-'}</span>
+</div>
+`).join('')
+}
+
+let alertas=document.getElementById('painelAlertas')
+if(alertas){
+alertas.innerHTML=criticos.slice(0,5).map(i=>`
+<div class="linha-ranking">
+🚨 ${i.municipio}
+</div>
+`).join('')
+}
+
+let situacao=document.getElementById('painelSalaSituacaoEstadual')
+if(situacao){
+situacao.innerHTML=`
+<div class="chap-grid">
+<div class="chap-card">
+<div class="chap-num">${data.length}</div>
+<div class="chap-label">MUNICÍPIOS</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${criticos.length}</div>
+<div class="chap-label">CRÍTICOS</div>
+</div>
+</div>
+`
+}
+
+if(typeof renderTopIAChap==='function'){
+await renderTopIAChap()
+}
+
+if(typeof renderAlertas==='function'){
+await renderAlertas()
+}
 }
 /*=========================================================
 048 QUEIMADAS FUNCTION IAPREVERRISCOS
