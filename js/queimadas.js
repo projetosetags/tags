@@ -260,30 +260,31 @@ if(error||!data)return
 document.getElementById('painelKPIs').innerHTML=`
 <div class="kpiGrid">
 <div class="kpiCard">
-<div class="kpiNumero">${Number(data.focos_total||0).toLocaleString('pt-BR')}</div>
+<div class="kpiNumero">${Number(data.focos_estado||0).toLocaleString('pt-BR')}</div>
 <div class="kpiTitulo">🔥 FOCOS DE CALOR</div>
 </div>
 <div class="kpiCard">
-<div class="kpiNumero">${Number(data.desmatamento_total_ha||0).toLocaleString('pt-BR')}</div>
+<div class="kpiNumero">${Number(data.desmatamento_estado_ha||0).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}</div>
 <div class="kpiTitulo">🌳 DESMATAMENTO (ha)</div>
 </div>
 <div class="kpiCard">
-<div class="kpiNumero">${Number(data.area_queimada_total_ha||0).toLocaleString('pt-BR')}</div>
+<div class="kpiNumero">${Number(data.area_queimada_estado_ha||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
 <div class="kpiTitulo">🔥 ÁREA QUEIMADA (ha)</div>
 </div>
-<div class="kpiCard">
+<div class="kpiCard kpiCardPequeno">
 <div class="kpiNumero">${data.municipios_criticos||0}</div>
 <div class="kpiTitulo">🚨 CRÍTICOS</div>
 </div>
-<div class="kpiCard">
-<div class="kpiNumero">${data.municipios_moderados||0}</div>
-<div class="kpiTitulo">⚠️ MODERADOS</div>
+<div class="kpiCard kpiCardPequeno">
+<div class="kpiNumero">${data.municipios_prioritarios||0}</div>
+<div class="kpiTitulo">⚠️ PRIORITÁRIOS</div>
 </div>
-<div class="kpiCard">
+<div class="kpiCard kpiCardPequeno">
 <div class="kpiNumero">${Number(data.iriq_estadual||0).toFixed(2)}</div>
 <div class="kpiTitulo">🤖 IRIQ ESTADUAL</div>
 </div>
-</div>`
+</div>
+`
 }
 /*=========================================================
 010 QUEIMADAS FUNCTION RENDERPLANOUNIFICADO
