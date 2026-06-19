@@ -2056,7 +2056,8 @@ doc.text(
 doc.addImage(imgRio,'JPEG',0,68,210,30)
 
 doc.setFillColor(255,255,255)
-doc.setGState(new doc.GState({opacity:0.92}))
+doc.setFillColor(255,255,255)
+doc.rect(0,68,210,219,'F')
 doc.rect(0,68,210,220,'F')
 doc.setGState(new doc.GState({opacity:1}))
 
@@ -2064,7 +2065,7 @@ doc.setFont('helvetica','normal')
 doc.setTextColor(0,0,0)
 doc.setFontSize(5.5)
 
-const textoResumo=`
+let textoResumo=`
 📋 APRESENTAÇÃO
 
 As queimadas e os incêndios florestais permanecem entre os maiores desafios ambientais, sociais e institucionais enfrentados por Rondônia. Seus impactos ultrapassam a esfera ambiental, afetando diretamente a saúde da população, a qualidade do ar, a biodiversidade, os recursos hídricos, a economia regional e a qualidade de vida das comunidades urbanas e rurais.
@@ -2137,7 +2138,7 @@ O enfrentamento desse desafio depende da atuação integrada dos órgãos govern
 
 🔥 INPE • 🛰️ CENSIPAM • 🌎 MAPBIOMAS • 🌳 PRODES • 🚒 CBMRO • 🏛️ SEDAM • 🛡️ DEFESA CIVIL • ⚖️ TCE-RO
 `
-
+textoResumo=corrigirUTF8(textoResumo)
 const linhas=doc.splitTextToSize(textoResumo,202)
 doc.text(linhas,4,72)
 
