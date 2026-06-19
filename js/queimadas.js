@@ -2012,15 +2012,18 @@ const imgRio=await toDataURL('assets/geojson/riomadeira.jpg')
 const imgRO=await toDataURL('assets/geojson/brasaoro.png')
 const imgSEDAM=await toDataURL('assets/geojson/sedam.png')
 const imgSEPAT=await toDataURL('assets/geojson/sepat.png')
-doc.addImage(imgQueimadas,'PNG',0,0,210,35)
+doc.addImage(imgQueimadas,'PNG',0,0,210,28)
+doc.addImage(imgLogo,'PNG',8,4,42,12)
+doc.addImage(imgRO,'PNG',120,18,22,22)
 doc.setFillColor(255,255,255)
 doc.roundedRect(105,5,98,22,2,2,'F')
 doc.addImage(imgLogo,'PNG',8,4,38,14)
   
 doc.setFillColor(255,255,255)
 doc.rect(0,0,210,35,'F')
-doc.addImage(imgQueimadas,'PNG',0,0,210,35)
-doc.addImage(imgLogo,'PNG',8,4,42,14)
+doc.addImage(imgQueimadas,'PNG',0,0,210,28)
+doc.addImage(imgLogo,'PNG',8,4,42,12)
+doc.addImage(imgRO,'PNG',120,18,22,22)
 
 doc.setFillColor(34,84,61)
 doc.rect(0,18,210,12,'F')
@@ -2046,7 +2049,7 @@ doc.line(10,54,200,54)
 
 let yEsq=64
 let yDir=64
-doc.addImage(imgRio,'JPEG',10,58,88,48)
+doc.addImage(imgRio,'JPEG',10,56,88,42)
 doc.addImage(imgRO,'PNG',118,56,24,34)
 doc.setDrawColor(220,220,220)
 doc.line(105,58,105,238)
@@ -2061,195 +2064,153 @@ doc.setFontSize(9)
 
 let apresentacao=[
 'As queimadas e incêndios florestais constituem um dos',
-'principais desafios ambientais e sociais de Rondônia.',
+'principais desafios à gestão pública em Rondônia, com impactos',
+'diretos sobre a saúde da população, a qualidade do ar, os',
+'recursos naturais, a biodiversidade, a economia e a qualidade',
+'de vida.',
 '',
-'Este Sumário Executivo consolida informações do',
-'INPE, MAPBIOMAS, PRODES, CHAP, IA-CHAP e',
-'painéis de monitoramento do TCE-RO.',
+'Este Guia Executivo orienta prefeitos, gestores e equipes',
+'técnicas na adoção de medidas estruturantes que fortaleçam a',
+'capacidade institucional dos municípios, promovam a prevenção',
+'e reduzam os impactos desses eventos.',
 '',
-'Seu objetivo é apoiar gestores públicos na tomada',
-'de decisões e fortalecer ações preventivas.'
-]
-
-apresentacao.forEach(l=>{
-doc.text(l,15,yEsq)
-yEsq+=5
-})
-
-yEsq+=4
-
-doc.setFont('helvetica','bold')
-doc.setFontSize(13)
-doc.text('OBJETIVOS ESTRATÉGICOS',15,yEsq)
-yEsq+=8
-
-doc.setFont('helvetica','normal')
-doc.setFontSize(9)
-
-let objetivos=[
-'• Fortalecer a governança ambiental.',
-'• Reduzir áreas queimadas e desmatadas.',
-'• Integrar órgãos estaduais e municipais.',
-'• Melhorar monitoramento e resposta.',
-'• Produzir evidências para decisão.',
-'• Proteger a população e recursos naturais.'
+'As recomendações estão alinhadas às boas práticas de',
+'governança pública e à atuação orientativa do TCE-RO,',
+'com foco na prevenção, eficiência, transparência,',
+'sustentabilidade e geração de valor público.'
 ]
 
 objetivos.forEach(l=>{
-doc.text(l,20,yEsq)
-yEsq+=5
-})
-
-yEsq+=5
-
-doc.setFont('helvetica','bold')
-doc.setFontSize(13)
-doc.text('EIXOS ESTRUTURANTES',15,yEsq)
+doc.text(l,18,yEsq)
 yEsq+=4
-doc.setFontSize(7)
-doc.setTextColor(90,90,90)
-doc.text('Governança • Monitoramento • Resposta • Proteção • Gestão',15,yEsq)
-yEsq+=8
-doc.setTextColor(0,0,0)
-yEsq+=8
-
-const eixos=[
-['GOVERNANÇA E PLANEJAMENTO','#166534'],
-['MONITORAMENTO E INTELIGÊNCIA','#1d4ed8'],
-['RESPOSTA OPERACIONAL','#b45309'],
-['PROTEÇÃO DA POPULAÇÃO','#6d28d9'],
-['GESTÃO PERMANENTE','#0f766e']
-]
-
-eixos.forEach(e=>{
-doc.setFillColor(
-parseInt(e[1].substring(1,3),16),
-parseInt(e[1].substring(3,5),16),
-parseInt(e[1].substring(5,7),16)
-)
-doc.roundedRect(15,yEsq,80,9,2,2,'F')
-doc.setTextColor(255,255,255)
-doc.setFontSize(8)
-doc.text(e[0],55,yEsq+6,{align:'center'})
-yEsq+=11
 })
-
+yEsq+=3
+doc.setFont('helvetica','bold')
+doc.setFontSize(11)
+doc.text('EIXOS ESTRUTURANTES',15,yEsq)
+yEsq+=5
+const eixos=[
+['GOVERNANÇA E PLANEJAMENTO','#166534','Coordenação Municipal • Plano Municipal'],
+['MONITORAMENTO E INTELIGÊNCIA','#1d4ed8','Focos de calor • Avaliação de riscos'],
+['RESPOSTA OPERACIONAL','#b45309','Brigadas • Fiscalização Integrada'],
+['PROTEÇÃO DA POPULAÇÃO','#6d28d9','Saúde • Defesa Civil • Comunicação'],
+['GESTÃO PERMANENTE','#0f766e','Indicadores • Evidências • Avaliação']
+]
+eixos.forEach(e=>{
+doc.setFillColor(parseInt(e[1].substring(1,3),16),parseInt(e[1].substring(3,5),16),parseInt(e[1].substring(5,7),16))
+doc.roundedRect(15,yEsq,80,7,2,2,'F')
+doc.setTextColor(255,255,255)
+doc.setFont('helvetica','bold')
+doc.setFontSize(7)
+doc.text(e[0],55,yEsq+3.5,{align:'center'})
+yEsq+=8
+})
 doc.setTextColor(0,0,0)
-
 doc.setFont('helvetica','bold')
-doc.setFontSize(13)
+doc.setFontSize(11)
 doc.text('DIRETRIZES DE GOVERNANÇA',110,yDir)
-yDir+=8
-
-doc.setFont('helvetica','normal')
-doc.setFontSize(9)
-
+yDir+=6
+doc.setFont('helvetica','bold')
+doc.setFontSize(8)
 doc.text('Governança Pública',110,yDir)
-yDir+=5
-doc.text('Fortalecimento da liderança e coordenação.',115,yDir)
-yDir+=10
-
+yDir+=4
+doc.setFont('helvetica','normal')
+doc.setFontSize(7)
+doc.text('Fortalecimento da liderança, definição de responsabilidades,',110,yDir)
+yDir+=3
+doc.text('coordenação institucional, transparência e prestação de contas.',110,yDir)
+yDir+=6
+doc.setFont('helvetica','bold')
+doc.setFontSize(8)
 doc.text('Gestão de Riscos',110,yDir)
-yDir+=5
-doc.text('Identificação, avaliação e monitoramento.',115,yDir)
-yDir+=10
-
+yDir+=4
+doc.setFont('helvetica','normal')
+doc.setFontSize(7)
+doc.text('Identificação, avaliação, tratamento e monitoramento contínuo',110,yDir)
+yDir+=3
+doc.text('dos riscos relacionados às queimadas e incêndios florestais.',110,yDir)
+yDir+=7
 doc.setFont('helvetica','bold')
-doc.setFontSize(13)
+doc.setFontSize(11)
 doc.text('METODOLOGIA CHAP',110,yDir)
-yDir+=8
-
+yDir+=5
 doc.setFont('helvetica','normal')
-doc.setFontSize(9)
-
-doc.text('C – Capacidade Institucional',115,yDir);yDir+=5
-doc.text('H – Harmonização Institucional',115,yDir);yDir+=5
-doc.text('A – Atuação Preventiva',115,yDir);yDir+=5
-doc.text('P – Propósito',115,yDir);yDir+=10
-
+doc.setFontSize(6.5)
+doc.text('C – Capacidade Institucional: estrutura, recursos, planejamento.',110,yDir);yDir+=3
+doc.text('H – Harmonização Institucional: integração entre órgãos.',110,yDir);yDir+=3
+doc.text('A – Atuação Preventiva: monitoramento, fiscalização e resposta.',110,yDir);yDir+=3
+doc.text('P – Propósito: proteção da vida e desenvolvimento sustentável.',110,yDir);yDir+=6
 doc.setFont('helvetica','bold')
-doc.setFontSize(13)
+doc.setFontSize(11)
 doc.text('METODOLOGIA M-RAIG',110,yDir)
-yDir+=8
-
+yDir+=5
 doc.setFont('helvetica','normal')
-doc.setFontSize(9)
-
-doc.text('M – Mitigar',115,yDir);yDir+=5
-doc.text('R – Reduzir',115,yDir);yDir+=5
-doc.text('A – Antecipar',115,yDir);yDir+=5
-doc.text('I – Integrar',115,yDir);yDir+=5
-doc.text('G – Gerenciar',115,yDir);yDir+=10
-
+doc.setFontSize(6.5)
+doc.text('M – Mitigar impactos ambientais, sociais e econômicos.',110,yDir);yDir+=3
+doc.text('R – Reduzir probabilidade e severidade das ocorrências.',110,yDir);yDir+=3
+doc.text('A – Antecipar situações críticas mediante inteligência.',110,yDir);yDir+=3
+doc.text('I – Integrar instituições e fortalecer cooperação.',110,yDir);yDir+=3
+doc.text('G – Gerenciar continuamente riscos e resultados.',110,yDir);yDir+=6
 doc.setFont('helvetica','bold')
-doc.setFontSize(13)
+doc.setFontSize(11)
 doc.text('RESULTADOS ESPERADOS',110,yDir)
-yDir+=10
-
+yDir+=7
 const resultados=[
 'Ampliar capacidade institucional',
 'Fortalecer governança ambiental',
 'Reduzir áreas queimadas',
-'Reduzir desmatamento',
-'Proteger a população',
+'Proteger a saúde da população',
 'Integrar instituições',
-'Aumentar transparência',
-'Aprimorar decisões'
+'Qualificar decisões',
+'Transparência',
+'Políticas permanentes'
 ]
-
 let x=110
 let yy=yDir
-
 resultados.forEach((r,i)=>{
-doc.setFillColor(240,248,240)
-doc.roundedRect(x,yy,38,16,2,2,'F')
-doc.setFontSize(7)
-doc.setTextColor(0,0,0)
-doc.text(r,x+19,yy+8,{align:'center',maxWidth:34})
-x+=42
+doc.setFillColor(238,245,238)
+doc.roundedRect(x,yy,28,12,2,2,'F')
+doc.setFontSize(6)
+doc.text(r,x+14,yy+6,{align:'center',maxWidth:24})
+x+=31
 if((i+1)%2===0){
 x=110
-yy+=20
+yy+=14
 }
 })
-doc.addImage(imgSEDAM,'PNG',18,214,32,18)
-doc.addImage(imgSEPAT,'PNG',55,214,32,18)
-
 doc.setFont('helvetica','bold')
-doc.setFontSize(9)
-doc.text('ÓRGÃOS PARTICIPANTES',18,210)
-doc.setFillColor(230,245,230)
-doc.roundedRect(15,245,180,28,3,3,'F')
-
-doc.setFont('helvetica','bold')
-doc.setFontSize(11)
-doc.setTextColor(34,84,61)
-doc.text('MENSAGEM AOS GESTORES',20,255)
-
-doc.setFont('helvetica','normal')
 doc.setFontSize(8)
 doc.setTextColor(0,0,0)
-
-doc.text(
-'Prevenir queimadas exige liderança, integração institucional, planejamento,\n'+
-'monitoramento permanente e compromisso com a proteção da população,\n'+
-'do patrimônio ambiental e do desenvolvimento sustentável.',
-20,
-262
-)
-
+doc.text('ÓRGÃOS PARTICIPANTES',15,205)
+doc.addImage(imgSEDAM,'PNG',15,208,20,10)
+doc.addImage(imgSEPAT,'PNG',38,208,20,10)
+doc.setFillColor(230,245,230)
+doc.roundedRect(15,242,180,30,3,3,'F')
+doc.setFont('helvetica','bold')
+doc.setFontSize(10)
+doc.setTextColor(34,84,61)
+doc.text('MENSAGEM AOS GESTORES',20,251)
+doc.setFont('helvetica','normal')
+doc.setFontSize(7)
+doc.setTextColor(0,0,0)
+doc.text('A prevenção das queimadas exige liderança, integração institucional, planejamento,',20,258)
+doc.text('monitoramento e compromisso permanente com a proteção da população.',20,262)
+doc.text('Municípios que fortalecem sua capacidade institucional tornam-se mais resilientes,',20,266)
+doc.text('eficientes e preparados para enfrentar eventos climáticos extremos.',20,270)
+doc.setFont('helvetica','bold')
+doc.setFontSize(8)
+doc.setTextColor(34,84,61)
+doc.text('FONTES DE INFORMAÇÃO',15,278)
 doc.setFillColor(15,61,145)
 doc.rect(0,280,210,17,'F')
-
 doc.setTextColor(255,255,255)
-doc.setFontSize(8)
+doc.setFontSize(7)
+doc.text('INPE',12,289)
+doc.text('CENSIPAM',42,289)
+doc.text('MAPBIOMAS FOGO',72,289)
+doc.text('DEFESA CIVIL',118,289)
+doc.text('TCE-RO',170,289)
 
-doc.text('INPE',15,289)
-doc.text('MAPBIOMAS',45,289)
-doc.text('PRODES',82,289)
-doc.text('CENSIPAM',118,289)
-doc.text('SEDAM',156,289)
-doc.text('SEPAT',178,289)
 
 doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
 }
