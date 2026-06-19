@@ -2019,7 +2019,7 @@ let apresentacao=[
 'Seu objetivo é apoiar gestores públicos na tomada de decisões e no',
 'fortalecimento das ações preventivas, mitigadoras e corretivas.'
 ]
-apresentacao.forEach(l=>{
+(apresentacao||[]).forEach(l=>{
 doc.text(l,15,y)
 y+=5
 })
@@ -2030,14 +2030,15 @@ doc.text('OBJETIVOS ESTRATÉGICOS',15,y)
 y+=8
 doc.setFont('helvetica','normal')
 doc.setFontSize(10)
-[
+const objetivos=[
 '• Fortalecer a governança ambiental.',
 '• Reduzir áreas queimadas e desmatadas.',
 '• Integrar órgãos estaduais e municipais.',
 '• Melhorar monitoramento e resposta.',
 '• Gerar evidências para tomada de decisão.',
 '• Proteger a população e os recursos naturais.'
-].forEach(l=>{
+]
+objetivos.forEach(l=>{
 doc.text(l,20,y)
 y+=5
 })
@@ -2077,7 +2078,7 @@ doc.text('RESULTADOS ESPERADOS',15,y)
 y+=8
 doc.setFont('helvetica','normal')
 doc.setFontSize(10)
-[
+const resultados=[
 '• Ampliação da capacidade institucional.',
 '• Fortalecimento da governança ambiental.',
 '• Redução das áreas queimadas.',
@@ -2086,7 +2087,8 @@ doc.setFontSize(10)
 '• Aumento da integração institucional.',
 '• Transparência e prestação de contas.',
 '• Aprimoramento da tomada de decisão.'
-].forEach(l=>{
+]
+resultados.forEach(l=>{
 doc.text(l,20,y)
 y+=5
 })
