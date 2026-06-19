@@ -2005,11 +2005,11 @@ doc.line(15,45,195,45)
 let y=55
 doc.setFont('helvetica','bold')
 doc.setFontSize(14)
-doc.text('APRESENTAÇÃO',15,y)
+doc.text('APRESENTACAO',15,y)
 y+=8
 doc.setFont('helvetica','normal')
 doc.setFontSize(10)
-let apresentacao=[
+let apresentacaoTexto=[
 'As queimadas e incêndios florestais representam um dos principais desafios',
 'ambientais e sociais do Estado de Rondônia.',
 '',
@@ -2019,18 +2019,18 @@ let apresentacao=[
 'Seu objetivo é apoiar gestores públicos na tomada de decisões e no',
 'fortalecimento das ações preventivas, mitigadoras e corretivas.'
 ]
-(apresentacao||[]).forEach(l=>{
+apresentacaoTexto.forEach(l=>{
 doc.text(l,15,y)
 y+=5
 })
 y+=5
 doc.setFont('helvetica','bold')
 doc.setFontSize(14)
-doc.text('OBJETIVOS ESTRATÉGICOS',15,y)
+doc.text('OBJETIVOS ESTRATEGICOS',15,y)
 y+=8
 doc.setFont('helvetica','normal')
 doc.setFontSize(10)
-const objetivos=[
+const objetivosTexto=[
 '• Fortalecer a governança ambiental.',
 '• Reduzir áreas queimadas e desmatadas.',
 '• Integrar órgãos estaduais e municipais.',
@@ -2038,7 +2038,7 @@ const objetivos=[
 '• Gerar evidências para tomada de decisão.',
 '• Proteger a população e os recursos naturais.'
 ]
-objetivos.forEach(l=>{
+objetivosTexto.forEach(l=>{
 doc.text(l,20,y)
 y+=5
 })
@@ -2050,9 +2050,9 @@ y+=8
 doc.setFont('helvetica','normal')
 doc.setFontSize(10)
 doc.text('C - Capacidade Institucional',20,y);y+=5
-doc.text('H - Harmonização Institucional',20,y);y+=5
-doc.text('A - Atuação Preventiva',20,y);y+=5
-doc.text('P - Propósito',20,y);y+=8
+doc.text('H - Harmonizacao Institucional',20,y);y+=5
+doc.text('A - Atuacao Preventiva',20,y);y+=5
+doc.text('P - Proposito',20,y);y+=8
 doc.setFont('helvetica','bold')
 doc.setFontSize(14)
 doc.text('METODOLOGIA M-RAIG',15,y)
@@ -2066,7 +2066,7 @@ doc.text('I - Integrar',20,y);y+=5
 doc.text('G - Gerenciar',20,y);y+=8
 doc.setFont('helvetica','bold')
 doc.setFontSize(14)
-doc.text('FÓRMULA IRIQ ESTADUAL',15,y)
+doc.text('FORMULA IRIQ ESTADUAL',15,y)
 y+=8
 doc.setFont('helvetica','normal')
 doc.setFontSize(10)
@@ -2078,7 +2078,7 @@ doc.text('RESULTADOS ESPERADOS',15,y)
 y+=8
 doc.setFont('helvetica','normal')
 doc.setFontSize(10)
-const resultados=[
+const resultadosTexto=[
 '• Ampliação da capacidade institucional.',
 '• Fortalecimento da governança ambiental.',
 '• Redução das áreas queimadas.',
@@ -2088,14 +2088,14 @@ const resultados=[
 '• Transparência e prestação de contas.',
 '• Aprimoramento da tomada de decisão.'
 ]
-resultados.forEach(l=>{
+resultadosTexto.forEach(l=>{
 doc.text(l,20,y)
 y+=5
 })
 y+=8
 doc.setFont('helvetica','bold')
 doc.setFontSize(14)
-doc.text('FONTES DE INFORMAÇÃO',15,y)
+doc.text('FONTES DE INFORMACAO',15,y)
 y+=8
 doc.setFont('helvetica','normal')
 doc.setFontSize(10)
