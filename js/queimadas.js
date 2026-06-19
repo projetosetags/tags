@@ -1992,17 +1992,21 @@ alert('Heatmap atualizado com sucesso.')
 async function gerarPDFSumarioExecutivo0501(){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4')
-
-doc.setFillColor(15,61,145)
-doc.rect(0,0,210,18,'F')
-
-doc.setFont('helvetica','bold')
-doc.setTextColor(255,255,255)
-doc.setFontSize(22)
-doc.text('TCE-RO',15,12)
-
-doc.setFontSize(8)
-doc.text('TRIBUNAL DE CONTAS DO ESTADO DE RONDÔNIA',45,12)
+const imgLogo=await toDataURL('assets/geojson/logotcero.png')
+const imgQueimadas=await toDataURL('assets/geojson/queimadas.png')
+const imgRio=await toDataURL('assets/geojson/riomadeira.jpg')
+const imgRO=await toDataURL('assets/geojson/brasaoro.png')
+const imgSEDAM=await toDataURL('assets/geojson/sedam.png')
+const imgSEPAT=await toDataURL('assets/geojson/sepat.png')
+doc.addImage(imgQueimadas,'PNG',0,0,210,35)
+doc.setFillColor(255,255,255)
+doc.roundedRect(105,5,98,22,2,2,'F')
+doc.addImage(imgLogo,'PNG',8,4,38,14)
+  
+doc.setFillColor(255,255,255)
+doc.rect(0,0,210,35,'F')
+doc.addImage(imgQueimadas,'PNG',0,0,210,35)
+doc.addImage(imgLogo,'PNG',8,4,42,14)
 
 doc.setFillColor(34,84,61)
 doc.rect(0,18,210,12,'F')
@@ -2028,7 +2032,11 @@ doc.line(10,54,200,54)
 
 let yEsq=64
 let yDir=64
-
+doc.addImage(imgRio,'JPEG',10,58,88,48)
+doc.addImage(imgRO,'PNG',118,56,24,34)
+doc.setDrawColor(220,220,220)
+doc.line(105,58,105,238)
+yEsq=112
 doc.setFont('helvetica','bold')
 doc.setFontSize(13)
 doc.text('APRESENTAÇÃO',15,yEsq)
@@ -2083,6 +2091,12 @@ yEsq+=5
 doc.setFont('helvetica','bold')
 doc.setFontSize(13)
 doc.text('EIXOS ESTRUTURANTES',15,yEsq)
+yEsq+=4
+doc.setFontSize(7)
+doc.setTextColor(90,90,90)
+doc.text('Governança • Monitoramento • Resposta • Proteção • Gestão',15,yEsq)
+yEsq+=8
+doc.setTextColor(0,0,0)
 yEsq+=8
 
 const eixos=[
@@ -2184,7 +2198,12 @@ x=110
 yy+=20
 }
 })
+doc.addImage(imgSEDAM,'PNG',18,214,32,18)
+doc.addImage(imgSEPAT,'PNG',55,214,32,18)
 
+doc.setFont('helvetica','bold')
+doc.setFontSize(9)
+doc.text('ÓRGÃOS PARTICIPANTES',18,210)
 doc.setFillColor(230,245,230)
 doc.roundedRect(15,245,180,28,3,3,'F')
 
@@ -2211,14 +2230,28 @@ doc.rect(0,280,210,17,'F')
 doc.setTextColor(255,255,255)
 doc.setFontSize(8)
 
-doc.text('INPE',20,290)
-doc.text('MAPBIOMAS',55,290)
-doc.text('PRODES',95,290)
-doc.text('CENSIPAM',130,290)
-doc.text('TCE-RO',175,290)
+doc.text('INPE',15,289)
+doc.text('MAPBIOMAS',45,289)
+doc.text('PRODES',82,289)
+doc.text('CENSIPAM',118,289)
+doc.text('SEDAM',156,289)
+doc.text('SEPAT',178,289)
 
-doc.save('Sumario_Executivo_Queimadas_2026/MFN.pdf')
+doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
 }
+
+
+
+async function toDataURL(url){
+const blob=await fetch(url).then(r=>r.blob())
+return await new Promise(resolve=>{
+const reader=new FileReader()
+reader.onload=()=>resolve(reader.result)
+reader.readAsDataURL(blob)
+})
+}
+
+
 /*=========================================================
 UTF8 CORRIGIR TEXTO
 =========================================================*/
