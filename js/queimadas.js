@@ -2013,8 +2013,10 @@ const imgRO=await toDataURL('assets/geojson/brasaoro.png')
 const imgSEDAM=await toDataURL('assets/geojson/sedam.png')
 const imgSEPAT=await toDataURL('assets/geojson/sepat.png')
 doc.addImage(imgQueimadas,'PNG',0,0,210,28)
-doc.addImage(imgLogo,'PNG',8,4,42,12)
-doc.addImage(imgRO,'PNG',120,18,22,22)
+doc.addImage(imgLogo,'PNG',10,5,55,18)
+doc.addImage(imgRio,'JPEG',0,0,105,55)
+doc.addImage(imgQueimadas,'PNG',105,0,105,30)
+doc.addImage(imgRO,'PNG',100,25,28,28)
 doc.setFillColor(255,255,255)
 doc.roundedRect(105,5,98,22,2,2,'F')
 doc.addImage(imgLogo,'PNG',8,4,38,14)
@@ -2060,7 +2062,7 @@ doc.text('APRESENTAÇÃO',15,yEsq)
 yEsq+=8
 
 doc.setFont('helvetica','normal')
-doc.setFontSize(9)
+doc.setFontSize(7)
 
 let apresentacao=[
 'As queimadas e incêndios florestais constituem um dos',
@@ -2167,12 +2169,13 @@ yDir+=7
 const resultados=[
 'Ampliar capacidade institucional',
 'Fortalecer governança ambiental',
-'Reduzir áreas queimadas',
+'Reduzir áreas queimadas e danos ambientais',
 'Proteger a saúde da população',
-'Integrar instituições',
-'Qualificar decisões',
-'Transparência',
-'Políticas permanentes'
+'Aumentar a integração entre instituições',
+'Aumentar a eficieência na utilização de recursos públicos',
+'Qualificar o planejamento e a tomada de decisão',
+'Aprimorar a transparência e a prestação de contas',
+'Consolidar Políticas Públicas permanentes de prevenção'
 ]
 let x=110
 let yy=yDir
@@ -2203,7 +2206,7 @@ doc.setFont('helvetica','normal')
 doc.setFontSize(7)
 doc.setTextColor(0,0,0)
 doc.text('A prevenção das queimadas exige liderança, integração institucional, planejamento,',20,258)
-doc.text('monitoramento e compromisso permanente com a proteção da população.',20,262)
+doc.text('monitoramento e compromisso permanente com a proteção da população e do patrimônio ambiental.',20,262)
 doc.text('Municípios que fortalecem sua capacidade institucional tornam-se mais resilientes,',20,266)
 doc.text('eficientes e preparados para enfrentar eventos climáticos extremos.',20,270)
 doc.setFont('helvetica','bold')
