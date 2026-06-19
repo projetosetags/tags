@@ -2013,40 +2013,44 @@ const imgRO=await toDataURL('assets/geojson/brasaoro.png')
 const imgSEDAM=await toDataURL('assets/geojson/sedam.png')
 const imgSEPAT=await toDataURL('assets/geojson/sepat.png')
   
+/* CABECALHO MODERNO */
+doc.addImage(imgQueimadas,'PNG',0,0,210,42)
+
 doc.setFillColor(255,255,255)
-doc.rect(0,0,210,35,'F')
-doc.addImage(imgQueimadas,'PNG',0,0,210,28)
-doc.addImage(imgLogo,'PNG',8,4,42,12)
-doc.addImage(imgRO,'PNG',120,18,22,22)
+doc.setDrawColor(255,255,255)
+doc.roundedRect(95,-8,125,70,0,0,'F')
 
-doc.setFillColor(34,84,61)
-doc.rect(0,18,210,12,'F')
+doc.setDrawColor(0,96,64)
+doc.setLineWidth(2)
+doc.curve?.()
 
-doc.setFontSize(18)
-doc.setTextColor(255,255,255)
-doc.text('SUMÁRIO EXECUTIVO',105,26,{align:'center'})
+doc.addImage(imgLogo,'PNG',8,4,38,14)
 
-doc.setFillColor(245,248,250)
-doc.rect(0,30,210,22,'F')
+doc.addImage(imgRO,'PNG',66,18,28,28)
 
+doc.setTextColor(10,45,90)
 doc.setFont('helvetica','bold')
-doc.setFontSize(13)
+doc.setFontSize(22)
+doc.text('SUMÁRIO EXECUTIVO',150,24,{align:'center'})
+
 doc.setTextColor(34,84,61)
-doc.text('GUIA EXECUTIVO PARA PREVENÇÃO E COMBATE ÀS QUEIMADAS',105,39,{align:'center'})
+doc.setFontSize(11)
+doc.text('GUIA EXECUTIVO PARA PREVENÇÃO E',150,34,{align:'center'})
+doc.text('COMBATE ÀS QUEIMADAS E INCÊNDIOS FLORESTAIS',150,40,{align:'center'})
 
-doc.setFontSize(10)
-doc.setTextColor(0,0,0)
-doc.text('Governança • Gestão de Riscos • Resiliência Municipal • Rondônia',105,46,{align:'center'})
+doc.setFillColor(16,54,132)
+doc.roundedRect(112,44,80,8,2,2,'F')
 
-doc.setDrawColor(15,61,145)
-doc.line(10,54,200,54)
+doc.setFontSize(8)
+doc.setTextColor(255,255,255)
+doc.text('Governança • Gestão de Riscos • Resiliência Municipal • Rondônia',152,49,{align:'center'})
 
-let yEsq=64
-let yDir=64
-doc.addImage(imgRio,'JPEG',10,56,88,42)
+let yEsq=95
+let yDir=95
+doc.addImage(imgRio,'JPEG',10,70,88,55)
 doc.addImage(imgRO,'PNG',140,58,28,28)
 doc.setDrawColor(220,220,220)
-doc.line(105,58,105,276)
+doc.line(105,70,105,275)
 yEsq=112
 doc.setFont('helvetica','bold')
 doc.setFontSize(13)
