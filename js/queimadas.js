@@ -1479,6 +1479,8 @@ if(nome==='estado'){
 document.getElementById('abaEstado')?.classList.remove('hidden')
 if(typeof renderKPIsEstado==='function')await renderKPIsEstado()
 if(typeof renderCadastroEstado==='function')await renderCadastroEstado()
+if(typeof renderIndicadoresEstado==='function')await renderIndicadoresEstado()
+if(typeof renderFormularioEstado==='function')renderFormularioEstado()
 }
 if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
