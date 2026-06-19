@@ -1992,127 +1992,233 @@ alert('Heatmap atualizado com sucesso.')
 async function gerarPDFSumarioExecutivo0501(){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4')
+
+doc.setFillColor(15,61,145)
+doc.rect(0,0,210,18,'F')
+
 doc.setFont('helvetica','bold')
-doc.setFontSize(26)
-doc.setTextColor(15,61,145)
-doc.text('SUMÁRIO EXECUTIVO',105,22,{align:'center'})
-doc.setFontSize(14)
+doc.setTextColor(255,255,255)
+doc.setFontSize(22)
+doc.text('TCE-RO',15,12)
+
+doc.setFontSize(8)
+doc.text('TRIBUNAL DE CONTAS DO ESTADO DE RONDÔNIA',45,12)
+
+doc.setFillColor(34,84,61)
+doc.rect(0,18,210,12,'F')
+
+doc.setFontSize(18)
+doc.setTextColor(255,255,255)
+doc.text('SUMÁRIO EXECUTIVO',105,26,{align:'center'})
+
+doc.setFillColor(245,248,250)
+doc.rect(0,30,210,22,'F')
+
+doc.setFont('helvetica','bold')
+doc.setFontSize(13)
 doc.setTextColor(34,84,61)
-doc.text('GUIA EXECUTIVO PARA PREVENÇÃO E COMBATE ÀS QUEIMADAS',105,32,{align:'center'})
-doc.setFontSize(11)
+doc.text('GUIA EXECUTIVO PARA PREVENÇÃO E COMBATE ÀS QUEIMADAS',105,39,{align:'center'})
+
+doc.setFontSize(10)
 doc.setTextColor(0,0,0)
-doc.text('Governança • Gestão de Riscos • Resiliência Municipal • Rondônia',105,40,{align:'center'})
+doc.text('Governança • Gestão de Riscos • Resiliência Municipal • Rondônia',105,46,{align:'center'})
+
 doc.setDrawColor(15,61,145)
-doc.line(15,45,195,45)
-let y=55
+doc.line(10,54,200,54)
+
+let yEsq=64
+let yDir=64
+
 doc.setFont('helvetica','bold')
-doc.setFontSize(14)
-doc.text('APRESENTACAO',15,y)
-y+=8
+doc.setFontSize(13)
+doc.text('APRESENTAÇÃO',15,yEsq)
+yEsq+=8
+
 doc.setFont('helvetica','normal')
-doc.setFontSize(10)
-let apresentacaoTexto=[
-'As queimadas e incêndios florestais representam um dos principais desafios',
-'ambientais e sociais do Estado de Rondônia.',
+doc.setFontSize(9)
+
+let apresentacao=[
+'As queimadas e incêndios florestais constituem um dos',
+'principais desafios ambientais e sociais de Rondônia.',
 '',
-'Este Sumário Executivo consolida informações provenientes do INPE,',
-'MAPBIOMAS, PRODES, CHAP, IA-CHAP e painéis de monitoramento do TCE-RO.',
+'Este Sumário Executivo consolida informações do',
+'INPE, MAPBIOMAS, PRODES, CHAP, IA-CHAP e',
+'painéis de monitoramento do TCE-RO.',
 '',
-'Seu objetivo é apoiar gestores públicos na tomada de decisões e no',
-'fortalecimento das ações preventivas, mitigadoras e corretivas.'
+'Seu objetivo é apoiar gestores públicos na tomada',
+'de decisões e fortalecer ações preventivas.'
 ]
-apresentacaoTexto.forEach(l=>{
-doc.text(l,15,y)
-y+=5
+
+apresentacao.forEach(l=>{
+doc.text(l,15,yEsq)
+yEsq+=5
 })
-y+=5
+
+yEsq+=4
+
 doc.setFont('helvetica','bold')
-doc.setFontSize(14)
-doc.text('OBJETIVOS ESTRATEGICOS',15,y)
-y+=8
+doc.setFontSize(13)
+doc.text('OBJETIVOS ESTRATÉGICOS',15,yEsq)
+yEsq+=8
+
 doc.setFont('helvetica','normal')
-doc.setFontSize(10)
-const objetivosTexto=[
+doc.setFontSize(9)
+
+let objetivos=[
 '• Fortalecer a governança ambiental.',
 '• Reduzir áreas queimadas e desmatadas.',
 '• Integrar órgãos estaduais e municipais.',
 '• Melhorar monitoramento e resposta.',
-'• Gerar evidências para tomada de decisão.',
-'• Proteger a população e os recursos naturais.'
+'• Produzir evidências para decisão.',
+'• Proteger a população e recursos naturais.'
 ]
-objetivosTexto.forEach(l=>{
-doc.text(l,20,y)
-y+=5
-})
-y+=5
-doc.setFont('helvetica','bold')
-doc.setFontSize(14)
-doc.text('METODOLOGIA CHAP',15,y)
-y+=8
-doc.setFont('helvetica','normal')
-doc.setFontSize(10)
-doc.text('C - Capacidade Institucional',20,y);y+=5
-doc.text('H - Harmonizacao Institucional',20,y);y+=5
-doc.text('A - Atuacao Preventiva',20,y);y+=5
-doc.text('P - Proposito',20,y);y+=8
-doc.setFont('helvetica','bold')
-doc.setFontSize(14)
-doc.text('METODOLOGIA M-RAIG',15,y)
-y+=8
-doc.setFont('helvetica','normal')
-doc.setFontSize(10)
-doc.text('M - Mitigar',20,y);y+=5
-doc.text('R - Reduzir',20,y);y+=5
-doc.text('A - Antecipar',20,y);y+=5
-doc.text('I - Integrar',20,y);y+=5
-doc.text('G - Gerenciar',20,y);y+=8
-doc.setFont('helvetica','bold')
-doc.setFontSize(14)
-doc.text('FORMULA IRIQ ESTADUAL',15,y)
-y+=8
-doc.setFont('helvetica','normal')
-doc.setFontSize(10)
-doc.text('IRIQ = (30% Risco) + (10% CHAP) + (35% Área Queimada) + (25% Desmatamento)',15,y)
-y+=10
-doc.setFont('helvetica','bold')
-doc.setFontSize(14)
-doc.text('RESULTADOS ESPERADOS',15,y)
-y+=8
-doc.setFont('helvetica','normal')
-doc.setFontSize(10)
-const resultadosTexto=[
-'• Ampliação da capacidade institucional.',
-'• Fortalecimento da governança ambiental.',
-'• Redução das áreas queimadas.',
-'• Redução do desmatamento.',
-'• Proteção da saúde da população.',
-'• Aumento da integração institucional.',
-'• Transparência e prestação de contas.',
-'• Aprimoramento da tomada de decisão.'
-]
-resultadosTexto.forEach(l=>{
-doc.text(l,20,y)
-y+=5
-})
-y+=8
-doc.setFont('helvetica','bold')
-doc.setFontSize(14)
-doc.text('FONTES DE INFORMACAO',15,y)
-y+=8
-doc.setFont('helvetica','normal')
-doc.setFontSize(10)
-doc.text('• INPE',20,y);y+=5
-doc.text('• MAPBIOMAS FOGO',20,y);y+=5
-doc.text('• PRODES',20,y);y+=5
-doc.text('• CENSIPAM',20,y);y+=5
-doc.text('• Defesa Civil',20,y);y+=5
-doc.text('• TCE-RO',20,y);y+=5
-doc.setFontSize(8)
-doc.setTextColor(120,120,120)
-doc.text('Sumário Executivo Gerado Automaticamente • Painel Queimadas 2026 • Tribunal de Contas do Estado de Rondônia',105,285,{align:'center'})
-doc.save('Sumario_Executivo_Queimadas_2026.pdf')
-}
 
+objetivos.forEach(l=>{
+doc.text(l,20,yEsq)
+yEsq+=5
+})
+
+yEsq+=5
+
+doc.setFont('helvetica','bold')
+doc.setFontSize(13)
+doc.text('EIXOS ESTRUTURANTES',15,yEsq)
+yEsq+=8
+
+const eixos=[
+['GOVERNANÇA E PLANEJAMENTO','#166534'],
+['MONITORAMENTO E INTELIGÊNCIA','#1d4ed8'],
+['RESPOSTA OPERACIONAL','#b45309'],
+['PROTEÇÃO DA POPULAÇÃO','#6d28d9'],
+['GESTÃO PERMANENTE','#0f766e']
+]
+
+eixos.forEach(e=>{
+doc.setFillColor(
+parseInt(e[1].substring(1,3),16),
+parseInt(e[1].substring(3,5),16),
+parseInt(e[1].substring(5,7),16)
+)
+doc.roundedRect(15,yEsq,80,9,2,2,'F')
+doc.setTextColor(255,255,255)
+doc.setFontSize(8)
+doc.text(e[0],55,yEsq+6,{align:'center'})
+yEsq+=11
+})
+
+doc.setTextColor(0,0,0)
+
+doc.setFont('helvetica','bold')
+doc.setFontSize(13)
+doc.text('DIRETRIZES DE GOVERNANÇA',110,yDir)
+yDir+=8
+
+doc.setFont('helvetica','normal')
+doc.setFontSize(9)
+
+doc.text('Governança Pública',110,yDir)
+yDir+=5
+doc.text('Fortalecimento da liderança e coordenação.',115,yDir)
+yDir+=10
+
+doc.text('Gestão de Riscos',110,yDir)
+yDir+=5
+doc.text('Identificação, avaliação e monitoramento.',115,yDir)
+yDir+=10
+
+doc.setFont('helvetica','bold')
+doc.setFontSize(13)
+doc.text('METODOLOGIA CHAP',110,yDir)
+yDir+=8
+
+doc.setFont('helvetica','normal')
+doc.setFontSize(9)
+
+doc.text('C – Capacidade Institucional',115,yDir);yDir+=5
+doc.text('H – Harmonização Institucional',115,yDir);yDir+=5
+doc.text('A – Atuação Preventiva',115,yDir);yDir+=5
+doc.text('P – Propósito',115,yDir);yDir+=10
+
+doc.setFont('helvetica','bold')
+doc.setFontSize(13)
+doc.text('METODOLOGIA M-RAIG',110,yDir)
+yDir+=8
+
+doc.setFont('helvetica','normal')
+doc.setFontSize(9)
+
+doc.text('M – Mitigar',115,yDir);yDir+=5
+doc.text('R – Reduzir',115,yDir);yDir+=5
+doc.text('A – Antecipar',115,yDir);yDir+=5
+doc.text('I – Integrar',115,yDir);yDir+=5
+doc.text('G – Gerenciar',115,yDir);yDir+=10
+
+doc.setFont('helvetica','bold')
+doc.setFontSize(13)
+doc.text('RESULTADOS ESPERADOS',110,yDir)
+yDir+=10
+
+const resultados=[
+'Ampliar capacidade institucional',
+'Fortalecer governança ambiental',
+'Reduzir áreas queimadas',
+'Reduzir desmatamento',
+'Proteger a população',
+'Integrar instituições',
+'Aumentar transparência',
+'Aprimorar decisões'
+]
+
+let x=110
+let yy=yDir
+
+resultados.forEach((r,i)=>{
+doc.setFillColor(240,248,240)
+doc.roundedRect(x,yy,38,16,2,2,'F')
+doc.setFontSize(7)
+doc.setTextColor(0,0,0)
+doc.text(r,x+19,yy+8,{align:'center',maxWidth:34})
+x+=42
+if((i+1)%2===0){
+x=110
+yy+=20
+}
+})
+
+doc.setFillColor(230,245,230)
+doc.roundedRect(15,245,180,28,3,3,'F')
+
+doc.setFont('helvetica','bold')
+doc.setFontSize(11)
+doc.setTextColor(34,84,61)
+doc.text('MENSAGEM AOS GESTORES',20,255)
+
+doc.setFont('helvetica','normal')
+doc.setFontSize(8)
+doc.setTextColor(0,0,0)
+
+doc.text(
+'Prevenir queimadas exige liderança, integração institucional, planejamento,\n'+
+'monitoramento permanente e compromisso com a proteção da população,\n'+
+'do patrimônio ambiental e do desenvolvimento sustentável.',
+20,
+262
+)
+
+doc.setFillColor(15,61,145)
+doc.rect(0,280,210,17,'F')
+
+doc.setTextColor(255,255,255)
+doc.setFontSize(8)
+
+doc.text('INPE',20,290)
+doc.text('MAPBIOMAS',55,290)
+doc.text('PRODES',95,290)
+doc.text('CENSIPAM',130,290)
+doc.text('TCE-RO',175,290)
+
+doc.save('Sumario_Executivo_Queimadas_2026/MFN.pdf')
+}
 /*=========================================================
 UTF8 CORRIGIR TEXTO
 =========================================================*/
