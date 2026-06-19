@@ -1999,18 +1999,7 @@ if(typeof renderTopRiscos==='function')await renderTopRiscos()
 if(typeof renderMapaMunicipios==='function')await renderMapaMunicipios()
 alert('Heatmap atualizado com sucesso.')
 }
-function limparTextoPDF(txt){
-return String(txt||'')
-.replace(/Ã§/g,'ç')
-.replace(/Ã£/g,'ã')
-.replace(/Ã¡/g,'á')
-.replace(/Ã©/g,'é')
-.replace(/Ã­/g,'í')
-.replace(/Ã³/g,'ó')
-.replace(/Ãº/g,'ú')
-.replace(/Ã‰/g,'É')
-.replace(/Ã‡/g,'Ç')
-}
+
 /*=========================================================
 074 GERAR SUMARIO EXECUTIVO
 =========================================================*/
@@ -2066,56 +2055,96 @@ doc.setTextColor(0,0,0)
 doc.setFontSize(5.5)
 
 let textoResumo=`
-📋 APRESENTAÇÃO
+APRESENTAÇÃO
 
 As queimadas e os incêndios florestais permanecem entre os maiores desafios ambientais, sociais e institucionais enfrentados por Rondônia. Seus impactos ultrapassam a esfera ambiental, afetando diretamente a saúde da população, a qualidade do ar, a biodiversidade, os recursos hídricos, a economia regional e a qualidade de vida das comunidades urbanas e rurais.
+
 Esses eventos decorrem de múltiplos fatores, incluindo condições climáticas adversas, uso inadequado do fogo, expansão de atividades produtivas sem planejamento adequado, fragilidades nos mecanismos preventivos e limitações na capacidade de resposta institucional.
+
 Além dos danos ambientais imediatos, as queimadas ampliam riscos à segurança territorial, pressionam os serviços públicos de saúde e defesa civil, aumentam os custos governamentais e comprometem o desenvolvimento sustentável.
+
 Nesse contexto, o Tribunal de Contas do Estado de Rondônia atua como indutor da melhoria das políticas públicas, promovendo o fortalecimento da governança, da gestão de riscos, da transparência e da efetividade das ações desenvolvidas pelos órgãos responsáveis.
-🎯 OBJETIVOS ESTRATÉGICOS
-🏛️ Fortalecer a Governança Institucional para integrar órgãos, normas, competências e fluxos decisórios relacionados à prevenção e ao combate às queimadas.
-📚 Promover Educação Ambiental mediante campanhas permanentes, capacitações e mobilização social.
-🔥 Melhorar a Gestão do Fogo com planejamento territorial, prevenção ativa e resposta rápida.
-⚖️ Garantir o Cumprimento da Legislação Ambiental mediante fiscalização e responsabilização.
-🌳 Estimular Práticas Sustentáveis de produção e conservação dos recursos naturais.
-📡 Ampliar o Monitoramento e a Inteligência para apoiar decisões baseadas em evidências.
-🏛️ EIXOS ESTRUTURANTES
-🏛️ Governança e Planejamento
-📡 Monitoramento e Inteligência
-🌱 Prevenção e Educação Ambiental
-🚒 Resposta e Recuperação
-💰 Financiamento e Controle
-⚖️ DIRETRIZES DE GOVERNANÇA
-🏛️ Marco Institucional
-👥 Responsabilidades
-🌳 Avaliação Ambiental
-🤝 Gestão de Conflitos
-🔎 Transparência
-🌱 RESULTADOS ESPERADOS
-🌳 Redução do desmatamento e das áreas degradadas.
-🛡️ Ampliação da proteção das áreas sensíveis.
-🚜 Agricultura mais sustentável.
-📚 Maior educação ambiental.
-🌡️ Maior resiliência climática.
-📡 Monitoramento mais eficiente.
-💼 Economia sustentável.
-🤝 Cooperação institucional fortalecida.
 
-✅ PRÓXIMOS PASSOS
+OBJETIVOS ESTRATÉGICOS
 
-☑️ Implementar estratégias de governança.
-☑️ Consolidar sistemas de monitoramento.
-☑️ Desenvolver programas permanentes de educação ambiental.
-☑️ Fortalecer a cooperação institucional.
-☑️ Aprimorar a resposta operacional.
-☑️ Garantir transparência e avaliação permanente.
+• Fortalecer a Governança Institucional para integrar órgãos, normas, competências e fluxos decisórios relacionados à prevenção e ao combate às queimadas.
 
-📢 MENSAGEM AOS GESTORES
+• Promover Educação Ambiental mediante campanhas permanentes, capacitações e mobilização social.
+
+• Melhorar a Gestão do Fogo com planejamento territorial, prevenção ativa e resposta rápida.
+
+• Garantir o Cumprimento da Legislação Ambiental mediante fiscalização e responsabilização.
+
+• Estimular Práticas Sustentáveis de produção e conservação dos recursos naturais.
+
+• Ampliar o Monitoramento e a Inteligência para apoiar decisões baseadas em evidências.
+
+EIXOS ESTRUTURANTES
+
+• Governança e Planejamento
+
+• Monitoramento e Inteligência
+
+• Prevenção e Educação Ambiental
+
+• Resposta e Recuperação
+
+• Financiamento e Controle
+
+DIRETRIZES DE GOVERNANÇA
+
+• Marco Institucional
+
+• Responsabilidades
+
+• Avaliação Ambiental
+
+• Gestão de Conflitos
+
+• Transparência
+
+RESULTADOS ESPERADOS
+
+• Redução do desmatamento e das áreas degradadas.
+
+• Ampliação da proteção das áreas sensíveis.
+
+• Agricultura mais sustentável.
+
+• Maior educação ambiental.
+
+• Maior resiliência climática.
+
+• Monitoramento mais eficiente.
+
+• Economia sustentável.
+
+• Cooperação institucional fortalecida.
+
+PRÓXIMOS PASSOS
+
+• Implementar estratégias de governança.
+
+• Consolidar sistemas de monitoramento.
+
+• Desenvolver programas permanentes de educação ambiental.
+
+• Fortalecer a cooperação institucional.
+
+• Aprimorar a resposta operacional.
+
+• Garantir transparência e avaliação permanente.
+
+MENSAGEM AOS GESTORES
+
 A prevenção das queimadas exige liderança, integração institucional, planejamento, monitoramento e compromisso permanente. Os gestores municipais possuem papel decisivo na proteção do território, na prevenção dos incêndios florestais e na construção de respostas coordenadas diante dos riscos ambientais.
+
 A prevenção é sempre menos custosa e mais efetiva do que a reação tardia. Planejamento, fiscalização, monitoramento e educação ambiental devem constituir prioridades permanentes da administração pública.
+
 O enfrentamento desse desafio depende da atuação integrada dos órgãos governamentais, da sociedade e dos setores produtivos, produzindo resultados concretos e duradouros para a população de Rondônia.
-📚 FONTES
-🔥 INPE • 🛰️ CENSIPAM • 🌎 MAPBIOMAS • 🌳 PRODES • 🚒 CBMRO • 🏛️ SEDAM • 🛡️ DEFESA CIVIL • ⚖️ TCE-RO
+
+FONTES
+INPE • CENSIPAM • MAPBIOMAS • PRODES • CBMRO • SEDAM • DEFESA CIVIL • TCE-RO
 `
 textoResumo=corrigirUTF8(textoResumo)
 const linhas=doc.splitTextToSize(textoResumo,202)
@@ -2139,7 +2168,6 @@ doc.setFont('helvetica','normal')
 doc.setFontSize(4.5)
 
 doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
-textoResumo=limparTextoPDF(textoResumo)
 }
 
 
