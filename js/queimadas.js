@@ -1999,7 +1999,18 @@ if(typeof renderTopRiscos==='function')await renderTopRiscos()
 if(typeof renderMapaMunicipios==='function')await renderMapaMunicipios()
 alert('Heatmap atualizado com sucesso.')
 }
-
+function limparTextoPDF(txt){
+return String(txt||'')
+.replace(/Ã§/g,'ç')
+.replace(/Ã£/g,'ã')
+.replace(/Ã¡/g,'á')
+.replace(/Ã©/g,'é')
+.replace(/Ã­/g,'í')
+.replace(/Ã³/g,'ó')
+.replace(/Ãº/g,'ú')
+.replace(/Ã‰/g,'É')
+.replace(/Ã‡/g,'Ç')
+}
 /*=========================================================
 074 GERAR SUMARIO EXECUTIVO
 =========================================================*/
@@ -2012,35 +2023,26 @@ const imgRio=await toDataURL('assets/geojson/riomadeira.jpg')
 const imgRO=await toDataURL('assets/geojson/brasaoro.png')
 const imgSEDAM=await toDataURL('assets/geojson/sedam.png')
 const imgSEPAT=await toDataURL('assets/geojson/sepat.png')
-  
 /*=========================================================
 CAPA SUPERIOR
 =========================================================*/
 doc.addImage(imgQueimadas,'PNG',0,0,210,45)
-
 doc.setFillColor(255,255,255)
 doc.roundedRect(102,4,103,36,2,2,'F')
-
 doc.addImage(imgLogo,'PNG',8,4,42,14)
-
-doc.addImage(imgRO,'PNG',70,5,34,34)
-
+// doc.addImage(imgRO,'PNG',70,5,34,34)
 doc.setFont('helvetica','bold')
 doc.setTextColor(15,61,145)
 doc.setFontSize(17)
 doc.text('SUMÁRIO EXECUTIVO',154,16,{align:'center'})
-
 doc.setFontSize(8)
 doc.setTextColor(34,84,61)
 doc.text('GUIA EXECUTIVO PARA PREVENÇÃO E COMBATE ÀS QUEIMADAS',154,24,{align:'center'})
 doc.text('Governança • Gestão de Riscos • Resiliência Municipal • Rondônia',154,30,{align:'center'})
-
 doc.setFillColor(15,61,145)
 doc.rect(0,45,210,3,'F')
-
 doc.setFillColor(245,248,250)
 doc.roundedRect(5,50,200,16,2,2,'F')
-
 doc.setFont('helvetica','normal')
 doc.setTextColor(0,0,0)
 doc.setFontSize(5.5)
@@ -2157,6 +2159,7 @@ doc.setFont('helvetica','normal')
 doc.setFontSize(4.5)
 
 doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
+textoResumo=limparTextoPDF(textoResumo)
 }
 
 
