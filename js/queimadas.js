@@ -2013,230 +2013,148 @@ const imgRO=await toDataURL('assets/geojson/brasaoro.png')
 const imgSEDAM=await toDataURL('assets/geojson/sedam.png')
 const imgSEPAT=await toDataURL('assets/geojson/sepat.png')
   
-/* CABECALHO MODERNO */
-doc.addImage(imgQueimadas,'PNG',0,0,210,42)
+/*=========================================================
+CAPA SUPERIOR
+=========================================================*/
+doc.addImage(imgQueimadas,'PNG',0,0,210,45)
 
 doc.setFillColor(255,255,255)
-doc.setDrawColor(255,255,255)
-doc.roundedRect(95,-8,125,70,0,0,'F')
+doc.roundedRect(102,4,103,36,2,2,'F')
 
-doc.setDrawColor(0,96,64)
-doc.setLineWidth(2)
-doc.curve?.()
+doc.addImage(imgLogo,'PNG',8,4,42,14)
 
-doc.addImage(imgLogo,'PNG',8,4,38,14)
+doc.addImage(imgRO,'PNG',70,5,34,34)
 
-doc.addImage(imgRO,'PNG',66,18,28,28)
+doc.setFont('helvetica','bold')
+doc.setTextColor(15,61,145)
+doc.setFontSize(17)
+doc.text('SUMÁRIO EXECUTIVO',154,16,{align:'center'})
 
-doc.setTextColor(10,45,90)
-doc.setFont('helvetica','bold')
-doc.setFontSize(22)
-doc.text('SUMÁRIO EXECUTIVO',150,24,{align:'center'})
-
-doc.setTextColor(34,84,61)
-doc.setFontSize(11)
-doc.text('GUIA EXECUTIVO PARA PREVENÇÃO E',150,34,{align:'center'})
-doc.text('COMBATE ÀS QUEIMADAS E INCÊNDIOS FLORESTAIS',150,40,{align:'center'})
-
-doc.setFillColor(16,54,132)
-doc.roundedRect(112,44,80,8,2,2,'F')
-
-doc.setFontSize(8)
-doc.setTextColor(255,255,255)
-doc.text('Governança • Gestão de Riscos • Resiliência Municipal • Rondônia',152,49,{align:'center'})
-
-let yEsq=95
-let yDir=95
-doc.addImage(imgRio,'JPEG',10,70,88,55)
-doc.addImage(imgRO,'PNG',140,58,28,28)
-doc.setDrawColor(220,220,220)
-doc.line(105,70,105,275)
-yEsq=112
-doc.setFont('helvetica','bold')
-doc.setFontSize(13)
-doc.text('APRESENTAÇÃO',15,yEsq)
-yEsq+=8
-
-doc.setFont('helvetica','normal')
-doc.setFontSize(7)
-
-let apresentacao=[
-'As queimadas e incêndios florestais constituem um dos',
-'principais desafios à gestão pública em Rondônia, com impactos',
-'diretos sobre a saúde da população, a qualidade do ar, os',
-'recursos naturais, a biodiversidade, a economia e a qualidade',
-'de vida.',
-'',
-'Este Guia Executivo orienta prefeitos, gestores e equipes',
-'técnicas na adoção de medidas estruturantes que fortaleçam a',
-'capacidade institucional dos municípios, promovam a prevenção',
-'e reduzam os impactos desses eventos.',
-'',
-'As recomendações estão alinhadas às boas práticas de',
-'governança pública e à atuação orientativa do TCE-RO,',
-'com foco na prevenção, eficiência, transparência,',
-'sustentabilidade e geração de valor público.'
-]
-apresentacao.forEach(l=>{
-doc.text(l,15,yEsq)
-yEsq+=3.5
-})
-yEsq+=4
-doc.setFont('helvetica','bold')
-doc.setFontSize(11)
-doc.text('OBJETIVOS ESTRATÉGICOS',15,yEsq)
-yEsq+=6
-doc.setFont('helvetica','normal')
-doc.setFontSize(7)
-let objetivos=[
-'• Implementar governança integrada para prevenção e combate às queimadas.',
-'• Estruturar mecanismos permanentes de gestão de riscos.',
-'• Integrar meio ambiente, defesa civil, saúde, educação e assistência social.',
-'• Proteger a população e grupos vulneráveis.',
-'• Reduzir impactos ambientais, sociais e econômicos.',
-'• Melhorar a capacidade de resposta institucional.',
-'• Produzir evidências para subsidiar decisões.',
-'• Fortalecer a resiliência municipal.'
-]
-objetivos.forEach(l=>{
-doc.text(l,18,yEsq)
-yEsq+=4
-})
-yEsq+=3
-doc.setFont('helvetica','bold')
-doc.setFontSize(11)
-doc.text('EIXOS ESTRUTURANTES',15,yEsq)
-yEsq+=5
-const eixos=[
-['GOVERNANÇA E PLANEJAMENTO','#166534','Coordenação Municipal • Plano Municipal'],
-['MONITORAMENTO E INTELIGÊNCIA','#1d4ed8','Focos de calor • Avaliação de riscos'],
-['RESPOSTA OPERACIONAL','#b45309','Brigadas • Fiscalização Integrada'],
-['PROTEÇÃO DA POPULAÇÃO','#6d28d9','Saúde • Defesa Civil • Comunicação'],
-['GESTÃO PERMANENTE','#0f766e','Indicadores • Evidências • Avaliação']
-]
-eixos.forEach(e=>{
-doc.setFillColor(parseInt(e[1].substring(1,3),16),parseInt(e[1].substring(3,5),16),parseInt(e[1].substring(5,7),16))
-doc.roundedRect(15,yEsq,80,7,2,2,'F')
-doc.setTextColor(255,255,255)
-doc.setFont('helvetica','bold')
-doc.setFontSize(7)
-doc.text(e[0],55,yEsq+3.5,{align:'center'})
-yEsq+=8
-})
-doc.setTextColor(0,0,0)
-doc.setFont('helvetica','bold')
-doc.setFontSize(11)
-doc.text('DIRETRIZES DE GOVERNANÇA',110,yDir)
-yDir+=6
-doc.setFont('helvetica','bold')
-doc.setFontSize(8)
-doc.text('Governança Pública',110,yDir)
-yDir+=4
-doc.setFont('helvetica','normal')
-doc.setFontSize(7)
-doc.text('Fortalecimento da liderança, definição de responsabilidades,',110,yDir)
-yDir+=3
-doc.text('coordenação institucional, transparência e prestação de contas.',110,yDir)
-yDir+=6
-doc.setFont('helvetica','bold')
-doc.setFontSize(8)
-doc.text('Gestão de Riscos',110,yDir)
-yDir+=4
-doc.setFont('helvetica','normal')
-doc.setFontSize(7)
-doc.text('Identificação, avaliação, tratamento e monitoramento contínuo',110,yDir)
-yDir+=3
-doc.text('dos riscos relacionados às queimadas e incêndios florestais.',110,yDir)
-yDir+=7
-doc.setFont('helvetica','bold')
-doc.setFontSize(11)
-doc.text('METODOLOGIA CHAP',110,yDir)
-yDir+=5
-doc.setFont('helvetica','normal')
-doc.setFontSize(6.5)
-doc.text('C – Capacidade Institucional: estrutura, recursos, planejamento.',110,yDir);yDir+=3
-doc.text('H – Harmonização Institucional: integração entre órgãos.',110,yDir);yDir+=3
-doc.text('A – Atuação Preventiva: monitoramento, fiscalização e resposta.',110,yDir);yDir+=3
-doc.text('P – Propósito: proteção da vida e desenvolvimento sustentável.',110,yDir);yDir+=6
-doc.setFont('helvetica','bold')
-doc.setFontSize(11)
-doc.text('METODOLOGIA M-RAIG',110,yDir)
-yDir+=5
-doc.setFont('helvetica','normal')
-doc.setFontSize(6.5)
-doc.text('M – Mitigar impactos ambientais, sociais e econômicos.',110,yDir);yDir+=3
-doc.text('R – Reduzir probabilidade e severidade das ocorrências.',110,yDir);yDir+=3
-doc.text('A – Antecipar situações críticas mediante inteligência.',110,yDir);yDir+=3
-doc.text('I – Integrar instituições e fortalecer cooperação.',110,yDir);yDir+=3
-doc.text('G – Gerenciar continuamente riscos e resultados.',110,yDir);yDir+=6
-doc.setFont('helvetica','bold')
-doc.setFontSize(11)
-doc.text('RESULTADOS ESPERADOS',110,yDir)
-yDir+=7
-const resultados=[
-'Ampliar capacidade institucional',
-'Fortalecer governança ambiental',
-'Reduzir áreas queimadas e danos ambientais',
-'Proteger a saúde da população',
-'Aumentar a integração entre instituições',
-'Aumentar a eficiência na utilização de recursos públicos',
-'Qualificar o planejamento e a tomada de decisão',
-'Aprimorar a transparência e a prestação de contas',
-'Consolidar Políticas Públicas permanentes de prevenção'
-]
-let x=110
-let yy=yDir
-resultados.forEach((r,i)=>{
-doc.setFillColor(238,245,238)
-doc.roundedRect(x,yy,40,12,2,2,'F')
-doc.setFontSize(6)
-doc.setTextColor(0,0,0)
-doc.text(r,x+20,yy+6,{
-align:'center',
-maxWidth:34
-})
-x+=43
-if(x>190){
-x=110
-yy+=14
-}
-})
-doc.setFont('helvetica','bold')
-doc.setFontSize(8)
-doc.setTextColor(0,0,0)
-doc.text('ÓRGÃOS PARTICIPANTES',15,205)
-doc.addImage(imgSEDAM,'PNG',15,208,20,10)
-doc.addImage(imgSEPAT,'PNG',38,208,20,10)
-doc.setFillColor(230,245,230)
-doc.roundedRect(15,242,180,30,3,3,'F')
-doc.setFont('helvetica','bold')
-doc.setFontSize(10)
-doc.setTextColor(34,84,61)
-doc.text('MENSAGEM AOS GESTORES',20,251)
-doc.setFont('helvetica','normal')
-doc.setFontSize(7)
-doc.setTextColor(0,0,0)
-doc.text('A prevenção das queimadas exige liderança, integração institucional, planejamento,',20,258)
-doc.text('monitoramento e compromisso permanente com a proteção da população e do patrimônio ambiental.',20,262)
-doc.text('Municípios que fortalecem sua capacidade institucional tornam-se mais resilientes,',20,266)
-doc.text('eficientes e preparados para enfrentar eventos climáticos extremos.',20,270)
-doc.setFont('helvetica','bold')
 doc.setFontSize(8)
 doc.setTextColor(34,84,61)
-doc.text('FONTES DE INFORMAÇÃO',15,278)
+doc.text('GUIA EXECUTIVO PARA PREVENÇÃO E COMBATE ÀS QUEIMADAS',154,24,{align:'center'})
+doc.text('Governança • Gestão de Riscos • Resiliência Municipal • Rondônia',154,30,{align:'center'})
+
 doc.setFillColor(15,61,145)
-doc.rect(0,280,210,17,'F')
-doc.setTextColor(255,255,255)
-doc.setFontSize(7)
-doc.text('INPE',12,289)
-doc.text('CENSIPAM',42,289)
-doc.text('MAPBIOMAS FOGO',72,289)
-doc.text('DEFESA CIVIL',118,289)
-doc.text('TCE-RO',170,289)
+doc.rect(0,45,210,3,'F')
+
+doc.setFillColor(245,248,250)
+doc.roundedRect(5,50,200,16,2,2,'F')
+
 doc.setFont('helvetica','normal')
-doc.setFontSize(6)
-doc.setTextColor(120,120,120)
-doc.text('Tribunal de Contas do Estado de Rondônia • PCe 0501/2026 • Projeto Queimadas',105,294,{align:'center'})
+doc.setTextColor(0,0,0)
+doc.setFontSize(5.5)
+
+doc.text(
+'Tribunal de Contas do Estado de Rondônia — documento de apoio para leitura estratégica, monitoramento de políticas públicas e orientação sobre prevenção e combate às queimadas e incêndios florestais.',
+10,
+58,
+{maxWidth:190}
+)
+doc.addImage(imgRio,'JPEG',0,68,210,30)
+
+doc.setFillColor(255,255,255)
+doc.setGState(new doc.GState({opacity:0.92}))
+doc.rect(0,68,210,220,'F')
+doc.setGState(new doc.GState({opacity:1}))
+
+doc.setFont('helvetica','normal')
+doc.setTextColor(0,0,0)
+doc.setFontSize(5.5)
+
+const textoResumo=`
+📋 APRESENTAÇÃO
+
+As queimadas e os incêndios florestais permanecem entre os maiores desafios ambientais, sociais e institucionais enfrentados por Rondônia. Seus impactos ultrapassam a esfera ambiental, afetando diretamente a saúde da população, a qualidade do ar, a biodiversidade, os recursos hídricos, a economia regional e a qualidade de vida das comunidades urbanas e rurais.
+
+Esses eventos decorrem de múltiplos fatores, incluindo condições climáticas adversas, uso inadequado do fogo, expansão de atividades produtivas sem planejamento adequado, fragilidades nos mecanismos preventivos e limitações na capacidade de resposta institucional.
+
+Além dos danos ambientais imediatos, as queimadas ampliam riscos à segurança territorial, pressionam os serviços públicos de saúde e defesa civil, aumentam os custos governamentais e comprometem o desenvolvimento sustentável.
+
+Nesse contexto, o Tribunal de Contas do Estado de Rondônia atua como indutor da melhoria das políticas públicas, promovendo o fortalecimento da governança, da gestão de riscos, da transparência e da efetividade das ações desenvolvidas pelos órgãos responsáveis.
+
+🎯 OBJETIVOS ESTRATÉGICOS
+
+🏛️ Fortalecer a Governança Institucional para integrar órgãos, normas, competências e fluxos decisórios relacionados à prevenção e ao combate às queimadas.
+
+📚 Promover Educação Ambiental mediante campanhas permanentes, capacitações e mobilização social.
+
+🔥 Melhorar a Gestão do Fogo com planejamento territorial, prevenção ativa e resposta rápida.
+
+⚖️ Garantir o Cumprimento da Legislação Ambiental mediante fiscalização e responsabilização.
+
+🌳 Estimular Práticas Sustentáveis de produção e conservação dos recursos naturais.
+
+📡 Ampliar o Monitoramento e a Inteligência para apoiar decisões baseadas em evidências.
+
+🏛️ EIXOS ESTRUTURANTES
+
+🏛️ Governança e Planejamento
+📡 Monitoramento e Inteligência
+🌱 Prevenção e Educação Ambiental
+🚒 Resposta e Recuperação
+💰 Financiamento e Controle
+
+⚖️ DIRETRIZES DE GOVERNANÇA
+
+🏛️ Marco Institucional
+👥 Responsabilidades
+🌳 Avaliação Ambiental
+🤝 Gestão de Conflitos
+🔎 Transparência
+
+🌱 RESULTADOS ESPERADOS
+
+🌳 Redução do desmatamento e das áreas degradadas.
+🛡️ Ampliação da proteção das áreas sensíveis.
+🚜 Agricultura mais sustentável.
+📚 Maior educação ambiental.
+🌡️ Maior resiliência climática.
+📡 Monitoramento mais eficiente.
+💼 Economia sustentável.
+🤝 Cooperação institucional fortalecida.
+
+✅ PRÓXIMOS PASSOS
+
+☑️ Implementar estratégias de governança.
+☑️ Consolidar sistemas de monitoramento.
+☑️ Desenvolver programas permanentes de educação ambiental.
+☑️ Fortalecer a cooperação institucional.
+☑️ Aprimorar a resposta operacional.
+☑️ Garantir transparência e avaliação permanente.
+
+📢 MENSAGEM AOS GESTORES
+
+A prevenção das queimadas exige liderança, integração institucional, planejamento, monitoramento e compromisso permanente. Os gestores municipais possuem papel decisivo na proteção do território, na prevenção dos incêndios florestais e na construção de respostas coordenadas diante dos riscos ambientais.
+
+A prevenção é sempre menos custosa e mais efetiva do que a reação tardia. Planejamento, fiscalização, monitoramento e educação ambiental devem constituir prioridades permanentes da administração pública.
+
+O enfrentamento desse desafio depende da atuação integrada dos órgãos governamentais, da sociedade e dos setores produtivos, produzindo resultados concretos e duradouros para a população de Rondônia.
+
+📚 FONTES
+
+🔥 INPE • 🛰️ CENSIPAM • 🌎 MAPBIOMAS • 🌳 PRODES • 🚒 CBMRO • 🏛️ SEDAM • 🛡️ DEFESA CIVIL • ⚖️ TCE-RO
+`
+
+const linhas=doc.splitTextToSize(textoResumo,202)
+doc.text(linhas,4,72)
+
+doc.setFillColor(15,61,145)
+doc.rect(0,287,210,10,'F')
+
+doc.setTextColor(255,255,255)
+doc.setFont('helvetica','bold')
+doc.setFontSize(5)
+
+doc.text(
+'TRIBUNAL DE CONTAS DO ESTADO DE RONDÔNIA • PCe 0501/2026 • MONITORAMENTO DAS QUEIMADAS',
+105,
+291,
+{align:'center'}
+)
+
+doc.setFont('helvetica','normal')
+doc.setFontSize(4.5)
 
 doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
 }
