@@ -2079,7 +2079,16 @@ let apresentacao=[
 'com foco na prevenção, eficiência, transparência,',
 'sustentabilidade e geração de valor público.'
 ]
-
+let objetivos=[
+'• Implementar governança integrada para prevenção e combate às queimadas.',
+'• Estruturar mecanismos permanentes de gestão de riscos.',
+'• Integrar meio ambiente, defesa civil, saúde, educação e assistência social.',
+'• Proteger a população e grupos vulneráveis.',
+'• Reduzir impactos ambientais, sociais e econômicos.',
+'• Melhorar a capacidade de resposta institucional.',
+'• Produzir evidências para subsidiar decisões.',
+'• Fortalecer a resiliência municipal.'
+]
 objetivos.forEach(l=>{
 doc.text(l,18,yEsq)
 yEsq+=4
