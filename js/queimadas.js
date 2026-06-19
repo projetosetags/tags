@@ -2012,14 +2012,6 @@ const imgRio=await toDataURL('assets/geojson/riomadeira.jpg')
 const imgRO=await toDataURL('assets/geojson/brasaoro.png')
 const imgSEDAM=await toDataURL('assets/geojson/sedam.png')
 const imgSEPAT=await toDataURL('assets/geojson/sepat.png')
-doc.addImage(imgQueimadas,'PNG',0,0,210,28)
-doc.addImage(imgLogo,'PNG',10,5,55,18)
-doc.addImage(imgRio,'JPEG',0,0,105,55)
-doc.addImage(imgQueimadas,'PNG',105,0,105,30)
-doc.addImage(imgRO,'PNG',100,25,28,28)
-doc.setFillColor(255,255,255)
-doc.roundedRect(105,5,98,22,2,2,'F')
-doc.addImage(imgLogo,'PNG',8,4,38,14)
   
 doc.setFillColor(255,255,255)
 doc.rect(0,0,210,35,'F')
@@ -2052,9 +2044,9 @@ doc.line(10,54,200,54)
 let yEsq=64
 let yDir=64
 doc.addImage(imgRio,'JPEG',10,56,88,42)
-doc.addImage(imgRO,'PNG',118,56,24,34)
+doc.addImage(imgRO,'PNG',140,58,28,28)
 doc.setDrawColor(220,220,220)
-doc.line(105,58,105,238)
+doc.line(105,58,105,276)
 yEsq=112
 doc.setFont('helvetica','bold')
 doc.setFontSize(13)
@@ -2081,6 +2073,17 @@ let apresentacao=[
 'com foco na prevenção, eficiência, transparência,',
 'sustentabilidade e geração de valor público.'
 ]
+apresentacao.forEach(l=>{
+doc.text(l,15,yEsq)
+yEsq+=3.5
+})
+yEsq+=4
+doc.setFont('helvetica','bold')
+doc.setFontSize(11)
+doc.text('OBJETIVOS ESTRATÉGICOS',15,yEsq)
+yEsq+=6
+doc.setFont('helvetica','normal')
+doc.setFontSize(7)
 let objetivos=[
 '• Implementar governança integrada para prevenção e combate às queimadas.',
 '• Estruturar mecanismos permanentes de gestão de riscos.',
@@ -2172,7 +2175,7 @@ const resultados=[
 'Reduzir áreas queimadas e danos ambientais',
 'Proteger a saúde da população',
 'Aumentar a integração entre instituições',
-'Aumentar a eficieência na utilização de recursos públicos',
+'Aumentar a eficiência na utilização de recursos públicos',
 'Qualificar o planejamento e a tomada de decisão',
 'Aprimorar a transparência e a prestação de contas',
 'Consolidar Políticas Públicas permanentes de prevenção'
@@ -2181,11 +2184,15 @@ let x=110
 let yy=yDir
 resultados.forEach((r,i)=>{
 doc.setFillColor(238,245,238)
-doc.roundedRect(x,yy,28,12,2,2,'F')
+doc.roundedRect(x,yy,40,12,2,2,'F')
 doc.setFontSize(6)
-doc.text(r,x+14,yy+6,{align:'center',maxWidth:24})
-x+=31
-if((i+1)%2===0){
+doc.setTextColor(0,0,0)
+doc.text(r,x+20,yy+6,{
+align:'center',
+maxWidth:34
+})
+x+=43
+if(x>190){
 x=110
 yy+=14
 }
@@ -2222,7 +2229,10 @@ doc.text('CENSIPAM',42,289)
 doc.text('MAPBIOMAS FOGO',72,289)
 doc.text('DEFESA CIVIL',118,289)
 doc.text('TCE-RO',170,289)
-
+doc.setFont('helvetica','normal')
+doc.setFontSize(6)
+doc.setTextColor(120,120,120)
+doc.text('Tribunal de Contas do Estado de Rondônia • PCe 0501/2026 • Projeto Queimadas',105,294,{align:'center'})
 
 doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
 }
