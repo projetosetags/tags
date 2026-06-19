@@ -2069,45 +2069,29 @@ let textoResumo=`
 📋 APRESENTAÇÃO
 
 As queimadas e os incêndios florestais permanecem entre os maiores desafios ambientais, sociais e institucionais enfrentados por Rondônia. Seus impactos ultrapassam a esfera ambiental, afetando diretamente a saúde da população, a qualidade do ar, a biodiversidade, os recursos hídricos, a economia regional e a qualidade de vida das comunidades urbanas e rurais.
-
 Esses eventos decorrem de múltiplos fatores, incluindo condições climáticas adversas, uso inadequado do fogo, expansão de atividades produtivas sem planejamento adequado, fragilidades nos mecanismos preventivos e limitações na capacidade de resposta institucional.
-
 Além dos danos ambientais imediatos, as queimadas ampliam riscos à segurança territorial, pressionam os serviços públicos de saúde e defesa civil, aumentam os custos governamentais e comprometem o desenvolvimento sustentável.
-
 Nesse contexto, o Tribunal de Contas do Estado de Rondônia atua como indutor da melhoria das políticas públicas, promovendo o fortalecimento da governança, da gestão de riscos, da transparência e da efetividade das ações desenvolvidas pelos órgãos responsáveis.
-
 🎯 OBJETIVOS ESTRATÉGICOS
-
 🏛️ Fortalecer a Governança Institucional para integrar órgãos, normas, competências e fluxos decisórios relacionados à prevenção e ao combate às queimadas.
-
 📚 Promover Educação Ambiental mediante campanhas permanentes, capacitações e mobilização social.
-
 🔥 Melhorar a Gestão do Fogo com planejamento territorial, prevenção ativa e resposta rápida.
-
 ⚖️ Garantir o Cumprimento da Legislação Ambiental mediante fiscalização e responsabilização.
-
 🌳 Estimular Práticas Sustentáveis de produção e conservação dos recursos naturais.
-
 📡 Ampliar o Monitoramento e a Inteligência para apoiar decisões baseadas em evidências.
-
 🏛️ EIXOS ESTRUTURANTES
-
 🏛️ Governança e Planejamento
 📡 Monitoramento e Inteligência
 🌱 Prevenção e Educação Ambiental
 🚒 Resposta e Recuperação
 💰 Financiamento e Controle
-
 ⚖️ DIRETRIZES DE GOVERNANÇA
-
 🏛️ Marco Institucional
 👥 Responsabilidades
 🌳 Avaliação Ambiental
 🤝 Gestão de Conflitos
 🔎 Transparência
-
 🌱 RESULTADOS ESPERADOS
-
 🌳 Redução do desmatamento e das áreas degradadas.
 🛡️ Ampliação da proteção das áreas sensíveis.
 🚜 Agricultura mais sustentável.
@@ -2127,15 +2111,10 @@ Nesse contexto, o Tribunal de Contas do Estado de Rondônia atua como indutor da
 ☑️ Garantir transparência e avaliação permanente.
 
 📢 MENSAGEM AOS GESTORES
-
 A prevenção das queimadas exige liderança, integração institucional, planejamento, monitoramento e compromisso permanente. Os gestores municipais possuem papel decisivo na proteção do território, na prevenção dos incêndios florestais e na construção de respostas coordenadas diante dos riscos ambientais.
-
 A prevenção é sempre menos custosa e mais efetiva do que a reação tardia. Planejamento, fiscalização, monitoramento e educação ambiental devem constituir prioridades permanentes da administração pública.
-
 O enfrentamento desse desafio depende da atuação integrada dos órgãos governamentais, da sociedade e dos setores produtivos, produzindo resultados concretos e duradouros para a população de Rondônia.
-
 📚 FONTES
-
 🔥 INPE • 🛰️ CENSIPAM • 🌎 MAPBIOMAS • 🌳 PRODES • 🚒 CBMRO • 🏛️ SEDAM • 🛡️ DEFESA CIVIL • ⚖️ TCE-RO
 `
 textoResumo=corrigirUTF8(textoResumo)
