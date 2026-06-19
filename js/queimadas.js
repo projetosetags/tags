@@ -1654,6 +1654,18 @@ if(!box)return
 let{data=[]}=await client.from('queimadas_estado_oficio').select('*').order('estado')
 let html=`
 <table class="tabelaEstado">
+<colgroup>
+<col style="width:8%">
+<col style="width:14%">
+<col style="width:5%">
+<col style="width:5%">
+<col style="width:4%">
+<col style="width:4%">
+<col style="width:5%">
+<col style="width:5%">
+<col style="width:42%">
+<col style="width:8%">
+</colgroup>
 <thead>
 <tr>
 <th>ÓRGÃO</th>
@@ -1680,8 +1692,10 @@ html+=`
 <td>${formatarDataBR(i.iidatarecebimentodoc)}</td>
 <td>${i.inumerodocenviado||'-'}</td>
 <td>${i.iinumerodocenviado||'-'}</td>
-<td>${i.observacao||'-'}</td>
-<td><button class="btnEditarMunicipio" onclick="editarEstado(${i.id})">✏ EDITAR</button></td>
+<td style="padding-right:20px;word-break:break-word;white-space:normal">${i.observacao||'-'}</td>
+<td style="min-width:90px;text-align:center">
+<button class="btnEditarMunicipio" style="width:80px" onclick="editarEstado(${i.id})">✏ EDITAR</button>
+</td>
 </tr>`
 })
 html+='</tbody></table>'
