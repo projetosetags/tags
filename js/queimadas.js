@@ -2049,21 +2049,21 @@ doc.text('METODOLOGIA CHAP',15,y)
 y+=8
 doc.setFont('helvetica','normal')
 doc.setFontSize(10)
-doc.text('C – Capacidade Institucional',20,y);y+=5
-doc.text('H – Harmonização Institucional',20,y);y+=5
-doc.text('A – Atuação Preventiva',20,y);y+=5
-doc.text('P – Propósito',20,y);y+=8
+doc.text('C - Capacidade Institucional',20,y);y+=5
+doc.text('H - Harmonização Institucional',20,y);y+=5
+doc.text('A - Atuação Preventiva',20,y);y+=5
+doc.text('P - Propósito',20,y);y+=8
 doc.setFont('helvetica','bold')
 doc.setFontSize(14)
 doc.text('METODOLOGIA M-RAIG',15,y)
 y+=8
 doc.setFont('helvetica','normal')
 doc.setFontSize(10)
-doc.text('M – Mitigar',20,y);y+=5
-doc.text('R – Reduzir',20,y);y+=5
-doc.text('A – Antecipar',20,y);y+=5
-doc.text('I – Integrar',20,y);y+=5
-doc.text('G – Gerenciar',20,y);y+=8
+doc.text('M - Mitigar',20,y);y+=5
+doc.text('R - Reduzir',20,y);y+=5
+doc.text('A - Antecipar',20,y);y+=5
+doc.text('I - Integrar',20,y);y+=5
+doc.text('G - Gerenciar',20,y);y+=8
 doc.setFont('helvetica','bold')
 doc.setFontSize(14)
 doc.text('FÓRMULA IRIQ ESTADUAL',15,y)
