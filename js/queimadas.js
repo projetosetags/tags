@@ -1663,8 +1663,8 @@ let html=`
 <col style="width:4%">
 <col style="width:5%">
 <col style="width:5%">
-<col style="width:42%">
-<col style="width:8%">
+<col style="width:40%">
+<col style="width:10%">
 </colgroup>
 <thead>
 <tr>
