@@ -3460,3 +3460,26 @@ origem:sepatUser?.origem||'SEPAT'
 100 FINALIZAR SISTEMA
 =========================================================*/
 console.log('TAG SEPAT 2026 • Sistema carregado com sucesso.')
+/*=========================================================
+101 OCULTAR MESES
+=========================================================*/
+function ocultarMesesSepat(){
+document.querySelectorAll(
+'.mes-jan,.mes-fev,.mes-mar,.mes-abr,.mes-mai,.mes-jun,.mes-jul,.mes-ago,.mes-set,.mes-out,.mes-nov,.mes-dez'
+).forEach(el=>{
+el.style.display='none'
+})
+localStorage.setItem('sepatOcultarMeses','SIM')
+}
+/*=========================================================
+102 EXIBIR MESES
+=========================================================*/
+function mostrarMesesSepat(){
+document.querySelectorAll(
+'.mes-jan,.mes-fev,.mes-mar,.mes-abr,.mes-mai,.mes-jun,.mes-jul,.mes-ago,.mes-set,.mes-out,.mes-nov,.mes-dez'
+).forEach(el=>{
+el.style.display=''
+})
+controlarMesesSepat()
+localStorage.setItem('sepatOcultarMeses','NAO')
+}
