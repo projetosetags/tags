@@ -274,18 +274,9 @@ class="btn-modo-sepat">
 SUBITEM
 </button>
 
-<button
-onclick="ocultarMesesSepat()"
-class="btn-modo-sepat">
-OCULTAR MESES
+<button onclick="restaurarColunasMesesSepat()" class="btn-modo-sepat">
+EXIBIR COLUNAS
 </button>
-
-<button
-onclick="mostrarMesesSepat()"
-class="btn-modo-sepat">
-EXIBIR MESES
-</button>
-
 </div>
 
 <button onclick="gerarPDFMonitoramentoSepat()" class="btn-pdf-sepat">
@@ -314,18 +305,18 @@ SUBITEM
 <th>PRODUTOS</th>
 <th>RESPONSÁVEL(IS)</th>
 <th>DATA INÍCIO</th>
-<th class="mes-col mes-jan">JAN</th>
-<th class="mes-col mes-fev">FEV</th>
-<th class="mes-col mes-mar">MAR</th>
-<th class="mes-col mes-abr">ABR</th>
-<th class="mes-col mes-mai">MAI</th>
-<th class="mes-col mes-jun hidden">JUN</th>
-<th class="mes-col mes-jul hidden">JUL</th>
-<th class="mes-col mes-ago hidden">AGO</th>
-<th class="mes-col mes-set hidden">SET</th>
-<th class="mes-col mes-out hidden">OUT</th>
-<th class="mes-col mes-nov hidden">NOV</th>
-<th class="mes-col mes-dez hidden">DEZ</th>
+<th class="mes-col mes-jan" onclick="ocultarColunaMesSepat('jan')" style="cursor:pointer">JAN</th>
+<th class="mes-col mes-fev" onclick="ocultarColunaMesSepat('fev')" style="cursor:pointer">FEV</th>
+<th class="mes-col mes-mar" onclick="ocultarColunaMesSepat('mar')" style="cursor:pointer">MAR</th>
+<th class="mes-col mes-abr" onclick="ocultarColunaMesSepat('abr')" style="cursor:pointer">ABR</th>
+<th class="mes-col mes-mai" onclick="ocultarColunaMesSepat('mai')" style="cursor:pointer">MAI</th>
+<th class="mes-col mes-jun hidden" onclick="ocultarColunaMesSepat('jun')" style="cursor:pointer">JUN</th>
+<th class="mes-col mes-jul hidden" onclick="ocultarColunaMesSepat('jul')" style="cursor:pointer">JUL</th>
+<th class="mes-col mes-ago hidden" onclick="ocultarColunaMesSepat('ago')" style="cursor:pointer">AGO</th>
+<th class="mes-col mes-set hidden" onclick="ocultarColunaMesSepat('set')" style="cursor:pointer">SET</th>
+<th class="mes-col mes-out hidden" onclick="ocultarColunaMesSepat('out')" style="cursor:pointer">OUT</th>
+<th class="mes-col mes-nov hidden" onclick="ocultarColunaMesSepat('nov')" style="cursor:pointer">NOV</th>
+<th class="mes-col mes-dez hidden" onclick="ocultarColunaMesSepat('dez')" style="cursor:pointer">DEZ</th>
 <th>TOTAL</th>
 </tr>
 </thead>
