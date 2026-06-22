@@ -700,19 +700,32 @@ let canvas=document.getElementById('graficoLinhaSepat')
 if(!canvas)return
 let ctx=canvas.getContext('2d')
 if(graficoLinhaSepat)graficoLinhaSepat.destroy()
-let labels=MESES_LABEL_SEPAT.slice(0,MES_ATUAL_SEPAT+1)
-let valores=MESES_SEPAT.slice(0,MES_ATUAL_SEPAT+1).map(m=>{
+
+let mesFechado=4
+
+let labels=MESES_LABEL_SEPAT.slice(0,mesFechado+1)
+
+let valores=MESES_SEPAT.slice(0,mesFechado+1).map((mesAtual,indice)=>{
 let soma=0
 let qtd=0
+
 lista.forEach(i=>{
-let v=Number(i[m]||0)
-if(!isNaN(v)){
-soma+=v
-qtd++
+
+let acumulado=0
+
+for(let x=0;x<=indice;x++){
+let v=Number(i[MESES_SEPAT[x]]||0)
+if(v>acumulado)acumulado=v
 }
+
+soma+=acumulado
+qtd++
+
 })
+
 return Math.round(soma/(qtd||1))
 })
+
 graficoLinhaSepat=new Chart(ctx,{
 type:'line',
 data:{
@@ -744,7 +757,11 @@ font:{size:14,weight:'900'},
 color:'#111827'
 }
 },
-tooltip:{callbacks:{label:(ctx)=>ctx.raw+'%'}},
+tooltip:{
+callbacks:{
+label:(ctx)=>ctx.raw+'%'
+}
+},
 datalabels:{
 display:true,
 anchor:'end',
@@ -755,8 +772,18 @@ formatter:(v)=>v+'%'
 }
 },
 scales:{
-y:{beginAtZero:true,max:100,ticks:{callback:(v)=>v+'%'}},
-x:{ticks:{font:{weight:'800',size:10}}}
+y:{
+beginAtZero:true,
+max:100,
+ticks:{
+callback:(v)=>v+'%'
+}
+},
+x:{
+ticks:{
+font:{weight:'800',size:10}
+}
+}
 }
 },
 plugins:[ChartDataLabels]
