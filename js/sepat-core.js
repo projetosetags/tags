@@ -1146,6 +1146,9 @@ ${total}%
 return html
 
 }).join('')
+if(localStorage.getItem('sepatOcultarMeses')==='SIM'){
+ocultarMesesSepat()
+}
 atualizarMiniKPIsSepat()
 }
 /*=========================================================
