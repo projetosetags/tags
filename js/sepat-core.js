@@ -533,7 +533,15 @@ let totalProdutos=[...new Set(lista.map(i=>String(i.produto||'').trim()).filter(
 
 let validos=lista.filter(i=>!isNaN(getTotalSepat(i)))
 
-let media=Math.round(validos.reduce((acc,c)=>acc+getTotalSepat(c),0)/(validos.length||1))
+let mesFechado=Math.max(0,new Date().getMonth()-1)
+
+let campoMesFechado=MESES_SEPAT[mesFechado]
+
+let media=Math.round(
+lista.reduce((acc,i)=>{
+return acc+Number(i[campoMesFechado]||0)
+},0)/(lista.length||1)
+)
 
 let kpiItens=document.getElementById('kpiItensSepat')
 let kpiSubitens=document.getElementById('kpiSubitensSepat')
@@ -703,6 +711,8 @@ if(graficoLinhaSepat)graficoLinhaSepat.destroy()
 
 let mesFechado=4
 
+let mesFechado=Math.max(0,new Date().getMonth()-1)
+
 let labels=MESES_LABEL_SEPAT.slice(0,mesFechado+1)
 
 let valores=MESES_SEPAT.slice(0,mesFechado+1).map((mesAtual,indice)=>{
@@ -713,7 +723,7 @@ lista.forEach(i=>{
 
 let acumulado=0
 
-for(let x=0;x<=indice;x++){
+for(let x=0;x<=indice&&x<=mesFechado;x++){
 let v=Number(i[MESES_SEPAT[x]]||0)
 if(v>acumulado)acumulado=v
 }
