@@ -709,8 +709,6 @@ if(!canvas)return
 let ctx=canvas.getContext('2d')
 if(graficoLinhaSepat)graficoLinhaSepat.destroy()
 
-let mesFechado=4
-
 let mesFechado=Math.max(0,new Date().getMonth()-1)
 
 let labels=MESES_LABEL_SEPAT.slice(0,mesFechado+1)
