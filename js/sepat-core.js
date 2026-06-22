@@ -531,16 +531,14 @@ let totalSubitens=lista.length
 
 let totalProdutos=[...new Set(lista.map(i=>String(i.produto||'').trim()).filter(Boolean))].length
 
-let validos=lista.filter(i=>!isNaN(getTotalSepat(i)))
-
 let mesFechado=Math.max(0,new Date().getMonth()-1)
 
 let campoMesFechado=MESES_SEPAT[mesFechado]
 
 let media=Math.round(
-lista.reduce((acc,i)=>{
-return acc+Number(i[campoMesFechado]||0)
-},0)/(lista.length||1)
+lista.reduce((acc,i)=>acc+Number(i[campoMesFechado]||0),0)
+/
+(lista.length||1)
 )
 
 let kpiItens=document.getElementById('kpiItensSepat')
@@ -704,34 +702,28 @@ doc.save('pdf_dashboard_tag_sepat.pdf')
 011 SEPAT CORE GRAFICO LINHA
 =========================================================*/
 function renderGraficoLinhaSepat(lista){
+
 let canvas=document.getElementById('graficoLinhaSepat')
 if(!canvas)return
+
 let ctx=canvas.getContext('2d')
+
 if(graficoLinhaSepat)graficoLinhaSepat.destroy()
 
 let mesFechado=Math.max(0,new Date().getMonth()-1)
 
 let labels=MESES_LABEL_SEPAT.slice(0,mesFechado+1)
 
-let valores=MESES_SEPAT.slice(0,mesFechado+1).map((mesAtual,indice)=>{
+let valores=MESES_SEPAT.slice(0,mesFechado+1).map(m=>{
+
 let soma=0
-let qtd=0
 
 lista.forEach(i=>{
-
-let acumulado=0
-
-for(let x=0;x<=indice&&x<=mesFechado;x++){
-let v=Number(i[MESES_SEPAT[x]]||0)
-if(v>acumulado)acumulado=v
-}
-
-soma+=acumulado
-qtd++
-
+soma+=Number(i[m]||0)
 })
 
-return Math.round(soma/(qtd||1))
+return Math.round(soma/(lista.length||1))
+
 })
 
 graficoLinhaSepat=new Chart(ctx,{
@@ -796,6 +788,7 @@ font:{weight:'800',size:10}
 },
 plugins:[ChartDataLabels]
 })
+
 }
 /*=========================================================
 012 SEPAT CORE GRAFICO PIZZA
