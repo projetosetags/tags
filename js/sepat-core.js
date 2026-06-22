@@ -1146,9 +1146,15 @@ ${total}%
 return html
 
 }).join('')
-if(localStorage.getItem('sepatOcultarMeses')==='SIM'){
-ocultarMesesSepat()
-}
+let ocultas=JSON.parse(
+localStorage.getItem('sepatColunasOcultas')||'[]'
+)
+
+ocultas.forEach(mes=>{
+document.querySelectorAll('.mes-'+mes).forEach(el=>{
+el.style.display='none'
+})
+})
 atualizarMiniKPIsSepat()
 }
 /*=========================================================
@@ -3464,25 +3470,32 @@ origem:sepatUser?.origem||'SEPAT'
 =========================================================*/
 console.log('TAG SEPAT 2026 • Sistema carregado com sucesso.')
 /*=========================================================
-101 OCULTAR MESES
+101 OCULTAR COLUNA INDIVIDUAL
 =========================================================*/
-function ocultarMesesSepat(){
-document.querySelectorAll(
-'.mes-jan,.mes-fev,.mes-mar,.mes-abr,.mes-mai,.mes-jun,.mes-jul,.mes-ago,.mes-set,.mes-out,.mes-nov,.mes-dez'
-).forEach(el=>{
+function ocultarColunaMesSepat(mes){
+let ocultas=JSON.parse(
+localStorage.getItem('sepatColunasOcultas')||'[]'
+)
+if(!ocultas.includes(mes)){
+ocultas.push(mes)
+}
+localStorage.setItem(
+'sepatColunasOcultas',
+JSON.stringify(ocultas)
+)
+document.querySelectorAll('.mes-'+mes).forEach(el=>{
 el.style.display='none'
 })
-localStorage.setItem('sepatOcultarMeses','SIM')
 }
 /*=========================================================
-102 EXIBIR MESES
+102 RESTAURAR COLUNAS
 =========================================================*/
-function mostrarMesesSepat(){
+function restaurarColunasMesesSepat(){
+localStorage.removeItem('sepatColunasOcultas')
 document.querySelectorAll(
 '.mes-jan,.mes-fev,.mes-mar,.mes-abr,.mes-mai,.mes-jun,.mes-jul,.mes-ago,.mes-set,.mes-out,.mes-nov,.mes-dez'
 ).forEach(el=>{
 el.style.display=''
 })
 controlarMesesSepat()
-localStorage.setItem('sepatOcultarMeses','NAO')
 }
