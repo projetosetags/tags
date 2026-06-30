@@ -695,26 +695,38 @@ doc.save('pdf_dashboard_tag_sepat.pdf')
 =========================================================*/
 function renderGraficoLinhaSepat(lista){
 
+lista=[...(lista||[])]
+
 let canvas=document.getElementById('graficoLinhaSepat')
 if(!canvas)return
 
 let ctx=canvas.getContext('2d')
 
-if(graficoLinhaSepat)graficoLinhaSepat.destroy()
+if(graficoLinhaSepat){
+graficoLinhaSepat.destroy()
+}
 
 let indiceMes=MES_ATUAL_SEPAT
 
 let labels=MESES_LABEL_SEPAT.slice(0,indiceMes+1)
 
-let valores=MESES_SEPAT.slice(0,indiceMes+1).map(m=>{
+let valores=[]
+
+MESES_SEPAT.slice(0,indiceMes+1).forEach(m=>{
 
 let soma=0
 
 lista.forEach(i=>{
-soma+=Number(i[m]||0)
+let valor=Number(i[m]||0)
+if(isNaN(valor))valor=0
+soma+=valor
 })
 
-return Math.round(soma/(lista.length||1))
+valores.push(
+lista.length
+?Math.round(soma/lista.length)
+:0
+)
 
 })
 
@@ -786,20 +798,65 @@ plugins:[ChartDataLabels]
 012 SEPAT CORE GRAFICO PIZZA
 =========================================================*/
 function renderGraficoPizzaSepat(lista){
+
+lista=[...(lista||[])]
+
 let canvas=document.getElementById('graficoPizzaSepat')
 if(!canvas)return
+
 let ctx=canvas.getContext('2d')
-if(graficoPizzaSepat)graficoPizzaSepat.destroy()
-let concluidos=lista.filter(i=>getTotalSepat(i)>=100).length
-let andamento=lista.filter(i=>getTotalSepat(i)>30&&getTotalSepat(i)<100).length
-let criticos=lista.filter(i=>getTotalSepat(i)>0&&getTotalSepat(i)<=30).length
-let pendentes=lista.filter(i=>getTotalSepat(i)<=0).length
+
+if(graficoPizzaSepat){
+graficoPizzaSepat.destroy()
+}
+
+let concluidos=0
+let andamento=0
+let criticos=0
+let pendentes=0
+
+lista.forEach(i=>{
+
+let v=Number(getTotalSepat(i))
+
+if(isNaN(v))v=0
+
+if(v>=100){
+
+concluidos++
+
+}else if(v>30){
+
+andamento++
+
+}else if(v>0){
+
+criticos++
+
+}else{
+
+pendentes++
+
+}
+
+})
+
 graficoPizzaSepat=new Chart(ctx,{
 type:'doughnut',
 data:{
-labels:['100% Cumpridos','Em andamento','Abaixo de 30%','Pendentes'],
+labels:[
+'100% Cumpridos',
+'Em andamento',
+'Abaixo de 30%',
+'Pendentes'
+],
 datasets:[{
-data:[concluidos,andamento,criticos,pendentes],
+data:[
+concluidos,
+andamento,
+criticos,
+pendentes
+],
 backgroundColor:[
 '#22c55e',
 '#eab308',
@@ -818,16 +875,26 @@ plugins:{
 legend:{
 position:'right',
 labels:{
-font:{weight:'1000',size:16},
+font:{
+weight:'1000',
+size:16
+},
 color:'#111827',
 padding:24,
 boxWidth:18
 }
 },
-tooltip:{callbacks:{label:(ctx)=>ctx.label+': '+ctx.raw}},
+tooltip:{
+callbacks:{
+label:(ctx)=>ctx.label+': '+ctx.raw
+}
+},
 datalabels:{
 display:true,
-font:{weight:'1000',size:18},
+font:{
+weight:'1000',
+size:18
+},
 color:'#111827',
 formatter:(v,ctx)=>{
 let total=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0)
@@ -839,6 +906,7 @@ return Math.round((v*100)/total)+'%'
 },
 plugins:[ChartDataLabels]
 })
+
 }
 /*=========================================================
 013 SEPAT CORE GRAFICO BARRAS
@@ -854,12 +922,14 @@ let chave=String(i.siglaitem||'SEM ITEM')
 if(!mapa[chave]){
 mapa[chave]={siglaitem:chave,item:i.item||'',total:0,qtd:0,base:i}
 }
-mapa[chave].total+=getTotalSepat(i)
+mapa[chave].total+=Number(getTotalSepat(i))
 mapa[chave].qtd++
 })
 let itens=Object.values(mapa).sort((a,b)=>compareSepat(a.base,b.base))
 let labels=itens.map(i=>i.siglaitem)
-let valores=itens.map(i=>Math.round(i.total/(i.qtd||1)))
+let valores=itens.map(i=>{
+return Math.round(Number(i.total)/(i.qtd||1))
+})
 graficoBarrasSepat=new Chart(ctx,{
 type:'bar',
 data:{
@@ -1194,16 +1264,13 @@ console.log(error)
 alert('Erro ao salvar percentual')
 return
 }
-
 let item=sepatData.find(i=>String(i.id)===String(id))
 
 if(item){
 item[mes]=valor
 item.total_cumprimento=getTotalSepat(item)
 }
-renderGraficoMasterSepat()
-atualizarKPIsDashboardSepat()
-atualizarMiniKPIsSepat()
+atualizarTodosPaineisSepat()
 }
 
 /*=========================================================
@@ -3238,8 +3305,9 @@ let media=document.getElementById('kpiMediaSepat')
 if(itens)itens.innerText=t.itens
 if(subitens)subitens.innerText=t.subitens
 if(produtos)produtos.innerText=t.produtos
-if(media)media.innerText=t.media+'%'
-
+if(media){
+media.innerText=calcularMediaSepat(sepatData)+'%'
+}
 }
 /*=========================================================
 075 VALIDAR NUMERO
@@ -3255,10 +3323,7 @@ if(v<0)v=0
 if(v>100)v=100
 
 return v
-
 }
-
-
 /*=========================================================
 076 ATUALIZAR TODOS OS PAINEIS
 =========================================================*/
@@ -3272,6 +3337,7 @@ popularSubitensSepat()
 renderGraficoMasterSepat()
 atualizarMiniKPIsSepat()
 atualizarKPIsDashboardSepat()
+controlarMesesSepat()
 }
 /*=========================================================
 077 ORDENAR LISTA
@@ -3302,7 +3368,12 @@ return[...(lista||[])].filter(i=>getTotalSepat(i)>0&&getTotalSepat(i)<100)
 =========================================================*/
 function calcularMediaSepat(lista){
 lista=[...(lista||[])]
-return Math.round(lista.reduce((acc,c)=>acc+getTotalSepat(c),0)/(lista.length||1))
+if(!lista.length)return 0
+let soma=0
+lista.forEach(i=>{
+soma+=getTotalSepat(i)
+})
+return Math.round(soma/lista.length)
 }
 /*=========================================================
 082 EXPORTAR JSON
