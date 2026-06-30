@@ -531,15 +531,7 @@ let totalSubitens=lista.length
 
 let totalProdutos=[...new Set(lista.map(i=>String(i.produto||'').trim()).filter(Boolean))].length
 
-let mesFechado=Math.max(0,new Date().getMonth()-1)
-
-let campoMesFechado=MESES_SEPAT[mesFechado]
-
-let media=Math.round(
-lista.reduce((acc,i)=>acc+Number(i[campoMesFechado]||0),0)
-/
-(lista.length||1)
-)
+let media=calcularMediaSepat(lista)
 
 let kpiItens=document.getElementById('kpiItensSepat')
 let kpiSubitens=document.getElementById('kpiSubitensSepat')
@@ -710,11 +702,11 @@ let ctx=canvas.getContext('2d')
 
 if(graficoLinhaSepat)graficoLinhaSepat.destroy()
 
-let mesFechado=Math.max(0,new Date().getMonth()-1)
+let indiceMes=MES_ATUAL_SEPAT
 
-let labels=MESES_LABEL_SEPAT.slice(0,mesFechado+1)
+let labels=MESES_LABEL_SEPAT.slice(0,indiceMes+1)
 
-let valores=MESES_SEPAT.slice(0,mesFechado+1).map(m=>{
+let valores=MESES_SEPAT.slice(0,indiceMes+1).map(m=>{
 
 let soma=0
 
@@ -1209,8 +1201,9 @@ if(item){
 item[mes]=valor
 item.total_cumprimento=getTotalSepat(item)
 }
-renderDashboardSepat()
-controlarMesesSepat()
+renderGraficoMasterSepat()
+atualizarKPIsDashboardSepat()
+atualizarMiniKPIsSepat()
 }
 
 /*=========================================================
@@ -1342,13 +1335,10 @@ titulo='SUBITEM '+(achado.subitem||'-')+' • '+(achado.siglaitem||'-')
 desc=(achado.produto||'-')+'<br><br><b>Item:</b> '+(achado.item||'-')
 }
 }
-let valores=MESES_SEPAT.slice(0,MES_ATUAL_SEPAT+1).map((m,idx)=>{
+let valores=MESES_SEPAT.slice(0,MES_ATUAL_SEPAT+1).map(m=>{
 let total=0
 lista.forEach(i=>{
-let valor=0
-valor=Number(i[m]||0)
-if(isNaN(valor))valor=0
-total+=valor
+total+=Number(i[m]||0)
 })
 return Math.round(total/(lista.length||1))
 })
@@ -1369,20 +1359,58 @@ options:{
 responsive:true,
 maintainAspectRatio:false,
 plugins:{
-legend:{display:true,position:'bottom',labels:{font:{weight:'900',size:12}}},
-tooltip:{callbacks:{label:(ctx)=>ctx.raw+'%'}},
-datalabels:{display:true,anchor:'end',align:'top',font:{weight:'900',size:11},formatter:(v)=>v+'%'}
+legend:{
+display:true,
+position:'bottom',
+labels:{
+font:{weight:'900',size:12}
+}
+},
+tooltip:{
+callbacks:{
+label:(ctx)=>ctx.raw+'%'
+}
+},
+datalabels:{
+display:true,
+anchor:'end',
+align:'top',
+font:{weight:'900',size:11},
+formatter:(v)=>v+'%'
+}
 },
 scales:{
-y:{beginAtZero:true,max:100,ticks:{callback:(v)=>v+'%'}},
-x:{ticks:{font:{weight:'900',size:11}}}
+y:{
+beginAtZero:true,
+max:100,
+ticks:{
+callback:(v)=>v+'%'
+}
+},
+x:{
+ticks:{
+font:{weight:'900',size:11}
+}
+}
 }
 },
 plugins:[ChartDataLabels]
 })
 let box=document.getElementById('descGraficoSepat')
 if(box){
-box.innerHTML=`<b>${titulo}</b><br>${desc}<br><br>JAN: <b>${valores[0]}%</b> | FEV: <b>${valores[1]}%</b> | MAR: <b>${valores[2]}%</b> | ABR: <b>${valores[3]}%</b> | MAI: <b>${valores[4]}%</b>`
+let textoMeses=''
+valores.forEach((valor,indice)=>{
+textoMeses+=MESES_LABEL_SEPAT[indice]+': <b>'+valor+'%</b>'
+if(indice<valores.length-1){
+textoMeses+=' | '
+}
+})
+box.innerHTML=`
+<b>${titulo}</b><br>
+${desc}
+<br><br>
+${textoMeses}
+`
 }
 }
 /*=========================================================
@@ -3190,9 +3218,7 @@ lista.map(i=>String(i.produto||'').trim())
 
 concluidos:lista.filter(i=>getTotalSepat(i)>=100).length,
 
-media:Math.round(
-lista.reduce((acc,c)=>acc+getTotalSepat(c),0)/(lista.length||1)
-)
+media:calcularMediaSepat(lista)
 
 }
 
