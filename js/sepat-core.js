@@ -1469,10 +1469,15 @@ titulo='SUBITEM '+(achado.subitem||'-')+' • '+(achado.siglaitem||'-')
 desc=(achado.produto||'-')+'<br><br><b>Item:</b> '+(achado.item||'-')
 }
 }
-let valores=MESES_SEPAT.slice(0,MES_ATUAL_SEPAT+1).map(m=>{
+let valores=MESES_SEPAT.slice(0,MES_ATUAL_SEPAT+1).map((m,indice)=>{
+if(indice===MES_ATUAL_SEPAT){
+return calcularMediaSepat(lista)
+}
 let total=0
 lista.forEach(i=>{
-total+=Number(i[m]||0)
+let v=Number(i[m]||0)
+if(isNaN(v))v=0
+total+=v
 })
 return Math.round(total/(lista.length||1))
 })
