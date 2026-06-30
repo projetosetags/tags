@@ -549,6 +549,40 @@ renderGraficoBarrasSepat(lista)
 
 }
 /*=========================================================
+010AA PERIODO REFERENCIA
+=========================================================*/
+function obterPeriodoReferenciaSepat(){
+const meses=[
+'Janeiro',
+'Fevereiro',
+'Março',
+'Abril',
+'Maio',
+'Junho',
+'Julho',
+'Agosto',
+'Setembro',
+'Outubro',
+'Novembro',
+'Dezembro'
+]
+let indice=MES_ATUAL_SEPAT
+return meses[0]+' a '+meses[indice]+'/2026'
+}
+
+/*=========================================================
+010AB DATA HORA
+=========================================================*/
+function obterDataHoraAtualSepat(){
+let d=new Date()
+let dia=String(d.getDate()).padStart(2,'0')
+let mes=String(d.getMonth()+1).padStart(2,'0')
+let ano=d.getFullYear()
+let hora=String(d.getHours()).padStart(2,'0')
+let min=String(d.getMinutes()).padStart(2,'0')
+return dia+'/'+mes+'/'+ano+' '+hora+':'+min
+}
+/*=========================================================
 010A SEPAT PDF DASHBOARD
 =========================================================*/
 async function gerarPDFDashboardSepat(){
@@ -564,7 +598,23 @@ doc.setFontSize(18)
 doc.setTextColor(15,23,42)
 
 doc.text('DASHBOARD EXECUTIVO - TAG SEPAT 2026',10,14)
+doc.setFontSize(9)
+doc.setTextColor(90)
 
+doc.text(
+'Período de Referência: '+obterPeriodoReferenciaSepat(),
+10,
+20
+)
+
+doc.text(
+'Atualizado em: '+obterDataHoraAtualSepat(),
+200,
+20,
+{
+align:'right'
+}
+)
 doc.setDrawColor(220,220,220)
 
 doc.line(10,18,200,18)
@@ -655,7 +705,7 @@ doc.setTextColor(15,23,42)
 
 doc.text('DESEMPENHO POR ITEM ESTRATÉGICO',10,14)
 
-let imgBarras=barras.toDataURL('image/png',1.0)
+let imgBarras=await gerarImagemHDChartSepat('graficoBarrasSepat')
 
 doc.addImage(imgBarras,'PNG',10,28,190,100)
 
@@ -686,7 +736,24 @@ doc.setPage(i)
 rodapeSepat(doc)
 
 }
+doc.setFontSize(8)
 
+doc.setTextColor(110)
+
+doc.text(
+'Período de Referência: '+obterPeriodoReferenciaSepat(),
+10,
+280
+)
+
+doc.text(
+'Atualização automática: '+obterDataHoraAtualSepat(),
+200,
+280,
+{
+align:'right'
+}
+)
 doc.save('pdf_dashboard_tag_sepat.pdf')
 
 }
