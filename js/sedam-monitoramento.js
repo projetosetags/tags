@@ -127,9 +127,9 @@ document.getElementById('btn-voltar').style.display='block'
 =========================================================*/
 function renderTable(){
 const mesesOrdem=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
-const hoje=new Date()
-const mesAtual=hoje.getMonth()
-const mesesLiberados=mesesOrdem.slice(0,mesAtual+1)
+const mesesLiberados=getMesesLiberados()
+const indiceMesAtual=mesesLiberados.length-1
+const mesEdicao=mesesLiberados[indiceMesAtual]
 const nomesMeses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
 const indiceMesAtual=mesesLiberados.length-1
 const mesEdicao=mesesLiberados[indiceMesAtual]
@@ -185,9 +185,19 @@ let origemUsuario=String(userP?.origem||'').toUpperCase()
   
 let isNivel1=nivel===1
 let isHueriqui=usernameAtual==='hueriqui'
-let isResponsavel=String(i.responsavel_id||'')===String(userP?.id||'')
+const isResponsavel=
+String(i.responsavel_id).trim()===
+String(userP?.id).trim()
 let responsavelTexto=i.responsavel||'-'
-let listaPerfis=[...(window.perfis||[]),...(window.perfisSedam||[])]
+let mapaPerfis=new Map()
+;[
+...(window.perfis||[]),
+...(window.perfisSedam||[])
+].forEach(p=>{
+mapaPerfis.set(String(p.id),p)
+})
+
+let listaPerfis=[...mapaPerfis.values()]
 if(Number(userP?.nivel_acesso||0)!==1){listaPerfis=listaPerfis.filter(p=>String(p.id||'')===String(userP?.id||''))}
 let perfilResponsavel=listaPerfis.find(p=>String(p.id)===String(i.responsavel_id))
 if(perfilResponsavel){responsavelTexto=perfilResponsavel.nome_completo}else{responsavelTexto=i.responsavel||i.responsavel_manual||'Não informado'}
