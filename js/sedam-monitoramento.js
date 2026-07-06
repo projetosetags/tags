@@ -131,6 +131,20 @@ let hoje=new Date()
 let mesAtual=hoje.getMonth()
 if(hoje.getDate()>=new Date(hoje.getFullYear(),hoje.getMonth()+1,0).getDate()-1){mesAtual=Math.min(mesAtual+1,11)}
 let mesesLiberados=mesesOrdem.slice(0,mesAtual+1)
+const nomesMeses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
+const cabecalho=document.getElementById('cabecalhoMesesMonitoramento')
+if(cabecalho){
+cabecalho.outerHTML=mesesLiberados.map((m,i)=>`
+<th
+class="${m===mesesLiberados[mesesLiberados.length-1]?'text-emerald-400':'opacity-40'}"
+onclick="toggleColunaMonitoramento(${6+i})"
+style="cursor:pointer"
+title="Ocultar/Mostrar ${nomesMeses[i]}">
+${nomesMeses[i]}
+</th>
+`).join('')
+
+}
 let lista=[...(window.allData||[])].sort(compareSubitem)
 lista=lista.filter(i=>{
 if(filtroItemAtivo&&getItemKey(i)!==filtroItemAtivo)return false
@@ -174,7 +188,9 @@ let liberarMes=m===mesEdicao
 let editar=false
 if(isNivel1&&!isHueriqui){editar=true}else if(origemUsuario==='SEDAM'&&(nivel===2||nivel===3||nivel===4)&&isResponsavel&&liberarMes&&!bloqueado){editar=true}
 let estiloMes=''
-if(m==='jun'){estiloMes='background:#ecfdf5!important;font-weight:900!important;font-size:13px!important;border-left:2px solid #10b981!important;border-right:2px solid #10b981!important;'}
+if(m===mesEdicao){
+estiloMes='background:#ecfdf5!important;font-weight:900!important;font-size:13px!important;border-left:2px solid #10b981!important;border-right:2px solid #10b981!important;'
+}
 return `<td class="td-mes-strong text-center" style="${estiloMes}">${editar?`<input type="number" min="0" max="100" step="1" class="input-mes" value="${valor}" onchange="if(this.disabled)return;salvar(this.value,'${i.id}','${m}')">`:`<span>${valor}%</span>`}</td>`
 }).join('')}<td class="td-total text-emerald-400">${total.toFixed(2)}%</td></tr>`
 }).join('')
