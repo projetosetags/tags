@@ -132,19 +132,20 @@ let mesAtual=hoje.getMonth()
 if(hoje.getDate()>=new Date(hoje.getFullYear(),hoje.getMonth()+1,0).getDate()-1){mesAtual=Math.min(mesAtual+1,11)}
 let mesesLiberados=mesesOrdem.slice(0,mesAtual+1)
 const nomesMeses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
-const cabecalho=document.getElementById('cabecalhoMesesMonitoramento')
-if(cabecalho){
-cabecalho.outerHTML=mesesLiberados.map((m,i)=>`
-<th
-class="${m===mesesLiberados[mesesLiberados.length-1]?'text-emerald-400':'opacity-40'}"
-onclick="toggleColunaMonitoramento(${6+i})"
-style="cursor:pointer"
-title="Ocultar/Mostrar ${nomesMeses[i]}">
-${nomesMeses[i]}
-</th>
-`).join('')
+const mesEdicao=mesesLiberados[mesesLiberados.length-1]
+const thead=document.getElementById('theadMonitoramento')
 
-}
+thead.innerHTML=`
+<tr class="text-[8px] text-slate-500 uppercase border-b border-white/10">
+<th id="thNumero" onclick="toggleColunaMonitoramento(0)" style="cursor:pointer">${window.modoTabela==='item'?'ITEM':'SUBITEM'}</th>
+<th id="thDescricao" onclick="toggleColunaMonitoramento(1)" style="cursor:pointer">${window.modoTabela==='item'?'DESCRIÇÃO ITEM':'DESCRIÇÃO'}</th>
+<th id="thProduto" onclick="toggleColunaMonitoramento(2)" style="cursor:pointer">${window.modoTabela==='item'?'AÇÃO':'PRODUTOS'}</th>
+<th onclick="toggleColunaMonitoramento(3)" style="cursor:pointer">RESPONSÁVEL(IS)</th>
+<th onclick="toggleColunaMonitoramento(4)" style="cursor:pointer">SETOR</th>
+<th onclick="toggleColunaMonitoramento(5)" style="cursor:pointer">DATA INÍCIO</th>
+${mesesLiberados.map((m,i)=>`<th onclick="toggleColunaMonitoramento(${6+i})" style="cursor:pointer;text-align:center;${m===mesEdicao?'background:#ecfdf5;color:#059669;font-weight:900;border-left:2px solid #10b981;border-right:2px solid #10b981;':'opacity:.55;'}">${nomesMeses[i]}</th>`).join('')}
+<th onclick="toggleColunaMonitoramento(${6+mesesLiberados.length})" style="cursor:pointer;text-align:center">TOTAL</th>
+</tr>`
 let lista=[...(window.allData||[])].sort(compareSubitem)
 lista=lista.filter(i=>{
 if(filtroItemAtivo&&getItemKey(i)!==filtroItemAtivo)return false
@@ -172,7 +173,9 @@ let bg=total<=30?'bg-red-900/20':total>=100?'bg-emerald-900/20':'bg-yellow-900/2
 let nivel=Number(userP?.nivel_acesso||0)
 let usernameAtual=String(userP?.username||'').toLowerCase()
 let origemUsuario=String(userP?.origem||'').toUpperCase()
-let mesEdicao=mesesLiberados[mesesLiberados.length-1]
+  
+// let mesEdicao=mesesLiberados[mesesLiberados.length-1]
+  
 let isNivel1=nivel===1
 let isHueriqui=usernameAtual==='hueriqui'
 let isResponsavel=String(i.responsavel_id||'')===String(userP?.id||'')
