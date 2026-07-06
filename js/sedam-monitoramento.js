@@ -127,12 +127,12 @@ document.getElementById('btn-voltar').style.display='block'
 =========================================================*/
 function renderTable(){
 const mesesOrdem=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
-let hoje=new Date()
-let mesAtual=hoje.getMonth()
-if(hoje.getDate()>=new Date(hoje.getFullYear(),hoje.getMonth()+1,0).getDate()-1){mesAtual=Math.min(mesAtual+1,11)}
-let mesesLiberados=mesesOrdem.slice(0,mesAtual+1)
+const hoje=new Date()
+const mesAtual=hoje.getMonth()
+const mesesLiberados=mesesOrdem.slice(0,mesAtual+1)
 const nomesMeses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
-const mesEdicao=mesesLiberados[mesesLiberados.length-1]
+const indiceMesAtual=mesesLiberados.length-1
+const mesEdicao=mesesLiberados[indiceMesAtual]
 const thead=document.getElementById('theadMonitoramento')
 
 thead.innerHTML=`
@@ -143,7 +143,12 @@ thead.innerHTML=`
 <th onclick="toggleColunaMonitoramento(3)" style="cursor:pointer">RESPONSÁVEL(IS)</th>
 <th onclick="toggleColunaMonitoramento(4)" style="cursor:pointer">SETOR</th>
 <th onclick="toggleColunaMonitoramento(5)" style="cursor:pointer">DATA INÍCIO</th>
-${mesesLiberados.map((m,i)=>`<th onclick="toggleColunaMonitoramento(${6+i})" style="cursor:pointer;text-align:center;${m===mesEdicao?'background:#ecfdf5;color:#059669;font-weight:900;border-left:2px solid #10b981;border-right:2px solid #10b981;':'opacity:.55;'}">${nomesMeses[i]}</th>`).join('')}
+${mesesLiberados.map((m,i)=>`
+<th onclick="toggleColunaMonitoramento(${6+i})"
+style="cursor:pointer;text-align:center;${m===mesEdicao?'background:#ecfdf5;color:#059669;font-weight:900;border-left:2px solid #10b981;border-right:2px solid #10b981;':'opacity:.55;'}">
+${nomesMeses[i]}
+</th>
+`).join('')}
 <th onclick="toggleColunaMonitoramento(${6+mesesLiberados.length})" style="cursor:pointer;text-align:center">TOTAL</th>
 </tr>`
 let lista=[...(window.allData||[])].sort(compareSubitem)
