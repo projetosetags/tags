@@ -188,11 +188,19 @@ return 0
 /*=========================================================
 004 PDF FUNCTION GERARPDFMONITORAMENTO
 =========================================================*/
-async function gerarPDFMonitoramento(){
+async function gerarPDFMonitoramento(somente100=false){
 const {jsPDF}=window.jspdf
 let doc=new jsPDF('l','mm','a4')
 doc.setFont('times','normal')
-let lista=[...(window.allData||[])].sort(compareSubitemPDF)
+
+let lista=[...(window.allData||[])]
+
+if(somente100){
+lista=lista.filter(i=>getTotal(i)>=100)
+}
+
+lista.sort(compareSubitemPDF)
+
 let meses=[
 {campo:'jan',label:'JAN'},
 {campo:'fev',label:'FEV'},
@@ -207,16 +215,33 @@ let meses=[
 {campo:'nov',label:'NOV'},
 {campo:'dez',label:'DEZ'}
 ]
+
 let mesesLiberados=getMesesLiberados()
 let mesesAtivos=meses.filter(m=>mesesLiberados.includes(m.campo))
+
 doc.setFontSize(14)
 doc.setTextColor(20,20,20)
-doc.text('MONITORAMENTO COMPLETO - TAG SEDAM 2026',10,12)
+doc.text(
+somente100
+?'SUBITENS 100% CONCLUÍDOS - TAG SEDAM 2026'
+:'MONITORAMENTO COMPLETO - TAG SEDAM 2026',
+10,
+12
+)
+
 doc.setFontSize(9)
 doc.setTextColor(90)
-doc.text('Painel consolidado de monitoramento estratégico.',10,18)
+doc.text(
+somente100
+?'Painel contendo apenas os subitens concluídos (100%).'
+:'Painel consolidado de monitoramento estratégico.',
+10,
+18
+)
+
 let rows=lista.map(i=>{
 let total=getTotal(i)
+
 let linha=[
 modoTabela==='item'
 ?String(i.item||'-')
@@ -227,12 +252,16 @@ modoTabela==='item'
 String(i.produto||'-'),
 String(i.setor||i.coordenadoria||'-')
 ]
+
 mesesAtivos.forEach(m=>{
 linha.push(Number(i[m.campo]||0))
 })
+
 linha.push(Math.round(total)+'%')
+
 return linha
 })
+
 doc.autoTable({
 startY:20,
 head:[[
@@ -275,7 +304,9 @@ let estilos={
 2:{cellWidth:42},
 3:{cellWidth:20}
 }
+
 let indice=4
+
 mesesAtivos.forEach(()=>{
 estilos[indice]={
 cellWidth:8,
@@ -285,12 +316,14 @@ fontStyle:'bold'
 }
 indice++
 })
+
 estilos[indice]={
 cellWidth:11,
 halign:'center',
 fontSize:7,
 fontStyle:'bold'
 }
+
 return estilos
 })(),
 margin:{
@@ -301,28 +334,42 @@ right:3
 },
 tableWidth:'auto'
 })
-let finalY=(doc.lastAutoTable.finalY||240)+10
+
+let finalY=(doc.lastAutoTable.finalY||240)+8
+
 doc.setFontSize(10)
 doc.setTextColor(60)
+
 let total100=lista.filter(i=>getTotal(i)>=100).length
+
 let media=Math.round(
 lista.reduce((acc,c)=>acc+getTotal(c),0)/(lista.length||1)
 )
+
 doc.text(
-'O monitoramento consolidado demonstra '+lista.length+' registros estratégicos acompanhados, sendo '+total100+' integralmente cumpridos (100%). A média geral consolidada corresponde a '+media+'% de execução.',
+somente100
+?('Este relatório apresenta '+total100+' subitens integralmente concluídos (100%).')
+:('O monitoramento consolidado demonstra '+lista.length+' registros estratégicos acompanhados, sendo '+total100+' integralmente cumpridos (100%). A média geral consolidada corresponde a '+media+'% de execução.'),
 10,
 finalY,
 {
-maxWidth:260,
+maxWidth:285,
 align:'justify'
 }
 )
+
 adicionarRodapePadraoPDF(doc)
+
 doc.save(
+somente100
+?'Subitens_100_TAG_SEDAM_2026.pdf'
+:(
 modoTabela==='item'
 ?'Itens_Monitoramento_TAG_SEDAM_2026.pdf'
 :'Subitens_Monitoramento_TAG_SEDAM_2026.pdf'
 )
+)
+
 }
 /*=========================================================
 005 PDF FUNCTION GERARPDFGRAFICOS
