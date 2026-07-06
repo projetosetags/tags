@@ -377,30 +377,22 @@ class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-col
 
 <!-- 006 MONITORAMENTO -->
 <div id="view-mensal" class="tab-view hidden">
-
 <div id="view-mensal-filtros" class="flex flex-wrap gap-2 mb-3 items-center justify-between">
-
 <div id="boxModoResumoMensal" class="flex flex-wrap gap-2 items-center">
-
 <button onclick="modoTabela='item';renderTable()" id="btnModoItemMensal" class="text-xs bg-amber-500 hover:bg-amber-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
 ITEM
 </button>
-
 <button onclick="modoTabela='subitem';renderTable()" id="btnModoSubitemMensal" class="text-xs bg-blue-500 hover:bg-blue-400 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center">
 SUBITEM
 </button>
-
 </div>
-
 <div class="flex justify-end items-center gap-2 ml-auto flex-wrap w-full md:w-auto">
-
 <input
 id="dataInicioMensal"
 type="date"
 onchange="aplicarFiltroData()"
 class="text-xs bg-white border border-slate-300 text-slate-800 px-4 py-2 rounded-2xl shadow-sm font-bold min-w-[170px]"
 >
-
 <input
 id="dataFimMensal"
 type="date"
@@ -410,44 +402,33 @@ class="text-xs bg-white border border-slate-300 text-slate-800 px-4 py-2 rounded
 <button onclick="gerarPDFMonitoramento()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
 📄 PDF
 </button>
-
+<button onclick="gerarPDFMonitoramento(true)" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
+✅ PDF 100%
+</button>
 <button id="btnWordMonitoramento" onclick="gerarWordMonitoramento()" class="hidden text-xs bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
 📝 WORD
 </button>
-
 <button type="button" onclick="toggleOcultarConcluidos()" class="text-xs bg-slate-700 hover:bg-slate-800 text-white px-5 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center whitespace-nowrap min-w-[170px]">
 OCULTAR 100%
 </button>
-
 <button id="btnOcultarCabecalho" type="button" onclick="toggleCabecalhoMonitoramento()" class="text-xs bg-slate-700 hover:bg-slate-800 text-white px-5 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
 OCULTAR CABEÇALHO
 </button>
-
 <button type="button" onclick="restaurarColunasMonitoramento()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-2xl font-black shadow inline-flex items-center justify-center">
 RESTAURAR COLUNAS
 </button>
-
 </div>
-
 </div>
-
 <button id="btn-voltar" onclick="fecharDrill()" style="display:none" class="mb-2 text-xs bg-red-600 px-2 py-1 rounded">
 ← VOLTAR
 </button>
-
 <div class="bg-slate-900/40 rounded-xl border border-white/5 overflow-x-auto">
-
 <table class="w-full text-left border-collapse min-w-full">
-
 <thead id="theadMonitoramento"></thead>
 <tbody id="table-body" class="text-[10px]"></tbody>
-
 </table>
-
 </div>
-
 </div>
-
 <!-- 007 ANALISE -->
 <div id="view-analise" class="tab-view hidden">
 
