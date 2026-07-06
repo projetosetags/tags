@@ -131,8 +131,6 @@ const mesesLiberados=getMesesLiberados()
 const indiceMesAtual=mesesLiberados.length-1
 const mesEdicao=mesesLiberados[indiceMesAtual]
 const nomesMeses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
-const indiceMesAtual=mesesLiberados.length-1
-const mesEdicao=mesesLiberados[indiceMesAtual]
 const thead=document.getElementById('theadMonitoramento')
 
 thead.innerHTML=`
