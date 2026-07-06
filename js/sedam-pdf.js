@@ -234,7 +234,7 @@ linha.push(Math.round(total)+'%')
 return linha
 })
 doc.autoTable({
-startY:26,
+startY:20,
 head:[[
 modoTabela==='item'
 ?'ITEM'
@@ -250,10 +250,10 @@ modoTabela==='item'
 body:rows,
 theme:'grid',
 styles:{
-fontSize:6,
+fontSize:7,
 font:'times',
 overflow:'linebreak',
-cellPadding:2,
+cellPadding:1.2,
 valign:'top',
 textColor:[15,23,42],
 lineColor:[210,215,220],
@@ -271,14 +271,14 @@ fillColor:[248,248,248]
 columnStyles:(()=>{
 let estilos={
 0:{cellWidth:12},
-1:{cellWidth:68},
-2:{cellWidth:30},
-3:{cellWidth:18}
+1:{cellWidth:110},
+2:{cellWidth:42},
+3:{cellWidth:20}
 }
 let indice=4
 mesesAtivos.forEach(()=>{
 estilos[indice]={
-cellWidth:10,
+cellWidth:8,
 halign:'center',
 fontSize:7,
 fontStyle:'bold'
@@ -286,7 +286,7 @@ fontStyle:'bold'
 indice++
 })
 estilos[indice]={
-cellWidth:14,
+cellWidth:11,
 halign:'center',
 fontSize:7,
 fontStyle:'bold'
@@ -294,11 +294,12 @@ fontStyle:'bold'
 return estilos
 })(),
 margin:{
-top:20,
-bottom:38,
-left:5,
-right:5
-}
+top:18,
+bottom:18,
+left:3,
+right:3
+},
+tableWidth:'auto'
 })
 let finalY=(doc.lastAutoTable.finalY||240)+10
 doc.setFontSize(10)
