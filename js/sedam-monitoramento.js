@@ -144,8 +144,10 @@ thead.innerHTML=`
 <th onclick="toggleColunaMonitoramento(4)" style="cursor:pointer">SETOR</th>
 <th onclick="toggleColunaMonitoramento(5)" style="cursor:pointer">DATA INÍCIO</th>
 ${mesesLiberados.map((m,i)=>`
-<th onclick="toggleColunaMonitoramento(${6+i})"
-style="cursor:pointer;text-align:center;${m===mesEdicao?'background:#ecfdf5;color:#059669;font-weight:900;border-left:2px solid #10b981;border-right:2px solid #10b981;':'opacity:.55;'}">
+<th
+class="${m===mesEdicao?'mes-atual':''}"
+onclick="toggleColunaMonitoramento(${6+i})"
+style="cursor:pointer;text-align:center;">
 ${nomesMeses[i]}
 </th>
 `).join('')}
@@ -195,11 +197,7 @@ let bloqueado=valor>0
 let liberarMes=m===mesEdicao
 let editar=false
 if(isNivel1&&!isHueriqui){editar=true}else if(origemUsuario==='SEDAM'&&(nivel===2||nivel===3||nivel===4)&&isResponsavel&&liberarMes&&!bloqueado){editar=true}
-let estiloMes=''
-if(m===mesEdicao){
-estiloMes='background:#ecfdf5!important;font-weight:900!important;font-size:13px!important;border-left:2px solid #10b981!important;border-right:2px solid #10b981!important;'
-}
-return `<td class="td-mes-strong text-center" style="${estiloMes}">${editar?`<input type="number" min="0" max="100" step="1" class="input-mes" value="${valor}" onchange="if(this.disabled)return;salvar(this.value,'${i.id}','${m}')">`:`<span>${valor}%</span>`}</td>`
+return `<td class="td-mes-strong text-center ${m===mesEdicao?'mes-atual':''}">${editar?`<input type="number" min="0" max="100" step="1" class="input-mes" value="${valor}" onchange="if(this.disabled)return;salvar(this.value,'${i.id}','${m}')">`:`<span>${valor}%</span>`}</td>`
 }).join('')}<td class="td-total text-emerald-400">${total.toFixed(2)}%</td></tr>`
 }).join('')
 if(window.colunasMonitoramentoOcultas){
