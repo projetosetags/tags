@@ -1417,7 +1417,7 @@ Number(getTotal(i)||0)
 /*=========================================================
 009 DASHBOARD LABELS E VALORES
 =========================================================*/
-let labels=Object.keys(mapaItens).sort((a,b)=>{
+let labelsItens=Object.keys(mapaItens).sort((a,b)=>{
 let pa=String(a).split('.').map(n=>parseInt(n)||0)
 let pb=String(b).split('.').map(n=>parseInt(n)||0)
 let max=Math.max(pa.length,pb.length)
@@ -1428,7 +1428,7 @@ if(va!==vb)return va-vb
 }
 return 0
 })
-let valores=labels.map(l=>{
+let valores=labelsItens.map(l=>{
 let arr=mapaItens[l]
 return Math.round(
 arr.reduce((a,b)=>a+b,0)/(arr.length||1)
@@ -1453,7 +1453,7 @@ document.getElementById('graficoDashboardItens'),
 {
 type:'bar',
 data:{
-labels:labels.map(i=>'Item '+i),
+labels:labelsItens.map(i=>'Item '+i),
 datasets:[{
 label:'Percentual Médio',
 data:valores,
