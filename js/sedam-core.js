@@ -1202,15 +1202,68 @@ let topo=document.getElementById('total-geral')
 if(topo){
 topo.innerText=media+'%'
 }
-let meses=['JAN','FEV','MAR','ABR','MAI','JUN']
-let mediasMeses=[
-Math.round(lista.reduce((a,c)=>a+Number(c.jan||0),0)/(lista.length||1)),
-Math.round(lista.reduce((a,c)=>a+Number((c.fev&&c.fev>0)?c.fev:(c.jan||0)),0)/(lista.length||1)),
-Math.round(lista.reduce((a,c)=>a+Number((c.mar&&c.mar>0)?c.mar:((c.fev&&c.fev>0)?c.fev:(c.jan||0))),0)/(lista.length||1)),
-Math.round(lista.reduce((a,c)=>a+Number((c.abr&&c.abr>0)?c.abr:((c.mar&&c.mar>0)?c.mar:((c.fev&&c.fev>0)?c.fev:(c.jan||0)))),0)/(lista.length||1)),
-Math.round(lista.reduce((a,c)=>a+Number((c.mai&&c.mai>0)?c.mai:getTotal(c)),0)/(lista.length||1)),
-Math.round(lista.reduce((a,c)=>a+Number((c.jun&&c.jun>0)?c.jun:getTotal(c)),0)/(lista.length||1))
-]
+let meses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
+let mesesKey=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
+
+let mesAtual=getMesAtualIndex()
+
+let hoje=new Date()
+
+if(
+hoje.getDate()>=
+new Date(
+hoje.getFullYear(),
+hoje.getMonth()+1,
+0
+).getDate()-1
+){
+mesAtual=Math.min(mesAtual+1,11)
+}
+
+let labels=meses.slice(0,mesAtual+1)
+
+function mediaMes(lista,mes){
+if(!lista.length)return 0
+
+let ordem=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
+let idx=ordem.indexOf(mes)
+
+let total=0
+
+lista.forEach(i=>{
+
+let valor=0
+
+for(let x=idx;x>=0;x--){
+
+let k=ordem[x]
+
+if(Number(i[k]||0)>0){
+
+valor=Number(i[k])
+
+break
+
+}
+
+}
+
+total+=valor
+
+})
+
+return Math.round(total/(lista.length||1))
+}
+
+let mediasMeses=[]
+
+for(let i=0;i<=mesAtual;i++){
+
+mediasMeses.push(
+mediaMes(lista,mesesKey[i])
+)
+
+}
 if(dashLinha){
 dashLinha.destroy()
 }
@@ -1219,7 +1272,7 @@ document.getElementById('graficoDashboardLinha'),
 {
 type:'line',
 data:{
-labels:meses,
+labels:labels,
 datasets:[{
 label:'Percentual Médio (%)',
 data:mediasMeses,
