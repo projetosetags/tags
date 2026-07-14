@@ -13,8 +13,9 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="../config.js"></script>
 <script>
-const client=supabase.createClient(window.S_URL,window.S_KEY)
-if(typeof ChartDataLabels!=='undefined'){Chart.register(ChartDataLabels)}
+const client = window.client;
+
+Chart.register(ChartDataLabels);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
