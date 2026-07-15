@@ -6,7 +6,7 @@ const NOTA_TECNICA_PDF=`As informações constantes neste painel, gráficos, ind
 /*=========================================================
 002 UTILS CLIENT SUPABASE
 =========================================================*/
-const client=supabase.createClient(window.S_URL,window.S_KEY)
+const client = window.client
 /*=========================================================
 003 UTILS VARIAVEIS GLOBAIS
 =========================================================*/
