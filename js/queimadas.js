@@ -1,3 +1,12 @@
+const client = supabase.createClient(
+    window.S_URL,
+    window.S_KEY,
+    {
+        db:{
+            schema:'queimadas'
+        }
+    }
+)
 /*=========================================================
 001 QUEIMADAS FUNCTION FORMATARDATABR
 =========================================================*/
