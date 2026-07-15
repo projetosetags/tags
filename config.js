@@ -30,6 +30,3 @@ window.clientQueimadas = supabase.createClient(
     }
 )
 
-
-console.log('SUPABASE OK')
-console.log(window.client)
