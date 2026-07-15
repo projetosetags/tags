@@ -380,13 +380,13 @@ return
 
 const indice={}
 data.forEach(i=>{
-indice[(i.municipio||'').toUpperCase()]=i
+indice[normalizarMunicipio(i.municipio)]=i
 })
 const geo=await fetch('./assets/geojson/municipios-ro.geojson')
 const municipiosRO=await geo.json()
 camadaPlanosMunicipais=L.geoJSON(municipiosRO,{
 style:function(feature){
-const nome=(feature.properties.nome||feature.properties.NM_MUN||'').toUpperCase()
+const nome=normalizarMunicipio(feature.properties.nome||feature.properties.NM_MUN)
 const reg=indice[nome]
 if(!reg){
 console.log('SEM CORRESPONDÊNCIA:',nome)
