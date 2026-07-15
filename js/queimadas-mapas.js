@@ -435,6 +435,13 @@ const nome=(feature.properties.nome||feature.properties.NM_MUN||'').toUpperCase(
 
 const reg=indice[nome]
 
+
+if(!reg){
+console.log('SEM CORRESPONDÊNCIA:',nome)
+}
+
+
+  
 if(!reg)return
 
 let situacao='Sem informação'
