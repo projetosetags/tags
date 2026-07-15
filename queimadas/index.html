@@ -456,8 +456,17 @@ Fonte: INPE • Heatmap Estadual • IRIQ • CHAP • IA-CHAP • Plano SEDAM �
 </div>
 
 <script>
-if('serviceWorker' in navigator){
-navigator.serviceWorker.register('../sw.js');
+if ('serviceWorker' in navigator) {
+window.addEventListener('load', async ()=>{
+try{
+await navigator.serviceWorker.register('./sw.js',{
+scope:'./'
+})
+console.log('Service Worker registrado')
+}catch(e){
+console.error(e)
+}
+})
 }
 </script>
 
