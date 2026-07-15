@@ -459,6 +459,6 @@ MENU QUEIMADAS BOTAO ATIVO
 
 #MapaRO{width:100%;height:750px;display:block}
 #mapaRO{width:100%;height:750px;border-radius:12px}
-.tabelaResumoMunicipios{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px;}
+.tabelaResumoMunicipios{width:100%;border-collapse:collapse;table-layout:auto;font-size:10px;}
 .tabelaResumoMunicipios th,.tabelaResumoMunicipios td{border:1px solid #e2e8f0;padding:6px;}
 .tabelaResumoMunicipios tr:hover{background:#f8fafc;}
