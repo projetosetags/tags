@@ -265,6 +265,7 @@ document.getElementById('btn-voltar').style.display='none'
 020 UTILS LOGOUT
 =========================================================*/
 function logout(){
+sessionStorage.removeItem('painelAtivo')
 localStorage.clear()
 location.reload()
 }
