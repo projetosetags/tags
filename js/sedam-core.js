@@ -1930,4 +1930,37 @@ html,
 
 }
 
+/*=========================================================
+001 SEDAM CORE FUNCTION VOLTARPAINELGERAL
+=========================================================*/
+window.voltarPainelGeral=function(){
+
+sessionStorage.removeItem('painelAtivo')
+
+const geral=document.getElementById('painel-geral-acesso')
+const login=document.getElementById('login-screen')
+const dash=document.getElementById('dashboard')
+
+document.body.classList.remove('login-bg')
+
+if(login){
+login.classList.add('hidden')
+login.style.display='none'
+}
+
+if(dash){
+dash.classList.add('hidden')
+dash.style.display='none'
+}
+
+if(geral){
+geral.classList.remove('hidden')
+geral.style.display='flex'
+geral.style.visibility='visible'
+geral.style.opacity='1'
+}
+
+}
+
 console.log('SEDAM CORE FIM')
+
