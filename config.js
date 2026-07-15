@@ -5,10 +5,6 @@ window.client = supabase.createClient(
     window.S_URL,
     window.S_KEY,
     {
-        auth:{
-            persistSession:true,
-            autoRefreshToken:true
-        },
         db:{
             schema:'queimadas'
         }
