@@ -6,7 +6,7 @@ const client = window.clientPublic
 if(!client){
     console.error('Cliente Supabase não inicializado. Verifique config.js.')
 }
-
+console.log('SEDAM CORE INICIO')
 /*=========================================================
 001 SEDAM CORE DOMCONTENTLOADED
 =========================================================*/
@@ -1884,3 +1884,5 @@ html,
 )
 
 }
+
+console.log('SEDAM CORE FIM')
