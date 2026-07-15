@@ -1488,7 +1488,11 @@ if(typeof renderMunicipiosOficio==='function'){
 await renderMunicipiosOficio('RESUMO')
 await renderMunicipiosOficio('CADASTRO')
 }
-if(typeof renderMapaMunicipalPlanos==='function')await renderMapaMunicipalPlanos('TODOS')
+setTimeout(async()=>{
+if(typeof renderMapaPlanosMunicipais==='function'){
+await renderMapaPlanosMunicipais('TODOS')
+}
+},200)
 }
 if(nome==='mapa'){
 document.getElementById('abaMapa')?.classList.remove('hidden')
