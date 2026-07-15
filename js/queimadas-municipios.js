@@ -1520,46 +1520,6 @@ html+='</tbody></table></div>'
 box.innerHTML=html
 }
 
-/*=========================================================
-136 QUEIMADAS FUNCTION EDITARMUNICIPIO
-=========================================================*/
-async function editarMunicipio(id){
-let {data,error}=await client
-.from('queimadas_municipios_oficio')
-.select('*')
-.eq('id',id)
-.single()
-if(error||!data)return
-let situacao=prompt(
-'Situação:\nVERDE\nAMARELO\nVERMELHO',
-data.classificacao_cor||''
-)
-if(!situacao)return
-let documento=prompt(
-'Documento recebido:',
-data.lnumerodocenviado||''
-)
-let observacao=prompt(
-'Observação:',
-data.observacao||''
-)
-await client
-.from('queimadas_municipios_oficio')
-.update({
-classificacao_cor:situacao.toUpperCase(),
-observacao:observacao,
-lnumerodocenviado:documento,
-plano_acao:situacao.toUpperCase()==='VERDE',
-dilacao_prazo:situacao.toUpperCase()==='AMARELO',
-sem_resposta:situacao.toUpperCase()==='VERMELHO'
-})
-.eq('id',id)
-await renderMunicipiosOficio('CADASTRO')
-await renderMunicipiosOficio('RESUMO')
-await renderKPIsMunicipais()
-await renderTabelaMunicipios()
-await renderEstatisticasMunicipais()
-}
 
 /*=========================================================
 137 QUEIMADAS INIT
