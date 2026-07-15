@@ -1,32 +1,43 @@
-const client = supabase.createClient(
-    window.S_URL,
-    window.S_KEY,
-    {
-        db:{
-            schema:'public'
-        }
-    }
-)
+/*=========================================================
+000 SEPAT CLIENT
+=========================================================*/
+const client = window.client
 /*=========================================================
 001 SEPAT CORE CONFIG
 =========================================================*/
-const SEPAT_SUPABASE_URL=window.S_URL||window.SUPABASE_URL||''
-const SEPAT_SUPABASE_KEY=window.S_KEY||window.SUPABASE_ANON_KEY||''
-const sepatClient=supabase.createClient(SEPAT_SUPABASE_URL,SEPAT_SUPABASE_KEY)
-let sepatUser=null
-let sepatData=[]
-let sepatFiltrados=[]
-let modoResumoSepat='item'
-let modoTabelaSepat='subitem'
-let modoConclusaoSepat='item'
-let graficoLinhaSepat=null
-let graficoPizzaSepat=null
-let graficoBarrasSepat=null
-let graficoMasterSepat=null
-const MESES_SEPAT=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
-const MES_ATUAL_SEPAT=new Date().getMonth()
-const MESES_LABEL_SEPAT=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
-const NOTA_TECNICA_SEPAT='As informações constantes neste painel, gráficos, indicadores e relatórios possuem caráter preliminar e meramente informativo, sendo baseadas nos dados declarados e apresentados até o presente momento pelos jurisdicionados envolvidos. Ressalta-se que tais informações ainda não passaram pela análise técnica de consistência documental, verificação de evidências, validação metodológica e conferência conclusiva pela equipe técnica de auditores designados.'
+const SEPAT_SUPABASE_URL = window.S_URL
+const SEPAT_SUPABASE_KEY = window.S_KEY
+
+// Utiliza o mesmo client global criado em config.js
+const sepatClient = client
+
+let sepatUser = null
+let sepatData = []
+let sepatFiltrados = []
+
+let modoResumoSepat = 'item'
+let modoTabelaSepat = 'subitem'
+let modoConclusaoSepat = 'item'
+
+let graficoLinhaSepat = null
+let graficoPizzaSepat = null
+let graficoBarrasSepat = null
+let graficoMasterSepat = null
+
+const MESES_SEPAT = [
+'jan','fev','mar','abr','mai','jun',
+'jul','ago','set','out','nov','dez'
+]
+
+const MES_ATUAL_SEPAT = new Date().getMonth()
+
+const MESES_LABEL_SEPAT = [
+'JAN','FEV','MAR','ABR','MAI','JUN',
+'JUL','AGO','SET','OUT','NOV','DEZ'
+]
+
+const NOTA_TECNICA_SEPAT =
+'As informações constantes neste painel, gráficos, indicadores e relatórios possuem caráter preliminar e meramente informativo, sendo baseadas nos dados declarados e apresentados até o presente momento pelos jurisdicionados envolvidos. Ressalta-se que tais informações ainda não passaram pela análise técnica de consistência documental, verificação de evidências, validação metodológica e conferência conclusiva pela equipe técnica de auditores designados.'
 /*=========================================================
 008 FORMATAR DATA SEPAT
 =========================================================*/
@@ -73,7 +84,10 @@ await sepatClient.from('sepat_deliberacoes').update({[prox]:100}).eq('id',i.id)
 002 SEPAT CORE DOMCONTENTLOADED
 =========================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
-
+if(!window.client){
+    console.error('Cliente Supabase não inicializado.')
+    return
+}
 try{
 
 document.body.style.visibility='hidden'
