@@ -32,6 +32,10 @@ Chart.register(ChartDataLabels);
 <script src="../js/queimadas.js?v=20260611"></script>
 <script src="../js/queimadas-municipios.js?v=20260611"></script>
 <script src="../js/queimadas-mapas.js?v=2026"></script>
+
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#0f172a">
+  
 </head>
 <body>
 <div class="layoutPrincipal">
@@ -450,5 +454,12 @@ Fonte: INPE • Heatmap Estadual • IRIQ • CHAP • IA-CHAP • Plano SEDAM �
 </section>
 
 </div>
+
+<script>
+if('serviceWorker' in navigator){
+navigator.serviceWorker.register('../sw.js');
+}
+</script>
+
 </body>
 </html>
