@@ -1444,14 +1444,14 @@ html+=`
 <tr>
 <th style="min-width:220px">Município</th>
 <th style="min-width:130px">Ofício TCE</th>
-<th style="min-width:100px">Data Envio</th>
-<th style="min-width:90px">Pág.</th>
-<th style="min-width:100px">Data Rec.1</th>
-<th style="min-width:100px">Data Rec.2</th>
-<th style="min-width:130px">Doc.1</th>
-<th style="min-width:130px">Doc.2</th>
-<th style="min-width:700px">Observação</th>
-<th style="min-width:120px">Ação</th>
+<th style="min-width:60px">Data Envio</th>
+<th style="min-width:70px">Pág.</th>
+<th style="min-width:60px">Data Rec.1</th>
+<th style="min-width:70px">Data Rec.2</th>
+<th style="min-width:100px">Doc.1</th>
+<th style="min-width:100px">Doc.2</th>
+<th style="min-width:500px">Observação</th>
+<th style="min-width:100px">Ação</th>
 </tr>
 `
 }
