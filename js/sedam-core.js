@@ -1,10 +1,9 @@
 /*=========================================================
 000 SEDAM CLIENT
 =========================================================*/
-const client = window.clientPublic
-
-if(!client){
-    console.error('Cliente Supabase não inicializado. Verifique config.js.')
+const clientSedam=window.clientPublic
+if(!clientSedam){
+console.error('Cliente Supabase não inicializado. Verifique config.js.')
 }
 console.log('SEDAM CORE INICIO')
 /*=========================================================
@@ -12,7 +11,7 @@ console.log('SEDAM CORE INICIO')
 =========================================================*/
 document.addEventListener("DOMContentLoaded",async()=>{
 
-if(!client){
+if(!clientSedam){
     alert('Erro de inicialização do Supabase.')
     return
 }
@@ -178,13 +177,13 @@ alert('Informe usuário e senha')
 return
 }
 let perfil=null
-let {data:p1,error:e1}=await client.from('perfistce').select('*').eq('username',usuario).eq('senha',senha).limit(1)
+let {data:p1,error:e1}=await clientSedam.from('perfistce').select('*').eq('username',usuario).eq('senha',senha).limit(1)
 if(e1)console.log(e1)
 if(p1&&p1.length){
 perfil=p1[0]
 perfil.origem='TCERO'
 }else{
-let {data:p2,error:e2}=await client.from('perfis').select('*').eq('username',usuario).limit(1)
+let {data:p2,error:e2}=await clientSedam.from('perfis').select('*').eq('username',usuario).limit(1)
 if(e2)console.log(e2)
 if(p2&&p2.length){
 perfil=p2[0]
@@ -791,7 +790,7 @@ return`
 =========================================================*/
 async function carregarUsuarios(){
 if(!userP)return
-let {data,error}=await client.from('perfis').select('id,nome_completo,username,nivel_acesso').order('nome_completo')
+let {data,error}=await clientSedam.from('perfis').select('id,nome_completo,username,nivel_acesso').order('nome_completo')
 if(error){
 console.error(error)
 return
@@ -814,7 +813,7 @@ let isTCERO=(userP.origem||'')==='TCERO'
 if(isTCERO&&!['manoel','vagner','gleidi'].includes((userP.username||'').toLowerCase())){
 return
 }
-let query=client.from('perfis').select('*').order('nome_completo')
+let query=clientSedam.from('perfis').select('*').order('nome_completo')
 if(!isAdminSedam){
 document.getElementById('listaPerfis').innerHTML=''
 return
@@ -1004,7 +1003,7 @@ if(String(senha||'').trim()!==''){
 payload.senha=senha
 }
 
-let {error}=await client.from('perfis').update(payload).eq('id',id)
+let {error}=await clientSedam.from('perfis').update(payload).eq('id',id)
 
 if(error){
 console.error(error)
@@ -1042,7 +1041,7 @@ if(!nome||!usuario||!senha){
 alert('Preencha nome, usuário e senha')
 return
 }
-let {error}=await client.from('perfis').insert([{
+let {error}=await clientSedam.from('perfis').insert([{
 nome_completo:nome,
 username:usuario,
 senha:senha,
@@ -1720,50 +1719,22 @@ dash.style.display='none'
 window.abrirPainelSepat=function(){
 window.location.href='sepatindex.html'
 }
-
+/*=========================================================
+FUNCTION ABRIRPAINELQUEIMADAS
+=========================================================*/
 window.abrirPainelQueimadas=function(){
 window.location.href='queimadas/index.html'
 }
 /*=========================================================
-ABRIR PAINEL QUEIMADAS
+Async FUNCTION Backup sedam
 =========================================================*/
-function abrirPainelQueimadas(){
-window.open(
-'https://projetosetags.github.io/tags/queimadas/index.html',
-'_blank'
-)
-}
-
-function voltarPainelGeral(){
-localStorage.removeItem('user')
-localStorage.removeItem('uid')
-let geral=document.getElementById('painel-geral-acesso')
-let login=document.getElementById('login-screen')
-let dash=document.getElementById('dashboard')
-document.body.classList.remove("login-bg")
-if(geral){
-geral.classList.remove('hidden')
-geral.style.display='flex'
-geral.style.visibility='visible'
-geral.style.opacity='1'
-}
-if(login){
-login.classList.add('hidden')
-login.style.display='none'
-}
-if(dash){
-dash.classList.add('hidden')
-dash.style.display='none'
-}
-window.scrollTo(0,0)
-}
 
 async function backupSedam(){
 try{
 let tabelas=['deliberacoes','perfis','perfistce','evolucao_mensal']
 let backup={}
 for(let t of tabelas){
-let {data,error}=await client.from(t).select('*')
+let {data,error}=await clientSedam.from(t).select('*')
 if(error){
 console.log(error)
 continue
