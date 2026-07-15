@@ -1,3 +1,12 @@
+const client = supabase.createClient(
+    window.S_URL,
+    window.S_KEY,
+    {
+        db:{
+            schema:'public'
+        }
+    }
+)
 /*=========================================================
 001 SEPAT CORE CONFIG
 =========================================================*/
