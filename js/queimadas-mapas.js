@@ -381,8 +381,11 @@ indice[(i.municipio||'').toUpperCase()]=i
 
 })
 
-camadaPlanosMunicipais=L.geoJSON(municipiosRO,{
+const geo=await fetch('./assets/geojson/municipios-ro.geojson')
 
+const municipiosRO=await geo.json()
+
+camadaPlanosMunicipais=L.geoJSON(municipiosRO,{
 style:function(feature){
 
 const nome=(feature.properties.nome||feature.properties.NM_MUN||'').toUpperCase()
