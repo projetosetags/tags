@@ -142,10 +142,16 @@ if(userLocal){
 document.body.classList.remove("login-bg")
 
 if(geral){
-    geral.classList.remove('hidden')
-    geral.style.display='flex'
-    geral.style.visibility='visible'
-    geral.style.opacity='1'
+let painelAtivo=sessionStorage.getItem('painelAtivo')
+if(painelAtivo==='sedam'){
+geral.classList.add('hidden')
+geral.style.display='none'
+}else{
+geral.classList.remove('hidden')
+geral.style.display='flex'
+geral.style.visibility='visible'
+geral.style.opacity='1'
+}
 }
 
 if(login){
@@ -1637,47 +1643,86 @@ modal.style.display='none'
 /*=========================================================
 000 SEDAM CORE FUNCTION PAINEL GERAL
 =========================================================*/
-function abrirPainelSedam(){
-let geral=document.getElementById('painel-geral-acesso')
-let login=document.getElementById('login-screen')
-let dash=document.getElementById('dashboard')
+window.abrirPainelSedam=async function(){
+
+sessionStorage.setItem('painelAtivo','sedam')
+
+const geral=document.getElementById('painel-geral-acesso')
+const login=document.getElementById('login-screen')
+const dash=document.getElementById('dashboard')
+
 if(geral){
 geral.classList.add('hidden')
 geral.style.display='none'
 }
+
 if(window.userP&&window.userP.username){
+
+document.body.classList.remove('login-bg')
+
 if(login){
 login.classList.add('hidden')
 login.style.display='none'
 }
+
 if(dash){
 dash.classList.remove('hidden')
 dash.style.display='block'
 dash.style.visibility='visible'
 dash.style.opacity='1'
 }
-carregarDados().then(()=>{
-switchTab('dashboard')
+
+try{
+
+if(typeof carregarDados==='function'){
+await carregarDados()
+}
+
+if(typeof aplicarPermissoesAbas==='function'){
+aplicarPermissoesAbas()
+}
+
+let aba=localStorage.getItem('activeTab')||'dashboard'
+
+if(typeof switchTab==='function'){
+switchTab(aba)
+}
+
 if(typeof renderDashboard==='function'){
 renderDashboard()
 }
-})
+
+}catch(e){
+console.error(e)
+alert('Erro ao carregar o painel Sedam.')
+}
+
 }else{
-document.body.classList.add("login-bg")
+
+document.body.classList.add('login-bg')
+
 if(login){
 login.classList.remove('hidden')
 login.style.display='flex'
 login.style.visibility='visible'
 login.style.opacity='1'
 }
+
 if(dash){
 dash.classList.add('hidden')
 dash.style.display='none'
 }
+
 }
+
 }
-function abrirPainelSepat(){
+
+window.abrirPainelSepat=function(){
 window.location.href='sepatindex.html'
+}
+
+window.abrirPainelQueimadas=function(){
+window.location.href='queimadas/index.html'
 }
 /*=========================================================
 ABRIR PAINEL QUEIMADAS
