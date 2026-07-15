@@ -462,3 +462,8 @@ MENU QUEIMADAS BOTAO ATIVO
 .tabelaResumoMunicipios{width:100%;border-collapse:collapse;table-layout:auto;font-size:10px;}
 .tabelaResumoMunicipios th,.tabelaResumoMunicipios td{border:1px solid #e2e8f0;padding:6px;}
 .tabelaResumoMunicipios tr:hover{background:#f8fafc;}
+.gridKPIMunicipios{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-top:15px;}
+
+.kpiCard{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.kpiNumero{font-size:34px;font-weight:800;color:#0f172a;}
+.kpiTitulo{margin-top:8px;font-size:14px;font-weight:700;color:#475569;}
