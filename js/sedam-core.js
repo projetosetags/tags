@@ -1,170 +1,161 @@
-const client = supabase.createClient(
-    window.S_URL,
-    window.S_KEY,
-    {
-        db:{
-            schema:'public'
-        }
-    }
-)
+/*=========================================================
+000 SEDAM CLIENT
+=========================================================*/
+const client = window.client
+
+if(!client){
+    console.error('Cliente Supabase não inicializado. Verifique config.js.')
+}
+
 /*=========================================================
 001 SEDAM CORE DOMCONTENTLOADED
 =========================================================*/
 document.addEventListener("DOMContentLoaded",async()=>{
+
+if(!client){
+    alert('Erro de inicialização do Supabase.')
+    return
+}
 
 document.body.style.visibility='hidden'
 
 let geral=document.getElementById('painel-geral-acesso')
 let login=document.getElementById('login-screen')
 let dash=document.getElementById('dashboard')
+
 let dataInicio=document.getElementById('dataInicio')
 let dataFim=document.getElementById('dataFim')
 let dataInicioMensal=document.getElementById('dataInicioMensal')
 let dataFimMensal=document.getElementById('dataFimMensal')
 
 if(dataInicio&&!dataInicio.value){
-dataInicio.value='2025-01-01'
+    dataInicio.value='2025-01-01'
 }
 
 if(dataFim&&!dataFim.value){
-dataFim.value='2028-01-01'
+    dataFim.value='2028-01-01'
 }
+
 if(dataInicioMensal&&!dataInicioMensal.value){
-dataInicioMensal.value='2025-01-01'
+    dataInicioMensal.value='2025-01-01'
 }
 
 if(dataFimMensal&&!dataFimMensal.value){
-dataFimMensal.value='2028-01-01'
+    dataFimMensal.value='2028-01-01'
 }
+
 localStorage.removeItem('uid')
 
 let userLocal=localStorage.getItem('user')
 
 if(userLocal){
 
-try{
+    try{
 
-let perfil=JSON.parse(userLocal)
+        let perfil=JSON.parse(userLocal)
 
-if(perfil&&perfil.username){
+        if(perfil&&perfil.username){
 
-window.userP=perfil
-userP=perfil
+            window.userP=perfil
+            userP=perfil
 
-document.body.classList.remove("login-bg")
+            document.body.classList.remove("login-bg")
 
-if(geral){
-geral.classList.add('hidden')
-geral.style.display='none'
-}
+            if(geral){
+                geral.classList.add('hidden')
+                geral.style.display='none'
+            }
 
-if(login){
-login.classList.add('hidden')
-login.style.display='none'
-}
+            if(login){
+                login.classList.add('hidden')
+                login.style.display='none'
+            }
 
-if(dash){
-dash.classList.remove('hidden')
-dash.style.display='block'
-dash.style.visibility='visible'
-dash.style.opacity='1'
-}
+            if(dash){
+                dash.classList.remove('hidden')
+                dash.style.display='block'
+                dash.style.visibility='visible'
+                dash.style.opacity='1'
+            }
 
-let info=document.getElementById('user-info')
+            let info=document.getElementById('user-info')
 
-if(info){
-info.innerHTML=
-(perfil.nome_completo||'-')+
-' • '+
-(perfil.cargo||'-')+
-' • '+
-(perfil.origem||'-')
-}
+            if(info){
+                info.innerHTML=
+                    (perfil.nome_completo||'-')+
+                    ' • '+
+                    (perfil.cargo||'-')+
+                    ' • '+
+                    (perfil.origem||'-')
+            }
 
-aplicarPermissoesAbas()
+            aplicarPermissoesAbas()
 
-await carregarDados()
+            await carregarDados()
 
-aplicarAcessoMonitoramento()
+            aplicarAcessoMonitoramento()
 
-let abaSalva=localStorage.getItem('activeTab')||'dashboard'
+            let abaSalva=localStorage.getItem('activeTab')||'dashboard'
 
-switchTab(abaSalva)
+            switchTab(abaSalva)
 
-setTimeout(()=>{
+            setTimeout(()=>{
 
-if(dash){
-dash.classList.remove('hidden')
-dash.style.display='block'
-dash.style.visibility='visible'
-dash.style.opacity='1'
-}
+                if(dash){
+                    dash.classList.remove('hidden')
+                    dash.style.display='block'
+                    dash.style.visibility='visible'
+                    dash.style.opacity='1'
+                }
 
-document.querySelectorAll('canvas').forEach(c=>{
-c.style.display='block'
-c.style.visibility='visible'
-c.style.opacity='1'
-})
+                document.querySelectorAll('canvas').forEach(c=>{
+                    c.style.display='block'
+                    c.style.visibility='visible'
+                    c.style.opacity='1'
+                })
 
-window.dispatchEvent(new Event('resize'))
+                window.dispatchEvent(new Event('resize'))
 
-if(typeof renderDashboard==='function'){
-renderDashboard()
-}
+                if(typeof renderDashboard==='function')renderDashboard()
+                if(typeof renderResumo==='function')renderResumo()
+                if(typeof renderTable==='function')renderTable()
+                if(typeof renderConcluidos==='function')renderConcluidos()
+                if(typeof initPainelGrafico==='function')initPainelGrafico()
 
-if(typeof renderResumo==='function'){
-renderResumo()
-}
+            },300)
 
-if(typeof renderTable==='function'){
-renderTable()
-}
+            document.body.style.visibility='visible'
 
-if(typeof renderConcluidos==='function'){
-renderConcluidos()
-}
+            return
+        }
 
-if(typeof initPainelGrafico==='function'){
-initPainelGrafico()
-}
+    }catch(e){
 
-},300)
+        console.error(e)
 
-setTimeout(()=>{
-document.body.style.visibility='visible'
-},100)
+        localStorage.removeItem('user')
 
-return
-
-}
-
-}catch(e){
-
-console.log(e)
-
-localStorage.removeItem('user')
-
-}
+    }
 
 }
 
 document.body.classList.remove("login-bg")
 
 if(geral){
-geral.classList.remove('hidden')
-geral.style.display='flex'
-geral.style.visibility='visible'
-geral.style.opacity='1'
+    geral.classList.remove('hidden')
+    geral.style.display='flex'
+    geral.style.visibility='visible'
+    geral.style.opacity='1'
 }
 
 if(login){
-login.classList.add('hidden')
-login.style.display='none'
+    login.classList.add('hidden')
+    login.style.display='none'
 }
 
 if(dash){
-dash.classList.add('hidden')
-dash.style.display='none'
+    dash.classList.add('hidden')
+    dash.style.display='none'
 }
 
 document.body.style.visibility='visible'
