@@ -1442,16 +1442,16 @@ html+=`
 }else{
 html+=`
 <tr>
-<th style="min-width:220px">Município</th>
-<th style="min-width:130px">Ofício TCE</th>
-<th style="min-width:60px">Data Envio</th>
-<th style="min-width:70px">Pág.</th>
-<th style="min-width:60px">Data Rec.1</th>
-<th style="min-width:70px">Data Rec.2</th>
-<th style="min-width:100px">Doc.1</th>
-<th style="min-width:100px">Doc.2</th>
-<th style="min-width:500px">Observação</th>
-<th style="min-width:100px">Ação</th>
+<th style="width:170px">Município</th>
+<th style="width:150px">Ofício TCE</th>
+<th style="width:70px">Data Envio</th>
+<th style="width:55px">Pág.</th>
+<th style="width:70px">Data Rec.1</th>
+<th style="width:70px">Data Rec.2</th>
+<th style="width:70px">Doc.1</th>
+<th style="width:70px">Doc.2</th>
+<th style="width:auto">Observação</th>
+<th style="width:55px">Ação</th>
 </tr>
 `
 }
@@ -1474,16 +1474,44 @@ html+=`
 }else{
 html+=`
 <tr>
-<td>${i.municipio||'-'}</td>
-<td>${i.nroficioenviadotcero||'-'}</td>
-<td>${formatarDataBR(i.dataenviodoc)}</td>
-<td>${i.paginaenviodoc||'-'}</td>
-<td>${formatarDataBR(i.ldatarecebimentodoc)}</td>
-<td>${formatarDataBR(i.lldatarecebimentodoc)}</td>
-<td>${i.lnumerodocenviado||'-'}</td>
-<td>${i.llnumerodocenviado||'-'}</td>
-<td>${i.observacao||'-'}</td>
-<td><button class="btnEditarMunicipio" onclick="editarMunicipio(${i.id})">✏</button></td>
+<td style="width:170px;font-weight:600">${i.municipio||'-'}</td>
+
+<td style="width:150px;font-size:11px">
+${i.nroficioenviadotcero||'-'}
+</td>
+
+<td style="width:70px;text-align:center">
+${formatarDataBR(i.dataenviodoc)}
+</td>
+
+<td style="width:55px;text-align:center">
+${i.paginaenviodoc||'-'}
+</td>
+
+<td style="width:70px;text-align:center">
+${formatarDataBR(i.ldatarecebimentodoc)}
+</td>
+
+<td style="width:70px;text-align:center">
+${formatarDataBR(i.lldatarecebimentodoc)}
+</td>
+
+<td style="width:70px;text-align:center">
+${i.lnumerodocenviado||'-'}
+</td>
+
+<td style="width:70px;text-align:center">
+${i.llnumerodocenviado||'-'}
+</td>
+
+<td style="white-space:normal;word-break:break-word;line-height:1.35">
+${i.observacao||'-'}
+</td>
+
+<td style="width:55px">
+<button class="btnEditarMunicipio"
+onclick="editarMunicipio(${i.id})">✏</button>
+</td>
 </tr>
 `
 }
