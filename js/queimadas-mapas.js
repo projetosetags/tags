@@ -1,3 +1,19 @@
+let mapaPlanosMunicipais=null
+let camadaPlanosMunicipais=null
+
+function corPlanoMunicipio(status){
+switch(status){
+case 'VERDE':
+return '#16a34a'
+case 'AMARELO':
+return '#facc15'
+case 'VERMELHO':
+return '#dc2626'
+default:
+return '#d1d5db'
+}
+}
+
 /*=========================================================
 200 QUEIMADAS FUNCTION CARREGARUCSRO
 =========================================================*/
@@ -316,3 +332,174 @@ Executivo • Municípios • Estado • Monitoramento • Sala de Situação
 </div>
 `
 }
+
+async function renderMapaPlanosMunicipais(filtro='TODOS'){
+
+const box=document.getElementById('mapaMunicipalPlanos')
+
+if(!box)return
+
+if(!mapaPlanosMunicipais){
+
+mapaPlanosMunicipais=L.map('mapaMunicipalPlanos',{
+zoomControl:true
+}).setView([-10.9,-63.3],7)
+
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+maxZoom:18,
+attribution:'OpenStreetMap'
+}
+).addTo(mapaPlanosMunicipais)
+
+}
+
+if(camadaPlanosMunicipais){
+
+mapaPlanosMunicipais.removeLayer(camadaPlanosMunicipais)
+
+}
+
+const {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+
+if(error){
+
+console.log(error)
+
+return
+
+}
+
+const indice={}
+
+data.forEach(i=>{
+
+indice[(i.municipio||'').toUpperCase()]=i
+
+})
+
+camadaPlanosMunicipais=L.geoJSON(municipiosRO,{
+
+style:function(feature){
+
+const nome=(feature.properties.nome||feature.properties.NM_MUN||'').toUpperCase()
+
+const reg=indice[nome]
+
+if(!reg){
+
+return{
+
+fillColor:'#d1d5db',
+weight:1,
+color:'#666',
+fillOpacity:.35
+
+}
+
+}
+
+if(filtro!=='TODOS' && reg.classificacao_cor!==filtro){
+
+return{
+
+fillColor:'#d1d5db',
+weight:1,
+color:'#999',
+fillOpacity:.20
+
+}
+
+}
+
+return{
+
+fillColor:corPlanoMunicipio(reg.classificacao_cor),
+weight:1,
+color:'#555',
+fillOpacity:.85
+
+}
+
+},
+
+onEachFeature:function(feature,layer){
+
+const nome=(feature.properties.nome||feature.properties.NM_MUN||'').toUpperCase()
+
+const reg=indice[nome]
+
+if(!reg)return
+
+let situacao='Sem informação'
+
+if(reg.classificacao_cor==='VERDE')
+situacao='🟢 Plano apresentado'
+
+if(reg.classificacao_cor==='AMARELO')
+situacao='🟡 Dilação de prazo'
+
+if(reg.classificacao_cor==='VERMELHO')
+situacao='🔴 Sem resposta'
+
+layer.bindPopup(`
+
+<b>${reg.municipio}</b>
+
+<hr>
+
+<b>Situação:</b><br>
+
+${situacao}
+
+<br><br>
+
+<b>Documento:</b><br>
+
+${reg.lnumerodocenviado||'-'}
+
+<br><br>
+
+<b>Recebimento:</b><br>
+
+${formatarDataBR(reg.ldatarecebimentodoc)}
+
+<br><br>
+
+${reg.observacao||''}
+
+`)
+
+layer.on({
+
+mouseover:e=>{
+
+e.target.setStyle({
+
+weight:3,
+
+color:'#2563eb'
+
+})
+
+},
+
+mouseout:e=>{
+
+camadaPlanosMunicipais.resetStyle(e.target)
+
+}
+
+})
+
+}
+
+}).addTo(mapaPlanosMunicipais)
+
+mapaPlanosMunicipais.fitBounds(camadaPlanosMunicipais.getBounds())
+
+}
+
