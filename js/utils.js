@@ -3,10 +3,7 @@
 =========================================================*/
 const USUARIOS_OCULTOS=['neto','gleidi','vagner']
 const NOTA_TECNICA_PDF=`As informações constantes neste painel, gráficos, indicadores e relatórios possuem caráter preliminar e meramente informativo, sendo baseadas nos dados declarados e apresentados até o presente momento pelos jurisdicionados envolvidos. Ressalta-se que tais informações ainda não passaram pela análise técnica de consistência documental, verificação de evidências, validação metodológica e conferência conclusiva pela equipe técnica de auditores designados. A validação oficial ocorrerá posteriormente, por meio da análise técnica dos relatórios de execução, documentos comprobatórios e demais evidências encaminhadas pelos órgãos e entidades responsáveis, culminando na emissão do respectivo Relatório de Monitoramento e demais manifestações técnicas oficiais do Tribunal de Contas.`
-/*=========================================================
-002 UTILS CLIENT SUPABASE
-=========================================================*/
-const client = window.client
+
 /*=========================================================
 003 UTILS VARIAVEIS GLOBAIS
 =========================================================*/
