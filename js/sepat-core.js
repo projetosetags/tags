@@ -1,18 +1,14 @@
 /*=========================================================
 000 SEPAT CLIENT
 =========================================================*/
-const client = window.clientPublic
 const sepatClient = window.clientPublic
 
+if(!sepatClient){
+console.error('Cliente Supabase não inicializado.')
+}
 /*=========================================================
 001 SEPAT CORE CONFIG
 =========================================================*/
-const SEPAT_SUPABASE_URL = window.S_URL
-const SEPAT_SUPABASE_KEY = window.S_KEY
-
-// Utiliza o mesmo client global criado em config.js
-const sepatClient = client
-
 let sepatUser = null
 let sepatData = []
 let sepatFiltrados = []
@@ -86,7 +82,7 @@ await sepatClient.from('sepat_deliberacoes').update({[prox]:100}).eq('id',i.id)
 002 SEPAT CORE DOMCONTENTLOADED
 =========================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
-if(!window.client){
+if(!sepatClient){
     console.error('Cliente Supabase não inicializado.')
     return
 }
