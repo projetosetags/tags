@@ -1794,3 +1794,92 @@ await renderEstatisticasMunicipais()
 alert('Registro atualizado com sucesso.')
 }
 
+/*=========================================================
+143 QUEIMADAS FUNCTION RENDERDISTRIBUICAORESPOSTAS
+=========================================================*/
+async function renderDistribuicaoRespostas(){
+const {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('classificacao_cor')
+if(error)return
+let verde=0
+let amarelo=0
+let vermelho=0
+data.forEach(i=>{
+if(i.classificacao_cor==='VERDE')verde++
+else if(i.classificacao_cor==='AMARELO')amarelo++
+else vermelho++
+})
+const ctx=document.getElementById('graficoMunicipiosResposta')
+if(window.graficoDistribuicao)
+window.graficoDistribuicao.destroy()
+window.graficoDistribuicao=new Chart(ctx,{
+type:'doughnut',
+data:{
+labels:[
+'🟢 Com Plano',
+'🟡 Dilação',
+'🔴 Sem Resposta'
+],
+datasets:[{
+data:[verde,amarelo,vermelho],
+backgroundColor:[
+'#16a34a',
+'#facc15',
+'#dc2626'
+],
+borderWidth:1
+}]
+},
+options:{
+responsive:true,
+plugins:{
+legend:{
+position:'right'
+}
+}
+}
+})
+}
+/*=========================================================
+144 QUEIMADAS FUNCTION RENDERESTATISTICASMUNICIPAIS
+=========================================================*/
+async function renderEstatisticasMunicipais(){
+const {data,error}=await client
+.from('queimadas_municipios_oficio')
+.select('*')
+if(error)return
+let verde=0
+let amarelo=0
+let vermelho=0
+data.forEach(i=>{
+if(i.classificacao_cor==='VERDE')verde++
+else if(i.classificacao_cor==='AMARELO')amarelo++
+else vermelho++
+})
+let total=data.length
+document.getElementById('painelEstatisticasMunicipais').innerHTML=`
+<div class="gridKPIMunicipios">
+<div class="kpiCard">
+<div class="kpiNumero">${total}</div>
+<div class="kpiTitulo">Municípios</div>
+</div>
+<div class="kpiCard">
+<div class="kpiNumero">${verde}</div>
+<div class="kpiTitulo">🟢 Com Plano</div>
+</div>
+<div class="kpiCard">
+<div class="kpiNumero">${amarelo}</div>
+<div class="kpiTitulo">🟡 Dilação</div>
+</div>
+<div class="kpiCard">
+<div class="kpiNumero">${vermelho}</div>
+<div class="kpiTitulo">🔴 Sem Resposta</div>
+</div>
+<div class="kpiCard">
+<div class="kpiNumero">${((verde/total)*100).toFixed(1)}%</div>
+<div class="kpiTitulo">Atendimento</div>
+</div>
+</div>
+`
+}
