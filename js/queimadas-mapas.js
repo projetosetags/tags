@@ -333,6 +333,11 @@ Executivo • Municípios • Estado • Monitoramento • Sala de Situação
 `
 }
 
+function normalizarMunicipio(nome){
+return String(nome||'')
+.normalize('NFD
+
+           
 async function renderMapaPlanosMunicipais(filtro='TODOS'){
 
 const box=document.getElementById('mapaMunicipalPlanos')
