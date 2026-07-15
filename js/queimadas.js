@@ -1492,6 +1492,12 @@ setTimeout(async()=>{
 if(typeof renderMapaPlanosMunicipais==='function'){
 await renderMapaPlanosMunicipais('TODOS')
 }
+if(typeof renderDistribuicaoRespostas==='function'){
+await renderDistribuicaoRespostas()
+}
+if(typeof renderEstatisticasMunicipais==='function'){
+await renderEstatisticasMunicipais()
+}
 },200)
 }
 if(nome==='mapa'){
