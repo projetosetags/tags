@@ -1445,7 +1445,7 @@ html+=`
 <th style="width:170px">Município</th>
 <th style="width:150px">Ofício TCE</th>
 <th style="width:70px">Data Envio</th>
-<th style="width:55px">Pág.</th>
+<th style="width:90px">Pág.</th>
 <th style="width:70px">Data Rec.1</th>
 <th style="width:70px">Data Rec.2</th>
 <th style="width:70px">Doc.1</th>
@@ -1484,7 +1484,7 @@ ${i.nroficioenviadotcero||'-'}
 ${formatarDataBR(i.dataenviodoc)}
 </td>
 
-<td style="width:55px;text-align:center">
+<td style="width:90px;text-align:center">
 ${i.paginaenviodoc||'-'}
 </td>
 
