@@ -1426,17 +1426,17 @@ box.innerHTML='Erro ao carregar.'
 return
 }
 let html='<div style="overflow-x:auto;width:100%">'
-html+='<table class="tabelaMunicipios">'
+html+='<table class="tabelaResumoMunicipios">'
 html+='<thead>'
 if(tipo==='RESUMO'){
 html+=`
 <tr>
-<th>Nº</th>
-<th>Município</th>
-<th>Situação</th>
-<th>Data</th>
-<th>Documento</th>
-<th>Observação</th>
+<th style="width:40px">Nº</th>
+<th style="width:150px">Município</th>
+<th style="width:120px">Situação</th>
+<th style="width:70px">Data</th>
+<th style="width:90px">Documento</th>
+<th style="width:220px">Observação</th>
 </tr>
 `
 }else{
@@ -1463,12 +1463,12 @@ if(i.classificacao_cor==='VERDE')situacao='🟢 Com Plano de Ação'
 if(i.classificacao_cor==='AMARELO')situacao='🟡 Dilação de Prazo'
 html+=`
 <tr>
-<td>${idx+1}</td>
-<td>${i.municipio||'-'}</td>
-<td>${situacao}</td>
-<td>${formatarDataBR(i.ldatarecebimentodoc)}</td>
-<td>${i.lnumerodocenviado||i.llnumerodocenviado||'-'}</td>
-<td>${i.observacao||'-'}</td>
+<td style="text-align:center">${idx+1}</td>
+<td style="width:150px;white-space:normal;font-weight:600">${i.municipio||'-'}</td>
+<td style="width:120px">${situacao}</td>
+<td style="width:70px;text-align:center">${formatarDataBR(i.ldatarecebimentodoc)}</td>
+<td style="width:90px;text-align:center">${i.lnumerodocenviado||i.llnumerodocenviado||'-'}</td>
+<td style="width:220px;white-space:normal;word-break:break-word">${i.observacao||'-'}</td>
 </tr>
 `
 }else{
