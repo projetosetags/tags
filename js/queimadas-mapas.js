@@ -335,7 +335,12 @@ Executivo • Municípios • Estado • Monitoramento • Sala de Situação
 
 function normalizarMunicipio(nome){
 return String(nome||'')
-.normalize('NFD
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g,'')
+.replace(/['’`´]/g,"'")
+.toUpperCase()
+.trim()
+}
 
            
 async function renderMapaPlanosMunicipais(filtro='TODOS'){
