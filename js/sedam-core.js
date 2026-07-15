@@ -1,7 +1,7 @@
 /*=========================================================
 000 SEDAM CLIENT
 =========================================================*/
-const client = window.client
+const client = window.clientPublic
 
 if(!client){
     console.error('Cliente Supabase não inicializado. Verifique config.js.')
