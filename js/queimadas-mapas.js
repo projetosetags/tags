@@ -374,35 +374,23 @@ return
 }
 
 const indice={}
-
 data.forEach(i=>{
-
 indice[(i.municipio||'').toUpperCase()]=i
-
 })
-
 const geo=await fetch('./assets/geojson/municipios-ro.geojson')
-
 const municipiosRO=await geo.json()
-
-camadaPlanosMunicipais=L.geoJSON(municipiosGeo,{
+camadaPlanosMunicipais=L.geoJSON(municipiosRO,{
 style:function(feature){
-
 const nome=(feature.properties.nome||feature.properties.NM_MUN||'').toUpperCase()
-
 const reg=indice[nome]
-
 if(!reg){
-
+console.log('SEM CORRESPONDÊNCIA:',nome)
 return{
-
 fillColor:'#d1d5db',
 weight:1,
 color:'#666',
 fillOpacity:.35
-
 }
-
 }
 
 if(filtro!=='TODOS' && reg.classificacao_cor!==filtro){
