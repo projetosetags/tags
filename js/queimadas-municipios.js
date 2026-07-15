@@ -1833,9 +1833,11 @@ borderWidth:1
 },
 options:{
 responsive:true,
+maintainAspectRatio:false,
+radius:'60%',
 plugins:{
 legend:{
-position:'right'
+position:'bottom'
 }
 }
 }
