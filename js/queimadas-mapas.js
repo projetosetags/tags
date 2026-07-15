@@ -334,27 +334,35 @@ Executivo • Municípios • Estado • Monitoramento • Sala de Situação
 }
 
 function normalizarMunicipio(nome){
-return String(nome||'')
+let n=String(nome||'')
 .normalize('NFD')
 .replace(/[\u0300-\u036f]/g,'')
 .replace(/['’`´]/g,"'")
 .toUpperCase()
 .trim()
+
+const alias={
+"MACHADINHO":"MACHADINHO D'OESTE",
+"ESPIGAO":"ESPIGAO D'OESTE",
+"SANTA LUZIA":"SANTA LUZIA D'OESTE",
+"SAO FELIPE":"SAO FELIPE D'OESTE",
+"MACHADINHO DO OESTE":"MACHADINHO D'OESTE",
+"ESPIGAO DO OESTE":"ESPIGAO D'OESTE",
+"SANTA LUZIA DO OESTE":"SANTA LUZIA D'OESTE",
+"SAO FELIPE DO OESTE":"SAO FELIPE D'OESTE"
+}
+
+return alias[n]||n
 }
 
            
 async function renderMapaPlanosMunicipais(filtro='TODOS'){
-
 const box=document.getElementById('mapaMunicipalPlanos')
-
 if(!box)return
-
 if(!mapaPlanosMunicipais){
-
 mapaPlanosMunicipais=L.map('mapaMunicipalPlanos',{
 zoomControl:true
 }).setView([-10.9,-63.3],7)
-
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 {
@@ -362,27 +370,17 @@ maxZoom:18,
 attribution:'OpenStreetMap'
 }
 ).addTo(mapaPlanosMunicipais)
-
 }
-
 if(camadaPlanosMunicipais){
-
 mapaPlanosMunicipais.removeLayer(camadaPlanosMunicipais)
-
 }
-
 const {data,error}=await client
 .from('queimadas_municipios_oficio')
 .select('*')
-
 if(error){
-
 console.log(error)
-
 return
-
 }
-
 const indice={}
 data.forEach(i=>{
 indice[normalizarMunicipio(i.municipio)]=i
@@ -392,6 +390,9 @@ const municipiosRO=await geo.json()
 camadaPlanosMunicipais=L.geoJSON(municipiosRO,{
 style:function(feature){
 const nome=normalizarMunicipio(feature.properties.nome||feature.properties.NM_MUN)
+if(nome.includes('ESPIGAO')||nome.includes('MACHADINHO')||nome.includes('SANTA')||nome.includes('FELIPE')){
+console.log(nome)
+}
 const reg=indice[nome]
 if(!reg){
 console.log('SEM CORRESPONDÊNCIA:',nome)
