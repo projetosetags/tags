@@ -368,17 +368,58 @@ if(!box)return
 let{data=[]}=await client.from('queimadas_planejamento').select('*').order('inicio',{ascending:true})
 let html='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px">'
 data.forEach(i=>{
-let cor='#64748b'
-if((i.status||'').toUpperCase()==='CONTÍNUO')cor='#16a34a'
-else if((i.status||'').toUpperCase()==='EM EXECUÇÃO')cor='#2563eb'
-else if((i.status||'').toUpperCase()==='PLANEJADO')cor='#f97316'
-else if((i.status||'').toUpperCase()==='ATRASADO')cor='#dc2626'
+
+let corStatus='#64748b'
+
+if((i.status||'').toUpperCase()==='CONTÍNUO')corStatus='#16a34a'
+else if((i.status||'').toUpperCase()==='EM EXECUÇÃO')corStatus='#2563eb'
+else if((i.status||'').toUpperCase()==='PLANEJADO')corStatus='#f97316'
+else if((i.status||'').toUpperCase()==='ATRASADO')corStatus='#dc2626'
+
+let responsavel=(i.responsavel||'').toUpperCase()
+
+let corCabecalho='#475569'
+let tituloResponsavel='RESPONSÁVEL'
+
+if(responsavel.includes('CBMRO')){
+corCabecalho='#dc2626'
+tituloResponsavel='CBMRO'
+}else if(responsavel.includes('SEDAM')){
+corCabecalho='#16a34a'
+tituloResponsavel='SEDAM'
+}
+
 html+=`
-<div style="background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 12px rgba(0,0,0,.08);border-left:8px solid ${cor}">
-<div style="font-size:18px;font-weight:900;color:#0f172a;margin-bottom:10px">${i.acao||'-'}</div>
-<div style="font-size:13px;color:#475569;margin-bottom:8px"><b>📅 ${formatarDataBR(i.inicio)} até ${formatarDataBR(i.fim)}</b></div>
-<div style="font-size:13px;margin-bottom:6px"><b>Status:</b> <span style="color:${cor};font-weight:900">${i.status||'-'}</span></div>
-<div style="font-size:13px"><b>Responsável:</b> ${i.responsavel||'-'}</div>
+<div style="background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,.10);border:1px solid #e5e7eb">
+
+<div style="background:${corCabecalho};color:#fff;padding:10px 16px;font-size:14px;font-weight:900;text-align:center">
+${tituloResponsavel}
+</div>
+
+<div style="padding:18px">
+
+<div style="font-size:18px;font-weight:900;color:#0f172a">
+${i.acao||'-'}
+</div>
+
+<div style="margin-top:10px;font-size:13px;font-weight:800;color:#475569">
+📅 ${formatarDataBR(i.inicio)} até ${formatarDataBR(i.fim)}
+</div>
+
+<div style="margin-top:10px">
+<b>Status:</b>
+<span style="color:${corStatus};font-weight:900">
+${i.status||'-'}
+</span>
+</div>
+
+<div style="margin-top:8px">
+<b>Responsável:</b>
+${i.responsavel||'-'}
+</div>
+
+</div>
+
 </div>`
 })
 html+='</div>'
