@@ -511,7 +511,7 @@ console.log('userP não carregado')
 return
 }
 
-let query=client
+let query=clientSedam
 .from('deliberacoes')
 .select('*')
 .order('ordem1',{ascending:true})
