@@ -366,16 +366,22 @@ async function renderMarcos(){
 let box=document.getElementById('painelMarcos')
 if(!box)return
 let{data=[]}=await client.from('queimadas_planejamento').select('*').order('inicio',{ascending:true})
-let html=''
+let html='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px">'
 data.forEach(i=>{
+let cor='#64748b'
+if((i.status||'').toUpperCase()==='CONTÍNUO')cor='#16a34a'
+else if((i.status||'').toUpperCase()==='EM EXECUÇÃO')cor='#2563eb'
+else if((i.status||'').toUpperCase()==='PLANEJADO')cor='#f97316'
+else if((i.status||'').toUpperCase()==='ATRASADO')cor='#dc2626'
 html+=`
-<div class="monitor4d-card">
-<b>${formatarDataBR(i.inicio)} até ${formatarDataBR(i.fim)}</b><br>
-${i.acao||'-'}<br>
-Status: ${i.status||'-'}<br>
-Responsável: ${i.responsavel||'-'}
+<div style="background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 12px rgba(0,0,0,.08);border-left:8px solid ${cor}">
+<div style="font-size:18px;font-weight:900;color:#0f172a;margin-bottom:10px">${i.acao||'-'}</div>
+<div style="font-size:13px;color:#475569;margin-bottom:8px"><b>📅 ${formatarDataBR(i.inicio)} até ${formatarDataBR(i.fim)}</b></div>
+<div style="font-size:13px;margin-bottom:6px"><b>Status:</b> <span style="color:${cor};font-weight:900">${i.status||'-'}</span></div>
+<div style="font-size:13px"><b>Responsável:</b> ${i.responsavel||'-'}</div>
 </div>`
 })
+html+='</div>'
 box.innerHTML=html
 }
 /*=========================================================
