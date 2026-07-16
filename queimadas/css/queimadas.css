@@ -113,7 +113,20 @@ overflow-x:auto;
 .gantt-row{display:flex;align-items:center;margin-bottom:10px}
 .gantt-titulo{width:320px;font-size:12px;font-weight:800;color:#1e293b}
 .gantt-area{position:relative;height:42px;flex:1;background:#f1f5f9;border-radius:12px}
-.gantt-bar{position:absolute;height:32px;top:5px;border-radius:10px;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 10px}
+.gantt-bar{
+position:absolute;
+height:32px;
+top:5px;
+border-radius:10px;
+color:#000!important;
+font-size:9px!important;
+font-weight:700!important;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:0 10px;
+text-shadow:none!important;
+}
 .gantt-bar.andamento{background:#2563eb}
 .gantt-bar.atrasado{background:#dc2626}
 .gantt-bar.concluido{background:#16a34a}
