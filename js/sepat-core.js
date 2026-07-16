@@ -545,7 +545,7 @@ if(miniProdutos)miniProdutos.innerText=produtos
 function renderDashboardSepat(){
 
 let lista=[...(sepatData||[])].sort(compareSepat)
-
+console.table(lista.slice(0,5))
 let totalItens=[...new Set(lista.map(i=>String(i.siglaitem||'').trim()).filter(Boolean))].length
 
 let totalSubitens=lista.length
