@@ -783,42 +783,38 @@ doc.save('pdf_dashboard_tag_sepat.pdf')
 011 SEPAT CORE GRAFICO LINHA
 =========================================================*/
 function renderGraficoLinhaSepat(lista){
-
 lista=[...(lista||[])]
-
 let canvas=document.getElementById('graficoLinhaSepat')
 if(!canvas)return
-
 let ctx=canvas.getContext('2d')
-
 if(graficoLinhaSepat){
 graficoLinhaSepat.destroy()
 }
-
 let indiceMes=MES_ATUAL_SEPAT
-
 let labels=MESES_LABEL_SEPAT.slice(0,indiceMes+1)
-
 let valores=[]
-
-MESES_SEPAT.slice(0,indiceMes+1).forEach(m=>{
-
+MESES_SEPAT.slice(0,indiceMes+1).forEach((m,indice)=>{
 let soma=0
-
 lista.forEach(i=>{
-let valor=Number(i[m]||0)
+let valor=0
+let atingiu100=false
+for(let x=0;x<=indice;x++){
+let v=Number(i[MESES_SEPAT[x]]||0)
+if(v>=100){
+atingiu100=true
+break
+}
+}
+if(atingiu100){
+valor=100
+}else{
+valor=Number(i[m]||0)
 if(isNaN(valor))valor=0
+}
 soma+=valor
 })
-
-valores.push(
-lista.length
-?Math.round(soma/lista.length)
-:0
-)
-
+valores.push(lista.length?Math.round(soma/lista.length):0)
 })
-
 graficoLinhaSepat=new Chart(ctx,{
 type:'line',
 data:{
@@ -863,6 +859,7 @@ font:{weight:'1000',size:14},
 color:'#111827',
 formatter:(v)=>v+'%'
 }
+}
 },
 scales:{
 y:{
@@ -881,7 +878,6 @@ font:{weight:'800',size:10}
 },
 plugins:[ChartDataLabels]
 })
-
 }
 /*=========================================================
 012 SEPAT CORE GRAFICO PIZZA
