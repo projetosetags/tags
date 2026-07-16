@@ -182,7 +182,7 @@ text-shadow:none!important;
 .gantt-header{display:grid;grid-template-columns:320px repeat(12,1fr);gap:4px;font-weight:900;margin-bottom:12px;text-align:center}
 .gantt-linha{display:grid;grid-template-columns:320px repeat(12,1fr);gap:4px;margin-bottom:10px;align-items:center}
 .gantt-nome{font-weight:800;padding:10px}
-.gantt-barra{height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff}
+.gantt-barra{height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:9px!important;font-weight:700!important;color:#000!important;text-shadow:none!important;letter-spacing:.2px;overflow:hidden;white-space:nowrap}
 .gantt-barra.azul{background:#2563eb}
 .gantt-barra.verde{background:#16a34a}
 .gantt-barra.vermelho{background:#dc2626}
