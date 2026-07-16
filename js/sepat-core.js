@@ -543,6 +543,7 @@ if(miniProdutos)miniProdutos.innerText=produtos
 010 SEPAT CORE RENDER DASHBOARD
 =========================================================*/
 function renderDashboardSepat(){
+console.log('RENDER DASHBOARD EXECUTOU');
 
 let lista=[...(sepatData||[])].sort(compareSepat)
 console.table(lista.slice(0,5))
