@@ -290,32 +290,79 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 =========================================================-->
 <section id="abaPlanejamento" class="abaQueimadas hidden">
 <div class="painelTitulo">PLANEJAMENTO ESTRATÉGICO</div>
-<div class="cardExecutivo"><h2>PLANO UNIFICADO</h2><div id="painelPlanoUnificado"></div></div>
-<div class="cardExecutivo"><h2>PLANO Sedam</h2><div id="painelPlanoSedam"></div></div>
-<div class="cardExecutivo"><h2>PLANO CBMRO</h2><div id="painelPlanoCBM"></div></div>
-<div class="cardExecutivo"><h2>CADEIA DE VALOR</h2><div id="painelCadeiaValor"></div></div>
-<div class="cardExecutivo"><h2>TEORIA DA MUDANÇA</h2><div id="painelTeoriaMudanca"></div></div>
-<div class="cardExecutivo"><h2>ODS</h2><div id="painelODS"></div></div>
+
 <div class="cardExecutivo">
+<h2>📘 PLANO UNIFICADO</h2>
+<details class="infoPainel"><summary>ℹ️ O que é este painel?</summary><p><b>Objetivo:</b> Consolida a estratégia estadual para prevenção, preparação, resposta e recuperação frente às queimadas.</p><p><b>Como interpretar:</b> Analise objetivos, responsáveis, prazos e integração entre os órgãos.</p><p><b>Tomada de decisão:</b> Identifique atrasos, conflitos de competências e necessidade de articulação.</p><p><b>Fonte:</b> Plano Unificado • TCE-RO • CBMRO • SEDAM • Defesa Civil.</p></details>
+<div id="painelPlanoUnificado"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🌿 PLANO SEDAM</h2>
+<details class="infoPainel"><summary>ℹ️ O que é este painel?</summary><p><b>Objetivo:</b> Apresenta as ações ambientais executadas pela SEDAM.</p><p><b>Como interpretar:</b> Observe fiscalização, monitoramento, licenciamento e prevenção.</p><p><b>Tomada de decisão:</b> Avalie o cumprimento das metas ambientais.</p><p><b>Fonte:</b> Plano de Ação SEDAM 2026.</p></details>
+<div id="painelPlanoSedam"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🚒 PLANO CBMRO</h2>
+<details class="infoPainel"><summary>ℹ️ O que é este painel?</summary><p><b>Objetivo:</b> Demonstra as fases operacionais do POTIF 2026.</p><p><b>Como interpretar:</b> Verifique se cada fase ocorre dentro do período previsto.</p><p><b>Tomada de decisão:</b> Priorize recursos para as etapas críticas.</p><p><b>Fonte:</b> POTIF 2026 • CBMRO.</p></details>
+<div id="painelPlanoCBM"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🔗 CADEIA DE VALOR</h2>
+<details class="infoPainel"><summary>ℹ️ O que é este painel?</summary><p><b>Objetivo:</b> Demonstra como recursos públicos são transformados em benefícios para a sociedade.</p><p><b>Sequência:</b> Recursos → Planejamento → Execução → Resultados → Impactos → Benefícios.</p><p><b>Como interpretar:</b> Se uma etapa falhar, as seguintes serão comprometidas.</p><p><b>Fonte:</b> TCU • INTOSAI • Governança Pública.</p></details>
+<div id="painelCadeiaValor"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🎯 TEORIA DA MUDANÇA</h2>
+<details class="infoPainel"><summary>ℹ️ O que é este painel?</summary><p><b>Objetivo:</b> Explica como as ações planejadas geram transformação ambiental.</p><p><b>Sequência:</b> Problema → Causas → Ações → Resultados → Impactos → Benefícios.</p><p><b>Como interpretar:</b> Caso os resultados não reduzam queimadas, a estratégia deve ser revisada.</p><p><b>Fonte:</b> OECD • Banco Mundial • TCU.</p></details>
+<div id="painelTeoriaMudanca"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🌎 OBJETIVOS DE DESENVOLVIMENTO SUSTENTÁVEL (ODS)</h2>
+<details class="infoPainel"><summary>ℹ️ O que é este painel?</summary><p><b>Objetivo:</b> Relaciona as ações do projeto às metas da Agenda 2030.</p><p><b>Como interpretar:</b> Quanto maior a aderência, maior a contribuição institucional.</p><p><b>Fonte:</b> ONU • Agenda 2030.</p></details>
+<div id="painelODS"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>📑 EVIDÊNCIAS DOS ODS</h2>
+<details class="infoPainel"><summary>ℹ️ O que é este painel?</summary><p><b>Objetivo:</b> Reúne documentos e evidências que comprovam o atendimento dos ODS.</p><p><b>Como interpretar:</b> Analise a qualidade e suficiência das evidências.</p><p><b>Fonte:</b> TCE-RO • ODS.</p></details>
 <div id="painelODSEvidencias"></div>
 </div>
+
 <div class="cardExecutivo">
-<h2>RADAR DE ADERÊNCIA À AGENDA 2030</h2>
-<div style="height:500px">
-<canvas id="graficoRadarODS"></canvas>
+<h2>📡 RADAR DE ADERÊNCIA À AGENDA 2030</h2>
+<details class="infoPainel"><summary>ℹ️ O que é este painel?</summary><p><b>Objetivo:</b> Mede visualmente o alinhamento institucional aos ODS.</p><p><b>Como interpretar:</b> Quanto mais preenchido o radar, maior a aderência.</p><p><b>Fonte:</b> Agenda 2030 • ONU.</p></details>
+<div style="height:500px"><canvas id="graficoRadarODS"></canvas></div>
 </div>
-</div>
+
 <div class="cardExecutivo">
+<h2>📊 MATURIDADE DOS ODS</h2>
+<details class="infoPainel"><summary>ℹ️ O que é este painel?</summary><p><b>Objetivo:</b> Avalia o estágio de evolução institucional.</p><p><b>Como interpretar:</b> Identifique os pontos fortes e as oportunidades de melhoria.</p><p><b>Fonte:</b> Modelo CHAP • Governança.</p></details>
 <div id="painelODSMaturidade"></div>
 </div>
+
 <div class="cardExecutivo">
+<h2>🤖 ANÁLISE INTELIGENTE (IA)</h2>
+<details class="infoPainel"><summary>ℹ️ O que é este painel?</summary><p><b>Objetivo:</b> Apresenta análises automáticas baseadas nos dados monitorados.</p><p><b>Como interpretar:</b> Utilize como apoio à decisão, sem substituir a análise técnica.</p><p><b>Fonte:</b> IA-CHAP • TCE-RO.</p></details>
 <div id="painelODSExplicacaoIA"></div>
 </div>
-<div class="cardExecutivo"><h2>CRONOGRAMA GANTT</h2><div id="painelGantt"></div></div>
+
 <div class="cardExecutivo">
-<h2>MARCOS ESTRATÉGICOS</h2>
+<h2>📅 CRONOGRAMA GANTT</h2>
+<details class="infoPainel"><summary>ℹ️ O que é este painel?</summary><p><b>Objetivo:</b> Exibe a programação temporal das ações estratégicas.</p><p><b>Como interpretar:</b> Barras maiores representam maior duração; atrasos indicam necessidade de intervenção.</p><p><b>Fonte:</b> Planejamento Estratégico.</p></details>
+<div id="painelGantt"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🏁 MARCOS ESTRATÉGICOS</h2>
+<details class="infoPainel"><summary>ℹ️ O que é este painel?</summary><p><b>Objetivo:</b> Apresenta os principais pontos de controle da execução.</p><p><b>Como interpretar:</b> Cada marco representa uma entrega ou etapa relevante do projeto.</p><p><b>Fonte:</b> Plano Estratégico • TCE-RO • CBMRO • SEDAM.</p></details>
 <div id="painelMarcos" class="marcosGrid"></div>
 </div>
+
 </section>
 <!--=========================================================
 005 MONITORAMENTO
