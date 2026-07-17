@@ -591,7 +591,7 @@ async function renderPlanoSedam(){
 let box=document.getElementById('painelPlanoSedam')
 if(!box)return
 let[{data:planejamento=[]},{data:mapbiomas=[]},{data:prodes=[]}]=await Promise.all([
-client.from('queimadas_planejamento').select('*').eq('origem','SEDAM'),
+client.from('queimadas_planejamento').select('*').eq('origem','Sedam'),
 client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
 ])
@@ -1436,7 +1436,7 @@ padding:[5,5]
 async function renderAcoesSedam(){
 let box=document.getElementById('painelAcoesSedam')
 if(!box)return
-let{data=[]}=await client.from('queimadas_monitoramento').select('*').eq('origem','SEDAM')
+let{data=[]}=await client.from('queimadas_monitoramento').select('*').eq('origem','Sedam')
 let concluidas=data.filter(i=>Number(i.percentual||0)>=100).length
 let execucao=data.length?Math.round(data.reduce((s,i)=>s+Number(i.percentual||0),0)/data.length):0
 box.innerHTML=`
