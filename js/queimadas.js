@@ -547,6 +547,12 @@ async function renderMarcos(){
 let box=document.getElementById('painelMarcos')
 if(!box)return
 let{data=[]}=await client.from('queimadas_planejamento').select('*').order('inicio',{ascending:true})
+/*=========================================================
+LINHA DO TEMPO GLOBAL
+=========================================================*/
+const menorData=new Date(Math.min(...data.map(i=>new Date(i.inicio))))
+const maiorData=new Date(Math.max(...data.map(i=>new Date(i.fim))))
+const periodoTotal=maiorData-menorData
 let html='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px">'
 data.forEach(i=>{
 
@@ -558,7 +564,11 @@ else if((i.status||'').toUpperCase()==='PLANEJADO')corStatus='#f97316'
 else if((i.status||'').toUpperCase()==='ATRASADO')corStatus='#dc2626'
 
 let responsavel=(i.responsavel||'').toUpperCase()
-
+let inicio=new Date(i.inicio)
+let fim=new Date(i.fim)
+let inicioPerc=((inicio-menorData)/periodoTotal)*100
+let fimPerc=((fim-menorData)/periodoTotal)*100
+let largura=Math.max(2,fimPerc-inicioPerc)
 let corCabecalho='#475569'
 let tituloResponsavel='RESPONSÁVEL'
 
@@ -597,6 +607,59 @@ ${i.status||'-'}
 <div style="margin-top:8px">
 <b>Responsável:</b>
 ${i.responsavel||'-'}
+</div>
+
+<div style="margin-top:18px">
+
+<div style="
+display:flex;
+justify-content:space-between;
+font-size:10px;
+font-weight:800;
+color:#64748b;
+margin-bottom:6px">
+
+<span>CRONOGRAMA</span>
+
+<span>
+${formatarDataBR(menorData)}
+&nbsp;&nbsp;→&nbsp;&nbsp;
+${formatarDataBR(maiorData)}
+</span>
+
+</div>
+
+<div style="
+position:relative;
+height:12px;
+background:#e5e7eb;
+border-radius:30px;
+overflow:hidden">
+
+<div style="
+position:absolute;
+left:${inicioPerc}%;
+width:${largura}%;
+height:100%;
+background:${corCabecalho};
+border-radius:30px">
+</div>
+
+</div>
+
+<div style="
+display:flex;
+justify-content:space-between;
+font-size:10px;
+color:#64748b;
+margin-top:6px">
+
+<span>${formatarDataBR(i.inicio)}</span>
+
+<span>${formatarDataBR(i.fim)}</span>
+
+</div>
+
 </div>
 
 </div>
