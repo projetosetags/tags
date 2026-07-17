@@ -1898,7 +1898,7 @@ if(nome==='planejamento'){
 document.getElementById('abaPlanejamento')?.classList.remove('hidden')
 renderInfoPaineis()
 await renderPlanoUnificado()
-await renderPlanoSEDAM()
+await renderPlanoSedam()
 await renderPlanoCBM()
 await renderCadeiaValor()
 await renderTeoriaMudanca()
