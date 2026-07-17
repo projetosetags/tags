@@ -202,6 +202,38 @@ let areaQueimada=(mapbiomas||[])
 let areaDesmatada=(prodes||[])
 .reduce((s,i)=>s+Number(i.area_desmatada||i.area||0),0)
 
+/*=========================================================
+004 QUEIMADAS FUNCTION RENDERCADEIAVALOR
+=========================================================*/
+async function renderCadeiaValor(){
+
+let box=document.getElementById('painelCadeiaValor')
+if(!box)return
+
+let[
+{data:monitoramento=[]},
+{data:mapbiomas=[]},
+{data:prodes=[]}
+]=await Promise.all([
+client.from('queimadas_monitoramento').select('*'),
+client.from('queimadas_mapbiomas').select('*'),
+client.from('queimadas_prodes').select('*')
+])
+
+let total=(monitoramento||[]).length
+
+let andamento=(monitoramento||[])
+.filter(i=>Number(i.percentual||0)>0).length
+
+let concluidos=(monitoramento||[])
+.filter(i=>Number(i.percentual||0)>=100).length
+
+let areaQueimada=(mapbiomas||[])
+.reduce((s,i)=>s+Number(i.area_queimada||i.area||0),0)
+
+let areaDesmatada=(prodes||[])
+.reduce((s,i)=>s+Number(i.area_desmatada||i.area||0),0)
+
 box.innerHTML=`
 
 <div class="cadeia-card">
@@ -330,6 +362,7 @@ OECD Public Governance Framework.
 
 `
 }
+}
 /*=========================================================
 005 QUEIMADAS FUNCTION RENDERGANTT
 =========================================================*/
@@ -430,69 +463,166 @@ box.innerHTML=html
 007 QUEIMADAS FUNCTION RENDERTEORIAMUDANCA
 =========================================================*/
 async function renderTeoriaMudanca(){
+
 let box=document.getElementById('painelTeoriaMudanca')
 if(!box)return
-let[{data:monitoramento=[]},{data:mapbiomas=[]},{data:prodes=[]}]=await Promise.all([
+
+let[
+{data:monitoramento=[]},
+{data:mapbiomas=[]},
+{data:prodes=[]}
+]=await Promise.all([
 client.from('queimadas_monitoramento').select('*'),
 client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
 ])
+
 let total=monitoramento.length
-let concluidos=monitoramento.filter(i=>Number(i.percentual||0)>=100).length
-let areaQueimada=mapbiomas.reduce((s,i)=>s+Number(i.area_queimada||i.area||0),0)
-let areaDesmatada=prodes.reduce((s,i)=>s+Number(i.area_desmatada||i.area||0),0)
+
+let executadas=monitoramento.filter(i=>
+Number(i.percentual||0)>0
+).length
+
+let concluidos=monitoramento.filter(i=>
+Number(i.percentual||0)>=100
+).length
+
+let areaQueimada=mapbiomas.reduce((s,i)=>
+s+Number(i.area_queimada||i.area||0),0)
+
+let areaDesmatada=prodes.reduce((s,i)=>
+s+Number(i.area_desmatada||i.area||0),0)
+
 box.innerHTML=`
+
 <div class="cadeia-card">
-<div class="cadeia-item">TEORIA DA MUDANÇA - QUEIMADAS E DESMATAMENTO</div>
+
+<div class="cadeia-item">
+TEORIA DA MUDANÇA — QUEIMADAS E DESMATAMENTO
+</div>
+
 <div class="cadeia-flow">
+
 <div class="cadeia-box tdm-problema">
+
 🚨<br>
-<b>Problema</b><br>
+
+<b>PROBLEMA</b><br>
+
 Queimadas<br>
+
 Desmatamento
+
 </div>
+
 <div class="cadeia-seta">➜</div>
+
 <div class="cadeia-box tdm-causa">
+
 🔎<br>
-<b>Causas</b><br>
+
+<b>CAUSAS</b><br>
+
 Pressão Antrópica<br>
-Uso Irregular do Solo
+
+Uso Irregular do Solo<br>
+
+Mudanças Climáticas
+
 </div>
+
 <div class="cadeia-seta">➜</div>
+
 <div class="cadeia-box tdm-acao">
+
 ⚙️<br>
+
 <b>${formatarNumero(total)}</b><br>
+
 Ações Planejadas
+
 </div>
+
 <div class="cadeia-seta">➜</div>
+
+<div class="cadeia-box tdm-produto">
+
+📦<br>
+
+<b>${formatarNumero(executadas)}</b><br>
+
+Ações Executadas
+
+</div>
+
+<div class="cadeia-seta">➜</div>
+
 <div class="cadeia-box tdm-resultado">
-<div style="font-size:11px;font-weight:900;color:#475569;margin-bottom:6px">
-RESULTADOS
-</div>
+
 📈<br>
+
 <b>${formatarNumero(concluidos)}</b><br>
+
 Ações Concluídas
+
 </div>
+
 <div class="cadeia-seta">➜</div>
+
 <div class="cadeia-box tdm-impacto">
-<div style="font-size:11px;font-weight:900;color:#475569;margin-bottom:6px">
-IMPACTOS
-</div>
+
 🔥<br>
+
 <b>${formatarNumero(areaQueimada)} ha</b><br>
+
 Área Queimada
-</div>
-<div class="cadeia-seta">➜</div>
-<div class="cadeia-box tdm-beneficio">
-<div style="font-size:11px;font-weight:900;color:#475569;margin-bottom:6px">
-BENEFÍCIOS
-</div>
+
+<hr style="margin:10px 0;border:none;border-top:1px solid rgba(0,0,0,.12)">
+
 🌳<br>
+
 <b>${formatarNumero(areaDesmatada)} ha</b><br>
+
 Área Desmatada
+
 </div>
+
+<div class="cadeia-seta">➜</div>
+
+<div class="cadeia-box tdm-beneficio">
+
+🌎<br>
+
+<b>BENEFÍCIOS</b><br><br>
+
+✔ Proteção Ambiental<br>
+
+✔ Conservação da Biodiversidade<br>
+
+✔ Redução das Emissões Atmosféricas<br>
+
+✔ Melhoria da Qualidade do Ar<br>
+
+✔ Maior Segurança da População<br>
+
+✔ Fortalecimento da Governança
+
 </div>
-</div>`
+
+</div>
+
+<div class="fontePainel">
+
+<b>Fonte metodológica:</b>
+
+Theory of Change (UNDP); OECD Public Governance; Banco Mundial; Referencial de Avaliação de Políticas Públicas do TCU.
+
+</div>
+
+</div>
+
+`
+
 }
 /*=========================================================
 008 QUEIMADAS FUNCTION ANALISARCHAPIA
@@ -599,51 +729,112 @@ box.innerHTML=`
 async function renderPlanoSedam(){
 let box=document.getElementById('painelPlanoSedam')
 if(!box)return
-let[{data:planejamento=[]},{data:mapbiomas=[]},{data:prodes=[]}]=await Promise.all([
-client.from('queimadas_planejamento').select('*').eq('origem','Sedam'),
+
+let[
+{data:planejamento=[]},
+{data:mapbiomas=[]},
+{data:prodes=[]}
+]=await Promise.all([
+client.from('queimadas_planejamento').select('*').ilike('responsavel','%SEDAM%'),
 client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
 ])
-let mapa={}
-planejamento.forEach(i=>{mapa[String(i.acao||'').toUpperCase()]=i})
+
 let areaQueimada=mapbiomas.reduce((s,i)=>s+Number(i.area_queimada||i.area||0),0)
 let areaDesmatada=prodes.reduce((s,i)=>s+Number(i.area_desmatada||i.area||0),0)
-box.innerHTML=`
-<div class="cadeia-card">
-<div class="cadeia-item">PLANO DE AÇÃO SEDAM 2026</div>
-<div class="cadeia-flow">
-<div class="cadeia-box cadeia-insumo" style="border-top:5px solid ${mapa['PREVENÇÃO']?.cor||'#16a34a'}">🌳 PREVENÇÃO<br><span class="periodo-plano">${mapa['PREVENÇÃO']?formatarDataBR(mapa['PREVENÇÃO'].inicio)+' a '+formatarDataBR(mapa['PREVENÇÃO'].fim):'-'}</span><span class="responsavel-plano">${mapa['PREVENÇÃO']?.responsavel||''}</span><span class="status-plano">${mapa['PREVENÇÃO']?.status||''}</span></div>
-<div class="cadeia-box cadeia-atividade" style="border-top:5px solid ${mapa['FISCALIZAÇÃO']?.cor||'#2563eb'}">🚔 FISCALIZAÇÃO<br><span class="periodo-plano">${mapa['FISCALIZAÇÃO']?formatarDataBR(mapa['FISCALIZAÇÃO'].inicio)+' a '+formatarDataBR(mapa['FISCALIZAÇÃO'].fim):'-'}</span><span class="responsavel-plano">${mapa['FISCALIZAÇÃO']?.responsavel||''}</span><span class="status-plano">${mapa['FISCALIZAÇÃO']?.status||''}</span></div>
-<div class="cadeia-box cadeia-produto" style="border-top:5px solid ${mapa['COMBATE']?.cor||'#dc2626'}">🔥 COMBATE<br><span class="periodo-plano">${mapa['COMBATE']?formatarDataBR(mapa['COMBATE'].inicio)+' a '+formatarDataBR(mapa['COMBATE'].fim):'-'}</span><span class="responsavel-plano">${mapa['COMBATE']?.responsavel||''}</span><span class="status-plano">${mapa['COMBATE']?.status||''}</span></div>
-<div class="cadeia-box cadeia-resultado" style="border-top:5px solid ${mapa['REDUÇÃO']?.cor||'#f97316'}">📉 REDUÇÃO<br><span class="periodo-plano">${mapa['REDUÇÃO']?formatarDataBR(mapa['REDUÇÃO'].inicio)+' a '+formatarDataBR(mapa['REDUÇÃO'].fim):'-'}</span><span class="responsavel-plano">${mapa['REDUÇÃO']?.responsavel||''}</span><span class="status-plano">${mapa['REDUÇÃO']?.status||''}</span></div>
-<div class="cadeia-box cadeia-impacto">🔥 ${formatarNumero(areaQueimada)} ha<br>MAPBIOMAS</div>
-<div class="cadeia-box cadeia-beneficio">🌳 ${formatarNumero(areaDesmatada)} ha<br>PRODES</div>
-</div>
-<div class="fonte-card">Fonte: Plano SEDAM • MAPBIOMAS • PRODES • TCERO</div>
+
+let etapas=[
+{titulo:'🌳 PREVENÇÃO',dados:planejamento[0]},
+{titulo:'🚔 FISCALIZAÇÃO',dados:planejamento[1]},
+{titulo:'🛰 MONITORAMENTO',dados:planejamento[2]},
+{titulo:'🌱 RECUPERAÇÃO AMBIENTAL',dados:planejamento[3]}
+]
+
+let html='<div class="cadeia-card">'
+html+='<div class="cadeia-item">PLANO DE AÇÃO SEDAM 2026</div>'
+html+='<div class="cadeia-flow">'
+
+etapas.forEach(e=>{
+html+=`
+<div class="cadeia-box cadeia-insumo" style="border-top:5px solid ${e.dados?.cor||'#16a34a'}">
+<b>${e.titulo}</b><br>
+<span class="periodo-plano">${e.dados?formatarDataBR(e.dados.inicio)+' até '+formatarDataBR(e.dados.fim):'-'}</span><br>
+<span class="responsavel-plano">${e.dados?.responsavel||'SEDAM'}</span><br>
+<span class="status-plano">${e.dados?.status||''}</span>
 </div>`
+})
+
+html+=`
+<div class="cadeia-box cadeia-impacto">
+🔥<br>
+<b>${formatarNumero(areaQueimada)} ha</b><br>
+Área Queimada<br>
+<small>MAPBIOMAS</small>
+</div>
+
+<div class="cadeia-box cadeia-beneficio">
+🌳<br>
+<b>${formatarNumero(areaDesmatada)} ha</b><br>
+Área Desmatada<br>
+<small>PRODES</small>
+</div>
+
+</div>
+
+<div class="fonte-card">
+Fonte: Plano de Ação SEDAM • MAPBIOMAS • PRODES • TCERO
+</div>
+
+</div>`
+
+box.innerHTML=html
 }
 /*=========================================================
 012 QUEIMADAS FUNCTION RENDERPLANOCBM
 =========================================================*/
 async function renderPlanoCBM(){
+
 let box=document.getElementById('painelPlanoCBM')
 if(!box)return
-let{data=[]}=await client.from('queimadas_planejamento').select('*').eq('origem','CBMRO')
-let mapa={}
-data.forEach(i=>{mapa[String(i.acao||'').toUpperCase()]=i})
-box.innerHTML=`
-<div class="cadeia-card">
-<div class="cadeia-item">POTIF 2026 - CBMRO</div>
-<div class="cadeia-flow">
-<div class="cadeia-box cadeia-insumo" style="border-top:5px solid ${mapa['BRIGADAS']?.cor||'#16a34a'}">🚒 BRIGADAS<br><span class="periodo-plano">${mapa['BRIGADAS']?formatarDataBR(mapa['BRIGADAS'].inicio)+' a '+formatarDataBR(mapa['BRIGADAS'].fim):'-'}</span><span class="responsavel-plano">${mapa['BRIGADAS']?.responsavel||''}</span></div>
-<div class="cadeia-box cadeia-atividade" style="border-top:5px solid ${mapa['COMBATE']?.cor||'#dc2626'}">🧯 COMBATE<br><span class="periodo-plano">${mapa['COMBATE']?formatarDataBR(mapa['COMBATE'].inicio)+' a '+formatarDataBR(mapa['COMBATE'].fim):'-'}</span><span class="responsavel-plano">${mapa['COMBATE']?.responsavel||''}</span></div>
-<div class="cadeia-box cadeia-produto" style="border-top:5px solid ${mapa['CONTROLE']?.cor||'#2563eb'}">🔥 CONTROLE<br><span class="periodo-plano">${mapa['CONTROLE']?formatarDataBR(mapa['CONTROLE'].inicio)+' a '+formatarDataBR(mapa['CONTROLE'].fim):'-'}</span><span class="responsavel-plano">${mapa['CONTROLE']?.responsavel||''}</span></div>
-<div class="cadeia-box cadeia-resultado" style="border-top:5px solid ${mapa['REDUÇÃO']?.cor||'#f97316'}">📉 REDUÇÃO<br><span class="periodo-plano">${mapa['REDUÇÃO']?formatarDataBR(mapa['REDUÇÃO'].inicio)+' a '+formatarDataBR(mapa['REDUÇÃO'].fim):'-'}</span><span class="responsavel-plano">${mapa['REDUÇÃO']?.responsavel||''}</span></div>
-<div class="cadeia-box cadeia-impacto" style="border-top:5px solid ${mapa['PRESERVAÇÃO']?.cor||'#22c55e'}">🌳 PRESERVAÇÃO<br><span class="periodo-plano">${mapa['PRESERVAÇÃO']?formatarDataBR(mapa['PRESERVAÇÃO'].inicio)+' a '+formatarDataBR(mapa['PRESERVAÇÃO'].fim):'-'}</span></div>
-<div class="cadeia-box cadeia-beneficio" style="border-top:5px solid ${mapa['SEGURANÇA']?.cor||'#14b8a6'}">👨‍👩‍👧‍👦 SEGURANÇA<br><span class="periodo-plano">${mapa['SEGURANÇA']?formatarDataBR(mapa['SEGURANÇA'].inicio)+' a '+formatarDataBR(mapa['SEGURANÇA'].fim):'-'}</span></div>
-</div>
-<div class="fonte-card">Fonte: POTIF 2026 • CBMRO • TCERO</div>
+
+let {data=[]}=await client
+.from('queimadas_planejamento')
+.select('*')
+.ilike('responsavel','%CBMRO%')
+
+let etapas=[
+{titulo:'🚒 PREPARAÇÃO',dados:data[0]},
+{titulo:'🛡 PREVENÇÃO',dados:data[1]},
+{titulo:'🔥 COMBATE',dados:data[2]},
+{titulo:'🚿 RESCALDO',dados:data[3]},
+{titulo:'🌳 PRESERVAÇÃO',dados:data[4]},
+{titulo:'👨‍🚒 PROTEÇÃO DA POPULAÇÃO',dados:data[5]}
+]
+
+let html='<div class="cadeia-card">'
+html+='<div class="cadeia-item">POTIF 2026 - CBMRO</div>'
+html+='<div class="cadeia-flow">'
+
+etapas.forEach(e=>{
+html+=`
+<div class="cadeia-box cadeia-insumo" style="border-top:5px solid ${e.dados?.cor||'#dc2626'}">
+<b>${e.titulo}</b><br>
+<span class="periodo-plano">${e.dados?formatarDataBR(e.dados.inicio)+' até '+formatarDataBR(e.dados.fim):'-'}</span><br>
+<span class="responsavel-plano">${e.dados?.responsavel||'CBMRO'}</span><br>
+<span class="status-plano">${e.dados?.status||''}</span>
 </div>`
+})
+
+html+=`
+</div>
+
+<div class="fonte-card">
+Fonte: POTIF 2026 • Corpo de Bombeiros Militar de Rondônia • TCERO
+</div>
+
+</div>`
+
+box.innerHTML=html
 }
 /*=========================================================
 013 QUEIMADAS FUNCTION RENDERMARCOS
