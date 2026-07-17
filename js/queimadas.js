@@ -48,9 +48,7 @@ return n.toLocaleString('pt-BR')
 /*=========================================================
 004 QUEIMADAS INFO DOS PAINÉIS
 =========================================================*/
-
 const infoPaineis={
-
 PlanoUnificado:{
 titulo:"📘 O que é o Plano Unificado?",
 objetivo:"Consolida a estratégia estadual integrada para prevenção, preparação, resposta e recuperação frente às queimadas e incêndios florestais.",
@@ -58,7 +56,6 @@ interpretacao:"Permite visualizar como CBMRO, SEDAM, Defesa Civil, CEPCIF, Munic
 decisao:"Identificar lacunas, sobreposição de competências, necessidade de integração institucional e prioridades estratégicas.",
 fonte:"Plano Unificado 2026 • TCERO • CBMRO • SEDAM • CEPCIF • Defesa Civil."
 },
-
 PlanoSedam:{
 titulo:"🌿 O que é o Plano da SEDAM?",
 objetivo:"Apresenta o conjunto de ações ambientais executadas pela Secretaria de Estado do Desenvolvimento Ambiental.",
@@ -66,7 +63,6 @@ interpretacao:"Demonstra prevenção, fiscalização, monitoramento, recuperaç�
 decisao:"Avaliar cumprimento das metas ambientais e priorizar ações corretivas.",
 fonte:"Plano de Ação SEDAM 2026 • Política Estadual de Meio Ambiente."
 },
-
 PlanoCBM:{
 titulo:"🚒 O que é o Plano Operacional do CBMRO?",
 objetivo:"Apresenta o planejamento operacional da temporada de incêndios florestais.",
@@ -74,7 +70,6 @@ interpretacao:"Mostra brigadas, prevenção, combate, controle e recuperação d
 decisao:"Dimensionar recursos humanos, equipamentos e logística operacional.",
 fonte:"POTIF 2026 • Corpo de Bombeiros Militar de Rondônia."
 },
-
 CadeiaValor:{
 titulo:"🔗 O que é a Cadeia de Valor?",
 objetivo:"Representa como recursos públicos são transformados em benefícios concretos para a sociedade.",
@@ -82,7 +77,6 @@ interpretacao:"Recursos → Planejamento → Execução → Produtos → Resulta
 decisao:"Identificar gargalos e perdas de eficiência ao longo da política pública.",
 fonte:"TCU • Referencial Básico de Governança • INTOSAI GOV 9130 • OECD • Banco Mundial."
 },
-
 TeoriaMudanca:{
 titulo:"🎯 O que é a Teoria da Mudança?",
 objetivo:"Explica como as ações executadas produzem resultados e impactos ambientais.",
@@ -90,16 +84,13 @@ interpretacao:"Problema → Causas → Ações → Produtos → Resultados → I
 decisao:"Caso os impactos esperados não ocorram, a estratégia institucional deve ser revista.",
 fonte:"OECD • UNDP • Banco Mundial • Avaliação de Políticas Públicas do TCU."
 },
-
 ODS:{
 titulo:"🌎 ODS e Agenda 2030",
 objetivo:"Relaciona todas as ações monitoradas com os Objetivos do Desenvolvimento Sustentável.",
 interpretacao:"Quanto maior a aderência institucional, maior a contribuição para a Agenda 2030.",
 decisao:"Identificar quais ODS recebem maior contribuição das ações desenvolvidas.",
 fonte:"ONU • Agenda 2030 • Objetivos do Desenvolvimento Sustentável."
-}
-,
-
+},
 ODSEvidencias:{
 titulo:"📑 O que são as Evidências dos ODS?",
 objetivo:"Reunir documentos, indicadores, relatórios, imagens e demais comprovações da execução das ações relacionadas à Agenda 2030.",
@@ -107,7 +98,6 @@ interpretacao:"Quanto maior a quantidade e qualidade das evidências, maior a co
 decisao:"Permite verificar se os resultados apresentados possuem comprovação objetiva e auditável.",
 fonte:"TCERO • Agenda 2030 • Normas Internacionais de Auditoria • INTOSAI."
 },
-
 RadarODS:{
 titulo:"📡 O que representa o Radar de Aderência?",
 objetivo:"Demonstrar visualmente o nível de contribuição institucional para cada Objetivo do Desenvolvimento Sustentável.",
@@ -115,7 +105,6 @@ interpretacao:"Quanto mais distante do centro estiver cada eixo, maior é a ader
 decisao:"Identificar rapidamente quais ODS necessitam de fortalecimento.",
 fonte:"Agenda 2030 • ONU • IA-CHAP."
 },
-
 MaturidadeODS:{
 titulo:"📊 O que representa a Maturidade dos ODS?",
 objetivo:"Avaliar o estágio de evolução institucional na implementação da Agenda 2030.",
@@ -123,7 +112,6 @@ interpretacao:"Os níveis representam a capacidade da organização em incorpora
 decisao:"Direcionar investimentos para fortalecer a governança climática e institucional.",
 fonte:"Modelo CHAP • Governança Pública • OECD • TCU."
 },
-
 IA:{
 titulo:"🤖 Como funciona a Análise Inteligente?",
 objetivo:"Utilizar Inteligência Artificial para apoiar a interpretação dos indicadores monitorados.",
@@ -131,7 +119,6 @@ interpretacao:"A IA identifica padrões, tendências, riscos, oportunidades e n�
 decisao:"As recomendações servem como apoio ao gestor, sem substituir a análise técnica especializada.",
 fonte:"Modelo IA-CHAP • TCERO • Inteligência Analítica."
 },
-
 Gantt:{
 titulo:"📅 O que representa o Cronograma Gantt?",
 objetivo:"Apresentar a programação temporal das ações estratégicas.",
@@ -139,7 +126,6 @@ interpretacao:"Cada barra representa a duração prevista de uma atividade. Barr
 decisao:"Identificar atrasos, antecipações e conflitos entre atividades estratégicas.",
 fonte:"PMBOK • Planejamento Estratégico • Gestão de Projetos."
 },
-
 Marcos:{
 titulo:"🏁 O que são os Marcos Estratégicos?",
 objetivo:"Registrar as principais entregas, eventos e pontos de controle do projeto.",
@@ -155,7 +141,7 @@ fonte:"Planejamento Estratégico • TCERO • CBMRO • SEDAM."
 function renderInfoPainel(id,chave){
 let box=document.getElementById(id)
 if(!box)return
-let i=infoPaineis[chave)
+let i=infoPaineis[chave]
 if(!i)return
 box.innerHTML=`
 <details class="infoPainel">
