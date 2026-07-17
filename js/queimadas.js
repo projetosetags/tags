@@ -587,8 +587,8 @@ box.innerHTML=`
 /*=========================================================
 011 QUEIMADAS FUNCTION RENDERPLANOSEDAM
 =========================================================*/
-async function renderPlanoSEDAM(){
-let box=document.getElementById('painelPlanoSEDAM')
+async function renderPlanoSedam(){
+let box=document.getElementById('painelPlanoSedam')
 if(!box)return
 let[{data:planejamento=[]},{data:mapbiomas=[]},{data:prodes=[]}]=await Promise.all([
 client.from('queimadas_planejamento').select('*').eq('origem','SEDAM'),
