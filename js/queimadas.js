@@ -155,7 +155,7 @@ fonte:"Planejamento Estratégico • TCERO • CBMRO • SEDAM."
 function renderInfoPainel(id,chave){
 let box=document.getElementById(id)
 if(!box)return
-let i=infoPaineis[chave]
+let i=infoPaineis[chave)
 if(!i)return
 box.innerHTML=`
 <details class="infoPainel">
@@ -163,7 +163,10 @@ box.innerHTML=`
 <p><b>Objetivo:</b> ${i.objetivo}</p>
 <p><b>Como interpretar:</b> ${i.interpretacao}</p>
 <p><b>Tomada de decisão:</b> ${i.decisao}</p>
-<p><b>Fonte metodológica:</b> ${i.fonte}</p>
+<div class="fonte-card">
+<b>Fonte metodológica:</b><br>
+${i.fonte}
+</div>
 </details>
 `
 }
@@ -207,11 +210,32 @@ box.innerHTML=`
 <div class="cadeia-seta">➜</div>
 <div class="cadeia-box cadeia-produto">📦<br>${formatarNumero(andamento)}<br>Ações Executadas</div>
 <div class="cadeia-seta">➜</div>
-<div class="cadeia-box cadeia-resultado">📈<br>${formatarNumero(concluidos)}<br>Ações Concluídas</div>
+<div class="cadeia-box cadeia-resultado">
+<div style="font-size:11px;font-weight:900;color:#475569;margin-bottom:6px">
+RESULTADOS
+</div>
+📈<br>
+<b>${formatarNumero(concluidos)}</b><br>
+Ações Concluídas
+</div>
 <div class="cadeia-seta">➜</div>
-<div class="cadeia-box cadeia-impacto">🔥<br>${formatarNumero(areaQueimada)} ha<br>Área Queimada</div>
+<div class="cadeia-box cadeia-impacto">
+<div style="font-size:11px;font-weight:900;color:#475569;margin-bottom:6px">
+IMPACTOS
+</div>
+🔥<br>
+<b>${formatarNumero(areaQueimada)} ha</b><br>
+Área Queimada
+</div>
 <div class="cadeia-seta">➜</div>
-<div class="cadeia-box cadeia-beneficio">🌳<br>${formatarNumero(areaDesmatada)} ha<br>Área Desmatada</div>
+<div class="cadeia-box cadeia-beneficio">
+<div style="font-size:11px;font-weight:900;color:#475569;margin-bottom:6px">
+BENEFÍCIOS
+</div>
+🌳<br>
+<b>${formatarNumero(areaDesmatada)} ha</b><br>
+Área Desmatada
+</div>
 </div>
 </div>`
 }
@@ -351,18 +375,27 @@ Ações Planejadas
 </div>
 <div class="cadeia-seta">➜</div>
 <div class="cadeia-box tdm-resultado">
+<div style="font-size:11px;font-weight:900;color:#475569;margin-bottom:6px">
+RESULTADOS
+</div>
 📈<br>
 <b>${formatarNumero(concluidos)}</b><br>
 Ações Concluídas
 </div>
 <div class="cadeia-seta">➜</div>
 <div class="cadeia-box tdm-impacto">
+<div style="font-size:11px;font-weight:900;color:#475569;margin-bottom:6px">
+IMPACTOS
+</div>
 🔥<br>
 <b>${formatarNumero(areaQueimada)} ha</b><br>
 Área Queimada
 </div>
 <div class="cadeia-seta">➜</div>
 <div class="cadeia-box tdm-beneficio">
+<div style="font-size:11px;font-weight:900;color:#475569;margin-bottom:6px">
+BENEFÍCIOS
+</div>
 🌳<br>
 <b>${formatarNumero(areaDesmatada)} ha</b><br>
 Área Desmatada
