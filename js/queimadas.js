@@ -174,56 +174,152 @@ renderInfoPainel("infoMarcos","Marcos")
 004 QUEIMADAS FUNCTION RENDERCADEIAVALOR
 =========================================================*/
 async function renderCadeiaValor(){
+
 let box=document.getElementById('painelCadeiaValor')
 if(!box)return
-let[{data:monitoramento=[]},{data:mapbiomas=[]},{data:prodes=[]}]=await Promise.all([
+
+let[
+{data:monitoramento=[]},
+{data:mapbiomas=[]},
+{data:prodes=[]}
+]=await Promise.all([
 client.from('queimadas_monitoramento').select('*'),
 client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
 ])
+
 let total=(monitoramento||[]).length
-let andamento=(monitoramento||[]).filter(i=>Number(i.percentual||0)>0).length
-let concluidos=(monitoramento||[]).filter(i=>Number(i.percentual||0)>=100).length
-let areaQueimada=(mapbiomas||[]).reduce((s,i)=>s+Number(i.area_queimada||i.area||0),0)
-let areaDesmatada=(prodes||[]).reduce((s,i)=>s+Number(i.area_desmatada||i.area||0),0)
+
+let andamento=(monitoramento||[])
+.filter(i=>Number(i.percentual||0)>0).length
+
+let concluidos=(monitoramento||[])
+.filter(i=>Number(i.percentual||0)>=100).length
+
+let areaQueimada=(mapbiomas||[])
+.reduce((s,i)=>s+Number(i.area_queimada||i.area||0),0)
+
+let areaDesmatada=(prodes||[])
+.reduce((s,i)=>s+Number(i.area_desmatada||i.area||0),0)
+
 box.innerHTML=`
+
 <div class="cadeia-card">
-<div class="cadeia-item">CADEIA DE VALOR DO ENFRENTAMENTO ÀS QUEIMADAS E AO DESMATAMENTO</div>
+
+<div class="cadeia-item">
+CADEIA DE VALOR DO ENFRENTAMENTO ÀS QUEIMADAS E AO DESMATAMENTO
+</div>
+
 <div class="cadeia-flow">
-<div class="cadeia-box cadeia-insumo">📥<br>Recursos<br>Equipes<br>Sistemas</div>
+
+<div class="cadeia-box cadeia-insumo">
+
+<div class="titulo-etapa">
+INSUMOS
+</div>
+
+📥<br>
+
+<b>Recursos</b><br>
+Equipes<br>
+Sistemas<br>
+Infraestrutura
+
+</div>
+
 <div class="cadeia-seta">➜</div>
-<div class="cadeia-box cadeia-atividade">⚙️<br>${formatarNumero(total)}<br>Ações Planejadas</div>
+
+<div class="cadeia-box cadeia-atividade">
+
+<div class="titulo-etapa">
+ATIVIDADES
+</div>
+
+⚙️<br>
+
+<b>${formatarNumero(total)}</b><br>
+
+Ações Planejadas
+
+</div>
+
 <div class="cadeia-seta">➜</div>
-<div class="cadeia-box cadeia-produto">📦<br>${formatarNumero(andamento)}<br>Ações Executadas</div>
+
+<div class="cadeia-box cadeia-produto">
+
+<div class="titulo-etapa">
+PRODUTOS
+</div>
+
+📦<br>
+
+<b>${formatarNumero(andamento)}</b><br>
+
+Ações Executadas
+
+</div>
+
 <div class="cadeia-seta">➜</div>
+
 <div class="cadeia-box cadeia-resultado">
-<div style="font-size:11px;font-weight:900;color:#475569;margin-bottom:6px">
+
+<div class="titulo-etapa">
 RESULTADOS
 </div>
+
 📈<br>
+
 <b>${formatarNumero(concluidos)}</b><br>
+
 Ações Concluídas
+
 </div>
+
 <div class="cadeia-seta">➜</div>
+
 <div class="cadeia-box cadeia-impacto">
-<div style="font-size:11px;font-weight:900;color:#475569;margin-bottom:6px">
+
+<div class="titulo-etapa">
 IMPACTOS
 </div>
+
 🔥<br>
+
 <b>${formatarNumero(areaQueimada)} ha</b><br>
+
 Área Queimada
+
 </div>
+
 <div class="cadeia-seta">➜</div>
+
 <div class="cadeia-box cadeia-beneficio">
-<div style="font-size:11px;font-weight:900;color:#475569;margin-bottom:6px">
+
+<div class="titulo-etapa">
 BENEFÍCIOS
 </div>
+
 🌳<br>
+
 <b>${formatarNumero(areaDesmatada)} ha</b><br>
+
 Área Desmatada
+
 </div>
+
 </div>
-</div>`
+
+<div class="fontePainel">
+<b>Fonte metodológica:</b>
+Referencial Básico de Governança (TCU);
+Cadeia de Valor para Políticas Públicas (Banco Mundial);
+INTOSAI GOV 9130;
+OECD Public Governance Framework.
+</div>
+
+</div>
+
+`
 }
 /*=========================================================
 005 QUEIMADAS FUNCTION RENDERGANTT
