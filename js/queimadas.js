@@ -191,20 +191,46 @@ let concluidos=monitoramento.filter(i=>Number(i.percentual||0)>=100).length
 let areaQueimada=mapbiomas.reduce((s,i)=>s+Number(i.area_queimada||i.area||0),0)
 let areaDesmatada=prodes.reduce((s,i)=>s+Number(i.area_desmatada||i.area||0),0)
 box.innerHTML=`
-<div class="tdm-card">
-<div class="tdm-titulo">TEORIA DA MUDANÇA - QUEIMADAS E DESMATAMENTO</div>
-<div class="tdm-flow">
-<div class="tdm-box tdm-problema">🚨<br>Queimadas<br>Desmatamento</div>
-<div class="tdm-seta">↓</div>
-<div class="tdm-box tdm-causa">🔍<br>Pressão Antrópica<br>Uso Irregular do Solo</div>
-<div class="tdm-seta">↓</div>
-<div class="tdm-box tdm-acao">⚙️<br>${formatarNumero(total)}<br>Ações Planejadas</div>
-<div class="tdm-seta">↓</div>
-<div class="tdm-box tdm-resultado">📈<br>${formatarNumero(concluidos)}<br>Ações Concluídas</div>
-<div class="tdm-seta">↓</div>
-<div class="tdm-box tdm-impacto">🔥<br>${formatarNumero(areaQueimada)} ha<br>Área Queimada</div>
-<div class="tdm-seta">↓</div>
-<div class="tdm-box tdm-beneficio">🌳<br>${formatarNumero(areaDesmatada)} ha<br>Área Desmatada</div>
+<div class="cadeia-card">
+<div class="cadeia-item">TEORIA DA MUDANÇA - QUEIMADAS E DESMATAMENTO</div>
+<div class="cadeia-flow">
+<div class="cadeia-box tdm-problema">
+🚨<br>
+<b>Problema</b><br>
+Queimadas<br>
+Desmatamento
+</div>
+<div class="cadeia-seta">➜</div>
+<div class="cadeia-box tdm-causa">
+🔎<br>
+<b>Causas</b><br>
+Pressão Antrópica<br>
+Uso Irregular do Solo
+</div>
+<div class="cadeia-seta">➜</div>
+<div class="cadeia-box tdm-acao">
+⚙️<br>
+<b>${formatarNumero(total)}</b><br>
+Ações Planejadas
+</div>
+<div class="cadeia-seta">➜</div>
+<div class="cadeia-box tdm-resultado">
+📈<br>
+<b>${formatarNumero(concluidos)}</b><br>
+Ações Concluídas
+</div>
+<div class="cadeia-seta">➜</div>
+<div class="cadeia-box tdm-impacto">
+🔥<br>
+<b>${formatarNumero(areaQueimada)} ha</b><br>
+Área Queimada
+</div>
+<div class="cadeia-seta">➜</div>
+<div class="cadeia-box tdm-beneficio">
+🌳<br>
+<b>${formatarNumero(areaDesmatada)} ha</b><br>
+Área Desmatada
+</div>
 </div>
 </div>`
 }
