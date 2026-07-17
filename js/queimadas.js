@@ -286,8 +286,14 @@ IMPACTOS
 🔥<br>
 
 <b>${formatarNumero(areaQueimada)} ha</b><br>
-
 Área Queimada
+
+<hr style="margin:8px 0;border:none;border-top:1px solid rgba(0,0,0,.12)">
+
+🌳<br>
+
+<b>${formatarNumero(areaDesmatada)} ha</b><br>
+Área Desmatada
 
 </div>
 
@@ -299,11 +305,14 @@ IMPACTOS
 BENEFÍCIOS
 </div>
 
-🌳<br>
+🌎<br>
 
-<b>${formatarNumero(areaDesmatada)} ha</b><br>
+<b>Proteção Ambiental</b><br>
 
-Área Desmatada
+Preservação da biodiversidade<br>
+Melhoria da qualidade do ar<br>
+Redução das emissões<br>
+Maior segurança da população
 
 </div>
 
