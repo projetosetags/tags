@@ -499,3 +499,11 @@ MENU QUEIMADAS BOTAO ATIVO
 .statusAtrasado{color:#dc2626}
 @media(max-width:1200px){.marcosGrid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){.marcosGrid{grid-template-columns:1fr}}
+
+.infoPainel{margin:8px 0 14px}
+.infoPainel summary{cursor:pointer;font-weight:800;font-size:13px;color:#2563eb;list-style:none}
+.infoPainel summary::-webkit-details-marker{display:none}
+.infoPainel summary::before{content:"➕ ";font-weight:900}
+.infoPainel[open] summary::before{content:"➖ "}
+.infoPainel p{margin:8px 0;font-size:12px;line-height:1.55;color:#475569}
+.infoPainel b{color:#0f172a}
