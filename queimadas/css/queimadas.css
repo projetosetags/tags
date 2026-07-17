@@ -84,29 +84,31 @@ overflow-x:auto;
 =========================================================*/
 .cadeia-card{background:#fff;border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
 .cadeia-item{font-size:16px;font-weight:900;color:#1e293b;margin-bottom:12px}
-.cadeia-flow{display:flex;gap:10px;align-items:center;overflow-x:auto}
-.cadeia-box{min-width:200px;padding:12px;border-radius:12px;text-align:center;font-size:12px;font-weight:800}
+.cadeia-flow{display:grid;grid-template-columns:repeat(3,minmax(280px,1fr));gap:18px;align-items:stretch;width:100%;overflow:visible}
+.cadeia-box{width:100%;min-width:0;min-height:130px;padding:18px;border-radius:14px;text-align:center;font-size:14px;font-weight:800;display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.08)}
 .cadeia-insumo{background:#dbeafe}
 .cadeia-atividade{background:#fde68a}
 .cadeia-produto{background:#bbf7d0}
 .cadeia-resultado{background:#ddd6fe}
 .cadeia-impacto{background:#fbcfe8}
 .cadeia-beneficio{background:#86efac}
-.cadeia-seta{font-size:24px;font-weight:900;color:#475569}
+.cadeia-seta{display:none}
+@media(max-width:1200px){.cadeia-flow{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.cadeia-flow{grid-template-columns:1fr}}
 /*=========================================================
 013 TEORIA DA MUDANCA
 =========================================================*/
-.tdm-card{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
-.tdm-titulo{font-size:15px;font-weight:900;color:#1e293b;margin-bottom:10px}
-.tdm-flow{display:flex;flex-direction:column;align-items:center}
-.tdm-box{width:95%;padding:12px;border-radius:12px;text-align:center;font-size:12px;font-weight:800}
+.tdm-card{background:#fff;border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.tdm-titulo{font-size:16px;font-weight:900;color:#1e293b;margin-bottom:14px}
+.tdm-flow{display:flex;align-items:center;justify-content:flex-start;gap:10px;overflow-x:auto;padding:6px}
+.tdm-box{min-width:210px;max-width:210px;min-height:96px;padding:12px;border-radius:14px;text-align:center;font-size:12px;font-weight:800;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:0 3px 8px rgba(0,0,0,.08);flex-shrink:0}
 .tdm-problema{background:#fecaca}
 .tdm-causa{background:#fde68a}
 .tdm-acao{background:#bfdbfe}
 .tdm-resultado{background:#ddd6fe}
 .tdm-impacto{background:#fbcfe8}
 .tdm-beneficio{background:#86efac}
-.tdm-seta{font-size:22px;font-weight:900;color:#334155}
+.tdm-seta{font-size:30px;font-weight:900;color:#475569;flex-shrink:0}
 /*=========================================================
 014 GANTT
 =========================================================*/
@@ -217,15 +219,18 @@ text-shadow:none!important;
 .ods-meta{font-size:12px;color:#475569;margin-top:6px}
 .ods-ia{font-size:11px;color:#64748b;margin-top:10px;line-height:16px}
 
-.planejamento-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.planejamento-card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 4px 12px rgba(0,0,0,.08);border-left:6px solid #2563eb}
-.planejamento-titulo{font-size:15px;font-weight:900;color:#0f172a}
-.planejamento-periodo{margin-top:8px;font-size:12px;color:#475569}
-.planejamento-responsavel{margin-top:6px;font-size:12px;color:#334155}
-.planejamento-status{margin-top:8px;font-size:11px;font-weight:900;color:#16a34a}
-.periodo-plano{display:block;margin-top:6px;font-size:11px;font-weight:800;line-height:14px;color:#334155}
-.responsavel-plano{display:block;margin-top:4px;font-size:10px;color:#64748b}
-.status-plano{display:block;margin-top:4px;font-size:10px;font-weight:900;color:#475569}
+.planejamento-grid{display:grid;grid-template-columns:repeat(3,minmax(300px,1fr));gap:18px;width:100%;align-items:stretch}
+.planejamento-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 12px rgba(0,0,0,.08);border-top:6px solid #2563eb;display:flex;flex-direction:column;justify-content:space-between;min-height:170px;transition:.25s}
+.planejamento-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+.planejamento-titulo{font-size:18px;font-weight:900;color:#0f172a;line-height:22px;margin-bottom:10px}
+.planejamento-periodo{margin-top:6px;font-size:13px;font-weight:700;color:#334155}
+.planejamento-responsavel{margin-top:8px;font-size:12px;font-weight:700;color:#475569}
+.planejamento-status{margin-top:10px;font-size:12px;font-weight:900;color:#16a34a}
+.periodo-plano{display:block;margin-top:6px;font-size:12px;font-weight:800;color:#334155;line-height:16px}
+.responsavel-plano{display:block;margin-top:6px;font-size:11px;font-weight:700;color:#64748b}
+.status-plano{display:inline-block;margin-top:8px;padding:5px 10px;border-radius:20px;background:#dbeafe;color:#1d4ed8;font-size:11px;font-weight:900;text-align:center}
+@media(max-width:1200px){.planejamento-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.planejamento-grid{grid-template-columns:1fr}}
 
 .modalMunicipioOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:99999;display:flex;align-items:center;justify-content:center}
 .modalMunicipioBox{background:#fff;width:900px;max-width:95%;max-height:90vh;overflow:auto;padding:20px;border-radius:12px}
