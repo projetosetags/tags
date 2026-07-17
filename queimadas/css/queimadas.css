@@ -507,3 +507,20 @@ MENU QUEIMADAS BOTAO ATIVO
 .infoPainel[open] summary::before{content:"➖ "}
 .infoPainel p{margin:8px 0;font-size:12px;line-height:1.55;color:#475569}
 .infoPainel b{color:#0f172a}
+.titulo-etapa{
+font-size:11px;
+font-weight:900;
+letter-spacing:1px;
+color:#475569;
+text-transform:uppercase;
+margin-bottom:10px;
+}
+
+.fontePainel{
+margin-top:18px;
+padding-top:10px;
+border-top:1px solid #dbe4f0;
+font-size:11px;
+font-style:italic;
+color:#64748b;
+}
