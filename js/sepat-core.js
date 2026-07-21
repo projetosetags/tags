@@ -819,12 +819,9 @@ break
 
 }
 
-if(atingiu100){
-valor=100
-}else{
-valor=Number(i[m]||0)
+valor=atingiu100 ? 100 : Number(i[m]||0)
+
 if(isNaN(valor))valor=0
-}
 
 soma+=valor
 
@@ -836,8 +833,9 @@ valores.push(lista.length?Math.round(soma/lista.length):0)
 
 graficoLinhaSepat=new Chart(ctx,{
 type:'line',
+
 data:{
-labels:labels,
+labels,
 datasets:[{
 label:'EVOLUÇÃO GERAL',
 data:valores,
@@ -847,15 +845,17 @@ borderWidth:4,
 pointRadius:6,
 pointHoverRadius:8,
 pointBackgroundColor:'#16a34a',
-pointBorderColor:'#ffffff',
+pointBorderColor:'#fff',
 pointBorderWidth:2,
 tension:.35,
 fill:true
 }]
 },
+
 options:{
 responsive:true,
 maintainAspectRatio:false,
+
 plugins:{
 legend:{
 display:true,
@@ -868,11 +868,13 @@ weight:'900'
 color:'#111827'
 }
 },
+
 tooltip:{
 callbacks:{
 label:(ctx)=>ctx.raw+'%'
 }
 },
+
 datalabels:{
 display:true,
 anchor:'end',
@@ -885,6 +887,7 @@ color:'#111827',
 formatter:(v)=>v+'%'
 }
 },
+
 scales:{
 y:{
 beginAtZero:true,
@@ -893,6 +896,7 @@ ticks:{
 callback:(v)=>v+'%'
 }
 },
+
 x:{
 ticks:{
 font:{
@@ -901,8 +905,11 @@ size:10
 }
 }
 }
+}
 },
+
 plugins:[ChartDataLabels]
+
 })
 
 }
