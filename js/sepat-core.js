@@ -907,11 +907,8 @@ size:10
 }
 }
 },
-
 plugins:[ChartDataLabels]
-
 })
-
 }
 /*=========================================================
 012 SEPAT CORE GRAFICO PIZZA
