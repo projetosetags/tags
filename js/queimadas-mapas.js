@@ -430,9 +430,11 @@ fillOpacity:.85
 
 onEachFeature:function(feature,layer){
 
-const nome=(feature.properties.nome||feature.properties.NM_MUN||'').toUpperCase()
+const nome = normalizarMunicipio(
+    feature.properties.nome || feature.properties.NM_MUN
+)
 
-const reg=indice[nome]
+const reg = indice[nome]
 
 
 if(!reg){
