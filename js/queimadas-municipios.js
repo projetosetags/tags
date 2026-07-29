@@ -325,7 +325,7 @@ return iriq.toFixed(2)
 async function renderPlanosMunicipais(){
 let box=document.getElementById('painelPlanosMunicipais')
 if(!box)return
-let{data=[]}=await client.from('queimadas_municipios_oficio').select('*').order('municipio')
+let{data=[]}=await client.from('vw_queimadas_municipios_resposta').select('*').order('municipio')
 let{data:ranking=[]}=await client.from('vw_queimadas_ranking_estadual').select('*').order('indice_final',{ascending:false})
 let comPlano=data.filter(i=>String(i.classificacao_cor||'').toUpperCase()==='VERDE')
 let dilacao=data.filter(i=>String(i.classificacao_cor||'').toUpperCase()==='AMARELO')
@@ -891,7 +891,7 @@ let box=document.getElementById('painelMunicipiosSemResposta')
 if(!box)return
 
 let {data,error}=await client
-.from('queimadas_municipios_oficio')
+.from('vw_queimadas_municipios_resposta')
 .select('*')
 .eq('classificacao_cor','VERMELHO')
 .order('municipio')
@@ -974,7 +974,7 @@ async function renderPlanosApresentados(){
 let box=document.getElementById('painelPlanosApresentados')
 if(!box)return
 let {data,error}=await client
-.from('queimadas_municipios_oficio')
+.from('vw_queimadas_municipios_resposta')
 .select('*')
 .eq('classificacao_cor','VERDE')
 .order('municipio')
@@ -994,7 +994,7 @@ async function renderDilacoesPrazo(){
 let box=document.getElementById('painelDilacoesPrazo')
 if(!box)return
 let {data,error}=await client
-.from('queimadas_municipios_oficio')
+.from('vw_queimadas_municipios_resposta')
 .select('*')
 .eq('classificacao_cor','AMARELO')
 .order('municipio')
@@ -1017,7 +1017,7 @@ let[
 {data:exec}
 ]=await Promise.all([
 client.from('vw_queimadas_ranking_estadual').select('*'),
-client.from('queimadas_municipios_oficio').select('*'),
+client.from('vw_queimadas_municipios_resposta').select('*'),
 client.from('vw_queimadas_executivo').select('*').single()
 ])
 
@@ -1273,7 +1273,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 attribution:'OpenStreetMap'
 }).addTo(window.mapaMunicipalRO)
 let {data,error}=await client
-.from('queimadas_municipios_oficio')
+.from('vw_queimadas_municipios_resposta')
 .select('*')
 if(error){
 console.log(error)
@@ -1417,7 +1417,7 @@ let destino=tipo==='RESUMO'
 let box=document.getElementById(destino)
 if(!box)return
 let {data,error}=await client
-.from('queimadas_municipios_oficio')
+.from('vw_queimadas_municipios_resposta')
 .select('*')
 .order('municipio')
 if(error){
@@ -1622,7 +1622,7 @@ box.innerHTML=html
 async function editarMunicipio(id){
 
 let {data,error}=await client
-.from('queimadas_municipios_oficio')
+.from('vw_queimadas_municipios_resposta')
 .select('*')
 .eq('id',id)
 .single()
@@ -1722,7 +1722,7 @@ llnumerodocenviado:document.getElementById('mDoc2').value,
 observacao:document.getElementById('mObs').value
 }
 let {error}=await client
-.from('queimadas_municipios_oficio')
+.from('vw_queimadas_municipios_resposta')
 .update(payload)
 .eq('id',id)
 
@@ -1759,7 +1759,7 @@ alert('Registro atualizado com sucesso.')
 =========================================================*/
 async function renderDistribuicaoRespostas(){
 const {data,error}=await client
-.from('queimadas_municipios_oficio')
+.from('vw_queimadas_municipios_resposta')
 .select('classificacao_cor')
 if(error)return
 let verde=0
@@ -1808,7 +1808,7 @@ position:'bottom'
 =========================================================*/
 async function renderEstatisticasMunicipais(){
 const {data,error}=await client
-.from('queimadas_municipios_oficio')
+.from('vw_queimadas_municipios_resposta')
 .select('*')
 if(error)return
 let verde=0
