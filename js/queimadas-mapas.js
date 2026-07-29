@@ -375,7 +375,7 @@ if(camadaPlanosMunicipais){
 mapaPlanosMunicipais.removeLayer(camadaPlanosMunicipais)
 }
 const {data,error}=await client
-.from('queimadas_municipios_oficio')
+.from('vw_queimadas_municipios_resposta')
 .select('*')
 if(error){
 console.log(error)
