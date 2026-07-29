@@ -1184,7 +1184,7 @@ let filtro=document.getElementById('filtroMunicipioSituacao')?.value||''
 let busca=(document.getElementById('buscaMunicipio')?.value||'').toUpperCase()
 
 let query=client
-.from('queimadas_municipios_oficio')
+.from('vw_queimadas_municipios_resposta')
 .select('*')
 .order('municipio')
 
