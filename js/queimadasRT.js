@@ -162,7 +162,7 @@ doc.text(doc.splitTextToSize(texto3,170),15,205)
 async function rtAnaliseMunicipal(doc){
 doc.setFontSize(16)
 doc.text('5. ANÁLISE MUNICIPAL',15,20)
-let {data=[]}=await client.from('queimadas_municipios_oficio').select('*')
+let {data=[]}=await client.from('vw_queimadas_municipios_resposta').select('*')
 let total=data.length
 let respondidos=data.filter(i=>String(i.classificacao_ia||'').toUpperCase().includes('PLANO')).length
 let dilacao=data.filter(i=>String(i.classificacao_ia||'').toUpperCase().includes('DILA')).length
@@ -347,7 +347,7 @@ headStyles:{fillColor:[127,29,29]}
 =========================================================*/
 async function adicionarTabelaMunicipiosPDF(doc){
 let {data,error}=await client
-.from('queimadas_municipios_oficio')
+.from('vw_queimadas_municipios_resposta')
 .select('*')
 .order('municipio')
 if(error)return
