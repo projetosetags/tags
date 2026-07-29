@@ -360,23 +360,13 @@ async function renderMapaPlanosMunicipais(filtro='TODOS'){
 const box=document.getElementById('mapaMunicipalPlanos')
 if(!box)return
 if(!mapaPlanosMunicipais){
-mapaPlanosMunicipais=L.map('mapaMunicipalPlanos',{
-zoomControl:true
-}).setView([-10.9,-63.3],7)
-L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-{
-maxZoom:18,
-attribution:'OpenStreetMap'
-}
-).addTo(mapaPlanosMunicipais)
+mapaPlanosMunicipais=L.map('mapaMunicipalPlanos',{zoomControl:true}).setView([-10.9,-63.3],7)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'OpenStreetMap'}).addTo(mapaPlanosMunicipais)
 }
 if(camadaPlanosMunicipais){
 mapaPlanosMunicipais.removeLayer(camadaPlanosMunicipais)
 }
-const {data,error}=await client
-.from('vw_queimadas_municipios_resposta')
-.select('*')
+const {data,error}=await client.from('vw_queimadas_municipios_resposta').select('*')
 if(error){
 console.log(error)
 return
@@ -390,9 +380,6 @@ const municipiosRO=await geo.json()
 camadaPlanosMunicipais=L.geoJSON(municipiosRO,{
 style:function(feature){
 const nome=normalizarMunicipio(feature.properties.nome||feature.properties.NM_MUN)
-if(nome.includes('ESPIGAO')||nome.includes('MACHADINHO')||nome.includes('SANTA')||nome.includes('FELIPE')){
-console.log(nome)
-}
 const reg=indice[nome]
 if(!reg){
 console.log('SEM CORRESPONDÊNCIA:',nome)
@@ -403,120 +390,68 @@ color:'#666',
 fillOpacity:.35
 }
 }
-
-if(filtro!=='TODOS' && reg.classificacao_cor!==filtro){
-
+if(filtro!=='TODOS'&&reg.classificacao_cor!==filtro){
 return{
-
 fillColor:'#d1d5db',
 weight:1,
 color:'#999',
 fillOpacity:.20
-
 }
-
 }
-
 return{
-
 fillColor:corPlanoMunicipio(reg.classificacao_cor),
-weight:1,
+weight:1.5,
 color:'#555',
-fillOpacity:.85
-
+fillOpacity:.85,
+interactive:true
 }
-
 },
-
 onEachFeature:function(feature,layer){
-
-console.log(
-    feature.properties.nome || feature.properties.NM_MUN,
-    feature.geometry.type
-);
-
-...
-const nome = normalizarMunicipio(
-    feature.properties.nome || feature.properties.NM_MUN
-)
-
-const reg = indice[nome]
-
-
+const nome=normalizarMunicipio(feature.properties.nome||feature.properties.NM_MUN)
+const reg=indice[nome]
 if(!reg){
 console.log('SEM CORRESPONDÊNCIA:',nome)
+return
 }
-
-
-  
-if(!reg)return
-
 let situacao='Sem informação'
-
-if(reg.classificacao_cor==='VERDE')
-situacao='🟢 Plano apresentado'
-
-if(reg.classificacao_cor==='AMARELO')
-situacao='🟡 Dilação de prazo'
-
-if(reg.classificacao_cor==='VERMELHO')
-situacao='🔴 Sem resposta'
-
+if(reg.classificacao_cor==='VERDE')situacao='🟢 Plano apresentado'
+if(reg.classificacao_cor==='AMARELO')situacao='🟡 Dilação de prazo'
+if(reg.classificacao_cor==='VERMELHO')situacao='🔴 Sem resposta'
 layer.bindPopup(`
-
 <b>${reg.municipio}</b>
-
 <hr>
-
 <b>Situação:</b><br>
-
 ${situacao}
-
 <br><br>
-
 <b>Documento:</b><br>
-
 ${reg.lnumerodocenviado||'-'}
-
 <br><br>
-
 <b>Recebimento:</b><br>
-
 ${formatarDataBR(reg.ldatarecebimentodoc)}
-
 <br><br>
-
 ${reg.observacao||''}
-
 `)
-
 layer.on({
-
-mouseover:e=>{
-
-e.target.setStyle({
-
+mouseover:function(e){
+this.setStyle({
 weight:3,
-
-color:'#2563eb'
-
+color:'#2563eb',
+fillOpacity:1
 })
-
+this.bringToFront()
 },
-
-mouseout:e=>{
-
-camadaPlanosMunicipais.resetStyle(e.target)
-
+mouseout:function(e){
+camadaPlanosMunicipais.resetStyle(this)
+},
+click:function(e){
+this.openPopup()
 }
-
 })
-
 }
-
 }).addTo(mapaPlanosMunicipais)
-
+camadaPlanosMunicipais.eachLayer(layer=>{
+layer.options.interactive=true
+})
 mapaPlanosMunicipais.fitBounds(camadaPlanosMunicipais.getBounds())
-
 }
 
