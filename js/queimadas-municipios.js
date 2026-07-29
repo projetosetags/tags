@@ -659,41 +659,44 @@ faixa='MODERADO'
 cor='#facc15'
 }
 let hoje=new Date().toLocaleDateString('pt-BR')
+let agora=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
+let planos=Number(data.planos_apresentados||0)
+let total=Number(data.total_municipios||0)
+let resposta=total?((planos/total)*100).toFixed(1):0
 box.innerHTML=`
 <div class="chap-grid">
 <div class="chap-card">
-<div class="chap-num">${Number(data.focos_estado||0).toLocaleString('pt-BR')}</div>
-<div class="chap-label">FOCOS DE CALOR</div>
-<div style="font-size:11px;color:#64748b">${hoje}</div>
+<div class="chap-num">📡</div>
+<div class="chap-label">ÚLTIMA ATUALIZAÇÃO</div>
+<div style="font-size:15px;font-weight:900">${hoje}</div>
+<div style="font-size:12px;color:#64748b">${agora}</div>
 </div>
 <div class="chap-card">
-<div class="chap-num">${Number(data.desmatamento_estado_ha||0).toLocaleString('pt-BR',{maximumFractionDigits:0})}</div>
-<div class="chap-label">DESMATAMENTO (ha)</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${Number(data.area_queimada_estado_ha||0).toLocaleString('pt-BR',{maximumFractionDigits:0})}</div>
-<div class="chap-label">ÁREA QUEIMADA (ha)</div>
-</div>
-<div class="chap-card">
-<div class="chap-num" style="color:${cor}">
-${iriq.toFixed(2)}
-</div>
+<div class="chap-num" style="color:${cor}">${iriq.toFixed(2)}</div>
 <div class="chap-label">IRIQ ESTADUAL</div>
-<div style="font-size:12px;font-weight:900;color:${cor}">
-${faixa}
-</div>
+<div style="font-size:12px;font-weight:900;color:${cor}">${faixa}</div>
 </div>
 <div class="chap-card">
 <div class="chap-num">${Number(data.municipios_criticos||0)}</div>
-<div class="chap-label">CRÍTICOS</div>
+<div class="chap-label">MUNICÍPIOS CRÍTICOS</div>
 </div>
 <div class="chap-card">
 <div class="chap-num">${Number(data.municipios_prioritarios||0)}</div>
-<div class="chap-label">PRIORITÁRIOS</div>
+<div class="chap-label">MUNICÍPIOS PRIORITÁRIOS</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">${planos}/${total}</div>
+<div class="chap-label">RESPOSTA INSTITUCIONAL</div>
+<div style="font-size:12px;font-weight:900;color:#16a34a">${resposta}%</div>
+</div>
+<div class="chap-card">
+<div class="chap-num">🛰️</div>
+<div class="chap-label">MONITORAMENTO</div>
+<div style="font-size:12px;font-weight:900;color:#2563eb">ATIVO</div>
 </div>
 </div>
 <div class="fonte-card">
-Fonte: INPE • PRODES • MAPBIOMAS • vw_queimadas_executivo
+Fonte: INPE • PRODES • MAPBIOMAS • SEDAM • CBMRO • vw_queimadas_executivo
 </div>
 `
 }
