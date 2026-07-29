@@ -1739,7 +1739,7 @@ client.from('vw_queimadas_ranking_estadual').select('*'),
 client.from('queimadas_acoes_sedam').select('*'),
 client.from('queimadas_acoes_cbm').select('*'),
 client.from('queimadas_monitoramento').select('*'),
-client.from('queimadas_municipios_oficio').select('*')
+client.from('vw_queimadas_municipios_resposta').select('*')
 ])
 
 let areaQueimada=heat.reduce((s,i)=>s+Number(i.area_queimada_hectares||i.area_queimada_ha||i.area_queimada||0),0)
@@ -1880,7 +1880,7 @@ formatter:v=>v
 047 QUEIMADAS FUNCTION RENDERSALASITUACAO
 =========================================================*/
 async function renderSalaSituacao(){
-let {data:municipios=[]}=await client.from('queimadas_municipios_oficio').select('*')
+let {data:municipios=[]}=await client.from('vw_queimadas_municipios_resposta').select('*')
 let total=52
 
 let listaSemPlano=municipios.filter(i=>{
