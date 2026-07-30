@@ -91,6 +91,7 @@ return'#16a34a'
 
 graficoTempoReal=new Chart(canvas,{
 type:'bar',
+indexAxis:'y',
 data:{
 labels:data.map(i=>i.municipio),
 datasets:[{
@@ -104,7 +105,8 @@ maxBarThickness:32
 },
 options:{
 responsive:true,
-maintainAspectRatio:false,
+maintainAspectRatio:true,
+aspectRatio:2.4,
 plugins:{
 legend:{
 display:false
