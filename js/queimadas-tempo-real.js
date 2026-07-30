@@ -3,6 +3,7 @@ async function renderTempoReal(){let box=document.getElementById('painelTempoRea
 async function renderRankingTempoReal(){let box=document.getElementById('painelTempoRealRanking');if(!box)return;let{data=[],error}=await client.from('vw_queimadas_ranking_estadual').select('*').limit(10);if(error){box.innerHTML='<div class="cardTempoReal">Erro ao carregar ranking.</div>';return;}box.innerHTML=data.map(i=>`<div class="cardRankingTR"><div class="cardRankingMunicipio">${i.semaforo} ${i.municipio}</div><div class="cardRankingValor">${Number(i.focos||0).toLocaleString('pt-BR')}</div></div>`).join('');}
 function renderAtualizacaoTempoReal(){let box=document.getElementById('painelTempoRealAtualizacao');if(!box)return;let agora=new Date();box.innerHTML=`<div class="atualizacaoTR">${agora.toLocaleDateString('pt-BR')}<br>${agora.toLocaleTimeString('pt-BR')}</div>`;}
 document.addEventListener('DOMContentLoaded',()=>{renderTempoReal();setInterval(renderTempoReal,300000);});
+
 function renderResumoTempoReal(d){
 let box=document.getElementById('painelTempoRealFocos')
 if(!box)return
@@ -69,6 +70,7 @@ sat.innerHTML=`
 </div>
 `
 }
+
 async function renderGraficoTempoReal(){
 let canvas=document.getElementById('graficoTempoReal')
 if(!canvas)return
@@ -84,9 +86,9 @@ graficoTempoReal.destroy()
 
 let cores=data.map(i=>{
 if(i.classificacao==='CRÍTICO'||i.classificacao==='CRITICO')return'#dc2626'
-if(i.classificacao==='ALTO')return'#ea580c'
+if(i.classificacao==='ALTO')return'#f97316'
 if(i.classificacao==='MODERADO')return'#eab308'
-return'#16a34a'
+return'#22c55e'
 })
 
 graficoTempoReal=new Chart(canvas,{
@@ -95,12 +97,25 @@ indexAxis:'y',
 data:{
 labels:data.map(i=>i.municipio),
 datasets:[{
-label:'Focos de Calor',
+label:'Focos',
 data:data.map(i=>i.focos),
 backgroundColor:cores,
+borderColor:cores,
+borderWidth:1,
 borderRadius:8,
 borderSkipped:false,
-maxBarThickness:32
+maxBarThickness:55,
+datalabels:{
+anchor:'end',
+align:'top',
+offset:4,
+color:'#111827',
+font:{
+weight:'900',
+size:14
+},
+formatter:v=>Number(v).toLocaleString('pt-BR')
+}
 }]
 },
 options:{
@@ -112,13 +127,19 @@ legend:{
 display:false
 },
 title:{
-display:true,
-text:'Municípios com Maior Número de Focos'
+display:false
 },
 tooltip:{
+backgroundColor:'#111827',
+titleColor:'#fff',
+bodyColor:'#fff',
+padding:10,
 callbacks:{
-label:c=>`${Number(c.raw).toLocaleString('pt-BR')} focos`
+label:c=>` ${Number(c.raw).toLocaleString('pt-BR')} focos`
 }
+},
+datalabels:{
+display:true
 }
 },
 scales:{
@@ -128,8 +149,8 @@ display:false
 },
 ticks:{
 font:{
-weight:'bold',
-size:11
+size:11,
+weight:'700'
 }
 }
 },
@@ -139,6 +160,9 @@ grid:{
 color:'#e5e7eb'
 },
 ticks:{
+font:{
+weight:'700'
+},
 callback:v=>Number(v).toLocaleString('pt-BR')
 }
 }
