@@ -51,21 +51,21 @@ sat.innerHTML=`
 <div class="resumoIcone">🛰</div>
 <span>Fonte dos Dados</span>
 </div>
-<div class="resumoValor">INPE</div>
+<div class="resumoValor">QUEIMADAS 2026</div>
 </div>
 <div class="resumoLinha">
 <div class="resumoEsquerda">
-<div class="resumoIcone">📡</div>
-<span>Status</span>
+<div class="resumoIcone">🟢</div>
+<span>Status do Sistema</span>
 </div>
-<div class="resumoValor" style="color:#ea580c">Em implantação</div>
+<div class="statusTR statusOnline">ONLINE</div>
 </div>
 <div class="resumoLinha">
 <div class="resumoEsquerda">
 <div class="resumoIcone">🔄</div>
 <span>Atualização</span>
 </div>
-<div class="resumoValor">Automática</div>
+<div class="resumoValor">${new Date().toLocaleTimeString('pt-BR')}</div>
 </div>
 </div>
 `
