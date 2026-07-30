@@ -8,11 +8,35 @@ let box=document.getElementById('painelTempoRealFocos')
 if(!box)return
 
 box.innerHTML=`
-<div class="cardTempoReal">
-<p><b>🔥 Focos:</b> ${Number(d.focos_estado||0).toLocaleString('pt-BR')}</p>
-<p><b>🏛 Municípios críticos:</b> ${Number(d.municipios_criticos||0)}</p>
-<p><b>🌳 Área queimada:</b> ${Number(d.area_queimada_estado_ha||0).toLocaleString('pt-BR')} ha</p>
-<p><b>🌲 Desmatamento:</b> ${Number(d.desmatamento_estado_ha||0).toLocaleString('pt-BR')} ha</p>
+<div class="resumoTR">
+<div class="resumoLinha">
+<div class="resumoEsquerda">
+<div class="resumoIcone">🔥</div>
+<span>Focos de Calor</span>
+</div>
+<div class="resumoValor">${Number(d.focos_estado||0).toLocaleString('pt-BR')}</div>
+</div>
+<div class="resumoLinha">
+<div class="resumoEsquerda">
+<div class="resumoIcone">🏛</div>
+<span>Municípios Críticos</span>
+</div>
+<div class="resumoValor">${Number(d.municipios_criticos||0)}</div>
+</div>
+<div class="resumoLinha">
+<div class="resumoEsquerda">
+<div class="resumoIcone">🌳</div>
+<span>Área Queimada</span>
+</div>
+<div class="resumoValor">${Number(d.area_queimada_estado_ha||0).toLocaleString('pt-BR')} ha</div>
+</div>
+<div class="resumoLinha">
+<div class="resumoEsquerda">
+<div class="resumoIcone">🌲</div>
+<span>Desmatamento</span>
+</div>
+<div class="resumoValor">${Number(d.desmatamento_estado_ha||0).toLocaleString('pt-BR')} ha</div>
+</div>
 </div>
 `
 
@@ -20,10 +44,28 @@ let sat=document.getElementById('painelTempoRealSatelites')
 if(!sat)return
 
 sat.innerHTML=`
-<div class="cardTempoReal">
-<p>🛰 <b>Integração INPE</b></p>
-<p>Status: Em implantação</p>
-<p>Atualização automática em breve.</p>
+<div class="resumoTR">
+<div class="resumoLinha">
+<div class="resumoEsquerda">
+<div class="resumoIcone">🛰</div>
+<span>Fonte dos Dados</span>
+</div>
+<div class="resumoValor">INPE</div>
+</div>
+<div class="resumoLinha">
+<div class="resumoEsquerda">
+<div class="resumoIcone">📡</div>
+<span>Status</span>
+</div>
+<div class="resumoValor" style="color:#ea580c">Em implantação</div>
+</div>
+<div class="resumoLinha">
+<div class="resumoEsquerda">
+<div class="resumoIcone">🔄</div>
+<span>Atualização</span>
+</div>
+<div class="resumoValor">Automática</div>
+</div>
 </div>
 `
 }
