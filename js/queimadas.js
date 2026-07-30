@@ -2127,6 +2127,7 @@ await renderEvidencias()
 if(nome==='temporeal'){
 document.getElementById('abaTempoReal')?.classList.remove('hidden')
 if(typeof renderTempoReal==='function')await renderTempoReal()
+if(typeof renderGraficoTempoReal==='function')await renderGraficoTempoReal()
 }
 if(nome==='analise'){
 document.getElementById('abaAnalise')?.classList.remove('hidden')
