@@ -2,38 +2,29 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta
-name="viewport"
-content="width=device-width,
-initial-scale=1,
-minimum-scale=1,
-maximum-scale=5,
-user-scalable=yes">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5,user-scalable=yes">
+<meta name="theme-color" content="#0f172a">
 <title>QUEIMADAS 2026 | Monitoramento Inteligente</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="css/queimadas.css?v=2026">
+<link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="css/queimadas.css?v=20260730">
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="../config.js"></script>
-<script>
-Chart.register(ChartDataLabels);
-</script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>Chart.register(ChartDataLabels);</script>
+<script src="../config.js"></script>
 <script src="../js/municipios-ro.js"></script>
-<script src="../js/queimadasRT.js?v=2026"></script>
-<script src="../js/queimadas-monitoramento.js?v=2026"></script>
-<script src="../js/queimadas.js?v=20260611"></script>
-<script src="../js/queimadas-municipios.js?v=20260611"></script>
-<script src="../js/queimadas-mapas.js?v=2026"></script>
-
-<link rel="manifest" href="../manifest.json">
-<meta name="theme-color" content="#0f172a">
-  
+<script src="../js/queimadas.js?v=20260730"></script>
+<script src="../js/queimadasRT.js?v=20260730"></script>
+<script src="../js/queimadas-monitoramento.js?v=20260730"></script>
+<script src="../js/queimadas-municipios.js?v=20260730"></script>
+<script src="../js/queimadas-mapas.js?v=20260730"></script>
+<script src="../js/queimadas-tempo-real.js?v=20260730"></script>
 </head>
 <body>
 <div class="layoutPrincipal">
@@ -42,21 +33,22 @@ Chart.register(ChartDataLabels);
 <div class="logoFogo">🔥</div>
 <div>
 <h1>QUEIMADAS 2026</h1>
-<p>Monitoramento Inteligente • TCE-RO • Sedam • CBMRO</p>
+<p>Monitoramento Inteligente • TCE-RO • SEDAM • CBMRO</p>
 </div>
 </div>
 </header>
 <nav class="menuQueimadas">
 <button id="btnAbaExecutivo" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('executivo')">📊 PAINEL EXECUTIVO</button>
 <button id="btnAbaExecutivoMunicipal" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('executivomunicipal')">🏛️ MUNICÍPIOS</button>
-<button id="btnAbaEstado" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('estado')">🏛️ ESTADO</button>
+<button id="btnAbaEstado" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('estado')">🌎 ESTADO</button>
 <button id="btnAbaPlanejamento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('planejamento')">📋 PLANEJAMENTO</button>
-<button id="btnAbaMapa" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('mapa')">🗺 MAPA ESTADUAL</button>
-<button id="btnAbaSituacao" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('situacao')">🚨SITUAÇÃO E GOVERNANÇA</button>
+<button id="btnAbaMapa" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('mapa')">🗺️ MAPA ESTADUAL</button>
+<button id="btnAbaSituacao" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('situacao')">🚨 SITUAÇÃO</button>
 <button id="btnAbaMonitoramento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('monitoramento')">🔥 MONITORAMENTO</button>
+<button id="btnAbaTempoReal" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('temporeal')">🛰️ TEMPO REAL</button>
 <button id="btnAbaAnalise" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('analise')">🤖 RISCOS IA</button>
 <button id="btnAbaAuditor" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('auditor')">📑 AUDITORIA</button>
-<button id="btnImprimirPainel" class="btnAbaQueimadas btnPdfQueimadas"onclick="imprimirAbaAtualQueimadas()">🖨 PDF ABA</button>
+<button id="btnImprimirPainel" class="btnAbaQueimadas btnPdfQueimadas" onclick="imprimirAbaAtualQueimadas()">🖨️ PDF ABA</button>
 </nav>
 <!--=========================================================
 001 EXECUTIVO
@@ -379,6 +371,39 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 <div class="cardExecutivo"><h2>EXECUÇÃO FÍSICA</h2><div id="painelExecucaoFisica"></div></div>
 <div class="cardExecutivo"><h2>EXECUÇÃO FINANCEIRA</h2><div id="painelExecucaoFinanceira"></div></div>
 <div class="cardExecutivo"><h2>EVIDÊNCIAS</h2><div id="painelEvidencias"></div></div>
+</section>
+<!--=========================================================
+005.1 TEMPO REAL
+=========================================================-->
+<section id="abaTempoReal" class="abaQueimadas hidden">
+<div class="painelTitulo">
+🛰 CENTRO DE MONITORAMENTO EM TEMPO REAL
+</div>
+<div id="painelTempoRealKPIs"></div>
+<div class="exec-duplo">
+<div class="cardExecutivo">
+<h2>🔥 FOCOS DE CALOR</h2>
+<div id="painelTempoRealFocos"></div>
+</div>
+<div class="cardExecutivo">
+<h2>🏆 MUNICÍPIOS MAIS CRÍTICOS</h2>
+<div id="painelTempoRealRanking"></div>
+</div>
+</div>
+<div class="exec-duplo">
+<div class="cardExecutivo">
+<h2>🛰 SATÉLITES</h2>
+<div id="painelTempoRealSatelites"></div>
+</div>
+<div class="cardExecutivo">
+<h2>📡 ÚLTIMA ATUALIZAÇÃO</h2>
+<div id="painelTempoRealAtualizacao"></div>
+</div>
+</div>
+<div class="cardExecutivo">
+<h2>📈 EVOLUÇÃO DOS FOCOS</h2>
+<canvas id="graficoTempoReal"></canvas>
+</div>
 </section>
 <!--=========================================================
 006 RISCOS sugestões IA
