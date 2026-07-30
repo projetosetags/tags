@@ -2047,6 +2047,7 @@ estado:'btnAbaEstado',
 mapa:'btnAbaMapa',
 planejamento:'btnAbaPlanejamento',
 monitoramento:'btnAbaMonitoramento',
+temporeal:'btnAbaTempoReal',
 analise:'btnAbaAnalise',
 situacao:'btnAbaSituacao',
 presidente:'btnAbaPresidente',
@@ -2122,6 +2123,10 @@ await renderExecucaoFinanceira()
 await renderCEPCIFAvancado()
 await renderPOTIFAvancado()
 await renderEvidencias()
+}
+if(nome==='temporeal'){
+document.getElementById('abaTempoReal')?.classList.remove('hidden')
+if(typeof renderTempoReal==='function')await renderTempoReal()
 }
 if(nome==='analise'){
 document.getElementById('abaAnalise')?.classList.remove('hidden')
