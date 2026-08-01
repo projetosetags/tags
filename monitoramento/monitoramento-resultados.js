@@ -1,7 +1,4 @@
-/*=========================================================
-000 MONITORAMENTO CLIENT
-=========================================================*/
-const client = window.clientPublic
+
   
 window.RESULTADO_EDITANDO=null
 
