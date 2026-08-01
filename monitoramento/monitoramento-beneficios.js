@@ -1,7 +1,4 @@
-/*=========================================================
-000 MONITORAMENTO CLIENT
-=========================================================*/
-const client = window.clientPublic
+
   
 let graficoBeneficiosInstitucionais=null
 let graficoEfetividadeInstitucional=null
