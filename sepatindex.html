@@ -64,11 +64,11 @@ class="login-voltar-sepat">
 <div class="titulo-area-sepat">
 
 <div class="titulo-sepat">
-Painel de Acompanhamento TAG SEPAT-RO
+Painel de Acompanhamento TAG SEPAT-RO 2026
 </div>
 
 <div class="subtitulo-sepat">
-Sistema Integrado de Monitoramento • Exercício 2026
+Sistema Integrado de Monitoramento dos Produtos Estratégicos
 </div>
 
 <div
@@ -167,59 +167,143 @@ onclick="logoutSepat()">
 <nav class="tabs-sepat">
 
 <button id="tab-dashboard" class="tab-sepat tab-active" onclick="switchSepatTab('dashboard')">
-<div class="tab-icone-sepat">📊</div>
-<div class="tab-texto-sepat">
-<div class="tab-titulo-sepat">Dashboard</div>
-<div class="tab-subtitulo-sepat">Visão Geral</div>
+
+<div class="tab-icone-sepat">
+📊
 </div>
+
+<div class="tab-texto-sepat">
+
+<div class="tab-titulo-sepat">
+Dashboard
+</div>
+
+<div class="tab-subtitulo-sepat">
+Visão Geral
+</div>
+
+</div>
+
 </button>
 
 <button id="tab-resumo" class="tab-sepat" onclick="switchSepatTab('resumo')">
-<div class="tab-icone-sepat">📋</div>
-<div class="tab-texto-sepat">
-<div class="tab-titulo-sepat">Resumo</div>
-<div class="tab-subtitulo-sepat">Painel Executivo</div>
+
+<div class="tab-icone-sepat">
+📋
 </div>
+
+<div class="tab-texto-sepat">
+
+<div class="tab-titulo-sepat">
+Resumo
+</div>
+
+<div class="tab-subtitulo-sepat">
+Painel Executivo
+</div>
+
+</div>
+
 </button>
 
 <button id="tab-monitoramento" class="tab-sepat" onclick="switchSepatTab('monitoramento')">
-<div class="tab-icone-sepat">📝</div>
-<div class="tab-texto-sepat">
-<div class="tab-titulo-sepat">Monitoramento</div>
-<div class="tab-subtitulo-sepat">Acompanhamento</div>
+
+<div class="tab-icone-sepat">
+📑
 </div>
+
+<div class="tab-texto-sepat">
+
+<div class="tab-titulo-sepat">
+Monitoramento
+</div>
+
+<div class="tab-subtitulo-sepat">
+Produtos Estratégicos
+</div>
+
+</div>
+
 </button>
 
 <button id="tab-graficos" class="tab-sepat" onclick="switchSepatTab('graficos')">
-<div class="tab-icone-sepat">📈</div>
-<div class="tab-texto-sepat">
-<div class="tab-titulo-sepat">Gráficos</div>
-<div class="tab-subtitulo-sepat">Indicadores</div>
+
+<div class="tab-icone-sepat">
+📈
 </div>
+
+<div class="tab-texto-sepat">
+
+<div class="tab-titulo-sepat">
+Gráficos
+</div>
+
+<div class="tab-subtitulo-sepat">
+Indicadores
+</div>
+
+</div>
+
 </button>
 
 <button id="tab-concluidos" class="tab-sepat" onclick="switchSepatTab('concluidos')">
-<div class="tab-icone-sepat">🏆</div>
-<div class="tab-texto-sepat">
-<div class="tab-titulo-sepat">100%</div>
-<div class="tab-subtitulo-sepat">Cumpridos</div>
+
+<div class="tab-icone-sepat">
+🏆
 </div>
+
+<div class="tab-texto-sepat">
+
+<div class="tab-titulo-sepat">
+100%
+</div>
+
+<div class="tab-subtitulo-sepat">
+Concluídos
+</div>
+
+</div>
+
 </button>
 
 <button id="tab-perfis" class="tab-sepat hidden" onclick="switchSepatTab('perfis')">
-<div class="tab-icone-sepat">👥</div>
-<div class="tab-texto-sepat">
-<div class="tab-titulo-sepat">Perfis</div>
-<div class="tab-subtitulo-sepat">SEPAT</div>
+
+<div class="tab-icone-sepat">
+👤
 </div>
+
+<div class="tab-texto-sepat">
+
+<div class="tab-titulo-sepat">
+Perfis
+</div>
+
+<div class="tab-subtitulo-sepat">
+SEPAT
+</div>
+
+</div>
+
 </button>
 
 <button id="tab-perfistce" class="tab-sepat hidden" onclick="switchSepatTab('perfistce')">
-<div class="tab-icone-sepat">🛡️</div>
-<div class="tab-texto-sepat">
-<div class="tab-titulo-sepat">Perfis</div>
-<div class="tab-subtitulo-sepat">TCE-RO</div>
+
+<div class="tab-icone-sepat">
+🛡️
 </div>
+
+<div class="tab-texto-sepat">
+
+<div class="tab-titulo-sepat">
+Perfis
+</div>
+
+<div class="tab-subtitulo-sepat">
+TCE-RO
+</div>
+
+</div>
+
 </button>
 
 </nav>
@@ -238,7 +322,7 @@ PAINEL EXECUTIVO
 </div>
 
 <div class="dashboard-titulo2-sepat">
-Acompanhamento Estratégico TAG SEPAT-RO • Exercício 2026
+Acompanhamento Estratégico da TAG SEPAT-RO • Exercício 2026
 </div>
 
 </div>
@@ -246,7 +330,7 @@ Acompanhamento Estratégico TAG SEPAT-RO • Exercício 2026
 <div class="dashboard-acoes-sepat">
 
 <button
-onclick="gerarPDFDashboardSepat()"
+onclick="gerarPDFDashboardSepat&&gerarPDFDashboardSepat()"
 class="btn-pdf-sepat">
 
 📄 PDF Dashboard
@@ -254,10 +338,10 @@ class="btn-pdf-sepat">
 </button>
 
 <button
-onclick="gerarWordDashboardSepat()"
+onclick="if(typeof gerarWordDashboardSepat==='function'){gerarWordDashboardSepat()}"
 class="btn-word-sepat">
 
-📝 Word Dashboard
+📝 WORD Dashboard
 
 </button>
 
@@ -279,7 +363,7 @@ class="btn-word-sepat">
 Itens Estratégicos
 </div>
 
-<strong id="kpiItensSepat">
+<strong id="kpiItens">
 0
 </strong>
 
@@ -299,7 +383,7 @@ Itens Estratégicos
 Subitens
 </div>
 
-<strong id="kpiSubitensSepat">
+<strong id="kpiSubitens">
 0
 </strong>
 
@@ -319,7 +403,7 @@ Subitens
 Produtos
 </div>
 
-<strong id="kpiProdutosSepat">
+<strong id="kpiProdutos">
 0
 </strong>
 
@@ -336,10 +420,10 @@ Produtos
 <div class="kpi-info-sepat">
 
 <div class="kpi-label-sepat">
-Média Geral
+Percentual Geral
 </div>
 
-<strong id="kpiMediaSepat">
+<strong id="kpiPercentual">
 0%
 </strong>
 
@@ -350,9 +434,7 @@ Média Geral
 </div>
 
 <div class="grid-dashboard-sepat">
-
 <div class="card-grafico-sepat">
-
 <div class="card-header-sepat">
 
 <div class="card-title-sepat">
@@ -400,14 +482,14 @@ Média Geral
 
 <div class="page-header-sepat">
 
-<div>
+<div class="page-header-info-sepat">
 
 <div class="page-title-sepat">
 ADMINISTRAÇÃO DOS PERFIS TCE-RO
 </div>
 
 <div class="page-desc-sepat">
-Cadastro de usuários autorizados ao Painel TAG SEPAT
+Cadastro, edição e gerenciamento dos usuários autorizados do Tribunal de Contas.
 </div>
 
 </div>
@@ -415,24 +497,24 @@ Cadastro de usuários autorizados ao Painel TAG SEPAT
 <div class="page-toolbar-sepat">
 
 <button
-class="btn-filtro-sepat"
-onclick="habilitarEdicaoPerfisTCEROSepat()">
+onclick="habilitarEdicaoPerfisTCEROSepat()"
+class="btn-filtro-sepat">
 
 ✏ EDITAR
 
 </button>
 
 <button
-class="btn-filtro-sepat"
-onclick="novoPerfilTCEROSepat()">
+onclick="novoPerfilTCEROSepat()"
+class="btn-filtro-sepat">
 
-➕ NOVO PERFIL
+➕ NOVO
 
 </button>
 
 <button
-class="btn-filtro-sepat"
-onclick="salvarPerfisTCEROSepat()">
+onclick="salvarPerfisTCEROSepat()"
+class="btn-filtro-sepat">
 
 💾 SALVAR
 
@@ -443,34 +525,6 @@ onclick="salvarPerfisTCEROSepat()">
 </div>
 
 <div class="perfil-container-sepat">
-
-<div class="perfil-grid-sepat">
-
-<div class="perfil-head-sepat">
-ID
-</div>
-
-<div class="perfil-head-sepat">
-NOME
-</div>
-
-<div class="perfil-head-sepat">
-USUÁRIO
-</div>
-
-<div class="perfil-head-sepat">
-E-MAIL
-</div>
-
-<div class="perfil-head-sepat">
-NÍVEL
-</div>
-
-<div class="perfil-head-sepat">
-STATUS
-</div>
-
-</div>
 
 <div
 id="listaPerfisTCEROSepat"
@@ -559,85 +613,186 @@ OCULTAR 100%
 006 SEPAT MONITORAMENTO
 =========================================================-->
 <section id="view-monitoramento" class="view-sepat hidden">
+
+<div class="page-header-sepat">
+
+<div class="page-header-info-sepat">
+
+<div class="page-title-sepat">
+MONITORAMENTO EXECUTIVO
+</div>
+
+<div class="page-desc-sepat">
+Acompanhamento dos Itens Estratégicos, Produtos, Responsáveis e Evolução Mensal da TAG SEPAT-RO
+</div>
+
+</div>
+
+<div class="page-toolbar-sepat">
+
+<button onclick="gerarPDFMonitoramentoSepat()" class="btn-pdf-sepat">
+📄 PDF Monitoramento
+</button>
+
+<button onclick="gerarWordMonitoramentoSepat()" class="btn-word-sepat">
+📝 WORD Monitoramento
+</button>
+
+</div>
+
+</div>
+
 <div class="barra-filtros-sepat">
-<input id="buscaMonitoramentoSepat" oninput="renderTabelaSepat()" placeholder="Pesquisar..." class="input-busca-sepat">
+
+<input
+id="buscaMonitoramentoSepat"
+oninput="renderTabelaSepat()"
+placeholder="Pesquisar Item, Produto, Responsável..."
+class="input-busca-sepat">
 
 <div class="flex items-center gap-2 ml-2">
 
 <button
 onclick="
 modoTabelaSepat='item';
-document.getElementById('btnModoItemSepat').classList.add('ativo-sepat')
-document.getElementById('btnModoSubitemSepat').classList.remove('ativo-sepat')
-renderTabelaSepat()
+document.getElementById('btnModoItemSepat').classList.add('ativo-sepat');
+document.getElementById('btnModoSubitemSepat').classList.remove('ativo-sepat');
+renderTabelaSepat();
 "
 id="btnModoItemSepat"
 class="btn-modo-sepat ativo-sepat">
-ITEM
+
+📋 ITEM
+
 </button>
 
 <button
 onclick="
 modoTabelaSepat='subitem';
-document.getElementById('btnModoSubitemSepat').classList.add('ativo-sepat')
-document.getElementById('btnModoItemSepat').classList.remove('ativo-sepat')
-renderTabelaSepat()
+document.getElementById('btnModoSubitemSepat').classList.add('ativo-sepat');
+document.getElementById('btnModoItemSepat').classList.remove('ativo-sepat');
+renderTabelaSepat();
 "
 id="btnModoSubitemSepat"
 class="btn-modo-sepat">
-SUBITEM
+
+🧩 SUBITEM
+
 </button>
 
-<button onclick="restaurarColunasMesesSepat()" class="btn-modo-sepat">
-EXIBIR COLUNAS
+<button
+onclick="restaurarColunasMesesSepat()"
+class="btn-modo-sepat">
+
+👁 EXIBIR COLUNAS
+
 </button>
+
 </div>
 
-<button onclick="gerarPDFMonitoramentoSepat()" class="btn-pdf-sepat">
-PDF Monitoramento
-</button>
+<label class="check-ocultar-sepat">
 
-<button onclick="gerarWordMonitoramentoSepat()" class="btn-pdf-sepat btn-word-sepat">
-WORD Monitoramento
-</button>
+<input
+type="checkbox"
+id="ocultar100Sepat"
+onchange="renderTabelaSepat()">
 
-<label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:1000;white-space:nowrap">
-<input type="checkbox" id="ocultar100Sepat" onchange="renderTabelaSepat()">
 OCULTAR 100%
+
 </label>
 
 </div>
-  
+
 <div class="tabela-wrap-sepat">
+
 <table class="tabela-sepat">
+
 <thead>
+
 <tr>
+
 <th id="thModoSepat" class="col-subitem">
 SUBITEM
 </th>
-<th id="thDescricaoSepat">DESCRIÇÃO</th>
-<th>PRODUTOS</th>
-<th>RESPONSÁVEL(IS)</th>
-<th>DATA INÍCIO</th>
-<th class="mes-col mes-jan" onclick="ocultarColunaMesSepat('jan')" style="cursor:pointer">JAN</th>
-<th class="mes-col mes-fev" onclick="ocultarColunaMesSepat('fev')" style="cursor:pointer">FEV</th>
-<th class="mes-col mes-mar" onclick="ocultarColunaMesSepat('mar')" style="cursor:pointer">MAR</th>
-<th class="mes-col mes-abr" onclick="ocultarColunaMesSepat('abr')" style="cursor:pointer">ABR</th>
-<th class="mes-col mes-mai" onclick="ocultarColunaMesSepat('mai')" style="cursor:pointer">MAI</th>
-<th class="mes-col mes-jun hidden" onclick="ocultarColunaMesSepat('jun')" style="cursor:pointer">JUN</th>
-<th class="mes-col mes-jul hidden" onclick="ocultarColunaMesSepat('jul')" style="cursor:pointer">JUL</th>
-<th class="mes-col mes-ago hidden" onclick="ocultarColunaMesSepat('ago')" style="cursor:pointer">AGO</th>
-<th class="mes-col mes-set hidden" onclick="ocultarColunaMesSepat('set')" style="cursor:pointer">SET</th>
-<th class="mes-col mes-out hidden" onclick="ocultarColunaMesSepat('out')" style="cursor:pointer">OUT</th>
-<th class="mes-col mes-nov hidden" onclick="ocultarColunaMesSepat('nov')" style="cursor:pointer">NOV</th>
-<th class="mes-col mes-dez hidden" onclick="ocultarColunaMesSepat('dez')" style="cursor:pointer">DEZ</th>
-<th>TOTAL</th>
+
+<th id="thDescricaoSepat">
+DESCRIÇÃO
+</th>
+
+<th>
+PRODUTOS
+</th>
+
+<th>
+RESPONSÁVEL(IS)
+</th>
+
+<th>
+DATA INÍCIO
+</th>
+
+<th class="mes-col mes-jan" onclick="ocultarColunaMesSepat('jan')" style="cursor:pointer">
+JAN
+</th>
+
+<th class="mes-col mes-fev" onclick="ocultarColunaMesSepat('fev')" style="cursor:pointer">
+FEV
+</th>
+
+<th class="mes-col mes-mar" onclick="ocultarColunaMesSepat('mar')" style="cursor:pointer">
+MAR
+</th>
+
+<th class="mes-col mes-abr" onclick="ocultarColunaMesSepat('abr')" style="cursor:pointer">
+ABR
+</th>
+
+<th class="mes-col mes-mai" onclick="ocultarColunaMesSepat('mai')" style="cursor:pointer">
+MAI
+</th>
+
+<th class="mes-col mes-jun hidden" onclick="ocultarColunaMesSepat('jun')" style="cursor:pointer">
+JUN
+</th>
+
+<th class="mes-col mes-jul hidden" onclick="ocultarColunaMesSepat('jul')" style="cursor:pointer">
+JUL
+</th>
+
+<th class="mes-col mes-ago hidden" onclick="ocultarColunaMesSepat('ago')" style="cursor:pointer">
+AGO
+</th>
+
+<th class="mes-col mes-set hidden" onclick="ocultarColunaMesSepat('set')" style="cursor:pointer">
+SET
+</th>
+
+<th class="mes-col mes-out hidden" onclick="ocultarColunaMesSepat('out')" style="cursor:pointer">
+OUT
+</th>
+
+<th class="mes-col mes-nov hidden" onclick="ocultarColunaMesSepat('nov')" style="cursor:pointer">
+NOV
+</th>
+
+<th class="mes-col mes-dez hidden" onclick="ocultarColunaMesSepat('dez')" style="cursor:pointer">
+DEZ
+</th>
+
+<th>
+TOTAL
+</th>
+
 </tr>
+
 </thead>
+
 <tbody id="tbodySepat"></tbody>
+
 </table>
+
 </div>
-  
+
 </section>
 <!--=========================================================
 007 SEPAT GRAFICOS
@@ -702,14 +857,14 @@ SUBITEM
 
 <div class="page-header-sepat">
 
-<div>
+<div class="page-header-info-sepat">
 
 <div class="page-title-sepat">
 ADMINISTRAÇÃO DOS PERFIS SEPAT
 </div>
 
 <div class="page-desc-sepat">
-Controle de usuários internos do sistema
+Cadastro, edição e gerenciamento dos usuários internos do sistema TAG SEPAT.
 </div>
 
 </div>
@@ -720,7 +875,7 @@ Controle de usuários internos do sistema
 onclick="carregarPerfisSepat()"
 class="btn-filtro-sepat">
 
-🔄 Atualizar
+🔄 ATUALIZAR
 
 </button>
 
@@ -728,7 +883,7 @@ class="btn-filtro-sepat">
 onclick="habilitarEdicaoPerfisSepat()"
 class="btn-filtro-sepat">
 
-✏ Editar
+✏ EDITAR
 
 </button>
 
@@ -736,7 +891,7 @@ class="btn-filtro-sepat">
 onclick="novoPerfilSepat()"
 class="btn-filtro-sepat">
 
-➕ Inserir
+➕ NOVO
 
 </button>
 
@@ -744,7 +899,7 @@ class="btn-filtro-sepat">
 onclick="salvarPerfisSepat()"
 class="btn-filtro-sepat">
 
-💾 Salvar
+💾 SALVAR
 
 </button>
 
@@ -753,34 +908,6 @@ class="btn-filtro-sepat">
 </div>
 
 <div class="perfil-container-sepat">
-
-<div class="perfil-grid-sepat">
-
-<div class="perfil-head-sepat">
-ID
-</div>
-
-<div class="perfil-head-sepat">
-NOME
-</div>
-
-<div class="perfil-head-sepat">
-USUÁRIO
-</div>
-
-<div class="perfil-head-sepat">
-EMAIL
-</div>
-
-<div class="perfil-head-sepat">
-PERFIL
-</div>
-
-<div class="perfil-head-sepat">
-STATUS
-</div>
-
-</div>
 
 <div
 id="listaPerfisSepat"
