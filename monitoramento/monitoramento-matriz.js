@@ -1,3 +1,8 @@
+/*=========================================================
+000 MONITORAMENTO CLIENT
+=========================================================*/
+const client = window.clientPublic
+  
 window.ITEM_EDITANDO=null
 
 async function carregarItensMatriz(){
