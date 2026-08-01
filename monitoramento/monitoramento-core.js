@@ -2,6 +2,8 @@
 000 MONITORAMENTO CLIENT
 =========================================================*/
 const client = window.clientPublic
+console.log('CLIENT:', client)
+console.log('CLIENTPUBLIC:', window.clientPublic)
 
 let MONITORAMENTO_ATUAL=null
 let USER_MONITORAMENTO=null
