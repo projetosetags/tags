@@ -1,4 +1,8 @@
 /*=========================================================
+001 MONITORAMENTO CLIENT
+=========================================================*/
+const client=window.clientPublic
+/*=========================================================
 001 MONITORAMENTO-PAINEL.JS VARIÁVEIS GLOBAIS
 =========================================================*/
 let graficoStatus=null
@@ -486,7 +490,7 @@ plugins:[ChartDataLabels]
 =========================================================*/
 async function carregarListaMonitoramentos(){
 
-let query=client
+let query=clientPublic
 .from('monitoramentos')
 .select('*')
 .order('titulo',{ascending:true})
