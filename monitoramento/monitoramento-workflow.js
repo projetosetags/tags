@@ -1,7 +1,3 @@
-/*=========================================================
-000 MONITORAMENTO CLIENT
-=========================================================*/
-const client = window.clientPublic
   
 async function carregarWorkflow(){
 
