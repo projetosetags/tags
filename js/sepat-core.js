@@ -792,7 +792,9 @@ break
 
 }
 
-valor=atingiu100 ? 100 : const atual=Number(i[m])||0
+const atual=Number(i[m])||0
+
+valor=atingiu100?100:atual
 
 if(isNaN(valor))valor=0
 
