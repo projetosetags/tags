@@ -2405,6 +2405,15 @@ let editandoPerfisTCEROSepat=false
 
 async function carregarPerfisTCEROSepat(){
 
+let box=document.getElementById('listaPerfisTCEROSepat')
+
+if(!box)return
+
+if(!sepatUser||Number(sepatUser.nivel_acesso||0)!==1){
+box.innerHTML='Sem permissão.'
+return
+}
+
 let {data,error}=await sepatClient
 .from('perfistce')
 .select('*')
@@ -2412,22 +2421,30 @@ let {data,error}=await sepatClient
 
 if(error){
 console.log(error)
+box.innerHTML='Erro ao carregar perfis.'
 return
 }
 
 sepatPerfisTCERO=data||[]
 
-let box=document.getElementById('listaPerfisTCEROSepat')
+box.innerHTML=`
 
-if(!box)return
+<div class="perfil-grid-sepat">
 
-box.innerHTML=sepatPerfisTCERO.map((p,i)=>`
+<div class="perfil-head-sepat">Nº</div>
+<div class="perfil-head-sepat">NOME COMPLETO</div>
+<div class="perfil-head-sepat">USUÁRIO</div>
+<div class="perfil-head-sepat">CARGO</div>
+<div class="perfil-head-sepat">NÍVEL ACESSO</div>
+<div class="perfil-head-sepat" style="text-align:center">EXCLUIR</div>
+
+${sepatPerfisTCERO.map((p,idx)=>`
 
 <div class="perfil-row-sepat">
 
 <div>
 
-${i+1}
+${String(idx+1).padStart(2,'0')}
 
 </div>
 
@@ -2497,28 +2514,27 @@ value="${p.nivel_acesso||4}">`
 
 :
 
-(p.nivel_acesso||4)
+(p.nivel_acesso||'-')
 
 }
 
 </div>
 
-<div>
+<div style="display:flex;justify-content:flex-end">
 
 ${editandoPerfisTCEROSepat?
 
 `<button
-class="btn-pdf-sepat"
-style="height:34px;padding:0 12px"
-onclick="excluirPerfilTCEROSepat('${p.id}')">
+onclick="excluirPerfilTCEROSepat('${p.id}')"
+style="width:28px;height:28px;border:none;border-radius:8px;background:#ef4444;color:#fff;font-weight:1000;cursor:pointer">
 
-🗑
+×
 
 </button>`
 
 :
 
-'-'
+''
 
 }
 
@@ -2526,7 +2542,11 @@ onclick="excluirPerfilTCEROSepat('${p.id}')">
 
 </div>
 
-`).join('')
+`).join('')}
+
+</div>
+
+`
 
 }
 
@@ -3784,6 +3804,7 @@ el.style.display=''
 })
 controlarMesesSepat()
 }
+
 async function excluirPerfilTCEROSepat(id){
 
 if(!confirm('Excluir perfil?'))return
