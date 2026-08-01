@@ -1,3 +1,8 @@
+/*=========================================================
+000 MONITORAMENTO CLIENT
+=========================================================*/
+const client = window.clientPublic
+
 let MONITORAMENTO_ATUAL=null
 let USER_MONITORAMENTO=null
 let ORIGEM_ATUAL='TODAS'
