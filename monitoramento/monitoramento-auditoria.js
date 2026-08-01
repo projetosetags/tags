@@ -1,3 +1,8 @@
+/*=========================================================
+000 MONITORAMENTO CLIENT
+=========================================================*/
+const client = window.clientPublic
+
 async function carregarAuditoriaCompleta(){
 
 let{data,error}=await client
