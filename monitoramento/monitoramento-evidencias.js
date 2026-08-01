@@ -1,3 +1,8 @@
+/*=========================================================
+000 MONITORAMENTO CLIENT
+=========================================================*/
+const client = window.clientPublic
+  
 window.ITEM_EVIDENCIA_ATUAL=null
 
 async function uploadEvidencia(){
