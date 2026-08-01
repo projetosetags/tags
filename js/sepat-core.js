@@ -429,7 +429,7 @@ return'vermelho'
 async function carregarSepatDados(){
 let {data,error}=await sepatClient.from('sepat_deliberacoes').select('*').order('siglaitem',{ascending:true})
 if(error){
-console.error(error)
+console.log(error)
 alert('Erro ao carregar dados da SEPAT')
 sepatData=[]
 sepatFiltrados=[]
@@ -469,9 +469,42 @@ return obj
 }).sort(compareSepat)
 
 sepatFiltrados=[...sepatData]
-atualizarMiniKPIsSepat()
+
 renderDashboardSepat()
 controlarMesesSepat()
+
+let miniItens=document.getElementById('miniItensSepat')
+let miniSubitens=document.getElementById('miniSubitensSepat')
+let miniProdutos=document.getElementById('miniProdutosSepat')
+
+let ocultar100Resumo=document.getElementById('ocultar100ResumoSepat')?.checked||false
+let ocultar100Tabela=document.getElementById('ocultar100Sepat')?.checked||false
+
+let listaContagem=[...(sepatData||[])]
+
+if(ocultar100Resumo||ocultar100Tabela){
+listaContagem=listaContagem.filter(i=>getTotalSepat(i)<100)
+}
+
+let itens=[...new Set(
+listaContagem
+.map(i=>String(i.siglaitem||'').trim())
+.filter(v=>v&&v!=='-')
+)].length
+
+let subitens=listaContagem.filter(i=>
+String(i.subitem||'').trim()!==''
+).length
+
+let produtos=[...new Set(
+listaContagem
+.map(i=>String(i.produto||'').trim())
+.filter(v=>v&&v!=='-')
+)].length
+
+if(miniItens)miniItens.innerText=itens||0
+if(miniSubitens)miniSubitens.innerText=subitens||0
+if(miniProdutos)miniProdutos.innerText=produtos||0
 }
 /*=========================================================
 009A SEPAT CORE MINI KPIS
@@ -510,34 +543,27 @@ if(miniProdutos)miniProdutos.innerText=produtos
 010 SEPAT CORE RENDER DASHBOARD
 =========================================================*/
 function renderDashboardSepat(){
+console.log('RENDER DASHBOARD EXECUTOU');
 
 let lista=[...(sepatData||[])].sort(compareSepat)
-
-let totalItens=[...new Set(
-lista
-.map(i=>String(i.siglaitem||'').trim())
-.filter(Boolean)
-)].length
+console.table(lista.slice(0,5))
+let totalItens=[...new Set(lista.map(i=>String(i.siglaitem||'').trim()).filter(Boolean))].length
 
 let totalSubitens=lista.length
 
-let totalProdutos=[...new Set(
-lista
-.map(i=>String(i.produto||'').trim())
-.filter(Boolean)
-)].length
+let totalProdutos=[...new Set(lista.map(i=>String(i.produto||'').trim()).filter(Boolean))].length
 
 let media=calcularMediaSepat(lista)
 
-let kpiItens=document.getElementById('kpiItensSepat')||document.getElementById('kpiItens')
-let kpiSubitens=document.getElementById('kpiSubitensSepat')||document.getElementById('kpiSubitens')
-let kpiProdutos=document.getElementById('kpiProdutosSepat')||document.getElementById('kpiProdutos')
-let kpiMedia=document.getElementById('kpiMediaSepat')||document.getElementById('kpiPercentual')
+let kpiItens=document.getElementById('kpiItensSepat')
+let kpiSubitens=document.getElementById('kpiSubitensSepat')
+let kpiProdutos=document.getElementById('kpiProdutosSepat')
+let kpiMedia=document.getElementById('kpiMediaSepat')
 
-if(kpiItens)kpiItens.textContent=totalItens
-if(kpiSubitens)kpiSubitens.textContent=totalSubitens
-if(kpiProdutos)kpiProdutos.textContent=totalProdutos
-if(kpiMedia)kpiMedia.textContent=media+'%'
+if(kpiItens)kpiItens.innerText=totalItens
+if(kpiSubitens)kpiSubitens.innerText=totalSubitens
+if(kpiProdutos)kpiProdutos.innerText=totalProdutos
+if(kpiMedia)kpiMedia.innerText=media+'%'
 
 renderGraficoLinhaSepat(lista)
 renderGraficoPizzaSepat(lista)
@@ -758,7 +784,8 @@ doc.save('pdf_dashboard_tag_sepat.pdf')
 =========================================================*/
 function renderGraficoLinhaSepat(lista){
 
-lista=Array.isArray(lista)?lista:[]
+lista=[...(lista||[])]
+
 const canvas=document.getElementById('graficoLinhaSepat')
 if(!canvas)return
 
@@ -792,9 +819,7 @@ break
 
 }
 
-const atual=Number(i[m])||0
-
-valor=atingiu100?100:atual
+valor=atingiu100 ? 100 : Number(i[m]||0)
 
 if(isNaN(valor))valor=0
 
@@ -890,11 +915,12 @@ plugins:[ChartDataLabels]
 =========================================================*/
 function renderGraficoPizzaSepat(lista){
 
-lista=Array.isArray(lista)?lista:[]
-const canvas=document.getElementById('graficoPizzaSepat')
+lista=[...(lista||[])]
+
+let canvas=document.getElementById('graficoPizzaSepat')
 if(!canvas)return
 
-const ctx=canvas.getContext('2d')
+let ctx=canvas.getContext('2d')
 
 if(graficoPizzaSepat){
 graficoPizzaSepat.destroy()
@@ -987,8 +1013,7 @@ size:18
 },
 color:'#111827',
 formatter:(v,ctx)=>{
-const dados=ctx.chart.data.datasets[0].data
-const total=dados[0]+dados[1]+dados[2]+dados[3]
+let total=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0)
 if(!total)return'0%'
 return Math.round((v*100)/total)+'%'
 }
