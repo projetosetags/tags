@@ -1,8 +1,4 @@
-/*=========================================================
-000 MONITORAMENTO CLIENT
-=========================================================*/
-const client = window.clientPublic
-  
+
 async function carregarCentralEvidencias(){
 
 let{data,error}=await client
