@@ -1,7 +1,6 @@
 /*=========================================================
 001 MONITORAMENTO CLIENT
 =========================================================*/
-const client=window.clientPublic
 
 let graficoHistorico=null
 
