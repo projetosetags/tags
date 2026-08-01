@@ -2404,6 +2404,7 @@ let sepatPerfisTCERO=[]
 let editandoPerfisTCEROSepat=false
 
 async function carregarPerfisTCEROSepat(){
+
 let {data,error}=await sepatClient
 .from('perfistce')
 .select('*')
@@ -2420,47 +2421,113 @@ let box=document.getElementById('listaPerfisTCEROSepat')
 
 if(!box)return
 
-box.innerHTML=`
-
-<div class="perfil-row-sepat" style="background:#e2e8f0;font-weight:1000">
-<div>NOME</div>
-<div>USUÁRIO</div>
-<div>CARGO</div>
-<div>NÍVEL</div>
-</div>
-
-${sepatPerfisTCERO.map(p=>`
+box.innerHTML=sepatPerfisTCERO.map((p,i)=>`
 
 <div class="perfil-row-sepat">
 
 <div>
-${editandoPerfisTCEROSepat?
-`<input class="inputPerfilTCEROSepat" data-id="${p.id}" data-campo="nome_completo" value="${p.nome_completo||''}">`
-:(p.nome_completo||'-')}
+
+${i+1}
+
 </div>
 
 <div>
+
 ${editandoPerfisTCEROSepat?
-`<input class="inputPerfilTCEROSepat" data-id="${p.id}" data-campo="username" value="${p.username||''}">`
-:(p.username||'-')}
+
+`<input
+class="inputPerfilSepat"
+data-id="${p.id}"
+data-campo="nome_completo"
+value="${p.nome_completo||''}">`
+
+:
+
+(p.nome_completo||'-')
+
+}
+
 </div>
 
 <div>
+
 ${editandoPerfisTCEROSepat?
-`<input class="inputPerfilTCEROSepat" data-id="${p.id}" data-campo="cargo" value="${p.cargo||''}">`
-:(p.cargo||'-')}
+
+`<input
+class="inputPerfilSepat"
+data-id="${p.id}"
+data-campo="username"
+value="${p.username||''}">`
+
+:
+
+(p.username||'-')
+
+}
+
 </div>
 
 <div>
+
 ${editandoPerfisTCEROSepat?
-`<input class="inputPerfilTCEROSepat" data-id="${p.id}" data-campo="nivel_acesso" value="${p.nivel_acesso||4}">`
-:(p.nivel_acesso||'-')}
-</div>
+
+`<input
+class="inputPerfilSepat"
+data-id="${p.id}"
+data-campo="cargo"
+value="${p.cargo||''}">`
+
+:
+
+(p.cargo||'-')
+
+}
 
 </div>
 
-`).join('')}
-`
+<div>
+
+${editandoPerfisTCEROSepat?
+
+`<input
+class="inputPerfilSepat"
+data-id="${p.id}"
+data-campo="nivel_acesso"
+value="${p.nivel_acesso||4}">`
+
+:
+
+(p.nivel_acesso||4)
+
+}
+
+</div>
+
+<div>
+
+${editandoPerfisTCEROSepat?
+
+`<button
+class="btn-pdf-sepat"
+style="height:34px;padding:0 12px"
+onclick="excluirPerfilTCEROSepat('${p.id}')">
+
+🗑
+
+</button>`
+
+:
+
+'-'
+
+}
+
+</div>
+
+</div>
+
+`).join('')
+
 }
 
 function habilitarEdicaoPerfisTCEROSepat(){
@@ -2482,7 +2549,7 @@ carregarPerfisTCEROSepat()
 
 async function salvarPerfisTCEROSepat(){
 
-let inputs=document.querySelectorAll('.inputPerfilTCEROSepat')
+let inputs=document.querySelectorAll('.inputPerfilSepat')
 
 inputs.forEach(i=>{
 
@@ -3716,4 +3783,24 @@ document.querySelectorAll(
 el.style.display=''
 })
 controlarMesesSepat()
+}
+async function excluirPerfilTCEROSepat(id){
+
+if(!confirm('Excluir perfil?'))return
+
+let {error}=await sepatClient
+.from('perfistce')
+.delete()
+.eq('id',id)
+
+if(error){
+
+alert('Erro ao excluir')
+console.log(error)
+return
+
+}
+
+carregarPerfisTCEROSepat()
+
 }
