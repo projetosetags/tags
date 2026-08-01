@@ -1,3 +1,8 @@
+/*=========================================================
+000 MONITORAMENTO CLIENT
+=========================================================*/
+const client = window.clientPublic
+  
 let graficoExecutivoOrgaos=null
 let graficoExecutivoStatus=null
 
