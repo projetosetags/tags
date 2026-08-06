@@ -1577,7 +1577,7 @@ ${i.observacao||'-'}
 
 <td style="width:55px">
 <button class="btnEditarMunicipio"
-onclick="editarMunicipio(${i.id})">✏</button>
+onclick="editarMunicipio('${encodeURIComponent(i.municipio||'')}')">✏</button>
 </td>
 </tr>
 `
@@ -1686,13 +1686,20 @@ box.innerHTML=html
 /*=========================================================
 140 QUEIMADAS FUNCTION EDITARMUNICIPIO
 =========================================================*/
-async function editarMunicipio(id){
+async function editarMunicipio(chaveMunicipio){
+
+let municipio=decodeURIComponent(String(chaveMunicipio||''))
+
+if(!municipio){
+alert('Município não identificado.')
+return
+}
 
 let {data,error}=await client
 .from('vw_queimadas_municipios_resposta')
 .select('*')
-.eq('id',id)
-.single()
+.eq('municipio',municipio)
+.maybeSingle()
 
 if(error){
 console.log(error)
@@ -1710,7 +1717,12 @@ html+=`
 <h2>🏛️ CADASTRO MUNICIPAL</h2>
 
 <label>Município</label>
-<input id="mMunicipio" value="${data.municipio||''}">
+<input
+    id="mMunicipio"
+    value="${data.municipio||''}"
+    readonly
+    style="background:#f3f4f6;color:#374151;cursor:not-allowed;font-weight:600"
+>
 
 <label>Ofício TCE-RO</label>
 <input id="mOficio" value="${data.nroficioenviadotcero||''}">
@@ -1744,7 +1756,8 @@ html+=`
 
 <div class="modalMunicipioBotoes">
 
-<button class="btnSalvarMunicipio" onclick="salvarMunicipio(${id})">
+<button class="btnSalvarMunicipio"
+onclick="salvarMunicipio('${encodeURIComponent(data.municipio||municipio)}')">
 💾 SALVAR
 </button>
 
@@ -1774,7 +1787,11 @@ if(modal)modal.remove()
 /*=========================================================
 142 QUEIMADAS FUNCTION SALVARMUNICIPIO
 =========================================================*/
-async function salvarMunicipio(id){
+async function salvarMunicipio(chaveMunicipio){
+
+let municipioOriginal=decodeURIComponent(
+String(chaveMunicipio||'')
+)
 let payload={
 municipio:document.getElementById('mMunicipio').value,
 nroficioenviadotcero:document.getElementById('mOficio').value,
@@ -1791,8 +1808,7 @@ observacao:document.getElementById('mObs').value
 let {error}=await client
 .from('vw_queimadas_municipios_resposta')
 .update(payload)
-.eq('id',id)
-
+.eq('municipio',municipioOriginal)
 if(error){
 console.log(error)
 alert('Erro ao salvar.')
