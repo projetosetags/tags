@@ -1576,8 +1576,11 @@ ${i.observacao||'-'}
 </td>
 
 <td style="width:55px">
-<button class="btnEditarMunicipio"
-onclick="editarMunicipio('${encodeURIComponent(i.municipio||'')}')">✏</button>
+<button
+class="btnEditarMunicipio"
+data-municipio="${String(i.municipio||'').replace(/"/g,'&quot;')}"
+onclick="editarMunicipio(this.dataset.municipio)"
+>✏</button>
 </td>
 </tr>
 `
@@ -1686,14 +1689,16 @@ box.innerHTML=html
 /*=========================================================
 140 QUEIMADAS FUNCTION EDITARMUNICIPIO
 =========================================================*/
-async function editarMunicipio(chaveMunicipio){
+async function editarMunicipio(municipio){
 
-let municipio=decodeURIComponent(String(chaveMunicipio||''))
+municipio=String(municipio||'').trim()
 
 if(!municipio){
 alert('Município não identificado.')
 return
 }
+
+console.log('Município selecionado:',municipio)
 
 let {data,error}=await client
 .from('vw_queimadas_municipios_resposta')
@@ -1702,14 +1707,19 @@ let {data,error}=await client
 .maybeSingle()
 
 if(error){
-console.log(error)
-alert('Registro não encontrado.')
+console.error('Erro ao localizar município:',error)
+alert('Erro ao localizar o registro: '+error.message)
 return
 }
 
-let html=''
+if(!data){
+alert('Registro não encontrado para: '+municipio)
+return
+}
 
-html+=`
+fecharModalMunicipio()
+
+let html=`
 <div id="modalMunicipio" class="modalMunicipioOverlay">
 
 <div class="modalMunicipioBox">
@@ -1718,50 +1728,86 @@ html+=`
 
 <label>Município</label>
 <input
-    id="mMunicipio"
-    value="${data.municipio||''}"
-    readonly
-    style="background:#f3f4f6;color:#374151;cursor:not-allowed;font-weight:600"
+id="mMunicipio"
+value="${String(data.municipio||'').replace(/"/g,'&quot;')}"
+readonly
+style="background:#f3f4f6;color:#374151;cursor:not-allowed;font-weight:600"
 >
 
 <label>Ofício TCE-RO</label>
-<input id="mOficio" value="${data.nroficioenviadotcero||''}">
+<input
+id="mOficio"
+value="${String(data.nroficioenviadotcero||'').replace(/"/g,'&quot;')}"
+>
 
 <label>Data Envio</label>
-<input id="mDataEnvio" type="date" value="${data.dataenviodoc||''}">
+<input
+id="mDataEnvio"
+type="date"
+value="${data.dataenviodoc||''}"
+>
 
 <label>Página Envio</label>
-<input id="mPaginaEnvio" value="${data.paginaenviodoc||''}">
+<input
+id="mPaginaEnvio"
+value="${String(data.paginaenviodoc||'').replace(/"/g,'&quot;')}"
+>
 
 <label>Data Recebimento 1</label>
-<input id="mDataRec1" type="date" value="${data.ldatarecebimentodoc||''}">
+<input
+id="mDataRec1"
+type="date"
+value="${data.ldatarecebimentodoc||''}"
+>
 
 <label>Data Recebimento 2</label>
-<input id="mDataRec2" type="date" value="${data.lldatarecebimentodoc||''}">
+<input
+id="mDataRec2"
+type="date"
+value="${data.lldatarecebimentodoc||''}"
+>
 
 <label>Página Recebimento 1</label>
-<input id="mPagRec1" value="${data.lpaginarecebimentodoc||''}">
+<input
+id="mPagRec1"
+value="${String(data.lpaginarecebimentodoc||'').replace(/"/g,'&quot;')}"
+>
 
 <label>Página Recebimento 2</label>
-<input id="mPagRec2" value="${data.llpaginarecebimentodoc||''}">
+<input
+id="mPagRec2"
+value="${String(data.llpaginarecebimentodoc||'').replace(/"/g,'&quot;')}"
+>
 
 <label>Documento Recebido 1</label>
-<input id="mDoc1" value="${data.lnumerodocenviado||''}">
+<input
+id="mDoc1"
+value="${String(data.lnumerodocenviado||'').replace(/"/g,'&quot;')}"
+>
 
 <label>Documento Recebido 2</label>
-<input id="mDoc2" value="${data.llnumerodocenviado||''}">
+<input
+id="mDoc2"
+value="${String(data.llnumerodocenviado||'').replace(/"/g,'&quot;')}"
+>
 
 <label>Observação</label>
 <textarea id="mObs">${data.observacao||''}</textarea>
 
 <div class="modalMunicipioBotoes">
 
-<button class="btnSalvarMunicipio"
-onclick="salvarMunicipio('${encodeURIComponent(data.municipio||municipio)}')">
+<button
+class="btnSalvarMunicipio"
+data-municipio="${String(data.municipio||'').replace(/"/g,'&quot;')}"
+onclick="salvarMunicipio(this.dataset.municipio)"
+>
 💾 SALVAR
 </button>
 
-<button class="btnCancelarMunicipio" onclick="fecharModalMunicipio()">
+<button
+class="btnCancelarMunicipio"
+onclick="fecharModalMunicipio()"
+>
 ❌ CANCELAR
 </button>
 
@@ -1787,31 +1833,42 @@ if(modal)modal.remove()
 /*=========================================================
 142 QUEIMADAS FUNCTION SALVARMUNICIPIO
 =========================================================*/
-async function salvarMunicipio(chaveMunicipio){
+async function salvarMunicipio(municipioOriginal){
 
-let municipioOriginal=decodeURIComponent(
-String(chaveMunicipio||'')
-)
-let payload={
-municipio:document.getElementById('mMunicipio').value,
-nroficioenviadotcero:document.getElementById('mOficio').value,
-dataenviodoc:document.getElementById('mDataEnvio').value,
-paginaenviodoc:document.getElementById('mPaginaEnvio').value,
-ldatarecebimentodoc:document.getElementById('mDataRec1').value,
-lldatarecebimentodoc:document.getElementById('mDataRec2').value,
-lpaginarecebimentodoc:document.getElementById('mPagRec1').value,
-llpaginarecebimentodoc:document.getElementById('mPagRec2').value,
-lnumerodocenviado:document.getElementById('mDoc1').value,
-llnumerodocenviado:document.getElementById('mDoc2').value,
-observacao:document.getElementById('mObs').value
+municipioOriginal=String(municipioOriginal||'').trim()
+
+if(!municipioOriginal){
+alert('Município não identificado.')
+return
 }
-let {error}=await client
-.from('vw_queimadas_municipios_resposta')
+
+let payload={
+nroficioenviadotcero:document.getElementById('mOficio').value||null,
+dataenviodoc:document.getElementById('mDataEnvio').value||null,
+paginaenviodoc:document.getElementById('mPaginaEnvio').value||null,
+ldatarecebimentodoc:document.getElementById('mDataRec1').value||null,
+lldatarecebimentodoc:document.getElementById('mDataRec2').value||null,
+lpaginarecebimentodoc:document.getElementById('mPagRec1').value||null,
+llpaginarecebimentodoc:document.getElementById('mPagRec2').value||null,
+lnumerodocenviado:document.getElementById('mDoc1').value||null,
+llnumerodocenviado:document.getElementById('mDoc2').value||null,
+observacao:document.getElementById('mObs').value||null
+}
+
+let {data,error}=await client
+.from('queimadas_municipios_oficio')
 .update(payload)
 .eq('municipio',municipioOriginal)
+.select()
+
 if(error){
-console.log(error)
-alert('Erro ao salvar.')
+console.error('Erro ao salvar município:',error)
+alert('Erro ao salvar: '+error.message)
+return
+}
+
+if(!data||!data.length){
+alert('Nenhum registro foi atualizado.')
 return
 }
 
