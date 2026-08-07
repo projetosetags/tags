@@ -520,7 +520,7 @@ Erro ao carregar Unidades de Conservação
 async function renderPainelFocosINPE(){
 let box=document.getElementById('painelFocosCalor')
 if(!box)return
-let periodo=document.getElementById('filtroPeriodoFocos')?.value||'7'
+let periodo=document.getElementById('filtroPeriodoFocos')?.value||'ano'
 let hoje=new Date()
 let dataFinal=new Date(hoje.getFullYear(),hoje.getMonth(),hoje.getDate())
 let dataInicial=new Date(dataFinal)
@@ -683,7 +683,7 @@ return'🔥'
 116 QUEIMADAS FUNCTION CARREGARFOCOSPERIODO
 =========================================================*/
 async function carregarFocosPeriodo(){
-let periodo=document.getElementById('filtroPeriodoFocos')?.value||'7'
+let periodo=document.getElementById('filtroPeriodoFocos')?.value||'ano'
 let box=document.getElementById('boxPeriodoPersonalizado')
 if(box)box.style.display=periodo==='custom'?'flex':'none'
 if(periodo==='custom'){
