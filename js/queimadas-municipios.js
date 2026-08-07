@@ -1915,17 +1915,59 @@ if(btn){
 btn.disabled=true
 btn.innerHTML='⏳ SALVANDO...'
 }
+let dataRec1=document.getElementById('mDataRec1').value||''
+let dataRec2=document.getElementById('mDataRec2').value||''
+let doc1=document.getElementById('mDoc1').value.trim()
+let doc2=document.getElementById('mDoc2').value.trim()
+let observacao=document.getElementById('mObs').value.trim()
+let texto=observacao.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()
+let possuiDocumento1=Boolean(dataRec1&&doc1)
+let possuiDocumento2=Boolean(dataRec2&&doc2)
+let possuiRecebimento=possuiDocumento1||possuiDocumento2
+let possuiPlano=
+texto.includes('PLANO DE ACAO')||
+texto.includes('PLANO MUNICIPAL')||
+texto.includes('PLANO DE CONTINGENCIA')||
+texto.includes('PLANO ANUAL')||
+texto.includes('PIMF')
+let possuiDilacao=
+texto.includes('DILACAO')||
+texto.includes('PRORROGACAO')||
+texto.includes('SOLICITACAO DE PRAZO')
+let planoAcao=false
+let dilacaoPrazo=false
+let semResposta=false
+if(possuiRecebimento&&possuiPlano){
+planoAcao=true
+dilacaoPrazo=false
+semResposta=false
+}else if(possuiRecebimento&&possuiDilacao){
+planoAcao=false
+dilacaoPrazo=true
+semResposta=false
+}else if(possuiRecebimento){
+planoAcao=true
+dilacaoPrazo=false
+semResposta=false
+}else{
+planoAcao=false
+dilacaoPrazo=false
+semResposta=true
+}
 let payload={
 nroficioenviadotcero:document.getElementById('mOficio').value||null,
 dataenviodoc:document.getElementById('mDataEnvio').value||null,
 paginaenviodoc:document.getElementById('mPaginaEnvio').value||null,
-ldatarecebimentodoc:document.getElementById('mDataRec1').value||null,
-lldatarecebimentodoc:document.getElementById('mDataRec2').value||null,
+ldatarecebimentodoc:dataRec1||null,
+lldatarecebimentodoc:dataRec2||null,
 lpaginarecebimentodoc:document.getElementById('mPagRec1').value||null,
 llpaginarecebimentodoc:document.getElementById('mPagRec2').value||null,
-lnumerodocenviado:document.getElementById('mDoc1').value||null,
-llnumerodocenviado:document.getElementById('mDoc2').value||null,
-observacao:document.getElementById('mObs').value||null
+lnumerodocenviado:doc1||null,
+llnumerodocenviado:doc2||null,
+observacao:observacao||null,
+plano_acao:planoAcao,
+dilacao_prazo:dilacaoPrazo,
+sem_resposta:semResposta
 }
 let{data,error}=await client
 .from('queimadas_municipios_oficio')
@@ -1952,7 +1994,6 @@ return
 fecharModalMunicipio()
 await Promise.all([
 typeof renderTabelaMunicipios==='function'?renderTabelaMunicipios():Promise.resolve(),
-typeof renderMunicipiosOficio==='function'?renderMunicipiosOficio('RESUMO'):Promise.resolve(),
 typeof renderKPIsMunicipais==='function'?renderKPIsMunicipais():Promise.resolve(),
 typeof renderEstatisticasMunicipais==='function'?renderEstatisticasMunicipais():Promise.resolve(),
 typeof renderPlanosApresentados==='function'?renderPlanosApresentados():Promise.resolve(),
@@ -1962,11 +2003,11 @@ typeof renderDistribuicaoRespostas==='function'?renderDistribuicaoRespostas():Pr
 typeof renderPlanosMunicipais==='function'?renderPlanosMunicipais():Promise.resolve()
 ])
 if(typeof renderMunicipiosOficio==='function'){
+await renderMunicipiosOficio('RESUMO')
 await renderMunicipiosOficio('CADASTRO')
 }
 alert('Registro atualizado com sucesso.')
 }
-
 /*=========================================================
 143 QUEIMADAS FUNCTION RENDERDISTRIBUICAORESPOSTAS
 =========================================================*/
