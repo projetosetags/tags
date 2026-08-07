@@ -19,6 +19,7 @@
 <script>Chart.register(ChartDataLabels);</script>
 <script src="../config.js"></script>
 <script src="../js/municipios-ro.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="../js/queimadas.js?v=20260807-6"></script>
 <script src="../js/queimadasRT.js?v=20260730"></script>
 <script src="../js/queimadas-monitoramento.js?v=20260730"></script>
@@ -66,6 +67,7 @@
 <button id="btnAbaAnalise" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('analise')">🤖 RISCOS IA</button>
 <button id="btnAbaAuditor" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('auditor')">📑 AUDITORIA</button>
 <button id="btnImprimirPainel" class="btnAbaQueimadas btnPdfQueimadas" onclick="imprimirAbaAtualQueimadas()">🖨️ PDF ABA</button>
+<button id="btnExportarPNG" class="btnAbaQueimadas btnPdfQueimadas" onclick="exportarAbaPNG()">📸 PNG SLIDE</button>
 </nav>
 <!--=========================================================
 001 EXECUTIVO
