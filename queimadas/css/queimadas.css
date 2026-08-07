@@ -632,3 +632,106 @@ grid-template-columns:1fr
 .statusTR{padding:5px 12px;border-radius:18px;font-size:12px;font-weight:900;letter-spacing:.5px}
 .statusOnline{background:#dcfce7;color:#15803d;border:1px solid #86efac}
 .statusOffline{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5}
+
+/*=========================================================
+TABELA GERAL DOS MUNICÍPIOS - LAYOUT EXECUTIVO
+=========================================================*/
+.tabelaMunicipiosWrap{
+width:100%;
+overflow-x:auto;
+padding:2px 0 4px;
+}
+.tabelaMunicipiosNova{
+width:100%;
+border-collapse:separate;
+border-spacing:0;
+table-layout:fixed;
+font-size:13px;
+color:#0f172a;
+}
+.tabelaMunicipiosNova thead th{
+background:#f8fafc;
+color:#0f172a;
+font-size:11px;
+font-weight:900;
+letter-spacing:.25px;
+text-align:left;
+padding:10px 10px;
+border-top:1px solid #e2e8f0;
+border-bottom:2px solid #cbd5e1;
+white-space:nowrap;
+}
+.tabelaMunicipiosNova tbody td{
+padding:10px 10px;
+border-bottom:1px solid #e5e7eb;
+vertical-align:top;
+background:#fff;
+}
+.tabelaMunicipiosNova tbody tr:nth-child(even) td{
+background:#fafcff;
+}
+.tabelaMunicipiosNova tbody tr:hover td{
+background:#f1f5f9;
+}
+.tabelaMunicipiosNova .colMun{
+width:15%;
+}
+.tabelaMunicipiosNova .colSit{
+width:14%;
+}
+.tabelaMunicipiosNova .colDoc{
+width:10%;
+text-align:center;
+}
+.tabelaMunicipiosNova .colData{
+width:11%;
+text-align:center;
+}
+.tabelaMunicipiosNova .colObs{
+width:50%;
+}
+.tdMunicipio{
+font-size:13px;
+font-weight:900;
+line-height:1.25;
+white-space:normal;
+word-break:normal;
+}
+.tdSituacao{
+font-size:12px;
+font-weight:900;
+line-height:1.25;
+text-transform:uppercase;
+}
+.tdDocumento{
+font-size:12px;
+font-weight:800;
+text-align:center;
+white-space:nowrap;
+}
+.tdRecebimento{
+font-size:12px;
+font-weight:700;
+text-align:center;
+white-space:nowrap;
+}
+.tdObservacao{
+font-size:11px;
+font-weight:500;
+line-height:1.4;
+color:#475569;
+white-space:normal;
+word-break:normal;
+overflow-wrap:break-word;
+}
+.fonteTabelaMunicipios{
+font-size:9px!important;
+margin-top:8px;
+color:#94a3b8!important;
+font-style:italic;
+}
+@media(max-width:1100px){
+.tabelaMunicipiosNova{
+min-width:1000px;
+}
+}
