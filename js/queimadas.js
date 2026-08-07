@@ -1,5 +1,95 @@
 const client = window.clientQueimadas
-
+/*=========================================================
+000-A QUEIMADAS CONTROLE DE ACESSO
+=========================================================*/
+let queimadasUser=null
+/*=========================================================
+000-B QUEIMADAS FUNCTION LOGIN
+=========================================================*/
+async function loginQueimadas(){
+let usuario=document.getElementById('queimadas-user')?.value.trim().toLowerCase()
+let senha=document.getElementById('queimadas-pass')?.value.trim()
+let erro=document.getElementById('queimadas-login-erro')
+if(!usuario||!senha){
+if(erro)erro.innerText='Informe usuário e senha.'
+return
+}
+if(erro)erro.innerText='Verificando acesso...'
+let{data,error}=await client
+.from('perfistce')
+.select('*')
+.eq('username',usuario)
+.limit(1)
+if(error){
+console.error('Erro no login:',error)
+if(erro)erro.innerText='Erro ao consultar usuário.'
+return
+}
+let perfil=data?.[0]
+if(!perfil){
+if(erro)erro.innerText='Usuário não encontrado.'
+return
+}
+if(String(perfil.senha||'')!==String(senha)){
+if(erro)erro.innerText='Senha inválida.'
+return
+}
+if(perfil.ativo===false){
+if(erro)erro.innerText='Usuário inativo.'
+return
+}
+queimadasUser=perfil
+sessionStorage.setItem('queimadasUser',JSON.stringify(perfil))
+abrirPainelQueimadas()
+}
+/*=========================================================
+000-C QUEIMADAS FUNCTION ABRIRPAINEL
+=========================================================*/
+function abrirPainelQueimadas(){
+let login=document.getElementById('login-queimadas')
+let app=document.getElementById('app-queimadas')
+if(login)login.style.display='none'
+if(app)app.style.display='block'
+let info=document.getElementById('queimadas-user-info')
+if(info&&queimadasUser){
+info.innerText=
+(queimadasUser.nome_completo||queimadasUser.username||'-')+
+' • '+
+(queimadasUser.cargo||'TCE-RO')
+}
+}
+/*=========================================================
+000-D QUEIMADAS FUNCTION LOGOUT
+=========================================================*/
+function logoutQueimadas(){
+sessionStorage.removeItem('queimadasUser')
+queimadasUser=null
+let app=document.getElementById('app-queimadas')
+let login=document.getElementById('login-queimadas')
+if(app)app.style.display='none'
+if(login)login.style.display='flex'
+let senha=document.getElementById('queimadas-pass')
+if(senha)senha.value=''
+}
+/*=========================================================
+000-E QUEIMADAS FUNCTION RESTAURARSESSAO
+=========================================================*/
+document.addEventListener('DOMContentLoaded',()=>{
+let salvo=sessionStorage.getItem('queimadasUser')
+if(salvo){
+try{
+queimadasUser=JSON.parse(salvo)
+abrirPainelQueimadas()
+}catch(e){
+sessionStorage.removeItem('queimadasUser')
+}
+}else{
+let login=document.getElementById('login-queimadas')
+let app=document.getElementById('app-queimadas')
+if(login)login.style.display='flex'
+if(app)app.style.display='none'
+}
+})
 /*=========================================================
 001 QUEIMADAS FUNCTION FORMATARDATABR
 =========================================================*/
