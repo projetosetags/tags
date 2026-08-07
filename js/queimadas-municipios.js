@@ -1345,52 +1345,42 @@ String(i.municipio||'')
 }
 
 let html=`
-<table class="tabelaMunicipios">
+<div class="tabelaMunicipiosWrap">
+<table class="tabelaMunicipios tabelaMunicipiosNova">
 <thead>
 <tr>
-<th>MUNICÍPIO</th>
-<th>SITUAÇÃO</th>
-<th>DOCUMENTO</th>
-<th>RECEBIMENTO</th>
-<th>OBSERVAÇÃO</th>
+<th class="colMun">MUNICÍPIO</th>
+<th class="colSit">SITUAÇÃO</th>
+<th class="colDoc">DOCUMENTO</th>
+<th class="colData">RECEBIMENTO</th>
+<th class="colObs">OBSERVAÇÃO</th>
 </tr>
 </thead>
 <tbody>
 `
-
 lista.forEach(i=>{
 let cor='#64748b'
 if(i.classificacao_cor==='VERDE')cor='#16a34a'
-if(i.classificacao_cor==='AMARELO')cor='#facc15'
+if(i.classificacao_cor==='AMARELO')cor='#d4a900'
 if(i.classificacao_cor==='VERMELHO')cor='#dc2626'
-
 html+=`
 <tr>
-<td><b>${i.municipio||'-'}</b></td>
-<td style="color:${cor};font-weight:900">
-${i.classificacao_ia||'-'}
-</td>
-<td>
-${i.lnumerodocenviado||i.llnumerodocenviado||'-'}
-</td>
-<td>
-${formatarDataBR(i.ldatarecebimentodoc)}
-</td>
-<td>
-${i.observacao||'-'}
-</td>
+<td class="tdMunicipio">${i.municipio||'-'}</td>
+<td class="tdSituacao" style="color:${cor}">${i.classificacao_ia||'-'}</td>
+<td class="tdDocumento">${i.lnumerodocenviado||i.llnumerodocenviado||'-'}</td>
+<td class="tdRecebimento">${formatarDataBR(i.ldatarecebimentodoc)}</td>
+<td class="tdObservacao">${i.observacao||'-'}</td>
 </tr>
 `
 })
-
 html+=`
 </tbody>
 </table>
-<div class="fonte-card">
+<div class="fonte-card fonteTabelaMunicipios">
 Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
 </div>
+</div>
 `
-
 box.innerHTML=html
 }
 /*=========================================================
