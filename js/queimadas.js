@@ -2787,7 +2787,63 @@ if(typeof renderTopRiscos==='function')await renderTopRiscos()
 if(typeof renderMapaMunicipios==='function')await renderMapaMunicipios()
 alert('Heatmap atualizado com sucesso.')
 }
-
+/*=========================================================
+EXPORTAR ABA ATUAL PNG ALTA RESOLUÇÃO
+=========================================================*/
+async function exportarAbaPNG(){
+let aba=document.querySelector('.abaQueimadas:not(.hidden)')
+if(!aba){
+alert('Nenhuma aba ativa encontrada.')
+return
+}
+if(typeof html2canvas==='undefined'){
+alert('Biblioteca de exportação não carregada.')
+return
+}
+let botao=document.getElementById('btnExportarPNG')
+let textoOriginal=botao?.innerHTML
+if(botao){
+botao.disabled=true
+botao.innerHTML='⏳ GERANDO...'
+}
+try{
+await new Promise(resolve=>setTimeout(resolve,500))
+let largura=aba.scrollWidth
+let altura=aba.scrollHeight
+let canvas=await html2canvas(aba,{
+scale:3,
+useCORS:true,
+allowTaint:false,
+backgroundColor:'#f4f7fb',
+logging:false,
+width:largura,
+height:altura,
+windowWidth:largura,
+windowHeight:altura,
+scrollX:0,
+scrollY:0,
+imageTimeout:15000
+})
+let nomeAba=aba.id
+.replace(/^aba/,'')
+.replace(/([A-Z])/g,'-$1')
+.toLowerCase()
+let link=document.createElement('a')
+link.download=`queimadas-${nomeAba}-alta-resolucao.png`
+link.href=canvas.toDataURL('image/png',1)
+document.body.appendChild(link)
+link.click()
+link.remove()
+}catch(error){
+console.error('Erro ao exportar painel:',error)
+alert('Erro ao gerar a imagem do painel.')
+}finally{
+if(botao){
+botao.disabled=false
+botao.innerHTML=textoOriginal
+}
+}
+}
 /*=========================================================
 074 GERAR SUMARIO EXECUTIVO
 =========================================================*/
