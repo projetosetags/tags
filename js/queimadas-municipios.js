@@ -517,32 +517,30 @@ Erro ao carregar Unidades de Conservação
 /*=========================================================
 115 QUEIMADAS FUNCTION RENDERPAINELFOCOSINPE
 =========================================================*/
-async function renderPainelFocosINPE(){
+function renderPainelFocosINPE(resultado){
 
-let box=document.getElementById('painelFocosCalor')||document.getElementById('painelFocosINPE')
+let box=document.getElementById('painelFocosCalor')
+
 if(!box)return
 
-let{data:executivo}=await client
-.from('vw_queimadas_executivo')
-.select('*')
-.single()
+let total=Number(resultado?.total||0)
+let ranking=[...(resultado?.ranking||[])]
 
-let{data:ranking=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
+let periodo=String(resultado?.periodo||'7')
 
-if(!executivo)return
+let tituloPeriodo='7 DIAS'
 
-ranking=[...ranking].sort((a,b)=>Number(b.focos||0)-Number(a.focos||0))
+if(periodo==='1')tituloPeriodo='HOJE'
+else if(periodo==='30')tituloPeriodo='30 DIAS'
+else if(periodo==='365')tituloPeriodo='12 MESES'
+else if(periodo==='ano')tituloPeriodo='ANO ATUAL'
+else if(periodo==='custom')tituloPeriodo='PERSONALIZADO'
 
-let top3=ranking.slice(0,3)
+let top10=ranking.slice(0,10)
 
-let totalFocos=Number(executivo.focos_estado||0)
-
-let hoje=Math.round(totalFocos*0.01)
-let seteDias=totalFocos
-let trintaDias=Math.round(totalFocos*1.45)
-let ano=Math.round(totalFocos*5.8)
+let atualizado=resultado?.atualizadoEm
+?new Date(resultado.atualizadoEm).toLocaleString('pt-BR')
+:new Date().toLocaleString('pt-BR')
 
 box.innerHTML=`
 
@@ -550,64 +548,75 @@ box.innerHTML=`
 
 <div class="focoResumoCard">
 <div class="focoIcon">🔥</div>
-<div class="focoValor">${hoje.toLocaleString('pt-BR')}</div>
-<div class="focoTitulo">HOJE</div>
+<div class="focoValor">${total.toLocaleString('pt-BR')}</div>
+<div class="focoTitulo">${tituloPeriodo}</div>
+</div>
+
+<div class="focoResumoCard">
+<div class="focoIcon">🏛️</div>
+<div class="focoValor">${ranking.length}</div>
+<div class="focoTitulo">MUNICÍPIOS COM FOCOS</div>
+</div>
+
+<div class="focoResumoCard">
+<div class="focoIcon">🥇</div>
+<div class="focoValor">
+${Number(top10[0]?.focos||0).toLocaleString('pt-BR')}
+</div>
+<div class="focoTitulo">
+${top10[0]?.municipio||'SEM REGISTROS'}
+</div>
 </div>
 
 <div class="focoResumoCard">
 <div class="focoIcon">📅</div>
-<div class="focoValor">${seteDias.toLocaleString('pt-BR')}</div>
-<div class="focoTitulo">7 DIAS</div>
+<div class="focoValor" style="font-size:17px">
+${formatarDataBR(resultado.dataInicial)}
 </div>
-
-<div class="focoResumoCard">
-<div class="focoIcon">📆</div>
-<div class="focoValor">${trintaDias.toLocaleString('pt-BR')}</div>
-<div class="focoTitulo">30 DIAS</div>
+<div class="focoTitulo">
+ATÉ ${formatarDataBR(resultado.dataFinal)}
 </div>
-
-<div class="focoResumoCard">
-<div class="focoIcon">🗓</div>
-<div class="focoValor">${ano.toLocaleString('pt-BR')}</div>
-<div class="focoTitulo">ANO</div>
 </div>
 
 </div>
 
 <div class="rankingCompacto">
 
-<h3>🏆 MUNICÍPIOS COM MAIS FOCOS</h3>
+<h3>🏆 MUNICÍPIOS DE RONDÔNIA COM MAIS FOCOS</h3>
 
-${top3.map((m,i)=>`
+${
+top10.length
+?top10.map((item,indice)=>`
 
 <div class="rankingLinha">
 
 <span>
-
-${i==0?'🥇':i==1?'🥈':'🥉'}
-
-${m.municipio}
-
+${obterMedalhaFocos(indice)}
+${indice+1}º ${item.municipio}
 </span>
 
-<b>${Number(m.focos).toLocaleString('pt-BR')}</b>
+<b>
+${Number(item.focos||0).toLocaleString('pt-BR')}
+</b>
 
 </div>
 
-`).join('')}
+`).join('')
+:`
+<div style="padding:25px;text-align:center">
+Nenhum foco registrado em Rondônia no período.
+</div>
+`
+}
 
 </div>
 
 <div class="ultimaAtualizacao">
-
-Atualizado em ${new Date().toLocaleString('pt-BR')}
-
+Atualizado em ${atualizado}
 </div>
 
 <div class="fonte-card">
-
-Fonte: INPE • Ranking Estadual • Monitoramento de Focos
-
+Fonte: Programa Queimadas • INPE • Somente municípios de Rondônia
 </div>
 
 `
@@ -1985,3 +1994,11 @@ document.getElementById('painelEstatisticasMunicipais').innerHTML=`
 </div>
 `
 }
+
+function obterMedalhaFocos(indice){
+if(indice===0)return'🥇'
+if(indice===1)return'🥈'
+if(indice===2)return'🥉'
+return'🔥'
+}
+
