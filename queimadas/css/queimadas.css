@@ -404,3 +404,30 @@ body{overflow-x:hidden}
 @media(max-width:768px){.topoSistema{flex-direction:column;align-items:flex-start;gap:15px}.topoUsuarioQueimadas{margin-left:0}.menuQueimadas button{width:100%}.heatmap-grid,.cadeia-flow,.monitor4d-grid,.planejamento-grid,.marcosGrid{grid-template-columns:1fr}.gantt-row{flex-direction:column;align-items:flex-start}.gantt-titulo{width:100%;margin-bottom:6px}.kpiGrid{grid-template-columns:repeat(2,1fr)}.kpiNumero{font-size:28px}#painelCadastroMunicipiosResumo .tabelaMunicipios{min-width:1800px;font-size:10px}#painelCadastroEstado .tabelaEstado{min-width:1200px}}
 @media(max-width:600px){.focosResumoGrid{grid-template-columns:1fr}}
 @media(max-width:480px){.kpiGrid{grid-template-columns:1fr}.kpiNumero{font-size:24px}}
+/*=========================================================
+033 SITUAÇÃO E GOVERNANÇA - LAYOUT EXECUTIVO
+=========================================================*/
+.situacaoGridPrincipal{display:grid;grid-template-columns:1.15fr 1fr;gap:18px;align-items:stretch}
+.situacaoBox{overflow:hidden}
+.situacaoKPIGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.situacaoKPI{min-height:105px;padding:15px 10px;border:1px solid #e2e8f0;border-radius:16px;background:linear-gradient(180deg,#fff,#f8fafc);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 3px 10px rgba(15,23,42,.07);transition:.2s}
+.situacaoKPI:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(15,23,42,.12)}
+.situacaoKPI strong{font-size:28px;font-weight:900;color:#2563eb;line-height:1}
+.situacaoKPI span{margin-top:8px;font-size:10px;font-weight:900;color:#334155;text-transform:uppercase;letter-spacing:.3px}
+.situacaoPeriodo{margin:4px 0 12px;text-align:right;font-size:10px;font-style:italic;color:#94a3b8}
+.situacaoRanking{margin-top:10px;border:1px solid #e2e8f0;border-radius:16px;padding:14px;background:#fff}
+.situacaoRanking h3{margin:0 0 8px;padding-bottom:8px;border-bottom:2px solid #e2e8f0;font-size:16px;font-weight:900;color:#0f172a}
+.situacaoRankingLinha{display:grid;grid-template-columns:42px 1fr 80px;align-items:center;gap:8px;padding:9px 4px;border-bottom:1px solid #e5e7eb;font-size:13px}
+.situacaoRankingLinha:last-child{border-bottom:none}
+.situacaoRankingLinha span{display:contents}
+.situacaoRankingLinha span b{text-align:center;font-weight:900;color:#475569}
+.situacaoRankingLinha strong{text-align:right;font-size:14px;font-weight:900;color:#dc2626}
+.situacaoSemDados{text-align:center;padding:20px;color:#64748b}
+#painelTopIAChap{margin-top:4px}
+#painelTopIAChap .cardPainel,#painelTopIAChap>div{border-radius:16px}
+.infoPainel{margin-top:12px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc}
+.infoPainel summary{font-size:12px;font-weight:900;color:#2563eb}
+.infoPainel p{font-size:11px;line-height:1.5;color:#475569}
+.fonteSituacao{margin-top:12px;padding-top:8px;border-top:1px solid #e5e7eb;font-size:9px;line-height:1.35;font-style:italic;color:#94a3b8}
+@media(max-width:1200px){.situacaoGridPrincipal{grid-template-columns:1fr}.situacaoKPIGrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.situacaoKPIGrid{grid-template-columns:repeat(2,1fr)}}
