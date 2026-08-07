@@ -827,3 +827,69 @@ color:#fff;
 font-weight:900;
 cursor:pointer;
 }
+.modalSenhaMunicipioBox{
+width:min(420px,calc(100% - 30px));
+background:#fff;
+border-radius:20px;
+padding:30px;
+box-shadow:0 25px 70px rgba(15,23,42,.35);
+text-align:center;
+}
+.modalSenhaIcone{
+font-size:42px;
+margin-bottom:8px;
+}
+.modalSenhaMunicipioBox h2{
+margin:0;
+color:#0f172a;
+font-size:21px;
+font-weight:900;
+}
+.modalSenhaMunicipioBox p{
+margin:8px 0 20px;
+color:#64748b;
+font-size:13px;
+}
+.modalSenhaMunicipioBox input{
+box-sizing:border-box;
+width:100%;
+height:48px;
+padding:0 14px;
+border:1px solid #cbd5e1;
+border-radius:10px;
+font-size:16px;
+outline:none;
+}
+.modalSenhaMunicipioBox input:focus{
+border-color:#2563eb;
+box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+#erroSenhaMunicipio{
+min-height:20px;
+margin-top:8px;
+font-size:12px;
+font-weight:800;
+color:#dc2626;
+}
+.modalSenhaBotoes{
+display:flex;
+gap:10px;
+margin-top:12px;
+}
+.btnConfirmarSenhaMunicipio,
+.btnCancelarSenhaMunicipio{
+flex:1;
+height:44px;
+border:0;
+border-radius:9px;
+font-weight:900;
+cursor:pointer;
+}
+.btnConfirmarSenhaMunicipio{
+background:#0f172a;
+color:#fff;
+}
+.btnCancelarSenhaMunicipio{
+background:#e2e8f0;
+color:#334155;
+}
