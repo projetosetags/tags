@@ -665,23 +665,32 @@ riscos:[...new Set(riscos)]
 009 QUEIMADAS FUNCTION CARREGARKPISEXECUTIVOS
 =========================================================*/
 async function carregarKPIsExecutivos(){
-let[{data:exec},{data:mapbiomas=[]},{data:prodes=[]}]=await Promise.all([
+let hoje=new Date()
+let dataFinal=`${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`
+let dataFinalBR=hoje.toLocaleDateString('pt-BR')
+let[{data:exec},{data:mapbiomas=[]},{data:prodes=[]},{count:totalFocosINPE,error:erroFocosINPE}]=await Promise.all([
 client.from('vw_queimadas_executivo').select('*').single(),
 client.from('queimadas_mapbiomas').select('*'),
-client.from('queimadas_prodes').select('*')
+client.from('queimadas_prodes').select('*'),
+client.from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).gte('data_foco','2026-01-01').lte('data_foco',dataFinal)
 ])
 if(!exec)return
+if(erroFocosINPE){
+console.error('Erro ao calcular focos do INPE:',erroFocosINPE)
+totalFocosINPE=0
+}
 let areaQueimada=mapbiomas.reduce((s,i)=>s+Number(i.area_queimada_hectares||i.area_queimada||i.area||0),0)
 let areaDesmatada=prodes.reduce((s,i)=>s+Number(i.desmatamento_hectares||i.area_desmatada||i.area||0),0)
 document.getElementById('painelKPIs').innerHTML=`
 <div class="kpiGrid">
 <div class="kpiCard">
-<div class="kpiNumero">${Number(exec.focos_estado||0).toLocaleString('pt-BR')}</div>
+<div class="kpiNumero">${Number(totalFocosINPE||0).toLocaleString('pt-BR')}</div>
 <div class="kpiTitulo">🔥 FOCOS DE CALOR</div>
+<div style="margin-top:6px;font-size:11px;font-weight:800;color:#64748b">01/01/2026 até ${dataFinalBR}</div>
 </div>
 <div class="kpiCard">
 <div class="kpiNumero">${areaDesmatada.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-<div class="kpiTitulo">🌳 DESMATAMENTO 2021-2025(ha)</div>
+<div class="kpiTitulo">🌳 DESMATAMENTO 2021-2025 (ha)</div>
 </div>
 <div class="kpiCard">
 <div class="kpiNumero">${areaQueimada.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
