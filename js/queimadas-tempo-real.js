@@ -25,8 +25,10 @@ box.innerHTML=`<div class="tempoGrid"><div class="kpiTempo"><div class="kpiTempo
 renderRankingTempoReal(resumo.ranking,resumo.total)
 renderResumoTempoReal(resumo,executivo)
 renderAtualizacaoTempoReal(resumo)
-renderGraficoTempoReal(resumo.porMes)
-await renderRankingIRIQTempoReal()
+await Promise.all([
+renderGraficoTempoReal(),
+renderRankingIRIQTempoReal()
+])
 }
 /*=========================================================
 002 TEMPO REAL FUNCTION BUSCARFOCOSTEMPOREAL
@@ -122,14 +124,31 @@ box.innerHTML=`<div class="resumoTR"><div class="resumoLinha"><div class="resumo
 /*=========================================================
 007 TEMPO REAL FUNCTION RENDERGRAFICOTEMPOREAL
 =========================================================*/
-function renderGraficoTempoReal(valores){
+async function renderGraficoTempoReal(){
 let canvas=document.getElementById('graficoTempoReal')
 if(!canvas||typeof Chart==='undefined')return
+let box=canvas.parentElement
+if(box)box.style.opacity='.45'
+let ano=new Date().getFullYear()
+let{data=[],error}=await client.from('vw_queimadas_focos_mensal').select('mes,focos').eq('ano',ano).order('mes',{ascending:true})
+if(error){
+console.error('Erro ao carregar evolução mensal:',error)
+if(box){
+box.innerHTML=`<div class="alerta-vermelho">Erro ao carregar a evolução mensal.<br>${error.message||''}</div>`
+}
+return
+}
+let valores=Array(12).fill(0)
+data.forEach(item=>{
+let mes=Number(item.mes)
+if(mes>=1&&mes<=12)valores[mes-1]=Number(item.focos||0)
+})
 if(graficoTempoReal){
 graficoTempoReal.destroy()
 graficoTempoReal=null
 }
 let meses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
+let mesAtual=new Date().getMonth()
 graficoTempoReal=new Chart(canvas,{
 type:'bar',
 data:{
@@ -137,8 +156,8 @@ labels:meses,
 datasets:[{
 label:'Focos',
 data:valores,
-backgroundColor:valores.map((valor,indice)=>indice===new Date().getMonth()?'#dc2626':'#f97316'),
-borderColor:valores.map((valor,indice)=>indice===new Date().getMonth()?'#991b1b':'#ea580c'),
+backgroundColor:valores.map((valor,indice)=>indice===mesAtual?'#dc2626':'#f97316'),
+borderColor:valores.map((valor,indice)=>indice===mesAtual?'#991b1b':'#ea580c'),
 borderWidth:1,
 borderRadius:8,
 borderSkipped:false,
@@ -149,8 +168,13 @@ options:{
 responsive:true,
 maintainAspectRatio:true,
 aspectRatio:2.4,
+animation:{
+duration:300
+},
 plugins:{
-legend:{display:false},
+legend:{
+display:false
+},
 tooltip:{
 backgroundColor:'#111827',
 titleColor:'#fff',
@@ -161,30 +185,46 @@ label:context=>`${Number(context.raw||0).toLocaleString('pt-BR')} focos`
 }
 },
 datalabels:{
-display:true,
+display:context=>Number(context.dataset.data[context.dataIndex]||0)>0,
 anchor:'end',
 align:'top',
 color:'#111827',
-font:{weight:'900',size:12},
-formatter:valor=>valor?Number(valor).toLocaleString('pt-BR'):''
+font:{
+weight:'900',
+size:12
+},
+formatter:valor=>Number(valor).toLocaleString('pt-BR')
 }
 },
 scales:{
 x:{
-grid:{display:false},
-ticks:{font:{size:11,weight:'800'}}
+grid:{
+display:false
+},
+ticks:{
+font:{
+size:11,
+weight:'800'
+}
+}
 },
 y:{
 beginAtZero:true,
-grid:{color:'#e5e7eb'},
+grid:{
+color:'#e5e7eb'
+},
 ticks:{
-font:{size:11,weight:'700'},
+font:{
+size:11,
+weight:'700'
+},
 callback:valor=>Number(valor).toLocaleString('pt-BR')
 }
 }
 }
 }
 })
+if(box)box.style.opacity='1'
 }
 /*=========================================================
 008 TEMPO REAL FUNCTION FORMATARDATATEMPOREAL
