@@ -128,9 +128,16 @@ async function renderGraficoTempoReal(){
 let canvas=document.getElementById('graficoTempoReal')
 if(!canvas||typeof Chart==='undefined')return
 let box=canvas.parentElement
-if(box)box.style.opacity='.45'
+if(box){
+box.style.opacity='.45'
+box.style.transition='opacity .25s ease'
+}
 let ano=new Date().getFullYear()
-let{data=[],error}=await client.from('vw_queimadas_focos_mensal').select('mes,focos').eq('ano',ano).order('mes',{ascending:true})
+let{data=[],error}=await client
+.from('vw_queimadas_focos_mensal')
+.select('mes,focos')
+.eq('ano',ano)
+.order('mes',{ascending:true})
 if(error){
 console.error('Erro ao carregar evolução mensal:',error)
 if(box){
@@ -141,7 +148,9 @@ return
 let valores=Array(12).fill(0)
 data.forEach(item=>{
 let mes=Number(item.mes)
-if(mes>=1&&mes<=12)valores[mes-1]=Number(item.focos||0)
+if(mes>=1&&mes<=12){
+valores[mes-1]=Number(item.focos||0)
+}
 })
 if(graficoTempoReal){
 graficoTempoReal.destroy()
@@ -149,46 +158,75 @@ graficoTempoReal=null
 }
 let meses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
 let mesAtual=new Date().getMonth()
+let valorMaximo=Math.max(...valores,1)
 graficoTempoReal=new Chart(canvas,{
 type:'bar',
 data:{
 labels:meses,
 datasets:[{
-label:'Focos',
+label:'Focos de Calor',
 data:valores,
-backgroundColor:valores.map((valor,indice)=>indice===mesAtual?'#dc2626':'#f97316'),
-borderColor:valores.map((valor,indice)=>indice===mesAtual?'#991b1b':'#ea580c'),
+backgroundColor:valores.map((valor,indice)=>{
+if(!valor)return'rgba(148,163,184,.25)'
+return indice===mesAtual?'#dc2626':'#f97316'
+}),
+borderColor:valores.map((valor,indice)=>{
+if(!valor)return'#cbd5e1'
+return indice===mesAtual?'#991b1b':'#ea580c'
+}),
 borderWidth:1,
-borderRadius:8,
+borderRadius:10,
 borderSkipped:false,
-maxBarThickness:65
+maxBarThickness:58,
+minBarLength:3,
+barPercentage:.72,
+categoryPercentage:.82
 }]
 },
 options:{
 responsive:true,
-maintainAspectRatio:true,
-aspectRatio:2.4,
+maintainAspectRatio:false,
 animation:{
-duration:300
+duration:450,
+easing:'easeOutQuart'
+},
+layout:{
+padding:{
+top:30,
+right:18,
+bottom:8,
+left:8
+}
+},
+interaction:{
+mode:'index',
+intersect:false
 },
 plugins:{
 legend:{
 display:false
 },
 tooltip:{
-backgroundColor:'#111827',
-titleColor:'#fff',
-bodyColor:'#fff',
-padding:10,
+enabled:true,
+backgroundColor:'#0f172a',
+titleColor:'#ffffff',
+bodyColor:'#ffffff',
+borderColor:'#334155',
+borderWidth:1,
+padding:12,
+displayColors:false,
 callbacks:{
-label:context=>`${Number(context.raw||0).toLocaleString('pt-BR')} focos`
+title:itens=>`${itens[0].label}/${ano}`,
+label:context=>`${Number(context.raw||0).toLocaleString('pt-BR')} focos de calor`
 }
 },
 datalabels:{
 display:context=>Number(context.dataset.data[context.dataIndex]||0)>0,
 anchor:'end',
 align:'top',
-color:'#111827',
+offset:4,
+clip:false,
+color:'#0f172a',
 font:{
 weight:'900',
 size:12
@@ -199,32 +237,59 @@ formatter:valor=>Number(valor).toLocaleString('pt-BR')
 scales:{
 x:{
 grid:{
+display:false,
+drawBorder:false
+},
+border:{
 display:false
 },
 ticks:{
+color:'#334155',
+padding:8,
 font:{
-size:11,
+size:12,
 weight:'800'
 }
 }
 },
 y:{
 beginAtZero:true,
+suggestedMax:valorMaximo*1.15,
 grid:{
-color:'#e5e7eb'
+color:'rgba(148,163,184,.22)',
+drawBorder:false
+},
+border:{
+display:false
 },
 ticks:{
+color:'#475569',
+padding:8,
+precision:0,
 font:{
 size:11,
 weight:'700'
 },
 callback:valor=>Number(valor).toLocaleString('pt-BR')
+},
+title:{
+display:true,
+text:'QUANTIDADE DE FOCOS',
+color:'#475569',
+font:{
+size:11,
+weight:'800'
+}
 }
 }
 }
 }
 })
-if(box)box.style.opacity='1'
+if(box){
+box.style.opacity='1'
+box.style.height='390px'
+box.style.position='relative'
+}
 }
 /*=========================================================
 008 TEMPO REAL FUNCTION FORMATARDATATEMPOREAL
