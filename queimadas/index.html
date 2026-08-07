@@ -7,7 +7,7 @@
 <title>QUEIMADAS 2026 | Monitoramento Inteligente</title>
 <link rel="icon" href="data:,">
 <link rel="manifest" href="../manifest.json">
-<link rel="stylesheet" href="css/queimadas.css?v=20260730">
+<link rel="stylesheet" href="css/queimadas.css?v=20260807-6">
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -19,7 +19,7 @@
 <script>Chart.register(ChartDataLabels);</script>
 <script src="../config.js"></script>
 <script src="../js/municipios-ro.js"></script>
-<script src="../js/queimadas.js?v=20260730"></script>
+<script src="../js/queimadas.js?v=20260807-6"></script>
 <script src="../js/queimadasRT.js?v=20260730"></script>
 <script src="../js/queimadas-monitoramento.js?v=20260730"></script>
 <script src="../js/queimadas-municipios.js?v=20260807-1"></script>
@@ -27,6 +27,19 @@
 <script src="../js/queimadas-tempo-real.js?v=20260807-4"></script>
 </head>
 <body>
+<div id="login-queimadas" class="loginQueimadasOverlay">
+<div class="loginQueimadasBox">
+<div class="loginQueimadasIcone">🔥</div>
+<h1>QUEIMADAS 2026</h1>
+<p>Acesso restrito • TCE-RO</p>
+<input id="queimadas-user" type="text" placeholder="Usuário" autocomplete="username">
+<input id="queimadas-pass" type="password" placeholder="Senha" autocomplete="current-password">
+<button onclick="loginQueimadas()">ENTRAR</button>
+<div id="queimadas-login-erro"></div>
+</div>
+</div>
+<div id="app-queimadas" style="display:none">
+  
 <div class="layoutPrincipal">
 <header class="topoSistema">
 <div class="topoEsquerda">
@@ -35,6 +48,10 @@
 <h1>QUEIMADAS 2026</h1>
 <p>Monitoramento Inteligente • TCE-RO • SEDAM • CBMRO</p>
 </div>
+</div>
+<div class="topoUsuarioQueimadas">
+<span id="queimadas-user-info"></span>
+<button onclick="logoutQueimadas()">SAIR</button>
 </div>
 </header>
 <nav class="menuQueimadas">
@@ -552,5 +569,6 @@ console.error(e)
 }
 </script>
 -->
+</div>
 </body>
 </html>
