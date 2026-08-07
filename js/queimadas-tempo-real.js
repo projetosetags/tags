@@ -26,6 +26,7 @@ renderRankingTempoReal(resumo.ranking,resumo.total)
 renderResumoTempoReal(resumo,executivo)
 renderAtualizacaoTempoReal(resumo)
 renderGraficoTempoReal(resumo.porMes)
+await renderRankingIRIQTempoReal()
 }
 /*=========================================================
 002 TEMPO REAL FUNCTION BUSCARFOCOSTEMPOREAL
@@ -202,6 +203,48 @@ if(!data)return'--'
 let partes=String(data).slice(0,10).split('-')
 if(partes.length!==3)return String(data)
 return`${partes[2]}/${partes[1]}/${partes[0]}`
+}
+/*=========================================================
+010 TEMPO REAL FUNCTION RENDERRANKINGIRIQTEMPOREAL
+=========================================================*/
+async function renderRankingIRIQTempoReal(){
+let box=document.getElementById('painelTempoRealRankingIRIQ')
+if(!box)return
+box.innerHTML='<div style="padding:30px;text-align:center;font-weight:900">🤖 Carregando ranking IRIQ...</div>'
+let{data=[],error}=await client.from('vw_queimadas_irig_ambiental').select('*')
+if(error){
+console.error('Erro ao carregar ranking IRIQ:',error)
+box.innerHTML=`<div class="alerta-vermelho">Erro ao carregar o ranking IRIQ.<br>${error.message||''}</div>`
+return
+}
+let ranking=(data||[]).map(item=>{
+let iriq=Number(item.indice_final??item.iriq??item.indice_iriq??item.pontuacao??0)
+return{municipio:String(item.municipio||'NÃO INFORMADO').trim(),iriq,classificacao:classificarIRIQTempoReal(iriq)}
+}).sort((a,b)=>b.iriq-a.iriq)
+if(!ranking.length){
+box.innerHTML='<div style="padding:25px;text-align:center">Nenhum município encontrado no ranking IRIQ.</div>'
+return
+}
+box.innerHTML=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:12px;text-align:center;border-bottom:2px solid #cbd5e1">POSIÇÃO</th><th style="padding:12px;text-align:left;border-bottom:2px solid #cbd5e1">MUNICÍPIO</th><th style="padding:12px;text-align:center;border-bottom:2px solid #cbd5e1">IRIQ</th><th style="padding:12px;text-align:center;border-bottom:2px solid #cbd5e1">CLASSIFICAÇÃO</th><th style="padding:12px;text-align:left;border-bottom:2px solid #cbd5e1">NÍVEL</th></tr></thead><tbody>${ranking.map((item,indice)=>`<tr><td style="padding:11px;text-align:center;border-bottom:1px solid #e2e8f0;font-weight:900">${indice+1}º</td><td style="padding:11px;border-bottom:1px solid #e2e8f0;font-weight:800">${obterMedalhaIRIQTempoReal(indice)} ${item.municipio}</td><td style="padding:11px;text-align:center;border-bottom:1px solid #e2e8f0;font-weight:900;color:${item.classificacao.cor}">${item.iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td style="padding:11px;text-align:center;border-bottom:1px solid #e2e8f0"><span style="display:inline-block;min-width:105px;padding:6px 10px;border-radius:999px;background:${item.classificacao.fundo};color:${item.classificacao.cor};font-weight:900">${item.classificacao.icone} ${item.classificacao.nome}</span></td><td style="padding:11px;border-bottom:1px solid #e2e8f0"><div style="height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden"><div style="height:100%;width:${Math.min(100,Math.max(0,item.iriq))}%;background:${item.classificacao.cor};border-radius:999px"></div></div></td></tr>`).join('')}</tbody></table></div><div style="margin-top:12px;font-size:12px;color:#64748b;font-weight:700">Municípios apresentados: ${ranking.length} • Atualizado em ${new Date().toLocaleString('pt-BR')}</div>`
+}
+/*=========================================================
+011 TEMPO REAL FUNCTION CLASSIFICARIRIQTEMPOREAL
+=========================================================*/
+function classificarIRIQTempoReal(valor){
+let iriq=Number(valor||0)
+if(iriq>=75)return{nome:'CRÍTICO',icone:'🔴',cor:'#b91c1c',fundo:'#fee2e2'}
+if(iriq>=50)return{nome:'ALTO',icone:'🟠',cor:'#c2410c',fundo:'#ffedd5'}
+if(iriq>=25)return{nome:'MODERADO',icone:'🟡',cor:'#a16207',fundo:'#fef9c3'}
+return{nome:'BAIXO',icone:'🟢',cor:'#15803d',fundo:'#dcfce7'}
+}
+/*=========================================================
+012 TEMPO REAL FUNCTION OBTERMEDALHAIRIQTEMPOREAL
+=========================================================*/
+function obterMedalhaIRIQTempoReal(indice){
+if(indice===0)return'🥇'
+if(indice===1)return'🥈'
+if(indice===2)return'🥉'
+return'🏛️'
 }
 /*=========================================================
 010 TEMPO REAL DOMCONTENTLOADED
