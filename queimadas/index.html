@@ -200,33 +200,33 @@ Atualizar
 002 MUNICÍPIOS
 =========================================================-->
 <section id="abaExecutivoMunicipal" class="abaQueimadas hidden">
-<div class="painelTitulo">MUNICÍPIOS</div>
-<div class="cardExecutivo">
-<h2>🏛️ SITUAÇÃO GERAL DOS 52 MUNICÍPIOS</h2>
-<div id="painelSituacaoGeralMunicipios"></div>
-</div>
+<div class="painelTitulo">🏛️ MUNICÍPIOS DE RONDÔNIA</div>
 <div id="painelKPIsMunicipais"></div>
-<div class="gridMunicipal">
 <div class="cardExecutivo">
-<h2>PLANOS DE AÇÃO APRESENTADOS</h2>
-<div id="painelPlanosApresentados"></div>
+<h2>📋 TABELA GERAL DOS MUNICÍPIOS</h2>
+<div class="barraTabelaMunicipios">
+<select id="filtroMunicipioSituacao" onchange="renderTabelaMunicipios()">
+<option value="">TODOS OS MUNICÍPIOS</option>
+<option value="VERDE">🟢 PLANO DE AÇÃO</option>
+<option value="AMARELO">🟡 DILAÇÃO DE PRAZO</option>
+<option value="VERMELHO">🔴 SEM RESPOSTA</option>
+</select>
+<input type="text" id="buscaMunicipio" placeholder="🔎 Pesquisar município..." onkeyup="renderTabelaMunicipios()">
+</div>
+<div id="painelTabelaMunicipios"></div>
 </div>
 <div class="cardExecutivo">
-<h2>DILAÇÕES DE PRAZO</h2>
-<div id="painelDilacoesPrazo"></div>
+<div class="cabecalhoMapaMunicipal">
+<div>
+<h2>🗺️ MAPA MUNICIPAL</h2>
+<div class="subtituloMapaMunicipal">Situação dos Planos de Ação dos 52 Municípios</div>
 </div>
-<div class="cardExecutivo">
-<h2>MUNICÍPIOS SEM RESPOSTA</h2>
-<div id="painelSemResposta"></div>
-</div>
-</div>
-<div class="cardExecutivo">
-<h2>MAPA MUNICIPAL - SITUAÇÃO DOS PLANOS DE AÇÃO</h2>
 <div class="filtroMapaMunicipal">
 <button onclick="renderMapaPlanosMunicipais('TODOS')" class="btnMapaMunicipal">TODOS</button>
 <button onclick="renderMapaPlanosMunicipais('VERDE')" class="btnMapaMunicipal">🟢 COM PLANO</button>
 <button onclick="renderMapaPlanosMunicipais('AMARELO')" class="btnMapaMunicipal">🟡 DILAÇÃO</button>
 <button onclick="renderMapaPlanosMunicipais('VERMELHO')" class="btnMapaMunicipal">🔴 SEM RESPOSTA</button>
+</div>
 </div>
 <div id="mapaMunicipalPlanos"></div>
 <div class="exec-legenda-municipal">
@@ -234,45 +234,23 @@ Atualizar
 <div class="leg-amarelo">🟡 Dilação de Prazo</div>
 <div class="leg-vermelho">🔴 Sem Resposta</div>
 </div>
-<div class="fonte-card">
-Fonte: Ofício Circular n.16/2026/GABPRES/TCERO • Municípios de Rondônia
-</div>
+<div class="fonte-card">Fonte: Ofício Circular n.16/2026/GABPRES/TCERO • Municípios de Rondônia</div>
 </div>
 <div class="exec-duplo">
 <div class="cardExecutivo">
-<h2>DISTRIBUIÇÃO DAS RESPOSTAS</h2>
-<div style="height:220px;display:flex;justify-content:center;align-items:center">
-<canvas id="graficoMunicipiosResposta" style="max-width:220px!important;max-height:220px!important"></canvas>
-</div>
-<div class="fonte-card">
-Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
+<h2>📊 DISTRIBUIÇÃO DAS RESPOSTAS</h2>
+<div style="height:240px;display:flex;justify-content:center;align-items:center">
+<canvas id="graficoMunicipiosResposta" style="max-width:240px!important;max-height:240px!important"></canvas>
 </div>
 </div>
 <div class="cardExecutivo">
-<h2>ESTATÍSTICAS MUNICIPAIS</h2>
+<h2>📈 ESTATÍSTICAS MUNICIPAIS</h2>
 <div id="painelEstatisticasMunicipais"></div>
 </div>
 </div>
-<div class="cardExecutivo">
-<h2>TABELA GERAL DOS MUNICÍPIOS</h2>
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
-<select id="filtroMunicipioSituacao" onchange="renderTabelaMunicipios()">
-<option value="">TODOS</option>
-<option value="VERDE">PLANO APRESENTADO</option>
-<option value="AMARELO">DILAÇÃO DE PRAZO</option>
-<option value="VERMELHO">SEM RESPOSTA</option>
-</select>
-<input
-type="text"
-id="buscaMunicipio"
-placeholder="Pesquisar município..."
-onkeyup="renderTabelaMunicipios()"
->
-</div>
-<div id="painelTabelaMunicipios"></div>
-</div>
 <div class="cardExecutivo cardDestaque">
-<h2>🏛️ CADASTRO MUNICIPAL</h2>
+<h2>🔐 CADASTRO MUNICIPAL</h2>
+<div class="subtituloCadastroMunicipal">Consulta e edição protegida dos dados documentais dos municípios.</div>
 <div id="painelCadastroMunicipiosResumo"></div>
 </div>
 </section>
