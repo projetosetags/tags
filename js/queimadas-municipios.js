@@ -1749,39 +1749,117 @@ box.innerHTML=html
 /*=========================================================
 139-A QUEIMADAS FUNCTION AUTORIZAREDICAOMUNICIPIO
 =========================================================*/
-async function autorizarEdicaoMunicipio(municipio){
+function autorizarEdicaoMunicipio(municipio){
 municipio=String(municipio||'').trim()
 if(!municipio)return
-let senha=prompt('🔐 Digite a senha para editar o Cadastro Municipal:')
-if(senha===null)return
-senha=String(senha).trim()
+fecharModalSenhaMunicipio()
+let html=`
+<div id="modalSenhaMunicipio" class="modalMunicipioOverlay">
+<div class="modalSenhaMunicipioBox">
+<div class="modalSenhaIcone">🔐</div>
+<h2>EDIÇÃO PROTEGIDA</h2>
+<p>Informe a senha para alterar o Cadastro Municipal.</p>
+<input
+id="senhaEdicaoMunicipio"
+type="password"
+placeholder="Senha de edição"
+autocomplete="current-password"
+>
+<div id="erroSenhaMunicipio"></div>
+<div class="modalSenhaBotoes">
+<button
+class="btnConfirmarSenhaMunicipio"
+data-municipio="${municipio.replace(/"/g,'&quot;')}"
+onclick="validarSenhaEdicaoMunicipio(this.dataset.municipio)"
+>
+🔓 AUTORIZAR
+</button>
+<button
+class="btnCancelarSenhaMunicipio"
+onclick="fecharModalSenhaMunicipio()"
+>
+CANCELAR
+</button>
+</div>
+</div>
+</div>
+`
+document.body.insertAdjacentHTML('beforeend',html)
+setTimeout(()=>{
+let input=document.getElementById('senhaEdicaoMunicipio')
+if(input){
+input.focus()
+input.addEventListener('keydown',e=>{
+if(e.key==='Enter'){
+validarSenhaEdicaoMunicipio(municipio)
+}
+})
+}
+},50)
+}
+/*=========================================================
+139-B QUEIMADAS FUNCTION VALIDARSENHAEDICAOMUNICIPIO
+=========================================================*/
+async function validarSenhaEdicaoMunicipio(municipio){
+let senha=document.getElementById('senhaEdicaoMunicipio')?.value||''
+let erro=document.getElementById('erroSenhaMunicipio')
+let btn=document.querySelector('.btnConfirmarSenhaMunicipio')
 if(!senha){
-alert('Informe a senha de edição.')
+if(erro)erro.innerText='Informe a senha.'
 return
 }
+if(btn){
+btn.disabled=true
+btn.innerHTML='⏳ VALIDANDO...'
+}
+if(erro)erro.innerText=''
 try{
-let resposta=await fetch('https://zvtzbiqfwhggysiuixh.supabase.co/functions/v1/municipios-edicao-protegida',{
+let resposta=await fetch(
+`${window.S_URL}/functions/v1/municipios-edicao-protegida`,
+{
 method:'POST',
 headers:{
 'Content-Type':'application/json',
-'apikey':window.SUPABASE_ANON_KEY||window.supabaseAnonKey||''
+'apikey':window.S_KEY,
+'Authorization':`Bearer ${window.S_KEY}`
 },
 body:JSON.stringify({
 acao:'validar',
 senha
 })
-})
-let resultado=await resposta.json()
+}
+)
+let resultado=await resposta.json().catch(()=>({}))
 if(!resposta.ok||!resultado.sucesso){
-alert('⛔ Senha incorreta. A edição não foi autorizada.')
+if(erro){
+erro.innerText=resultado.erro||'Senha incorreta.'
+}
+if(btn){
+btn.disabled=false
+btn.innerHTML='🔓 AUTORIZAR'
+}
 return
 }
 window.senhaEdicaoMunicipio=senha
+fecharModalSenhaMunicipio()
 await editarMunicipio(municipio)
 }catch(error){
-console.error(error)
-alert('Não foi possível validar a autorização.')
+console.error('Erro de autorização:',error)
+if(erro){
+erro.innerText='Não foi possível validar a autorização.'
 }
+if(btn){
+btn.disabled=false
+btn.innerHTML='🔓 AUTORIZAR'
+}
+}
+}
+/*=========================================================
+139-C QUEIMADAS FUNCTION FECHARMODALSENHAMUNICIPIO
+=========================================================*/
+function fecharModalSenhaMunicipio(){
+let modal=document.getElementById('modalSenhaMunicipio')
+if(modal)modal.remove()
 }
 /*=========================================================
 140 QUEIMADAS FUNCTION EDITARMUNICIPIO
@@ -1995,11 +2073,14 @@ plano_acao:planoAcao,
 dilacao_prazo:dilacaoPrazo,
 sem_resposta:semResposta
 }
-let resposta=await fetch('https://zvtzbiqfwhggysiuixh.supabase.co/functions/v1/municipios-edicao-protegida',{
+let resposta=await fetch(
+`${window.S_URL}/functions/v1/municipios-edicao-protegida`,
+{
 method:'POST',
 headers:{
 'Content-Type':'application/json',
-'apikey':window.SUPABASE_ANON_KEY||window.supabaseAnonKey||''
+'apikey':window.S_KEY,
+'Authorization':`Bearer ${window.S_KEY}`
 },
 body:JSON.stringify({
 acao:'salvar',
@@ -2007,7 +2088,8 @@ senha:window.senhaEdicaoMunicipio||'',
 municipio:municipioOriginal,
 payload
 })
-})
+}
+)
 let resultado=await resposta.json()
 if(!resposta.ok||!resultado.sucesso){
 console.error('Erro ao salvar município:',resultado)
