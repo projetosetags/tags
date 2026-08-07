@@ -14,32 +14,56 @@ if(!usuario||!senha){
 if(erro)erro.innerText='Informe usuário e senha.'
 return
 }
-if(erro)erro.innerText='Verificando acesso...'
-let{data,error}=await client
+if(erro){
+erro.style.color='#64748b'
+erro.innerText='Verificando acesso...'
+}
+if(!window.clientPublic){
+console.error('Cliente public não encontrado.')
+if(erro){
+erro.style.color='#dc2626'
+erro.innerText='Erro de configuração do sistema.'
+}
+return
+}
+let{data,error}=await window.clientPublic
 .from('perfistce')
 .select('*')
 .eq('username',usuario)
 .limit(1)
 if(error){
 console.error('Erro no login:',error)
-if(erro)erro.innerText='Erro ao consultar usuário.'
+if(erro){
+erro.style.color='#dc2626'
+erro.innerText='Erro ao consultar usuário.'
+}
 return
 }
 let perfil=data?.[0]
 if(!perfil){
-if(erro)erro.innerText='Usuário não encontrado.'
+if(erro){
+erro.style.color='#dc2626'
+erro.innerText='Usuário não encontrado.'
+}
 return
 }
 if(String(perfil.senha||'')!==String(senha)){
-if(erro)erro.innerText='Senha inválida.'
+if(erro){
+erro.style.color='#dc2626'
+erro.innerText='Senha inválida.'
+}
 return
 }
 if(perfil.ativo===false){
-if(erro)erro.innerText='Usuário inativo.'
+if(erro){
+erro.style.color='#dc2626'
+erro.innerText='Usuário inativo.'
+}
 return
 }
 queimadasUser=perfil
 sessionStorage.setItem('queimadasUser',JSON.stringify(perfil))
+if(erro)erro.innerText=''
 abrirPainelQueimadas()
 }
 /*=========================================================
