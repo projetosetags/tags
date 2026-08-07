@@ -16,75 +16,74 @@ body{overflow-x:hidden}
 .logoFogo{font-size:46px}
 .topoSistema h1{font-size:30px;font-weight:900;letter-spacing:.5px}
 .topoSistema p{font-size:13px;opacity:.9}
-.topoDireita{display:flex;gap:10px;flex-wrap:wrap}
-.topoDireita button{background:#f97316;border:none;color:#fff;padding:11px 18px;border-radius:12px;font-weight:800;cursor:pointer;transition:.25s}
-.topoDireita button:hover{transform:translateY(-2px)}
+.topoUsuarioQueimadas{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:12px;font-weight:800;color:#fff}
+.topoUsuarioQueimadas button{border:0;border-radius:8px;padding:8px 12px;background:#dc2626;color:#fff;font-weight:900;cursor:pointer}
 /*=========================================================
 004 MENU
 =========================================================*/
 .menuQueimadas{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
-.menuQueimadas button{border:none;background:linear-gradient(135deg,#1e293b,#0f172a);color:#fff;padding:12px 16px;border-radius:14px;font-weight:800;cursor:pointer;transition:.25s;box-shadow:0 4px 12px rgba(0,0,0,.18)}
-.menuQueimadas button:hover{background:linear-gradient(135deg,#2563eb,#1d4ed8);transform:translateY(-2px)}
+.btnAbaQueimadas{border:none;background:linear-gradient(135deg,#1e293b,#0f172a);color:#fff;padding:12px 16px;border-radius:14px;font-weight:800;cursor:pointer;transition:.25s;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+.btnAbaQueimadas:hover{background:linear-gradient(135deg,#2563eb,#1d4ed8);transform:translateY(-2px)}
+.btnAbaAtiva{background:linear-gradient(135deg,#dc2626,#991b1b)!important;color:#fff!important;font-weight:900!important;transform:scale(1.03);box-shadow:0 0 20px rgba(220,38,38,.45);border:2px solid #fff}
 /*=========================================================
 005 ABAS
 =========================================================*/
 .abaQueimadas{display:block}
 .hidden{display:none!important}
 /*=========================================================
-006 TITULOS
+006 TITULOS E CARDS
 =========================================================*/
-.painelTitulo{font-size:24px;font-weight:900;color:#0f172a;margin:8px 0 15px 0;padding:12px 18px;border-left:8px solid #f97316;background:#fff;border-radius:14px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
-/*=========================================================
-007 CARDS
-=========================================================*/
-.cardExecutivo{
-background:#fff;
-border-radius:20px;
-padding:16px;
-margin-bottom:16px;
-box-shadow:0 4px 12px rgba(0,0,0,.06);
-border:1px solid #e5e7eb;
-overflow-x:auto;
-}
-#abaEstado .cardExecutivo{width:100%;}
+.painelTitulo{font-size:24px;font-weight:900;color:#0f172a;margin:8px 0 15px;padding:12px 18px;border-left:8px solid #f97316;background:#fff;border-radius:14px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.cardExecutivo{background:#fff;border-radius:20px;padding:16px;margin-bottom:16px;box-shadow:0 4px 12px rgba(0,0,0,.06);border:1px solid #e5e7eb;overflow-x:auto}
 .cardExecutivo h2{font-size:18px;font-weight:900;color:#0f172a;margin-bottom:12px;border-bottom:2px solid #e5e7eb;padding-bottom:8px}
+#abaEstado .cardExecutivo{width:100%}
+.cardPainel{background:#fff;border-radius:14px;padding:15px;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid #e5e7eb;min-height:220px}
+.cardPainel h3{margin:0 0 12px;font-size:18px;font-weight:900;color:#0f172a;padding-bottom:8px;border-bottom:1px solid #e5e7eb}
 /*=========================================================
-009 CHAP
+007 KPIS
+=========================================================*/
+.kpiGrid{display:grid;grid-template-columns:2fr 2fr 2fr 1fr 1fr 1fr;gap:14px;align-items:stretch;width:100%}
+.kpiCard{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:20px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08);display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:120px}
+.kpiNumero{font-size:clamp(24px,2vw,34px);font-weight:900;line-height:1;color:#0f172a;text-align:center;word-break:break-word}
+.kpiTitulo{margin-top:8px;font-size:12px;font-weight:800;text-align:center;line-height:1.2;color:#475569}
+.gridKPIMunicipios{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-top:15px}
+/*=========================================================
+008 CHAP
 =========================================================*/
 .chap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
 .chap-card{background:#fff;border-radius:14px;padding:10px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06);border:1px solid #e5e7eb}
 .chap-num{font-size:26px;font-weight:900;color:#2563eb;line-height:1}
 .chap-label{font-size:10px;font-weight:800;color:#334155;margin-top:4px;line-height:1.1}
 /*=========================================================
-010 HEATMAP
+009 HEATMAP
 =========================================================*/
 .heatmap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.heat-verde,.heat-amarelo,.heat-laranja,.heat-vermelho{padding:14px;border-radius:14px;font-weight:800;min-height:140px;position:relative;box-shadow:0 4px 12px rgba(0,0,0,.10);transition:.2s;overflow:hidden;text-align:center;display:flex;flex-direction:column;justify-content:center}
-.heat-verde:hover,.heat-amarelo:hover,.heat-laranja:hover,.heat-vermelho:hover{transform:translateY(-2px)}
+.heat-verde,.heat-amarelo,.heat-laranja,.heat-vermelho,.heat-azul{padding:14px;border-radius:14px;font-weight:800;min-height:140px;position:relative;box-shadow:0 4px 12px rgba(0,0,0,.10);transition:.2s;overflow:hidden;text-align:center;display:flex;flex-direction:column;justify-content:center}
+.heat-verde:hover,.heat-amarelo:hover,.heat-laranja:hover,.heat-vermelho:hover,.heat-azul:hover{transform:translateY(-2px)}
 .heat-verde{background:#16a34a;color:#fff}
 .heat-amarelo{background:#facc15;color:#000}
 .heat-laranja{background:#f97316;color:#fff}
 .heat-vermelho{background:#dc2626;color:#fff}
+.heat-azul{background:#2563eb;color:#fff}
 .heat-ranking{position:absolute;top:8px;left:8px;width:32px;height:32px;border-radius:50%;background:#fff;color:#dc2626;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.20)}
 .heat-municipio{font-size:18px;font-weight:900;color:#000;margin-top:32px;margin-bottom:8px;line-height:20px}
 .heat-info{font-size:12px;line-height:18px}
-@media(max-width:1200px){.heatmap-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.heatmap-grid{grid-template-columns:1fr}}
 /*=========================================================
-011 MATRIZ 5X5
+010 MATRIZ 5X5
 =========================================================*/
 .matriz5x5{display:grid;grid-template-columns:repeat(5,1fr);border-radius:16px;overflow:hidden;border:2px solid #cbd5e1}
-.risco-baixo{background:#bbf7d0;padding:8px;min-height:120px}
-.risco-medio{background:#fde68a;padding:8px;min-height:120px}
-.risco-alto{background:#fb923c;padding:8px;min-height:120px;color:#fff}
-.risco-critico{background:#991b1b;padding:8px;min-height:120px;color:#fff}
+.risco-baixo,.risco-medio,.risco-alto,.risco-critico{padding:8px;min-height:120px}
+.risco-baixo{background:#bbf7d0}
+.risco-medio{background:#fde68a}
+.risco-alto{background:#fb923c;color:#fff}
+.risco-critico{background:#991b1b;color:#fff}
 .risco-tag{background:rgba(255,255,255,.95);padding:6px;border-radius:8px;color:#000;font-size:11px;font-weight:800;margin-bottom:4px}
 /*=========================================================
-012 CADEIA DE VALOR
+011 CADEIA DE VALOR
 =========================================================*/
 .cadeia-card{background:#fff;border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
 .cadeia-item{font-size:16px;font-weight:900;color:#1e293b;margin-bottom:12px}
-.cadeia-flow{display:grid;grid-template-columns:repeat(3,minmax(280px,1fr));gap:18px;align-items:stretch;width:100%;overflow:visible}
+.cadeia-flow{display:grid;grid-template-columns:repeat(3,minmax(280px,1fr));gap:18px;align-items:stretch;width:100%}
 .cadeia-box{width:100%;min-width:0;min-height:130px;padding:18px;border-radius:14px;text-align:center;font-size:14px;font-weight:800;display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 8px rgba(0,0,0,.08)}
 .cadeia-insumo{background:#dbeafe}
 .cadeia-atividade{background:#fde68a}
@@ -92,11 +91,8 @@ overflow-x:auto;
 .cadeia-resultado{background:#ddd6fe}
 .cadeia-impacto{background:#fbcfe8}
 .cadeia-beneficio{background:#86efac}
-.cadeia-seta{display:none}
-@media(max-width:1200px){.cadeia-flow{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.cadeia-flow{grid-template-columns:1fr}}
 /*=========================================================
-013 TEORIA DA MUDANCA
+012 TEORIA DA MUDANCA
 =========================================================*/
 .tdm-card{background:#fff;border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
 .tdm-titulo{font-size:16px;font-weight:900;color:#1e293b;margin-bottom:14px}
@@ -110,43 +106,49 @@ overflow-x:auto;
 .tdm-beneficio{background:#86efac}
 .tdm-seta{font-size:30px;font-weight:900;color:#475569;flex-shrink:0}
 /*=========================================================
-014 GANTT
+013 GANTT
 =========================================================*/
 .gantt-row{display:flex;align-items:center;margin-bottom:10px}
 .gantt-titulo{width:320px;font-size:12px;font-weight:800;color:#1e293b}
 .gantt-area{position:relative;height:42px;flex:1;background:#f1f5f9;border-radius:12px}
-.gantt-bar{
-position:absolute;
-height:32px;
-top:5px;
-border-radius:10px;
-color:#000!important;
-font-size:9px!important;
-font-weight:700!important;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:0 10px;
-text-shadow:none!important;
-}
+.gantt-bar{position:absolute;height:32px;top:5px;border-radius:10px;color:#000!important;font-size:9px!important;font-weight:700!important;display:flex;align-items:center;justify-content:center;padding:0 10px;text-shadow:none!important}
 .gantt-bar.andamento{background:#2563eb}
 .gantt-bar.atrasado{background:#dc2626}
 .gantt-bar.concluido{background:#16a34a}
+.gantt-header,.gantt-linha{display:grid;grid-template-columns:320px repeat(12,1fr);gap:4px;align-items:center}
+.gantt-header{font-weight:900;margin-bottom:12px;text-align:center}
+.gantt-linha{margin-bottom:10px}
+.gantt-header div{background:#e2e8f0;padding:8px;border-radius:6px}
+.gantt-linha:hover{background:#f8fafc;border-radius:10px}
+.gantt-nome{font-weight:800;padding:10px}
+.gantt-barra,.gantt-vazio{height:38px;border-radius:10px}
+.gantt-barra{display:flex;align-items:center;justify-content:center;font-size:9px!important;font-weight:700!important;color:#000!important;text-shadow:none!important;letter-spacing:.2px;overflow:hidden;white-space:nowrap}
+.gantt-barra.azul{background:#2563eb}
+.gantt-barra.verde{background:#16a34a}
+.gantt-barra.vermelho{background:#dc2626}
+.gantt-barra.laranja{background:#f97316}
+.gantt-vazio{background:#f8fafc;border:1px solid #e2e8f0}
+.gantt-responsavel{display:block;margin-top:4px;font-size:10px;color:#64748b;font-weight:600}
 /*=========================================================
-015 ODS
+014 ODS
 =========================================================*/
 .ods13{background:#22c55e}
 .ods15{background:#15803d}
 .ods16{background:#2563eb}
+.ods-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ods-card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 4px 10px rgba(0,0,0,.08)}
+.ods-executivo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.ods-executivo-card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 4px 14px rgba(0,0,0,.08);border-left:8px solid #2563eb}
+.ods-score{font-size:42px;font-weight:900;line-height:42px}
+.ods-titulo{font-size:15px;font-weight:800;margin-top:8px}
+.ods-meta{font-size:12px;color:#475569;margin-top:6px}
+.ods-ia{font-size:11px;color:#64748b;margin-top:10px;line-height:16px}
 /*=========================================================
-016 IMPACTO
+015 IMPACTO E MONITORAMENTO
 =========================================================*/
 .impacto-box{background:#fff;border-radius:18px;padding:18px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08)}
 .impacto-score{font-size:52px;font-weight:900;color:#dc2626}
 .impacto-label{font-size:13px;font-weight:800;color:#334155}
-/*=========================================================
-017 MONITORAMENTO 4D
-=========================================================*/
 .monitor4d-card{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
 .monitor4d-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
 .monitor4d-kpi{padding:12px;border-radius:12px;text-align:center;font-weight:900}
@@ -155,311 +157,204 @@ text-shadow:none!important;
 .impacto{background:#fbcfe8}
 .risco{background:#fecaca}
 /*=========================================================
-018 MAPA
+016 MAPAS
 =========================================================*/
-#mapaRO{width:100%;height:650px;border-radius:14px;overflow:hidden}
+#MapaRO,#boxMapaRO{width:100%;display:block}
+#MapaRO{height:750px}
+#mapaRO,#mapaROEstadual,#mapaMunicipalPlanos{width:100%;height:700px;min-height:700px;border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;display:block}
+.leaflet-container{font-family:Arial,sans-serif}
+#abaExecutivo .leaflet-container,#abaExecutivoMunicipal .leaflet-container,#abaMapa .leaflet-container{background:#f8fafc}
 .leaflet-popup-content{font-size:12px;font-weight:800}
-.legendaMapa{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;padding:10px;font-weight:800}
+.legendaMapa,.legendaMapaExecutivo{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;padding:10px;font-weight:800}
+.legendaMapaExecutivo{justify-content:flex-start;margin-top:10px;font-size:12px;padding:0}
+.itemLegenda{display:flex;align-items:center;gap:6px}
+.legCor{width:16px;height:16px;border-radius:4px;display:inline-block;border:1px solid #cbd5e1}
 .legendaCritico{color:#dc2626}
 .legendaAlto{color:#f97316}
 .legendaModerado{color:#facc15}
 .legendaBaixo{color:#16a34a}
 /*=========================================================
-019 LINHAS
+017 GRIDS EXECUTIVOS
 =========================================================*/
-.linha-queimadas{padding:10px;border-bottom:1px solid #e5e7eb;font-weight:700}
-.alerta-vermelho{background:#dc2626;color:#fff;padding:12px;border-radius:12px;font-weight:900;margin-bottom:8px}
-/*=========================================================
-020 RESPONSIVIDADE
-=========================================================*/
-@media(max-width:1200px){.monitor4d-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.topoSistema{flex-direction:column;align-items:flex-start;gap:15px}.menuQueimadas button{width:100%}.monitor4d-grid{grid-template-columns:1fr}.gantt-row{flex-direction:column;align-items:flex-start}.gantt-titulo{width:100%;margin-bottom:6px}#mapaRO{height:500px}}
-
 .exec-mapa-grid{display:grid;grid-template-columns:3fr 1fr;gap:14px;align-items:start}
 .exec-lateral{display:flex;flex-direction:column;gap:12px}
 .exec-duplo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
-@media(max-width:1200px){.exec-mapa-grid{grid-template-columns:1fr}.exec-duplo{grid-template-columns:1fr}}
-.heat-azul{background:#2563eb;color:#fff;padding:14px;border-radius:14px;font-weight:800;min-height:165px;position:relative;box-shadow:0 4px 12px rgba(0,0,0,.10)}
-
-.gantt-header{display:grid;grid-template-columns:320px repeat(12,1fr);gap:4px;font-weight:900;margin-bottom:12px;text-align:center}
-.gantt-linha{display:grid;grid-template-columns:320px repeat(12,1fr);gap:4px;margin-bottom:10px;align-items:center}
-.gantt-nome{font-weight:800;padding:10px}
-.gantt-barra{height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:9px!important;font-weight:700!important;color:#000!important;text-shadow:none!important;letter-spacing:.2px;overflow:hidden;white-space:nowrap}
-.gantt-barra.azul{background:#2563eb}
-.gantt-barra.verde{background:#16a34a}
-.gantt-barra.vermelho{background:#dc2626}
-.gantt-barra.laranja{background:#f97316}
-.gantt-header div{background:#e2e8f0;padding:8px;border-radius:6px}
-.gantt-linha:hover{background:#f8fafc;border-radius:10px}
-.gantt-vazio{height:38px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px}
-.gantt-responsavel{display:block;margin-top:4px;font-size:10px;color:#64748b;font-weight:600}
-
-.ranking-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
+/*=========================================================
+018 RANKINGS E ALERTAS
+=========================================================*/
+.ranking-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:15px;margin:15px 0}
 .ranking-card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px;position:relative;min-height:150px}
 .ranking-posicao{position:absolute;top:6px;left:6px;background:#dc2626;color:#fff;width:22px;height:22px;border-radius:4px;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center}
 .ranking-municipio{font-size:15px;font-weight:900;color:#0f172a;margin-top:18px;margin-bottom:10px;line-height:18px}
 .ranking-info{font-size:12px;color:#334155;margin-bottom:4px}
-@media(max-width:1400px){.ranking-grid{grid-template-columns:repeat(5,1fr)}}
-@media(max-width:900px){.ranking-grid{grid-template-columns:repeat(2,1fr)}}
-
+.linha-ranking{display:flex;justify-content:space-between;align-items:center;padding:8px 4px;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:700}
+.linha-ranking:last-child{border-bottom:none}
 .alerta-ranking{display:flex;align-items:center;background:#ef4444;color:#fff;padding:8px 12px;border-radius:8px;margin-bottom:6px}
 .alerta-numero{background:#fff;color:#dc2626;width:26px;height:26px;border-radius:6px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-right:10px}
 .alerta-texto{font-size:12px;line-height:16px}
-
+.alerta-vermelho{background:#dc2626;color:#fff;padding:12px;border-radius:12px;font-weight:900;margin-bottom:8px}
+/*=========================================================
+019 FONTES E INPUTS
+=========================================================*/
 .fonte-card{margin-top:8px;font-size:10px;color:#94a3b8;text-align:left;font-style:italic;line-height:12px}
-
+.fontePainel{margin-top:18px;padding-top:10px;border-top:1px solid #dbe4f0;font-size:11px;font-style:italic;color:#64748b}
 .inputPadrao{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;background:#fff}
-.ods-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
-.ods-card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 4px 10px rgba(0,0,0,.08)}
-
-.ods-executivo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
-.ods-executivo-card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 4px 14px rgba(0,0,0,.08);border-left:8px solid #2563eb}
-.ods-score{font-size:42px;font-weight:900;line-height:42px}
-.ods-titulo{font-size:15px;font-weight:800;margin-top:8px}
-.ods-meta{font-size:12px;color:#475569;margin-top:6px}
-.ods-ia{font-size:11px;color:#64748b;margin-top:10px;line-height:16px}
-
+/*=========================================================
+020 PLANEJAMENTO
+=========================================================*/
 .planejamento-grid{display:grid;grid-template-columns:repeat(3,minmax(300px,1fr));gap:18px;width:100%;align-items:stretch}
 .planejamento-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 12px rgba(0,0,0,.08);border-top:6px solid #2563eb;display:flex;flex-direction:column;justify-content:space-between;min-height:170px;transition:.25s}
 .planejamento-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
 .planejamento-titulo{font-size:18px;font-weight:900;color:#0f172a;line-height:22px;margin-bottom:10px}
-.planejamento-periodo{margin-top:6px;font-size:13px;font-weight:700;color:#334155}
-.planejamento-responsavel{margin-top:8px;font-size:12px;font-weight:700;color:#475569}
+.planejamento-periodo,.periodo-plano{margin-top:6px;font-size:12px;font-weight:800;color:#334155;line-height:16px}
+.planejamento-responsavel,.responsavel-plano{margin-top:6px;font-size:11px;font-weight:700;color:#64748b}
 .planejamento-status{margin-top:10px;font-size:12px;font-weight:900;color:#16a34a}
-.periodo-plano{display:block;margin-top:6px;font-size:12px;font-weight:800;color:#334155;line-height:16px}
-.responsavel-plano{display:block;margin-top:6px;font-size:11px;font-weight:700;color:#64748b}
 .status-plano{display:inline-block;margin-top:8px;padding:5px 10px;border-radius:20px;background:#dbeafe;color:#1d4ed8;font-size:11px;font-weight:900;text-align:center}
-@media(max-width:1200px){.planejamento-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.planejamento-grid{grid-template-columns:1fr}}
-
-.modalMunicipioOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:99999;display:flex;align-items:center;justify-content:center}
+/*=========================================================
+021 MARCOS
+=========================================================*/
+.marcosGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;margin-top:12px}
+.marcoCard{background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 12px rgba(0,0,0,.08);border-left:6px solid #2563eb;transition:.25s}
+.marcoCard:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+.marcoData{font-size:14px;font-weight:900;color:#0f172a;margin-bottom:8px}
+.marcoTitulo{font-size:18px;font-weight:900;color:#2563eb;margin-bottom:10px}
+.marcoStatus{font-size:13px;font-weight:800;margin-bottom:6px}
+.marcoResponsavel{font-size:12px;color:#475569;font-weight:700}
+.statusContinuo{color:#16a34a}
+.statusExecucao{color:#2563eb}
+.statusPlanejado{color:#ea580c}
+.statusAtrasado{color:#dc2626}
+/*=========================================================
+022 INFO PAINEL
+=========================================================*/
+.infoPainel{margin:8px 0 14px}
+.infoPainel summary{cursor:pointer;font-weight:800;font-size:13px;color:#2563eb;list-style:none}
+.infoPainel summary::-webkit-details-marker{display:none}
+.infoPainel summary::before{content:"➕ ";font-weight:900}
+.infoPainel[open] summary::before{content:"➖ "}
+.infoPainel p{margin:8px 0;font-size:12px;line-height:1.55;color:#475569}
+.infoPainel b{color:#0f172a}
+.titulo-etapa{font-size:11px;font-weight:900;letter-spacing:1px;color:#475569;text-transform:uppercase;margin-bottom:10px}
+/*=========================================================
+023 FOCOS DE CALOR
+=========================================================*/
+.focosResumoGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
+.focoResumoCard{background:#fff;border-radius:14px;padding:18px;text-align:center;border:1px solid #e5e7eb;box-shadow:0 2px 8px rgba(0,0,0,.05);transition:.2s}
+.focoResumoCard:hover{transform:translateY(-2px)}
+.focoIcon{font-size:26px;margin-bottom:6px}
+.focoValor{font-size:34px;font-weight:900;color:#2563eb}
+.focoTitulo{font-size:13px;font-weight:800;color:#475569}
+.rankingCompacto{background:#fff;border-radius:14px;padding:18px;border:1px solid #e5e7eb}
+.rankingCompacto h3{margin:0 0 15px;font-size:19px;font-weight:900}
+.rankingLinha{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #edf2f7;font-size:17px}
+.rankingLinha:last-child{border-bottom:none}
+.ultimaAtualizacao{margin-top:15px;text-align:right;font-size:12px;color:#64748b}
+/*=========================================================
+024 TEMPO REAL
+=========================================================*/
+.kpiTempo{background:linear-gradient(135deg,#fff,#f8fafc);border:1px solid #e2e8f0;border-left:6px solid #2563eb;border-radius:18px;padding:20px;box-shadow:0 6px 14px rgba(15,23,42,.08);transition:.25s}
+.kpiTempo:hover{transform:translateY(-4px);box-shadow:0 10px 22px rgba(15,23,42,.16)}
+.kpiTempoNumero{font-size:40px;font-weight:900;color:#0f172a;line-height:1}
+.kpiTempoTitulo{margin-top:10px;font-size:12px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.8px}
+.cardRankingTR{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #e2e8f0;font-size:15px;font-weight:700;transition:.25s}
+.cardRankingTR:hover{background:#f8fafc;transform:translateX(3px)}
+.cardRankingMunicipio{display:flex;align-items:center;gap:10px}
+.cardRankingValor{font-size:17px;font-weight:900;color:#dc2626}
+.cardTempoReal{background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:18px;box-shadow:0 5px 12px rgba(15,23,42,.08)}
+.atualizacaoTR{text-align:center;font-size:18px;font-weight:900;color:#2563eb;padding:18px}
+.resumoTR{display:flex;flex-direction:column;gap:12px}
+.resumoLinha{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;transition:.25s}
+.resumoLinha:hover{background:#eff6ff;transform:translateX(3px)}
+.resumoEsquerda{display:flex;align-items:center;gap:10px;font-weight:700;color:#334155}
+.resumoValor{font-size:18px;font-weight:900;color:#0f172a}
+.resumoIcone{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#dbeafe;font-size:18px}
+.graficoTempoRealBox{position:relative;width:100%;height:390px;overflow:hidden}
+#graficoTempoReal,.graficoTempoRealBox canvas{width:100%!important;height:390px!important;max-height:390px!important}
+.statusTR{padding:5px 12px;border-radius:18px;font-size:12px;font-weight:900;letter-spacing:.5px}
+.statusOnline{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.statusOffline{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5}
+/*=========================================================
+025 MUNICÍPIOS - TABELA GERAL
+=========================================================*/
+.barraTabelaMunicipios{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 18px;padding:12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px}
+.barraTabelaMunicipios select{min-width:230px;height:40px;padding:0 12px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;font-weight:800;color:#0f172a}
+.barraTabelaMunicipios input{width:280px;max-width:100%;height:40px;padding:0 12px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;font-size:13px}
+.cabecalhoMapaMunicipal{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:14px}
+.cabecalhoMapaMunicipal h2{margin:0}
+.subtituloMapaMunicipal,.subtituloCadastroMunicipal{margin-top:4px;font-size:11px;font-weight:700;color:#64748b}
+.filtroMapaMunicipal{display:flex;gap:7px;flex-wrap:wrap}
+.tabelaMunicipiosWrap{width:100%;overflow-x:auto;padding:2px 0 4px}
+.tabelaMunicipiosNova{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;font-size:13px;color:#0f172a}
+.tabelaMunicipiosNova thead th{background:#f8fafc;color:#0f172a;font-size:11px;font-weight:900;letter-spacing:.25px;text-align:left;padding:10px;border-top:1px solid #e2e8f0;border-bottom:2px solid #cbd5e1;white-space:nowrap}
+.tabelaMunicipiosNova tbody td{padding:10px;border-bottom:1px solid #e5e7eb;vertical-align:top;background:#fff}
+.tabelaMunicipiosNova tbody tr:nth-child(even) td{background:#fafcff}
+.tabelaMunicipiosNova tbody tr:hover td{background:#f1f5f9}
+.tabelaMunicipiosNova .colMun{width:15%}
+.tabelaMunicipiosNova .colSit{width:14%}
+.tabelaMunicipiosNova .colDoc{width:10%;text-align:center}
+.tabelaMunicipiosNova .colData{width:11%;text-align:center}
+.tabelaMunicipiosNova .colObs{width:50%}
+.tdMunicipio{font-size:13px;font-weight:900;line-height:1.25;white-space:normal}
+.tdSituacao{font-size:12px;font-weight:900;line-height:1.25;text-transform:uppercase}
+.tdDocumento{font-size:12px;font-weight:800;text-align:center;white-space:nowrap}
+.tdRecebimento{font-size:12px;font-weight:700;text-align:center;white-space:nowrap}
+.tdObservacao{font-size:11px;font-weight:500;line-height:1.4;color:#475569;white-space:normal;overflow-wrap:break-word}
+.fonteTabelaMunicipios{font-size:9px!important;margin-top:8px;color:#94a3b8!important;font-style:italic}
+/*=========================================================
+026 CADASTRO MUNICIPAL
+=========================================================*/
+#painelCadastroMunicipiosResumo{width:100%;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y pinch-zoom}
+#painelCadastroMunicipiosResumo .tabelaMunicipios{width:max-content;min-width:1700px;border-collapse:collapse;table-layout:auto;background:#fff;font-size:12px}
+#painelCadastroMunicipiosResumo .tabelaMunicipios thead th{position:sticky;top:0;background:#0f172a;color:#fff;border:1px solid #cbd5e1;padding:8px 6px;font-size:12px;font-weight:700;text-align:center;white-space:nowrap;z-index:20}
+#painelCadastroMunicipiosResumo .tabelaMunicipios td{border:1px solid #e2e8f0;padding:6px;font-size:11px;line-height:1.25;vertical-align:top;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#painelCadastroMunicipiosResumo .tabelaMunicipios tr:nth-child(even){background:#f8fafc}
+#painelCadastroMunicipiosResumo .tabelaMunicipios tr:hover{background:#eef6ff}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:first-child,#painelCadastroMunicipiosResumo .tabelaMunicipios td:first-child{position:sticky;left:0;background:#fff;z-index:15;font-weight:700}
+#painelCadastroMunicipiosResumo .tabelaMunicipios thead th:first-child{background:#0f172a;color:#fff;z-index:30}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(1),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(1){min-width:180px}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(2),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(2){min-width:120px}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(3),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(3){min-width:70px;text-align:center}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(4),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(4){min-width:55px;text-align:center}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(5),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(5),#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(6),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(6),#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(7),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(7),#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(8),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(8){min-width:70px;text-align:center}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(9),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(9){width:130px;min-width:110px;max-width:110px;white-space:normal;word-break:break-word;overflow-wrap:anywhere}
+#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(10),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(10){min-width:60px;text-align:center}
+#painelCadastroMunicipiosResumo .btnEditarMunicipio{background:#2563eb;color:#fff;border:none;cursor:pointer;width:100%;padding:4px 6px;font-size:10px;font-weight:700;border-radius:6px;white-space:nowrap}
+#painelCadastroMunicipiosResumo .btnEditarMunicipio:hover{background:#1d4ed8}
+/*=========================================================
+027 MODAL MUNICIPAL
+=========================================================*/
+.modalMunicipioOverlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:99999;display:flex;align-items:center;justify-content:center}
 .modalMunicipioBox{background:#fff;width:900px;max-width:95%;max-height:90vh;overflow:auto;padding:20px;border-radius:12px}
 .modalMunicipioBox label{display:block;font-weight:700;margin-top:10px;margin-bottom:4px}
 .modalMunicipioBox input,.modalMunicipioBox textarea{width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:6px}
 .modalMunicipioBox textarea{height:120px;resize:vertical}
 .modalMunicipioBotoes{display:flex;gap:10px;margin-top:16px}
-.btnSalvarMunicipio{background:#16a34a;color:#fff;border:none;padding:10px 18px;border-radius:6px;cursor:pointer;font-weight:700}
-.btnCancelarMunicipio{background:#dc2626;color:#fff;border:none;padding:10px 18px;border-radius:6px;cursor:pointer;font-weight:700}
-.btnEditarMunicipio:hover{background:#1d4ed8}
-
-#mapaRO{width:100%;height:700px;min-height:700px;border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;display:block}
-#mapaROEstadual{width:100%;height:700px;min-height:700px;border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;display:block}
-#boxMapaRO{width:100%;display:block}
-.leaflet-container{font-family:Arial,sans-serif}
-#abaExecutivo .leaflet-container,#abaExecutivoMunicipal .leaflet-container,#abaMapa .leaflet-container{background:#f8fafc}
-#mapaMunicipalPlanos{width:100%;height:700px;min-height:700px;border:1px solid #cbd5e1;border-radius:12px;overflow:hidden;display:block;}
-.btnImprimirPainel{float:right;background:#c62828;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:700;margin-bottom:8px;}
-.btnImprimirPainel:hover{opacity:.9;}
-.gridCadastroEstado{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;}
-.gridCadastroEstado input,
-.gridCadastroEstado textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:6px;}
-.gridCadastroEstado textarea{min-height:90px;grid-column:1/-1;}
-.gridCadastroEstado button{background:#16a34a;color:#fff;border:none;padding:10px;border-radius:6px;cursor:pointer;font-weight:700;}
-.btnExcluirEstado{background:#dc2626;color:#fff;border:none;padding:4px 6px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;margin-left:4px;}
-.btnExcluirEstado:hover{background:#b91c1c;}
-.legendaMapaExecutivo{display:flex;gap:20px;flex-wrap:wrap;margin-top:10px;font-size:12px;font-weight:700}
-.itemLegenda{display:flex;align-items:center;gap:6px}
-.legCor{width:16px;height:16px;border-radius:4px;display:inline-block;border:1px solid #cbd5e1}
-/*=========================================================CADASTRO MUNICIPAL=========================================================*/
-#painelCadastroMunicipiosResumo{width:100%;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y pinch-zoom;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios{width:max-content;min-width:1700px;border-collapse:collapse;table-layout:auto;background:#fff;font-size:12px;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios thead th{position:sticky;top:0;background:#0f172a;color:#fff;border:1px solid #cbd5e1;padding:8px 6px;font-size:12px;font-weight:700;text-align:center;white-space:nowrap;z-index:20;resize:horizontal;overflow:auto;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios td{border:1px solid #e2e8f0;padding:6px;font-size:11px;line-height:1.25;vertical-align:top;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios tr:nth-child(even){background:#f8fafc;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios tr:hover{background:#eef6ff;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:first-child,#painelCadastroMunicipiosResumo .tabelaMunicipios td:first-child{position:sticky;left:0;background:#fff;z-index:15;font-weight:700;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios thead th:first-child{background:#0f172a;color:#fff;z-index:30;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(1),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(1){min-width:180px;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(2),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(2){min-width:120px;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(3),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(3){min-width:70px;text-align:center;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(4),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(4){min-width:55px;text-align:center;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(5),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(5){min-width:70px;text-align:center;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(6),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(6){min-width:70px;text-align:center;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(7),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(7){min-width:70px;text-align:center;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(8),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(8){min-width:70px;text-align:center;}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(9),
-#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(9){
-width:130px;
-min-width:110px;
-max-width:110px;
-white-space:normal;
-word-break:break-word;
-overflow-wrap:anywhere;
-}
-#painelCadastroMunicipiosResumo .tabelaMunicipios th:nth-child(10),#painelCadastroMunicipiosResumo .tabelaMunicipios td:nth-child(10){min-width:60px;text-align:center;}
-#painelCadastroMunicipiosResumo .btnEditarMunicipio{
-background:#2563eb;
-color:#fff;
-border:none;
-cursor:pointer;
-width:100%;
-padding:4px 6px;
-font-size:10px;
-font-weight:700;
-border-radius:6px;
-white-space:nowrap;
-}
-#painelCadastroMunicipiosResumo .btnEditarMunicipio:hover{
-background:#1d4ed8;
-}
-@media(max-width:1024px){#painelCadastroMunicipiosResumo .tabelaMunicipios{min-width:1800px;font-size:11px;}#painelCadastroMunicipiosResumo .tabelaMunicipios td{font-size:10px;}}
-@media(max-width:768px){#painelCadastroMunicipiosResumo{overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y pinch-zoom;}#painelCadastroMunicipiosResumo .tabelaMunicipios{min-width:1800px;font-size:10px;}}
-
+.btnSalvarMunicipio,.btnCancelarMunicipio{color:#fff;border:none;padding:10px 18px;border-radius:6px;cursor:pointer;font-weight:700}
+.btnSalvarMunicipio{background:#16a34a}
+.btnCancelarMunicipio{background:#dc2626}
 /*=========================================================
-CADASTRO ESTADUAL - TABELA GERAL
+028 CADASTRO ESTADUAL
 =========================================================*/
-#painelCadastroEstado .tabelaEstado{
-width:100%;
-border-collapse:collapse;
-table-layout:fixed;
-}
+.gridCadastroEstado{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.gridCadastroEstado input,.gridCadastroEstado textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:6px}
+.gridCadastroEstado textarea{min-height:90px;grid-column:1/-1}
+.gridCadastroEstado button{background:#16a34a;color:#fff;border:none;padding:10px;border-radius:6px;cursor:pointer;font-weight:700}
+#painelCadastroEstado .tabelaEstado{width:100%;border-collapse:collapse;table-layout:fixed}
+#painelCadastroEstado .tabelaEstado th{background:#0f172a;color:#fff;padding:8px;font-size:13px;font-weight:800;border:1px solid #cbd5e1;text-align:center}
+#painelCadastroEstado .tabelaEstado td{padding:8px;border:1px solid #cbd5e1;vertical-align:top;font-size:12px;line-height:1.25}
+#painelCadastroEstado .tabelaEstado th:nth-child(1),#painelCadastroEstado .tabelaEstado td:nth-child(1){width:140px}
+#painelCadastroEstado .tabelaEstado th:nth-child(2),#painelCadastroEstado .tabelaEstado td:nth-child(2){width:230px}
+#painelCadastroEstado .tabelaEstado th:nth-child(3),#painelCadastroEstado .tabelaEstado td:nth-child(3),#painelCadastroEstado .tabelaEstado th:nth-child(4),#painelCadastroEstado .tabelaEstado td:nth-child(4){width:90px;text-align:center}
+#painelCadastroEstado .tabelaEstado th:nth-child(5),#painelCadastroEstado .tabelaEstado td:nth-child(5),#painelCadastroEstado .tabelaEstado th:nth-child(6),#painelCadastroEstado .tabelaEstado td:nth-child(6){width:65px;text-align:center}
+#painelCadastroEstado .tabelaEstado th:nth-child(7),#painelCadastroEstado .tabelaEstado td:nth-child(7),#painelCadastroEstado .tabelaEstado th:nth-child(8),#painelCadastroEstado .tabelaEstado td:nth-child(8){width:80px;text-align:center}
+#painelCadastroEstado .tabelaEstado th:nth-child(9),#painelCadastroEstado .tabelaEstado td:nth-child(9){text-align:left}
+#painelCadastroEstado .tabelaEstado th:nth-child(10),#painelCadastroEstado .tabelaEstado td:nth-child(10){width:60px;text-align:center}
+#painelCadastroEstado .btnEditarEstado{padding:2px 4px;font-size:10px;min-width:50px;height:22px}
+.btnExcluirEstado{background:#dc2626;color:#fff;border:none;padding:4px 6px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;margin-left:4px}
+.btnExcluirEstado:hover{background:#b91c1c}
 /*=========================================================
-CADASTRO ESTADUAL - CABEÇALHO
+029 RELATORIOS
 =========================================================*/
-#painelCadastroEstado .tabelaEstado th{
-background:#0f172a;
-color:#fff;
-padding:8px;
-font-size:13px;
-font-weight:800;
-border:1px solid #cbd5e1;
-text-align:center;
-}
-/*=========================================================
-CADASTRO ESTADUAL - CÉLULAS
-=========================================================*/
-#painelCadastroEstado .tabelaEstado td{
-padding:8px;
-border:1px solid #cbd5e1;
-vertical-align:top;
-font-size:12px;
-line-height:1.25;
-}
-/*=========================================================
-CADASTRO ESTADUAL - ÓRGÃO
-=========================================================*/
-#painelCadastroEstado .tabelaEstado th:nth-child(1),
-#painelCadastroEstado .tabelaEstado td:nth-child(1){
-width:140px;
-}
-/*=========================================================
-CADASTRO ESTADUAL - OFÍCIO TCE
-=========================================================*/
-#painelCadastroEstado .tabelaEstado th:nth-child(2),
-#painelCadastroEstado .tabelaEstado td:nth-child(2){
-width:230px;
-}
-/*=========================================================
-CADASTRO ESTADUAL - DATA ENVIO
-=========================================================*/
-#painelCadastroEstado .tabelaEstado th:nth-child(3),
-#painelCadastroEstado .tabelaEstado td:nth-child(3){
-width:90px;
-text-align:center;
-}
-/*=========================================================
-CADASTRO ESTADUAL - PÁGINA
-=========================================================*/
-#painelCadastroEstado .tabelaEstado th:nth-child(4),
-#painelCadastroEstado .tabelaEstado td:nth-child(4){
-width:90px;
-text-align:center;
-}
-/*=========================================================
-CADASTRO ESTADUAL - DATA RECEBIMENTO 1
-=========================================================*/
-#painelCadastroEstado .tabelaEstado th:nth-child(5),
-#painelCadastroEstado .tabelaEstado td:nth-child(5){
-width:65px;
-min-width:65px;
-max-width:65px;
-text-align:center;
-}
-/*=========================================================
-CADASTRO ESTADUAL - DATA RECEBIMENTO 2
-=========================================================*/
-#painelCadastroEstado .tabelaEstado th:nth-child(6),
-#painelCadastroEstado .tabelaEstado td:nth-child(6){
-width:65px;
-min-width:65px;
-max-width:65px;
-text-align:center;
-}
-/*=========================================================
-CADASTRO ESTADUAL - DOCUMENTO 1
-=========================================================*/
-#painelCadastroEstado .tabelaEstado th:nth-child(7),
-#painelCadastroEstado .tabelaEstado td:nth-child(7){
-width:80px;
-min-width:80px;
-max-width:80px;
-text-align:center;
-}
-/*=========================================================
-CADASTRO ESTADUAL - DOCUMENTO 2
-=========================================================*/
-#painelCadastroEstado .tabelaEstado th:nth-child(8),
-#painelCadastroEstado .tabelaEstado td:nth-child(8){
-width:80px;
-min-width:80px;
-max-width:80px;
-text-align:center;
-}
-/*=========================================================
-CADASTRO ESTADUAL - OBSERVAÇÃO
-=========================================================*/
-#painelCadastroEstado .tabelaEstado th:nth-child(9),
-#painelCadastroEstado .tabelaEstado td:nth-child(9){text-align:left;}
-/*=========================================================
-CADASTRO ESTADUAL - AÇÃO
-=========================================================*/
-#painelCadastroEstado .tabelaEstado th:nth-child(10),
-#painelCadastroEstado .tabelaEstado td:nth-child(10){
-width:60px;
-min-width:60px;
-max-width:60px;
-text-align:center;
-}
-/*=========================================================
-CADASTRO ESTADUAL - BOTÃO EDITAR
-=========================================================*/
-#painelCadastroEstado .btnEditarEstado{padding:2px 4px;font-size:10px;min-width:50px;height:22px;}
-/*=========================================================
-CADASTRO ESTADUAL - OBSERVAÇÃO MOBILE
-=========================================================*/
-@media(max-width:768px){#painelCadastroEstado .tabelaEstado{min-width:1200px;}}
-/*=========================================================
-ABAS QUEIMADAS - HOVER
-=========================================================*/
-.btnAbaQueimadas:hover{transform:translateY(-1px);}
-/*=========================================================
-MENU QUEIMADAS BOTAO NORMAL
-=========================================================*/
-.btnAbaQueimadas{transition:.3s;}
-/*=========================================================
-MENU QUEIMADAS BOTAO ATIVO
-=========================================================*/
-.btnAbaAtiva{background:linear-gradient(135deg,#dc2626,#991b1b)!important;color:#ffffff!important;font-weight:900!important;transform:scale(1.03);box-shadow:0 0 20px rgba(220,38,38,.45);border:2px solid #ffffff;}
-
-.kpiGrid{display:grid;grid-template-columns:2fr 2fr 2fr 1fr 1fr 1fr;gap:14px;align-items:stretch;width:100%;}
-.kpiCard{padding:20px;border-radius:18px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.08);display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:120px;}
-.kpiNumero{font-size:clamp(24px,2vw,34px);font-weight:900;line-height:1;color:#2563eb;text-align:center;word-break:break-word;}
-.kpiTitulo{margin-top:8px;font-size:12px;font-weight:800;text-align:center;line-height:1.2;}
-.linha-ranking{padding:8px;border-bottom:1px solid #e5e7eb;font-size:13px;font-weight:700;}
-@media(max-width:1200px){.kpiGrid{grid-template-columns:repeat(3,1fr);}}
-@media(max-width:768px){.kpiGrid{grid-template-columns:repeat(2,1fr);}.kpiNumero{font-size:28px;}}
-@media(max-width:480px){.kpiGrid{grid-template-columns:1fr;}.kpiNumero{font-size:24px;}}
-
-.ranking-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:15px;margin-top:15px;margin-bottom:15px}
-.cardPainel{background:#fff;border-radius:14px;padding:15px;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid #e5e7eb;min-height:220px}
-.cardPainel h3{margin:0 0 12px 0;font-size:18px;font-weight:900;color:#0f172a;padding-bottom:8px;border-bottom:1px solid #e5e7eb}
-.linha-ranking{display:flex;justify-content:space-between;align-items:center;padding:8px 4px;border-bottom:1px solid #f1f5f9;font-size:14px;font-weight:700}
-.linha-ranking:last-child{border-bottom:none}
-#painelSalaSituacao .chap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
-#painelSalaSituacao .chap-card{background:#fff;border-radius:12px;padding:15px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-#painelSalaSituacao .chap-num{font-size:32px;font-weight:900;color:#2563eb}
-#painelSalaSituacao .chap-label{font-size:12px;font-weight:800;color:#475569;margin-top:5px}
-
 .bannerExecutivoQueimadas{background:linear-gradient(135deg,#0f3d91,#14532d);border-radius:24px;padding:30px;color:#fff;text-align:center;margin:20px auto;box-shadow:0 12px 35px rgba(0,0,0,.22)}
 .bannerTitulo{font-size:38px;font-weight:900;letter-spacing:2px;line-height:40px}
 .bannerSubtitulo{font-size:18px;font-weight:800;margin-top:10px;opacity:.98}
@@ -473,423 +368,39 @@ MENU QUEIMADAS BOTAO ATIVO
 .btnRelatorioPDF .btnIcone,.btnRelatorioWORD .btnIcone,.btnSumarioExecutivo .btnIcone{font-size:52px;line-height:52px;margin-bottom:12px}
 .btnRelatorioPDF .btnTitulo,.btnRelatorioWORD .btnTitulo,.btnSumarioExecutivo .btnTitulo{font-size:20px;font-weight:900;line-height:24px}
 .btnRelatorioPDF .btnSubtitulo,.btnRelatorioWORD .btnSubtitulo,.btnSumarioExecutivo .btnSubtitulo{font-size:13px;font-weight:700;opacity:.95;margin-top:10px}
-@media(max-width:900px){.boxRelatoriosExecutivos{flex-direction:column;align-items:center}.btnRelatorioPDF,.btnRelatorioWORD,.btnSumarioExecutivo{width:100%;max-width:360px;height:160px}}
-
-#MapaRO{width:100%;height:750px;display:block}
-#mapaRO{width:100%;height:750px;border-radius:12px}
-.tabelaResumoMunicipios{width:100%;border-collapse:collapse;table-layout:auto;font-size:10px;}
-.tabelaResumoMunicipios th,.tabelaResumoMunicipios td{border:1px solid #e2e8f0;padding:6px;}
-.tabelaResumoMunicipios tr:hover{background:#f8fafc;}
-.gridKPIMunicipios{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-top:15px;}
-
-.kpiCard{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08);}
-.kpiNumero{font-size:34px;font-weight:800;color:#0f172a;}
-.kpiTitulo{margin-top:8px;font-size:14px;font-weight:700;color:#475569;}
-
-.marcosGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;margin-top:12px}
-.marcoCard{background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 12px rgba(0,0,0,.08);border-left:6px solid #2563eb;transition:.25s}
-.marcoCard:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
-.marcoData{font-size:14px;font-weight:900;color:#0f172a;margin-bottom:8px}
-.marcoTitulo{font-size:18px;font-weight:900;color:#2563eb;margin-bottom:10px}
-.marcoStatus{font-size:13px;font-weight:800;margin-bottom:6px}
-.marcoResponsavel{font-size:12px;color:#475569;font-weight:700}
-.statusContinuo{color:#16a34a}
-.statusExecucao{color:#2563eb}
-.statusPlanejado{color:#ea580c}
-.statusAtrasado{color:#dc2626}
-@media(max-width:1200px){.marcosGrid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.marcosGrid{grid-template-columns:1fr}}
-
-.infoPainel{margin:8px 0 14px}
-.infoPainel summary{cursor:pointer;font-weight:800;font-size:13px;color:#2563eb;list-style:none}
-.infoPainel summary::-webkit-details-marker{display:none}
-.infoPainel summary::before{content:"➕ ";font-weight:900}
-.infoPainel[open] summary::before{content:"➖ "}
-.infoPainel p{margin:8px 0;font-size:12px;line-height:1.55;color:#475569}
-.infoPainel b{color:#0f172a}
-.titulo-etapa{
-font-size:11px;
-font-weight:900;
-letter-spacing:1px;
-color:#475569;
-text-transform:uppercase;
-margin-bottom:10px;
-}
-
-.fontePainel{
-margin-top:18px;
-padding-top:10px;
-border-top:1px solid #dbe4f0;
-font-size:11px;
-font-style:italic;
-color:#64748b;
-}
-.focosResumoGrid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:16px;
-margin-bottom:18px
-}
-
-.focoResumoCard{
-background:#fff;
-border-radius:14px;
-padding:18px;
-text-align:center;
-border:1px solid #e5e7eb;
-box-shadow:0 2px 8px rgba(0,0,0,.05)
-}
-
-.focoResumoCard:hover{
-transform:translateY(-2px);
-transition:.2s
-}
-
-.focoIcon{
-font-size:26px;
-margin-bottom:6px
-}
-
-.focoValor{
-font-size:34px;
-font-weight:900;
-color:#2563eb
-}
-
-.focoTitulo{
-font-size:13px;
-font-weight:800;
-color:#475569
-}
-
-.rankingCompacto{
-background:#fff;
-border-radius:14px;
-padding:18px;
-border:1px solid #e5e7eb
-}
-
-.rankingCompacto h3{
-margin:0 0 15px;
-font-size:19px;
-font-weight:900
-}
-
-.rankingLinha{
-display:flex;
-justify-content:space-between;
-padding:12px 0;
-border-bottom:1px solid #edf2f7;
-font-size:17px
-}
-
-.rankingLinha:last-child{
-border-bottom:none
-}
-
-.ultimaAtualizacao{
-margin-top:15px;
-text-align:right;
-font-size:12px;
-color:#64748b
-}
-
-@media(max-width:900px){
-
-.focosResumoGrid{
-grid-template-columns:repeat(2,1fr)
-}
-
-}
-
-@media(max-width:600px){
-
-.focosResumoGrid{
-grid-template-columns:1fr
-}
-
-}
-.kpiTempo{background:linear-gradient(135deg,#ffffff,#f8fafc);border:1px solid #e2e8f0;border-left:6px solid #2563eb;border-radius:18px;padding:20px;box-shadow:0 6px 14px rgba(15,23,42,.08);transition:.25s}
-.kpiTempo:hover{transform:translateY(-4px);box-shadow:0 10px 22px rgba(15,23,42,.16)}
-.kpiTempoNumero{font-size:40px;font-weight:900;color:#0f172a;line-height:1}
-.kpiTempoTitulo{margin-top:10px;font-size:12px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.8px}
-.cardRankingTR{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #e2e8f0;font-size:15px;font-weight:700;transition:.25s}
-.cardRankingTR:hover{background:#f8fafc;transform:translateX(3px)}
-.cardRankingMunicipio{display:flex;align-items:center;gap:10px}
-.cardRankingValor{font-size:17px;font-weight:900;color:#dc2626}
-.cardTempoReal{background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:18px;box-shadow:0 5px 12px rgba(15,23,42,.08)}
-.cardTempoReal p{margin:10px 0;font-size:15px;color:#334155}
-.atualizacaoTR{text-align:center;font-size:18px;font-weight:900;color:#2563eb;padding:18px}
-#graficoTempoReal{width:100%!important;height:320px!important;max-height:320px!important}
-.resumoTR{display:flex;flex-direction:column;gap:12px}
-.resumoLinha{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;transition:.25s}
-.resumoLinha:hover{background:#eff6ff;transform:translateX(3px)}
-.resumoEsquerda{display:flex;align-items:center;gap:10px;font-weight:700;color:#334155}
-.resumoValor{font-size:18px;font-weight:900;color:#0f172a}
-.resumoIcone{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#dbeafe;font-size:18px}
-.graficoTempoRealBox{position:relative;width:100%;height:320px;overflow:hidden}
-.graficoTempoRealBox canvas{width:100%!important;height:320px!important}
-.statusTR{padding:5px 12px;border-radius:18px;font-size:12px;font-weight:900;letter-spacing:.5px}
-.statusOnline{background:#dcfce7;color:#15803d;border:1px solid #86efac}
-.statusOffline{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5}
-
 /*=========================================================
-TABELA GERAL DOS MUNICÍPIOS - LAYOUT EXECUTIVO
+030 LOGIN
 =========================================================*/
-.tabelaMunicipiosWrap{
-width:100%;
-overflow-x:auto;
-padding:2px 0 4px;
-}
-.tabelaMunicipiosNova{
-width:100%;
-border-collapse:separate;
-border-spacing:0;
-table-layout:fixed;
-font-size:13px;
-color:#0f172a;
-}
-.tabelaMunicipiosNova thead th{
-background:#f8fafc;
-color:#0f172a;
-font-size:11px;
-font-weight:900;
-letter-spacing:.25px;
-text-align:left;
-padding:10px 10px;
-border-top:1px solid #e2e8f0;
-border-bottom:2px solid #cbd5e1;
-white-space:nowrap;
-}
-.tabelaMunicipiosNova tbody td{
-padding:10px 10px;
-border-bottom:1px solid #e5e7eb;
-vertical-align:top;
-background:#fff;
-}
-.tabelaMunicipiosNova tbody tr:nth-child(even) td{
-background:#fafcff;
-}
-.tabelaMunicipiosNova tbody tr:hover td{
-background:#f1f5f9;
-}
-.tabelaMunicipiosNova .colMun{
-width:15%;
-}
-.tabelaMunicipiosNova .colSit{
-width:14%;
-}
-.tabelaMunicipiosNova .colDoc{
-width:10%;
-text-align:center;
-}
-.tabelaMunicipiosNova .colData{
-width:11%;
-text-align:center;
-}
-.tabelaMunicipiosNova .colObs{
-width:50%;
-}
-.tdMunicipio{
-font-size:13px;
-font-weight:900;
-line-height:1.25;
-white-space:normal;
-word-break:normal;
-}
-.tdSituacao{
-font-size:12px;
-font-weight:900;
-line-height:1.25;
-text-transform:uppercase;
-}
-.tdDocumento{
-font-size:12px;
-font-weight:800;
-text-align:center;
-white-space:nowrap;
-}
-.tdRecebimento{
-font-size:12px;
-font-weight:700;
-text-align:center;
-white-space:nowrap;
-}
-.tdObservacao{
-font-size:11px;
-font-weight:500;
-line-height:1.4;
-color:#475569;
-white-space:normal;
-word-break:normal;
-overflow-wrap:break-word;
-}
-.fonteTabelaMunicipios{
-font-size:9px!important;
-margin-top:8px;
-color:#94a3b8!important;
-font-style:italic;
-}
-@media(max-width:1100px){
-.tabelaMunicipiosNova{
-min-width:1000px;
-}
-}
-
+.loginQueimadasOverlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f172a,#1e293b);padding:20px}
+.loginQueimadasBox{width:min(420px,100%);background:#fff;border-radius:22px;padding:38px 34px;box-shadow:0 25px 60px rgba(0,0,0,.35);text-align:center}
+.loginQueimadasIcone{font-size:52px;margin-bottom:8px}
+.loginQueimadasBox h1{margin:0;font-size:29px;font-weight:1000;color:#0f172a}
+.loginQueimadasBox p{margin:6px 0 24px;color:#64748b;font-size:13px;font-weight:700}
+.loginQueimadasBox input{width:100%;height:48px;margin-bottom:12px;padding:0 15px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;outline:none}
+.loginQueimadasBox input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.loginQueimadasBox button{width:100%;height:48px;border:0;border-radius:10px;background:#0f172a;color:#fff;font-weight:900;font-size:14px;cursor:pointer}
+.loginQueimadasBox button:hover{background:#1e3a8a}
+#queimadas-login-erro{min-height:20px;margin-top:12px;font-size:12px;font-weight:800;color:#dc2626}
 /*=========================================================
-LOGIN QUEIMADAS
+031 MODAL SENHA
 =========================================================*/
-.loginQueimadasOverlay{
-position:fixed;
-inset:0;
-z-index:99999;
-display:flex;
-align-items:center;
-justify-content:center;
-background:linear-gradient(135deg,#0f172a,#1e293b);
-padding:20px;
-}
-.loginQueimadasBox{
-width:min(420px,100%);
-background:#fff;
-border-radius:22px;
-padding:38px 34px;
-box-shadow:0 25px 60px rgba(0,0,0,.35);
-text-align:center;
-}
-.loginQueimadasIcone{
-font-size:52px;
-margin-bottom:8px;
-}
-.loginQueimadasBox h1{
-margin:0;
-font-size:29px;
-font-weight:1000;
-color:#0f172a;
-}
-.loginQueimadasBox p{
-margin:6px 0 24px;
-color:#64748b;
-font-size:13px;
-font-weight:700;
-}
-.loginQueimadasBox input{
-box-sizing:border-box;
-width:100%;
-height:48px;
-margin-bottom:12px;
-padding:0 15px;
-border:1px solid #cbd5e1;
-border-radius:10px;
-font-size:15px;
-outline:none;
-}
-.loginQueimadasBox input:focus{
-border-color:#2563eb;
-box-shadow:0 0 0 3px rgba(37,99,235,.12);
-}
-.loginQueimadasBox button{
-width:100%;
-height:48px;
-border:0;
-border-radius:10px;
-background:#0f172a;
-color:#fff;
-font-weight:900;
-font-size:14px;
-cursor:pointer;
-}
-.loginQueimadasBox button:hover{
-background:#1e3a8a;
-}
-#queimadas-login-erro{
-min-height:20px;
-margin-top:12px;
-font-size:12px;
-font-weight:800;
-color:#dc2626;
-}
-.topoUsuarioQueimadas{
-margin-left:auto;
-display:flex;
-align-items:center;
-gap:12px;
-font-size:12px;
-font-weight:800;
-color:#475569;
-}
-.topoUsuarioQueimadas button{
-border:0;
-border-radius:8px;
-padding:8px 12px;
-background:#dc2626;
-color:#fff;
-font-weight:900;
-cursor:pointer;
-}
-.modalSenhaMunicipioBox{
-width:min(420px,calc(100% - 30px));
-background:#fff;
-border-radius:20px;
-padding:30px;
-box-shadow:0 25px 70px rgba(15,23,42,.35);
-text-align:center;
-}
-.modalSenhaIcone{
-font-size:42px;
-margin-bottom:8px;
-}
-.modalSenhaMunicipioBox h2{
-margin:0;
-color:#0f172a;
-font-size:21px;
-font-weight:900;
-}
-.modalSenhaMunicipioBox p{
-margin:8px 0 20px;
-color:#64748b;
-font-size:13px;
-}
-.modalSenhaMunicipioBox input{
-box-sizing:border-box;
-width:100%;
-height:48px;
-padding:0 14px;
-border:1px solid #cbd5e1;
-border-radius:10px;
-font-size:16px;
-outline:none;
-}
-.modalSenhaMunicipioBox input:focus{
-border-color:#2563eb;
-box-shadow:0 0 0 3px rgba(37,99,235,.12);
-}
-#erroSenhaMunicipio{
-min-height:20px;
-margin-top:8px;
-font-size:12px;
-font-weight:800;
-color:#dc2626;
-}
-.modalSenhaBotoes{
-display:flex;
-gap:10px;
-margin-top:12px;
-}
-.btnConfirmarSenhaMunicipio,
-.btnCancelarSenhaMunicipio{
-flex:1;
-height:44px;
-border:0;
-border-radius:9px;
-font-weight:900;
-cursor:pointer;
-}
-.btnConfirmarSenhaMunicipio{
-background:#0f172a;
-color:#fff;
-}
-.btnCancelarSenhaMunicipio{
-background:#e2e8f0;
-color:#334155;
-}
+.modalSenhaMunicipioBox{width:min(420px,calc(100% - 30px));background:#fff;border-radius:20px;padding:30px;box-shadow:0 25px 70px rgba(15,23,42,.35);text-align:center}
+.modalSenhaIcone{font-size:42px;margin-bottom:8px}
+.modalSenhaMunicipioBox h2{margin:0;color:#0f172a;font-size:21px;font-weight:900}
+.modalSenhaMunicipioBox p{margin:8px 0 20px;color:#64748b;font-size:13px}
+.modalSenhaMunicipioBox input{width:100%;height:48px;padding:0 14px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px;outline:none}
+.modalSenhaMunicipioBox input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+#erroSenhaMunicipio{min-height:20px;margin-top:8px;font-size:12px;font-weight:800;color:#dc2626}
+.modalSenhaBotoes{display:flex;gap:10px;margin-top:12px}
+.btnConfirmarSenhaMunicipio,.btnCancelarSenhaMunicipio{flex:1;height:44px;border:0;border-radius:9px;font-weight:900;cursor:pointer}
+.btnConfirmarSenhaMunicipio{background:#0f172a;color:#fff}
+.btnCancelarSenhaMunicipio{background:#e2e8f0;color:#334155}
+/*=========================================================
+032 RESPONSIVIDADE
+=========================================================*/
+@media(max-width:1200px){.heatmap-grid{grid-template-columns:repeat(2,1fr)}.cadeia-flow{grid-template-columns:repeat(2,1fr)}.monitor4d-grid{grid-template-columns:repeat(2,1fr)}.exec-mapa-grid,.exec-duplo{grid-template-columns:1fr}.planejamento-grid{grid-template-columns:repeat(2,1fr)}.marcosGrid{grid-template-columns:repeat(2,1fr)}.kpiGrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:1100px){.tabelaMunicipiosNova{min-width:1000px}}
+@media(max-width:900px){.ranking-grid{grid-template-columns:repeat(2,1fr)}.focosResumoGrid{grid-template-columns:repeat(2,1fr)}.boxRelatoriosExecutivos{flex-direction:column;align-items:center}.btnRelatorioPDF,.btnRelatorioWORD,.btnSumarioExecutivo{width:100%;max-width:360px;height:160px}}
+@media(max-width:768px){.topoSistema{flex-direction:column;align-items:flex-start;gap:15px}.topoUsuarioQueimadas{margin-left:0}.menuQueimadas button{width:100%}.heatmap-grid,.cadeia-flow,.monitor4d-grid,.planejamento-grid,.marcosGrid{grid-template-columns:1fr}.gantt-row{flex-direction:column;align-items:flex-start}.gantt-titulo{width:100%;margin-bottom:6px}.kpiGrid{grid-template-columns:repeat(2,1fr)}.kpiNumero{font-size:28px}#painelCadastroMunicipiosResumo .tabelaMunicipios{min-width:1800px;font-size:10px}#painelCadastroEstado .tabelaEstado{min-width:1200px}}
+@media(max-width:600px){.focosResumoGrid{grid-template-columns:1fr}}
+@media(max-width:480px){.kpiGrid{grid-template-columns:1fr}.kpiNumero{font-size:24px}}
