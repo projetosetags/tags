@@ -1640,7 +1640,7 @@ ${i.observacao||'-'}
 <button
 class="btnEditarMunicipio"
 data-municipio="${String(i.municipio||'').replace(/"/g,'&quot;')}"
-onclick="editarMunicipio(this.dataset.municipio)"
+onclick="autorizarEdicaoMunicipio(this.dataset.municipio)"
 >✏</button>
 </td>
 </tr>
@@ -1746,7 +1746,43 @@ html+=`
 html+='</tbody></table></div>'
 box.innerHTML=html
 }
-
+/*=========================================================
+139-A QUEIMADAS FUNCTION AUTORIZAREDICAOMUNICIPIO
+=========================================================*/
+async function autorizarEdicaoMunicipio(municipio){
+municipio=String(municipio||'').trim()
+if(!municipio)return
+let senha=prompt('🔐 Digite a senha para editar o Cadastro Municipal:')
+if(senha===null)return
+senha=String(senha).trim()
+if(!senha){
+alert('Informe a senha de edição.')
+return
+}
+try{
+let resposta=await fetch('https://zvtzbiqfwhggysiuixh.supabase.co/functions/v1/municipios-edicao-protegida',{
+method:'POST',
+headers:{
+'Content-Type':'application/json',
+'apikey':window.SUPABASE_ANON_KEY||window.supabaseAnonKey||''
+},
+body:JSON.stringify({
+acao:'validar',
+senha
+})
+})
+let resultado=await resposta.json()
+if(!resposta.ok||!resultado.sucesso){
+alert('⛔ Senha incorreta. A edição não foi autorizada.')
+return
+}
+window.senhaEdicaoMunicipio=senha
+await editarMunicipio(municipio)
+}catch(error){
+console.error(error)
+alert('Não foi possível validar a autorização.')
+}
+}
 /*=========================================================
 140 QUEIMADAS FUNCTION EDITARMUNICIPIO
 =========================================================*/
@@ -1959,11 +1995,29 @@ plano_acao:planoAcao,
 dilacao_prazo:dilacaoPrazo,
 sem_resposta:semResposta
 }
-let{data,error}=await client
-.from('queimadas_municipios_oficio')
-.update(payload)
-.eq('municipio',municipioOriginal)
-.select()
+let resposta=await fetch('https://zvtzbiqfwhggysiuixh.supabase.co/functions/v1/municipios-edicao-protegida',{
+method:'POST',
+headers:{
+'Content-Type':'application/json',
+'apikey':window.SUPABASE_ANON_KEY||window.supabaseAnonKey||''
+},
+body:JSON.stringify({
+acao:'salvar',
+senha:window.senhaEdicaoMunicipio||'',
+municipio:municipioOriginal,
+payload
+})
+})
+let resultado=await resposta.json()
+if(!resposta.ok||!resultado.sucesso){
+console.error('Erro ao salvar município:',resultado)
+if(btn){
+btn.disabled=false
+btn.innerHTML='💾 SALVAR'
+}
+alert('Alteração não autorizada: '+(resultado.erro||'erro desconhecido'))
+return
+}
 if(error){
 console.error('Erro ao salvar município:',error)
 if(btn){
@@ -1982,6 +2036,7 @@ alert('Nenhum registro foi atualizado.')
 return
 }
 fecharModalMunicipio()
+window.senhaEdicaoMunicipio=''
 await Promise.all([
 typeof renderTabelaMunicipios==='function'?renderTabelaMunicipios():Promise.resolve(),
 typeof renderKPIsMunicipais==='function'?renderKPIsMunicipais():Promise.resolve(),
