@@ -910,7 +910,13 @@ cor='#f97316'
 faixa='MODERADO'
 cor='#ca8a04'
 }
-box.innerHTML=`<div class="situacaoKPIGrid"><div class="situacaoKPI"><strong>${focosTotal.toLocaleString('pt-BR')}</strong><span>🔥 FOCOS EM ${ano}</span></div><div class="situacaoKPI"><strong>${desmatamento.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🌳 DESMATAMENTO</span></div><div class="situacaoKPI"><strong>${areaQueimada.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🔥 ÁREA QUEIMADA</span></div><div class="situacaoKPI"><strong>${criticos}</strong><span>🚨 CRÍTICOS</span></div><div class="situacaoKPI"><strong>${prioritarios}</strong><span>⚠️ PRIORITÁRIOS</span></div><div class="situacaoKPI"><strong style="color:${cor}">${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong><span>IRIQ • ${faixa}</span></div></div><div class="situacaoPeriodo">Dados de focos: 01/01/${ano} até ${hoje.toLocaleDateString('pt-BR')}</div><div class="situacaoRanking"><h3>🔥 TOP 10 MUNICÍPIOS POR FOCOS DE CALOR</h3>${ranking.length?ranking.map((item,indice)=>`<div class="situacaoRankingLinha"><span><b>${indice+1}º</b> ${item.municipio}</span><strong>${Number(item.focos||0).toLocaleString('pt-BR')}</strong></div>`).join(''):'<div class="situacaoSemDados">Nenhum foco registrado.</div>'}</div>`
+box.innerHTML=`<div class="situacaoKPIGrid"><div class="situacaoKPI"><strong>${focosTotal.toLocaleString('pt-BR')}</strong><span>🔥 FOCOS EM ${ano}</span></div><div class="situacaoKPI"><strong>${desmatamento.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🌳 DESMATAMENTO</span></div><div class="situacaoKPI"><strong>${areaQueimada.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🔥 ÁREA QUEIMADA</span></div><div class="situacaoKPI"><strong>${criticos}</strong><span>🚨 CRÍTICOS</span></div><div class="situacaoKPI"><strong>${prioritarios}</strong><span>⚠️ PRIORITÁRIOS</span></div><div class="situacaoKPI"><strong style="color:${cor}">${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong><span>IRIQ • ${faixa}</span></div></div><div class="situacaoPeriodo">Dados de focos: 01/01/${ano} até ${hoje.toLocaleDateString('pt-BR')}</div><div class="situacaoRanking"><h3>🔥 TOP 10 MUNICÍPIOS POR FOCOS DE CALOR</h3>${ranking.length?ranking.map((item,indice)=>`<div class="situacaoRankingLinha">
+<span>
+<b>${indice+1}º</b>
+<div>${item.municipio}</div>
+</span>
+<strong>${Number(item.focos||0).toLocaleString('pt-BR')}</strong>
+</div>`).join(''):'<div class="situacaoSemDados">Nenhum foco registrado.</div>'}</div>`
 }
 /*=========================================================
 122 QUEIMADAS FUNCTION ABRIRCARDQUEIMADAS
