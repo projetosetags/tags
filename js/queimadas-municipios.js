@@ -517,72 +517,246 @@ Erro ao carregar Unidades de Conservação
 /*=========================================================
 115 QUEIMADAS FUNCTION RENDERPAINELFOCOSINPE
 =========================================================*/
-function renderPainelFocosINPE(resultado){
+async function renderPainelFocosINPE(){
 
 let box=document.getElementById('painelFocosCalor')
 
 if(!box)return
 
-let total=Number(resultado?.total||0)
-let ranking=[...(resultado?.ranking||[])]
+let periodo=
+document.getElementById('filtroPeriodoFocos')?.value||'7'
 
-let periodo=String(resultado?.periodo||'7')
+let hoje=new Date()
 
-let tituloPeriodo='7 DIAS'
+let dataFinal=new Date(
+hoje.getFullYear(),
+hoje.getMonth(),
+hoje.getDate()
+)
 
-if(periodo==='1')tituloPeriodo='HOJE'
-else if(periodo==='30')tituloPeriodo='30 DIAS'
-else if(periodo==='365')tituloPeriodo='12 MESES'
-else if(periodo==='ano')tituloPeriodo='ANO ATUAL'
-else if(periodo==='custom')tituloPeriodo='PERSONALIZADO'
+let dataInicial=new Date(dataFinal)
 
-let top10=ranking.slice(0,10)
+if(periodo==='1'){
 
-let atualizado=resultado?.atualizadoEm
-?new Date(resultado.atualizadoEm).toLocaleString('pt-BR')
-:new Date().toLocaleString('pt-BR')
+dataInicial=new Date(dataFinal)
+
+}else if(periodo==='7'){
+
+dataInicial.setDate(
+dataFinal.getDate()-6
+)
+
+}else if(periodo==='30'){
+
+dataInicial.setDate(
+dataFinal.getDate()-29
+)
+
+}else if(periodo==='365'){
+
+dataInicial.setFullYear(
+dataFinal.getFullYear()-1
+)
+
+dataInicial.setDate(
+dataInicial.getDate()+1
+)
+
+}else if(periodo==='ano'){
+
+dataInicial=new Date(
+dataFinal.getFullYear(),
+0,
+1
+)
+
+}else if(periodo==='custom'){
+
+let inicial=
+document.getElementById('dataInicialFocos')?.value
+
+let final=
+document.getElementById('dataFinalFocos')?.value
+
+if(!inicial||!final){
+
+box.innerHTML=`
+<div class="alerta-vermelho">
+Selecione a data inicial e a data final.
+</div>
+`
+
+return
+
+}
+
+dataInicial=new Date(
+inicial+'T00:00:00'
+)
+
+dataFinal=new Date(
+final+'T00:00:00'
+)
+
+}
+
+let inicioISO=formatarDataISOFocos(
+dataInicial
+)
+
+let finalISO=formatarDataISOFocos(
+dataFinal
+)
+
+box.innerHTML=`
+<div style="
+padding:30px;
+text-align:center;
+font-weight:900
+">
+🔥 Carregando focos do INPE...
+</div>
+`
+
+let {data,error}=await client
+.from('queimadas_focos_inpe')
+.select('municipio,data_foco')
+.gte('data_foco',inicioISO)
+.lte('data_foco',finalISO)
+
+if(error){
+
+console.error(
+'Erro ao consultar focos do INPE:',
+error
+)
+
+box.innerHTML=`
+<div class="alerta-vermelho">
+Erro ao consultar os focos do INPE.<br>
+${error.message||''}
+</div>
+`
+
+return
+
+}
+
+let registros=data||[]
+
+let agrupado={}
+
+registros.forEach(item=>{
+
+let municipio=
+String(item.municipio||'NÃO INFORMADO')
+.trim()
+
+agrupado[municipio]=
+(agrupado[municipio]||0)+1
+
+})
+
+let ranking=Object.entries(agrupado)
+.map(([municipio,focos])=>({
+municipio,
+focos:Number(focos||0)
+}))
+.sort((a,b)=>b.focos-a.focos)
+
+let total=registros.length
+
+let municipiosComFocos=
+ranking.length
+
+let maiorMunicipio=
+ranking[0]||null
+
+let tituloPeriodo=
+obterTituloPeriodoFocos(
+periodo
+)
+
+let top10=
+ranking.slice(0,10)
 
 box.innerHTML=`
 
 <div class="focosResumoGrid">
 
 <div class="focoResumoCard">
-<div class="focoIcon">🔥</div>
-<div class="focoValor">${total.toLocaleString('pt-BR')}</div>
-<div class="focoTitulo">${tituloPeriodo}</div>
+
+<div class="focoIcon">
+🔥
 </div>
 
-<div class="focoResumoCard">
-<div class="focoIcon">🏛️</div>
-<div class="focoValor">${ranking.length}</div>
-<div class="focoTitulo">MUNICÍPIOS COM FOCOS</div>
-</div>
-
-<div class="focoResumoCard">
-<div class="focoIcon">🥇</div>
 <div class="focoValor">
-${Number(top10[0]?.focos||0).toLocaleString('pt-BR')}
+${total.toLocaleString('pt-BR')}
 </div>
+
 <div class="focoTitulo">
-${top10[0]?.municipio||'SEM REGISTROS'}
+${tituloPeriodo}
 </div>
+
 </div>
 
 <div class="focoResumoCard">
-<div class="focoIcon">📅</div>
-<div class="focoValor" style="font-size:17px">
-${formatarDataBR(resultado.dataInicial)}
+
+<div class="focoIcon">
+🏛️
 </div>
+
+<div class="focoValor">
+${municipiosComFocos}
+</div>
+
 <div class="focoTitulo">
-ATÉ ${formatarDataBR(resultado.dataFinal)}
+MUNICÍPIOS COM FOCOS
 </div>
+
+</div>
+
+<div class="focoResumoCard">
+
+<div class="focoIcon">
+🥇
+</div>
+
+<div class="focoValor">
+${Number(
+maiorMunicipio?.focos||0
+).toLocaleString('pt-BR')}
+</div>
+
+<div class="focoTitulo">
+${maiorMunicipio?.municipio||'SEM REGISTROS'}
+</div>
+
+</div>
+
+<div class="focoResumoCard">
+
+<div class="focoIcon">
+📅
+</div>
+
+<div class="focoValor" style="font-size:17px">
+${formatarDataBR(inicioISO)}
+</div>
+
+<div class="focoTitulo">
+ATÉ ${formatarDataBR(finalISO)}
+</div>
+
 </div>
 
 </div>
 
 <div class="rankingCompacto">
 
-<h3>🏆 MUNICÍPIOS DE RONDÔNIA COM MAIS FOCOS</h3>
+<h3>
+🏆 MUNICÍPIOS DE RONDÔNIA COM MAIS FOCOS
+</h3>
 
 ${
 top10.length
@@ -591,45 +765,162 @@ top10.length
 <div class="rankingLinha">
 
 <span>
+
 ${obterMedalhaFocos(indice)}
+
 ${indice+1}º ${item.municipio}
+
 </span>
 
 <b>
-${Number(item.focos||0).toLocaleString('pt-BR')}
+${Number(
+item.focos||0
+).toLocaleString('pt-BR')}
 </b>
 
 </div>
 
 `).join('')
 :`
-<div style="padding:25px;text-align:center">
+
+<div style="
+padding:25px;
+text-align:center
+">
+
 Nenhum foco registrado em Rondônia no período.
+
 </div>
+
 `
 }
 
 </div>
 
 <div class="ultimaAtualizacao">
-Atualizado em ${atualizado}
+
+Consulta realizada em
+${new Date().toLocaleString('pt-BR')}
+
 </div>
 
 <div class="fonte-card">
-Fonte: Programa Queimadas • INPE • Somente municípios de Rondônia
+
+Fonte: Programa Queimadas • INPE • Dados filtrados para os municípios de Rondônia
+
 </div>
 
 `
 
 }
 /*=========================================================
+115-A QUEIMADAS FUNCTION FORMATARDATAISOFOCOS
+=========================================================*/
+function formatarDataISOFocos(data){
+
+let ano=data.getFullYear()
+
+let mes=String(
+data.getMonth()+1
+).padStart(2,'0')
+
+let dia=String(
+data.getDate()
+).padStart(2,'0')
+
+return`${ano}-${mes}-${dia}`
+
+}
+
+/*=========================================================
+115-B QUEIMADAS FUNCTION OBTERTITULOPERIODOFOCOS
+=========================================================*/
+function obterTituloPeriodoFocos(periodo){
+
+if(periodo==='1'){
+return'HOJE'
+}
+
+if(periodo==='7'){
+return'7 DIAS'
+}
+
+if(periodo==='30'){
+return'30 DIAS'
+}
+
+if(periodo==='365'){
+return'12 MESES'
+}
+
+if(periodo==='ano'){
+return'ANO ATUAL'
+}
+
+if(periodo==='custom'){
+return'PERSONALIZADO'
+}
+
+return'PERÍODO'
+
+}
+
+/*=========================================================
+115-C QUEIMADAS FUNCTION OBTERMEDALHAFOCOS
+=========================================================*/
+function obterMedalhaFocos(indice){
+
+if(indice===0){
+return'🥇'
+}
+
+if(indice===1){
+return'🥈'
+}
+
+if(indice===2){
+return'🥉'
+}
+
+return'🔥'
+
+}
+/*=========================================================
 116 QUEIMADAS FUNCTION CARREGARFOCOSPERIODO
 =========================================================*/
-function carregarFocosPeriodo(){
-let periodo=document.getElementById('filtroPeriodoFocos')?.value||'ano'
-let box=document.getElementById('boxPeriodoPersonalizado')
-if(box)box.style.display=periodo==='custom'?'flex':'none'
-renderPainelFocosINPE()
+async function carregarFocosPeriodo(){
+
+let periodo=
+document.getElementById('filtroPeriodoFocos')?.value||'7'
+
+let box=
+document.getElementById('boxPeriodoPersonalizado')
+
+if(box){
+
+box.style.display=
+periodo==='custom'
+?'flex'
+:'none'
+
+}
+
+if(periodo==='custom'){
+
+let inicial=
+document.getElementById('dataInicialFocos')?.value
+
+let final=
+document.getElementById('dataFinalFocos')?.value
+
+if(!inicial||!final){
+return
+}
+
+}
+
+await renderPainelFocosINPE()
+
 }
 /*=========================================================
 117 QUEIMADAS FUNCTION RENDERGRAFICOTOPFOCOS
