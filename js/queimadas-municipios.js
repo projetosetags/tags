@@ -1905,14 +1905,16 @@ if(modal)modal.remove()
 142 QUEIMADAS FUNCTION SALVARMUNICIPIO
 =========================================================*/
 async function salvarMunicipio(municipioOriginal){
-
 municipioOriginal=String(municipioOriginal||'').trim()
-
 if(!municipioOriginal){
 alert('Município não identificado.')
 return
 }
-
+let btn=document.querySelector('#modalMunicipio .btnSalvarMunicipio')
+if(btn){
+btn.disabled=true
+btn.innerHTML='⏳ SALVANDO...'
+}
 let payload={
 nroficioenviadotcero:document.getElementById('mOficio').value||null,
 dataenviodoc:document.getElementById('mDataEnvio').value||null,
@@ -1925,43 +1927,43 @@ lnumerodocenviado:document.getElementById('mDoc1').value||null,
 llnumerodocenviado:document.getElementById('mDoc2').value||null,
 observacao:document.getElementById('mObs').value||null
 }
-
-let {data,error}=await client
+let{data,error}=await client
 .from('queimadas_municipios_oficio')
 .update(payload)
 .eq('municipio',municipioOriginal)
 .select()
-
 if(error){
 console.error('Erro ao salvar município:',error)
+if(btn){
+btn.disabled=false
+btn.innerHTML='💾 SALVAR'
+}
 alert('Erro ao salvar: '+error.message)
 return
 }
-
 if(!data||!data.length){
+if(btn){
+btn.disabled=false
+btn.innerHTML='💾 SALVAR'
+}
 alert('Nenhum registro foi atualizado.')
 return
 }
-
 fecharModalMunicipio()
-
-if(typeof renderTabelaMunicipios==='function'){
-await renderTabelaMunicipios()
-}
-
+await Promise.all([
+typeof renderTabelaMunicipios==='function'?renderTabelaMunicipios():Promise.resolve(),
+typeof renderMunicipiosOficio==='function'?renderMunicipiosOficio('RESUMO'):Promise.resolve(),
+typeof renderKPIsMunicipais==='function'?renderKPIsMunicipais():Promise.resolve(),
+typeof renderEstatisticasMunicipais==='function'?renderEstatisticasMunicipais():Promise.resolve(),
+typeof renderPlanosApresentados==='function'?renderPlanosApresentados():Promise.resolve(),
+typeof renderDilacoesPrazo==='function'?renderDilacoesPrazo():Promise.resolve(),
+typeof renderMunicipiosSemResposta==='function'?renderMunicipiosSemResposta():Promise.resolve(),
+typeof renderDistribuicaoRespostas==='function'?renderDistribuicaoRespostas():Promise.resolve(),
+typeof renderPlanosMunicipais==='function'?renderPlanosMunicipais():Promise.resolve()
+])
 if(typeof renderMunicipiosOficio==='function'){
-await renderMunicipiosOficio('RESUMO')
 await renderMunicipiosOficio('CADASTRO')
 }
-
-if(typeof renderKPIsMunicipais==='function'){
-await renderKPIsMunicipais()
-}
-
-if(typeof renderEstatisticasMunicipais==='function'){
-await renderEstatisticasMunicipais()
-}
-
 alert('Registro atualizado com sucesso.')
 }
 
