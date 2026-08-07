@@ -875,18 +875,29 @@ box.innerHTML=`
 async function renderSalaSituacaoEstadual(){
 let box=document.getElementById('painelSalaSituacaoEstadual')
 if(!box)return
-let {data:executivo,error}=await client
-.from('vw_queimadas_executivo')
-.select('*')
-.single()
-if(error||!executivo)return
-let {data:ranking=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
-let focosTotal=Number(executivo.focos_estado||0)
+let hoje=new Date()
+let ano=hoje.getFullYear()
+let dataInicial=`${ano}-01-01`
+let dataFinal=`${ano}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`
+let[
+{data:executivo,error:erroExecutivo},
+{count:totalFocos,error:erroFocos},
+{data:ranking=[],error:erroRanking}
+]=await Promise.all([
+client.from('vw_queimadas_executivo').select('*').maybeSingle(),
+client.from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).gte('data_foco',dataInicial).lte('data_foco',dataFinal),
+client.from('vw_queimadas_ranking_focos_atual').select('municipio,focos').order('focos',{ascending:false}).limit(10)
+])
+if(erroExecutivo)console.error('Erro ao carregar situação estadual:',erroExecutivo)
+if(erroFocos)console.error('Erro ao carregar focos INPE:',erroFocos)
+if(erroRanking)console.error('Erro ao carregar ranking de focos:',erroRanking)
+executivo=executivo||{}
+let focosTotal=Number(totalFocos||0)
 let criticos=Number(executivo.municipios_criticos||0)
 let prioritarios=Number(executivo.municipios_prioritarios||0)
 let iriq=Number(executivo.iriq_estadual||0)
+let areaQueimada=Number(executivo.area_queimada_estado_ha||0)
+let desmatamento=Number(executivo.desmatamento_estado_ha||0)
 let faixa='BAIXO'
 let cor='#16a34a'
 if(iriq>=75){
@@ -897,54 +908,9 @@ faixa='ALTO'
 cor='#f97316'
 }else if(iriq>=25){
 faixa='MODERADO'
-cor='#facc15'
+cor='#ca8a04'
 }
-let top10=[...(ranking||[])]
-.sort((a,b)=>Number(b.focos||0)-Number(a.focos||0))
-.slice(0,10)
-box.innerHTML=`
-<div class="fonte-card">
-Data Base: ${new Date().toLocaleDateString('pt-BR')} • INPE • PRODES • MAPBIOMAS
-</div>
-<div class="chap-grid">
-<div class="chap-card">
-<div class="chap-num">${focosTotal.toLocaleString('pt-BR')}</div>
-<div class="chap-label">FOCOS</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${Number(executivo.desmatamento_estado_ha||0).toLocaleString('pt-BR',{maximumFractionDigits:0})}</div>
-<div class="chap-label">DESMATAMENTO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${Number(executivo.area_queimada_estado_ha||0).toLocaleString('pt-BR',{maximumFractionDigits:0})}</div>
-<div class="chap-label">ÁREA QUEIMADA</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${criticos}</div>
-<div class="chap-label">CRÍTICOS</div>
-</div>
-<div class="chap-card">
-<div class="chap-num">${prioritarios}</div>
-<div class="chap-label">PRIORITÁRIOS</div>
-</div>
-<div class="chap-card">
-<div class="chap-num" style="color:${cor}">${iriq.toFixed(2)}</div>
-<div class="chap-label">${faixa}</div>
-</div>
-</div>
-<div class="cardExecutivo">
-<h2>🔥 TOP 10 MUNICÍPIOS - FOCOS DE CALOR</h2>
-${top10.map((i,idx)=>`
-<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #ddd">
-<span>${idx+1}º ${i.municipio||'-'}</span>
-<b>${Number(i.focos||0).toLocaleString('pt-BR')}</b>
-</div>
-`).join('')}
-</div>
-<div class="fonte-card">
-Fonte: vw_queimadas_executivo • vw_queimadas_ranking_estadual • INPE • PRODES • MAPBIOMAS
-</div>
-`
+box.innerHTML=`<div class="situacaoKPIGrid"><div class="situacaoKPI"><strong>${focosTotal.toLocaleString('pt-BR')}</strong><span>🔥 FOCOS EM ${ano}</span></div><div class="situacaoKPI"><strong>${desmatamento.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🌳 DESMATAMENTO</span></div><div class="situacaoKPI"><strong>${areaQueimada.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🔥 ÁREA QUEIMADA</span></div><div class="situacaoKPI"><strong>${criticos}</strong><span>🚨 CRÍTICOS</span></div><div class="situacaoKPI"><strong>${prioritarios}</strong><span>⚠️ PRIORITÁRIOS</span></div><div class="situacaoKPI"><strong style="color:${cor}">${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong><span>IRIQ • ${faixa}</span></div></div><div class="situacaoPeriodo">Dados de focos: 01/01/${ano} até ${hoje.toLocaleDateString('pt-BR')}</div><div class="situacaoRanking"><h3>🔥 TOP 10 MUNICÍPIOS POR FOCOS DE CALOR</h3>${ranking.length?ranking.map((item,indice)=>`<div class="situacaoRankingLinha"><span><b>${indice+1}º</b> ${item.municipio}</span><strong>${Number(item.focos||0).toLocaleString('pt-BR')}</strong></div>`).join(''):'<div class="situacaoSemDados">Nenhum foco registrado.</div>'}</div>`
 }
 /*=========================================================
 122 QUEIMADAS FUNCTION ABRIRCARDQUEIMADAS
