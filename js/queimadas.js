@@ -2223,15 +2223,73 @@ return
 window.print()
 }
 /*=========================================================
-056 QUEIMADAS FUNCTION CARREGARFOCOSPERIODO
+116 QUEIMADAS FUNCTION CARREGARFOCOSPERIODO
 =========================================================*/
-function carregarFocosPeriodo(){
+async function carregarFocosPeriodo(){
+
 let periodo=document.getElementById('filtroPeriodoFocos')?.value||'7'
-let box=document.getElementById('boxPeriodoPersonalizado')
-if(box)box.style.display=periodo==='custom'?'flex':'none'
-if(typeof carregarPainelFocosCalor==='function'){
-carregarPainelFocosCalor(periodo)
+let boxPersonalizado=document.getElementById('boxPeriodoPersonalizado')
+
+if(boxPersonalizado){
+boxPersonalizado.style.display=
+periodo==='custom'
+?'flex'
+:'none'
 }
+
+let hoje=new Date()
+let inicio=new Date()
+let fim=new Date()
+
+fim.setHours(23,59,59,999)
+
+if(periodo==='1'){
+inicio.setHours(0,0,0,0)
+}
+
+else if(periodo==='7'){
+inicio.setDate(hoje.getDate()-6)
+inicio.setHours(0,0,0,0)
+}
+
+else if(periodo==='30'){
+inicio.setDate(hoje.getDate()-29)
+inicio.setHours(0,0,0,0)
+}
+
+else if(periodo==='365'){
+inicio.setFullYear(hoje.getFullYear()-1)
+inicio.setHours(0,0,0,0)
+}
+
+else if(periodo==='ano'){
+inicio=new Date(hoje.getFullYear(),0,1)
+inicio.setHours(0,0,0,0)
+}
+
+else if(periodo==='custom'){
+
+let inicial=document.getElementById('dataInicialFocos')?.value
+let final=document.getElementById('dataFinalFocos')?.value
+
+if(!inicial||!final){
+return
+}
+
+inicio=new Date(inicial+'T00:00:00')
+fim=new Date(final+'T23:59:59')
+
+}
+
+let dataInicial=formatarDataISOFocos(inicio)
+let dataFinal=formatarDataISOFocos(fim)
+
+await buscarFocosINPERondonia(
+dataInicial,
+dataFinal,
+periodo
+)
+
 }
 /*=========================================================
 057 QUEIMADAS FUNCTION RENDERKPISESTADO
@@ -2817,3 +2875,59 @@ return String(txt)
 .replace(/Ãƒ/g,'Ã')
 .replace(/Â/g,'')
 }
+
+
+function formatarDataISOFocos(data){
+let ano=data.getFullYear()
+let mes=String(data.getMonth()+1).padStart(2,'0')
+let dia=String(data.getDate()).padStart(2,'0')
+return`${ano}-${mes}-${dia}`
+}
+
+async function buscarFocosINPERondonia(
+dataInicial,
+dataFinal,
+periodo
+){
+let box=document.getElementById('painelFocosCalor')
+if(!box)return
+box.innerHTML=`
+<div style="padding:30px;text-align:center;font-weight:900">
+🔥 Consultando focos de calor do INPE...
+</div>
+`
+try{
+let {data,error}=await client.functions.invoke(
+'focos-inpe-ro',
+{
+body:{
+dataInicial,
+dataFinal
+}
+}
+)
+if(error){
+throw error
+}
+if(data?.error){
+throw new Error(data.error)
+}
+renderPainelFocosINPE({
+total:Number(data.total||0),
+ranking:data.ranking||[],
+periodo,
+dataInicial,
+dataFinal,
+atualizadoEm:data.atualizadoEm
+})
+}catch(error){
+console.error('Erro ao buscar focos do INPE:',error)
+box.innerHTML=`
+<div class="alerta-vermelho">
+<strong>Não foi possível consultar o INPE.</strong><br>
+${error.message||'Erro desconhecido.'}
+</div>
+`
+}
+}
+
