@@ -3237,7 +3237,7 @@ doc.setFontSize(5)
 doc.setTextColor(51,65,85)
 doc.text('Fontes: INPE • PRODES • MapBiomas • SEDAM • CBMRO • Municípios de Rondônia • IRIQ • TCE-RO',8,283)
 doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
-
+}
 
 /*=========================================================
 075 to data url
