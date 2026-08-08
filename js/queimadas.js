@@ -2800,57 +2800,24 @@ let dataInicial=`${ano}-01-01`
 let dataFinal=formatarDataISOFocos(hoje)
 let imgLogo=await toDataURL('assets/geojson/logotcero.png').catch(()=>null)
 let imgQueimadasOriginal=await toDataURL('assets/geojson/queimadas.png').catch(()=>null)
-async function recortarImagemCabecalho(dataURL){
-if(!dataURL)return null
-return await new Promise(resolve=>{
-let img=new Image()
-img.onload=()=>{
-let proporcaoDestino=105/36
-let proporcaoOrigem=img.naturalWidth/img.naturalHeight
-let sx=0
-let sy=0
-let sw=img.naturalWidth
-let sh=img.naturalHeight
-if(proporcaoOrigem>proporcaoDestino){
-sw=img.naturalHeight*proporcaoDestino
-sx=(img.naturalWidth-sw)/2
-}else{
-sh=img.naturalWidth/proporcaoDestino
-sy=(img.naturalHeight-sh)/2
-}
-let canvas=document.createElement('canvas')
-canvas.width=1400
-canvas.height=Math.round(1400/proporcaoDestino)
-let ctx=canvas.getContext('2d')
-ctx.drawImage(img,sx,sy,sw,sh,0,0,canvas.width,canvas.height)
-resolve(canvas.toDataURL('image/jpeg',.94))
-}
-img.onerror=()=>resolve(null)
-img.src=dataURL
-})
-}
-let imgQueimadas=await recortarImagemCabecalho(imgQueimadasOriginal)
 let[
 {count:totalFocos,error:erroFocos},
 {data:municipios=[],error:erroMunicipios},
 {data:executivo,error:erroExecutivo},
-{data:rankingFocos=[],error:erroRankingFocos},
-{data:rankingIRIQ=[],error:erroRankingIRIQ},
+{data:rankingIRIQ=[],error:erroIRIQ},
 {data:mensal=[],error:erroMensal}
 ]=await Promise.all([
 client.from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).gte('data_foco',dataInicial).lte('data_foco',dataFinal),
 client.from('vw_queimadas_municipios_resposta').select('*'),
 client.from('vw_queimadas_executivo').select('*').maybeSingle(),
-client.from('vw_queimadas_ranking_focos_atual').select('municipio,focos').order('focos',{ascending:false}).limit(10),
-client.from('queimadas_heatmap').select('municipio,iriq,risco,classificacao,focos').order('iriq',{ascending:false}).limit(10),
+client.from('queimadas_heatmap').select('municipio,iriq,risco,classificacao,focos').order('iriq',{ascending:false}).limit(5),
 client.from('vw_queimadas_focos_mensal').select('mes,focos').eq('ano',ano).order('mes',{ascending:true})
 ])
 if(erroFocos)console.error('Sumário focos:',erroFocos)
 if(erroMunicipios)console.error('Sumário municípios:',erroMunicipios)
 if(erroExecutivo)console.error('Sumário executivo:',erroExecutivo)
-if(erroRankingFocos)console.error('Sumário ranking focos:',erroRankingFocos)
-if(erroRankingIRIQ)console.error('Sumário ranking IRIQ:',erroRankingIRIQ)
-if(erroMensal)console.error('Sumário evolução mensal:',erroMensal)
+if(erroIRIQ)console.error('Sumário IRIQ:',erroIRIQ)
+if(erroMensal)console.error('Sumário mensal:',erroMensal)
 executivo=executivo||{}
 let totalMunicipios=municipios.length||52
 let comPlano=municipios.filter(i=>String(i.classificacao_ia||'').toUpperCase().includes('PLANO')).length
@@ -2864,338 +2831,430 @@ let iriqEstadual=Number(executivo.iriq_estadual||0)
 let areaQueimada=Number(executivo.area_queimada_estado_ha||0)
 let desmatamento=Number(executivo.desmatamento_estado_ha||0)
 let top5IRIQ=(rankingIRIQ||[]).filter(i=>Number.isFinite(Number(i.iriq))).slice(0,5)
-let top3IRIQ=top5IRIQ.slice(0,3)
 let mediaTop5=top5IRIQ.length?top5IRIQ.reduce((s,i)=>s+Number(i.iriq||0),0)/top5IRIQ.length:0
-let maiorIRIQ=top3IRIQ.length?Number(top3IRIQ[0].iriq||0):0
-function faixaIRIQ(valor){
-valor=Number(valor||0)
-if(valor>=75)return'CRÍTICO'
-if(valor>=50)return'ALTO'
-if(valor>=25)return'MODERADO'
+let maiorIRIQ=top5IRIQ.length?Number(top5IRIQ[0].iriq||0):0
+function faixaIRIQ(v){
+v=Number(v||0)
+if(v>=75)return'CRÍTICO'
+if(v>=50)return'ALTO'
+if(v>=25)return'MODERADO'
 return'BAIXO'
 }
-function corIRIQ(valor){
-valor=Number(valor||0)
-if(valor>=75)return[185,28,28]
-if(valor>=50)return[234,88,12]
-if(valor>=25)return[161,98,7]
-return[21,128,61]
+function corIRIQ(v){
+v=Number(v||0)
+if(v>=75)return[220,38,38]
+if(v>=50)return[234,88,12]
+if(v>=25)return[245,158,11]
+return[22,163,74]
 }
-function cabecalho(titulo,subtitulo,pagina){
-if(imgQueimadas)doc.addImage(imgQueimadas,'JPEG',0,0,105,36,undefined,'FAST')
-else{
-doc.setFillColor(30,58,138)
-doc.rect(0,0,105,36,'F')
+async function recortarImagem(dataURL){
+if(!dataURL)return null
+return await new Promise(resolve=>{
+let img=new Image()
+img.onload=()=>{
+let proporcaoDestino=105/50
+let proporcaoOrigem=img.naturalWidth/img.naturalHeight
+let sx=0
+let sy=0
+let sw=img.naturalWidth
+let sh=img.naturalHeight
+if(proporcaoOrigem>proporcaoDestino){
+sw=img.naturalHeight*proporcaoDestino
+sx=(img.naturalWidth-sw)/2
+}else{
+sh=img.naturalWidth/proporcaoDestino
+sy=(img.naturalHeight-sh)/2
 }
-if(imgLogo){
-doc.setFillColor(255,255,255)
-doc.roundedRect(7,5,42,17,2,2,'F')
-doc.addImage(imgLogo,'PNG',9,7,38,13)
+let canvas=document.createElement('canvas')
+canvas.width=1600
+canvas.height=Math.round(1600/proporcaoDestino)
+let ctx=canvas.getContext('2d')
+ctx.drawImage(img,sx,sy,sw,sh,0,0,canvas.width,canvas.height)
+resolve(canvas.toDataURL('image/jpeg',.96))
 }
-doc.setFillColor(15,23,42)
-doc.rect(105,0,105,36,'F')
-doc.setFont('helvetica','bold')
-doc.setTextColor(255,255,255)
-doc.setFontSize(16)
-doc.text(titulo,112,12)
-doc.setFontSize(7)
-doc.setTextColor(163,230,53)
-doc.text(subtitulo,112,20)
-doc.setFont('helvetica','bold')
-doc.setFontSize(5.8)
-doc.setTextColor(255,255,255)
-doc.text('Governança • Gestão de Riscos • Resiliência Municipal',112,27)
-doc.setFont('helvetica','normal')
-doc.setFontSize(5)
-doc.text(`PCe 0501/2026 • Atualização ${hoje.toLocaleDateString('pt-BR')}`,112,32)
-doc.setFillColor(15,61,145)
-doc.rect(0,36,210,2.5,'F')
-doc.setFillColor(15,61,145)
-doc.rect(0,289,210,8,'F')
-doc.setFont('helvetica','bold')
-doc.setFontSize(4.7)
-doc.setTextColor(255,255,255)
-doc.text('TRIBUNAL DE CONTAS DO ESTADO DE RONDÔNIA • PCe 0501/2026 • MONITORAMENTO DAS QUEIMADAS',8,294)
-doc.text(`PÁGINA ${pagina} DE 2`,201,294,{align:'right'})
+img.onerror=()=>resolve(null)
+img.src=dataURL
+})
 }
-function tituloBloco(texto,y){
-doc.setFillColor(15,23,42)
-doc.roundedRect(8,y,194,8,1.5,1.5,'F')
-doc.setFont('helvetica','bold')
-doc.setFontSize(7.2)
-doc.setTextColor(255,255,255)
-doc.text(texto,12,y+5.4)
-return y+11
-}
-function card(x,y,w,h,titulo,valor,cor=[37,99,235],sub=''){
-doc.setFillColor(255,255,255)
-doc.setDrawColor(203,213,225)
-doc.roundedRect(x,y,w,h,2.5,2.5,'FD')
-doc.setFont('helvetica','bold')
-doc.setFontSize(13)
-doc.setTextColor(...cor)
-doc.text(String(valor),x+w/2,y+10,{align:'center'})
-doc.setFontSize(5.2)
+let imgQueimadas=await recortarImagem(imgQueimadasOriginal)
+function textoPreto(){
 doc.setTextColor(17,24,39)
-doc.text(titulo,x+w/2,y+16,{align:'center'})
-if(sub){
-doc.setFontSize(4.8)
+}
+function faixaTitulo(texto,x,y,w){
+doc.setFillColor(13,61,140)
+doc.roundedRect(x,y,w,6,1.5,1.5,'F')
+doc.setFont('helvetica','bold')
+doc.setFontSize(5.6)
+doc.setTextColor(255,255,255)
+doc.text(texto,x+w/2,y+4.1,{align:'center'})
+}
+function kpi(x,y,w,titulo,valor,cor,icone,sub=''){
+doc.setFillColor(255,255,255)
+doc.setDrawColor(219,226,234)
+doc.roundedRect(x,y,w,25,2.5,2.5,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(12)
 doc.setTextColor(...cor)
-doc.text(doc.splitTextToSize(sub,w-5),x+w/2,y+21,{align:'center'})
+doc.text(icone,x+6,y+12,{align:'center'})
+doc.setFontSize(5.2)
+textoPreto()
+let tituloLinhas=doc.splitTextToSize(titulo,w-13)
+doc.text(tituloLinhas,x+11,y+6)
+doc.setFontSize(12.5)
+doc.setTextColor(...cor)
+doc.text(String(valor),x+w/2,y+17,{align:'center'})
+if(sub){
+doc.setFont('helvetica','bold')
+doc.setFontSize(4.5)
+textoPreto()
+doc.text(sub,x+w/2,y+22,{align:'center'})
 }
 }
 function graficoMensal(x,y,w,h){
+faixaTitulo(`EVOLUÇÃO MENSAL DOS FOCOS (${ano})`,x,y,w)
+doc.setFillColor(255,255,255)
+doc.setDrawColor(219,226,234)
+doc.roundedRect(x,y+6,w,h-6,2,2,'FD')
 let valores=Array(12).fill(0)
-;(mensal||[]).forEach(item=>{
-let mes=Number(item.mes)
-if(mes>=1&&mes<=12)valores[mes-1]=Number(item.focos||0)
+;(mensal||[]).forEach(i=>{
+let m=Number(i.mes)
+if(m>=1&&m<=12)valores[m-1]=Number(i.focos||0)
 })
 let max=Math.max(...valores,1)
-let nomes=['J','F','M','A','M','J','J','A','S','O','N','D']
-doc.setFillColor(255,255,255)
-doc.setDrawColor(203,213,225)
-doc.roundedRect(x,y,w,h,2.5,2.5,'FD')
-doc.setFont('helvetica','bold')
-doc.setFontSize(6.5)
-doc.setTextColor(17,24,39)
-doc.text('EVOLUÇÃO MENSAL DOS FOCOS',x+5,y+7)
+let meses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
 let base=y+h-7
-let area=h-18
-let bw=(w-12)/12
+let top=y+12
+let area=base-top
+let bw=(w-13)/12
+doc.setDrawColor(229,231,235)
+for(let i=0;i<=3;i++){
+let yy=top+(area/3)*i
+doc.line(x+7,yy,x+w-4,yy)
+}
 valores.forEach((v,i)=>{
-let bh=v>0?Math.max(1,(v/max)*area):0
-doc.setFillColor(i===hoje.getMonth()?185:234,i===hoje.getMonth()?28:88,i===hoje.getMonth()?28:12)
-if(bh>0)doc.roundedRect(x+6+i*bw,base-bh,bw-1,bh,.5,.5,'F')
+let bh=v?Math.max(1,(v/max)*(area-5)):0
+doc.setFillColor(220,38,38)
+if(bh)doc.roundedRect(x+7+i*bw,base-bh,bw-1.3,bh,.7,.7,'F')
 doc.setFont('helvetica','bold')
-doc.setFontSize(4)
-doc.setTextColor(17,24,39)
-doc.text(nomes[i],x+6+i*bw+(bw-1)/2,base+4,{align:'center'})
+doc.setFontSize(3.8)
+textoPreto()
+if(v>0)doc.text(Number(v).toLocaleString('pt-BR'),x+7+i*bw+(bw-1.3)/2,base-bh-1.3,{align:'center'})
+doc.setFontSize(3.8)
+doc.text(meses[i],x+7+i*bw+(bw-1.3)/2,base+4,{align:'center'})
 })
 }
-function graficoIRIQ(x,y,w,h){
+function graficoEscalaIRIQ(x,y,w,h){
+faixaTitulo('GRÁFICO DO IRIQ',x,y,w)
 doc.setFillColor(255,255,255)
-doc.setDrawColor(203,213,225)
-doc.roundedRect(x,y,w,h,2.5,2.5,'FD')
+doc.setDrawColor(219,226,234)
+doc.roundedRect(x,y+6,w,h-6,2,2,'FD')
+let gx=x+8
+let gy=y+20
+let gw=w-16
+let seg=gw/4
+doc.setFillColor(22,163,74)
+doc.rect(gx,gy,seg,6,'F')
+doc.setFillColor(245,158,11)
+doc.rect(gx+seg,gy,seg,6,'F')
+doc.setFillColor(234,88,12)
+doc.rect(gx+seg*2,gy,seg,6,'F')
+doc.setFillColor(220,38,38)
+doc.rect(gx+seg*3,gy,seg,6,'F')
 doc.setFont('helvetica','bold')
-doc.setFontSize(6.5)
-doc.setTextColor(17,24,39)
-doc.text('3 MAIORES IRIQ MUNICIPAIS',x+5,y+7)
-let max=Math.max(...top3IRIQ.map(i=>Number(i.iriq||0)),1)
-top3IRIQ.forEach((item,idx)=>{
-let valor=Number(item.iriq||0)
-let ly=y+13+idx*9
-let nome=String(item.municipio||'-')
-if(nome.length>16)nome=nome.slice(0,15)+'…'
-doc.setFontSize(4.7)
-doc.setTextColor(17,24,39)
-doc.text(nome,x+5,ly+3)
-let bx=x+35
-let bw=w-48
-doc.setFillColor(226,232,240)
-doc.roundedRect(bx,ly,bw,4,1,1,'F')
-doc.setFillColor(...corIRIQ(valor))
-doc.roundedRect(bx,ly,bw*(valor/max),4,1,1,'F')
-doc.setFontSize(4.7)
-doc.setTextColor(17,24,39)
-doc.text(valor.toFixed(2),x+w-4,ly+3,{align:'right'})
-})
-}
-function graficoMunicipios(x,y,w,h){
-let itens=[['PLANO',comPlano,[21,128,61]],['DILAÇÃO',dilacao,[161,98,7]],['SEM RESPOSTA',semResposta,[185,28,28]]]
-let max=Math.max(comPlano,dilacao,semResposta,1)
-doc.setFillColor(255,255,255)
-doc.setDrawColor(203,213,225)
-doc.roundedRect(x,y,w,h,2.5,2.5,'FD')
-doc.setFont('helvetica','bold')
-doc.setFontSize(6.5)
-doc.setTextColor(17,24,39)
-doc.text('RESPOSTA DOS MUNICÍPIOS',x+5,y+7)
-itens.forEach((item,idx)=>{
-let ly=y+13+idx*9
-doc.setFontSize(4.7)
-doc.setTextColor(17,24,39)
-doc.text(item[0],x+5,ly+3)
-let bx=x+28
-let bw=w-39
-doc.setFillColor(226,232,240)
-doc.roundedRect(bx,ly,bw,4,1,1,'F')
-doc.setFillColor(...item[2])
-doc.roundedRect(bx,ly,bw*(item[1]/max),4,1,1,'F')
-doc.setFontSize(4.8)
-doc.setTextColor(17,24,39)
-doc.text(String(item[1]),x+w-4,ly+3,{align:'right'})
-})
-}
-/*=========================================================
-PÁGINA 1
-=========================================================*/
-cabecalho('SUMÁRIO EXECUTIVO','PREVENÇÃO E COMBATE ÀS QUEIMADAS',1)
-let y=44
-doc.setFillColor(248,250,252)
-doc.setDrawColor(226,232,240)
-doc.roundedRect(8,y,194,22,3,3,'FD')
-doc.setFont('helvetica','bold')
-doc.setFontSize(6.3)
-doc.setTextColor(15,61,145)
-doc.text('APRESENTAÇÃO',13,y+7)
-doc.setFont('helvetica','normal')
-doc.setFontSize(6.5)
-doc.setTextColor(17,24,39)
-let apresentacao=`O Tribunal de Contas do Estado de Rondônia acompanha, de forma concomitante, as ações de prevenção e enfrentamento às queimadas e incêndios florestais. O monitoramento integra focos de calor, riscos ambientais, resposta municipal, governança e evidências institucionais, permitindo antecipar fragilidades, orientar prioridades e apoiar decisões públicas baseadas em dados.`
-doc.text(doc.splitTextToSize(apresentacao,182),13,y+13)
-y+=27
-let gap=3
-let largura=(194-gap*5)/6
-let indicadores=[
-['FOCOS '+ano,focos.toLocaleString('pt-BR'),[185,28,28]],
-['COM PLANO',comPlano,[21,128,61]],
-['DILAÇÃO',dilacao,[161,98,7]],
-['SEM RESPOSTA',semResposta,[185,28,28]],
-['CRÍTICOS',criticos,[185,28,28]],
-['PRIORITÁRIOS',prioritarios,[234,88,12]]
-]
-indicadores.forEach((item,idx)=>card(8+idx*(largura+gap),y,largura,23,item[0],item[1],item[2]))
-y+=28
-graficoMensal(8,y,63,39)
-graficoIRIQ(74,y,63,39)
-graficoMunicipios(140,y,62,39)
-y+=44
-y=tituloBloco('IRIQ • CONCENTRAÇÃO TERRITORIAL DO RISCO',y)
-let wi=(194-6)/3
-card(8,y,wi,27,'IRIQ ESTADUAL',iriqEstadual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),corIRIQ(iriqEstadual),faixaIRIQ(iriqEstadual))
-card(8+wi+3,y,wi,27,'MÉDIA DOS 5 MAIORES',mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),corIRIQ(mediaTop5),faixaIRIQ(mediaTop5))
-card(8+(wi+3)*2,y,wi,27,'MAIOR IRIQ MUNICIPAL',maiorIRIQ.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),corIRIQ(maiorIRIQ),top3IRIQ[0]?.municipio||'-')
-y+=32
-doc.setFont('helvetica','bold')
-doc.setFontSize(6.5)
-doc.setTextColor(17,24,39)
-doc.text('TRÊS MAIORES IRIQ MUNICIPAIS',8,y)
-doc.autoTable({
-startY:y+3,
-head:[['POS.','MUNICÍPIO','IRIQ','CLASSIFICAÇÃO']],
-body:top3IRIQ.map((i,idx)=>[`${idx+1}º`,i.municipio||'-',Number(i.iriq||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),i.classificacao||faixaIRIQ(i.iriq)]),
-styles:{fontSize:6.3,cellPadding:1.4,textColor:[17,24,39],fontStyle:'bold'},
-headStyles:{fillColor:[30,58,138],textColor:[255,255,255]},
-alternateRowStyles:{fillColor:[248,250,252]},
-columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:98},2:{cellWidth:30,halign:'right'},3:{cellWidth:48}},
-margin:{left:8,right:8}
-})
-y=(doc.lastAutoTable?.finalY||210)+5
-doc.setFillColor(239,246,255)
-doc.setDrawColor(147,197,253)
-doc.roundedRect(8,y,194,36,3,3,'FD')
-doc.setFont('helvetica','bold')
-doc.setFontSize(6.7)
-doc.setTextColor(30,58,138)
-doc.text('SÍNTESE EXECUTIVA DO RISCO',13,y+7)
-doc.setFont('helvetica','normal')
-doc.setFontSize(6.3)
-doc.setTextColor(17,24,39)
-let sintese=`Embora o IRIQ estadual seja ${iriqEstadual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, classificado como ${faixaIRIQ(iriqEstadual)}, a média dos cinco municípios com maiores índices alcança ${mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, classificação ${faixaIRIQ(mediaTop5)}. O maior índice municipal é ${maiorIRIQ.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, em ${top3IRIQ[0]?.municipio||'-'}. A diferença demonstra concentração territorial relevante do risco e confirma que o indicador estadual agregado não deve ser analisado isoladamente.`
-doc.text(doc.splitTextToSize(sintese,184),13,y+14)
-doc.setFont('helvetica','italic')
+doc.setFontSize(3.8)
+textoPreto()
+doc.text('0',gx,gy-2)
+doc.text('25',gx+seg,gy-2,{align:'center'})
+doc.text('50',gx+seg*2,gy-2,{align:'center'})
+doc.text('75',gx+seg*3,gy-2,{align:'center'})
+doc.text('100',gx+gw,gy-2,{align:'right'})
+doc.text('BAIXO',gx+seg/2,gy+11,{align:'center'})
+doc.text('MODERADO',gx+seg*1.5,gy+11,{align:'center'})
+doc.text('ALTO',gx+seg*2.5,gy+11,{align:'center'})
+doc.text('CRÍTICO',gx+seg*3.5,gy+11,{align:'center'})
+let marcador=gx+Math.min(100,Math.max(0,iriqEstadual))/100*gw
+doc.setFillColor(15,23,42)
+doc.triangle(marcador-2,gy-5,marcador+2,gy-5,marcador,gy-1,'F')
 doc.setFontSize(5)
-doc.setTextColor(17,24,39)
-doc.text('Fontes: TCE-RO • INPE Programa Queimadas • IRIQ • Heatmap Estadual • PRODES • MapBiomas',8,283)
-/*=========================================================
-PÁGINA 2
-=========================================================*/
-doc.addPage()
-cabecalho('PRIORIDADES E GOVERNANÇA','MUNICÍPIOS • FOCOS • ACOMPANHAMENTO',2)
-y=44
-let metade=(194-3)/2
+doc.text('IRIQ ESTADUAL',x+w/2,y+h-16,{align:'center'})
+doc.setFontSize(15)
+doc.setTextColor(...corIRIQ(iriqEstadual))
+doc.text(iriqEstadual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),x+w/2,y+h-8,{align:'center'})
+doc.setFontSize(5.2)
+doc.text(faixaIRIQ(iriqEstadual),x+w/2,y+h-3,{align:'center'})
+}
+function concentracaoIRIQ(x,y,w,h){
+faixaTitulo('CONCENTRAÇÃO DO IRIQ MUNICIPAL',x,y,w)
+doc.setFillColor(255,255,255)
+doc.setDrawColor(219,226,234)
+doc.roundedRect(x,y+6,w,h-6,2,2,'FD')
+let cx=x+28
+let cy=y+31
+let raio=15
+let raioInterno=9
+let canvas=document.createElement('canvas')
+canvas.width=500
+canvas.height=500
+let ctx=canvas.getContext('2d')
+ctx.clearRect(0,0,500,500)
+let centro=250
+let r=180
+let ri=105
+let partes=[
+{valor:25,cor:'#16a34a'},
+{valor:25,cor:'#f59e0b'},
+{valor:25,cor:'#ea580c'},
+{valor:25,cor:'#dc2626'}
+]
+let inicio=-Math.PI/2
+partes.forEach(p=>{
+let fim=inicio+(p.valor/100)*Math.PI*2
+ctx.beginPath()
+ctx.arc(centro,centro,r,inicio,fim)
+ctx.arc(centro,centro,ri,fim,inicio,true)
+ctx.closePath()
+ctx.fillStyle=p.cor
+ctx.fill()
+ctx.strokeStyle='#ffffff'
+ctx.lineWidth=5
+ctx.stroke()
+inicio=fim
+})
+let donut=canvas.toDataURL('image/png')
+doc.addImage(donut,'PNG',cx-raio,cy-raio,raio*2,raio*2)
 doc.setFont('helvetica','bold')
-doc.setFontSize(6.5)
-doc.setTextColor(17,24,39)
-doc.text('MUNICÍPIOS COM MAIOR CONCENTRAÇÃO DE FOCOS',8,y)
-doc.text('MAIORES IRIQ MUNICIPAIS',8+metade+3,y)
-doc.autoTable({
-startY:y+3,
-head:[['POS.','MUNICÍPIO','FOCOS']],
-body:(rankingFocos||[]).slice(0,7).map((i,idx)=>[`${idx+1}º`,i.municipio||'-',Number(i.focos||0).toLocaleString('pt-BR')]),
-styles:{fontSize:5.8,cellPadding:1.3,textColor:[17,24,39],fontStyle:'bold'},
-headStyles:{fillColor:[127,29,29],textColor:[255,255,255]},
-columnStyles:{0:{cellWidth:14},1:{cellWidth:59},2:{cellWidth:23,halign:'right'}},
-margin:{left:8,right:105}
+doc.setFontSize(4.6)
+textoPreto()
+doc.text('MÉDIA DOS',cx,cy-4,{align:'center'})
+doc.text('5 MAIORES',cx,cy+1,{align:'center'})
+doc.setFontSize(11)
+doc.setTextColor(...corIRIQ(mediaTop5))
+doc.text(mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),cx,cy+8,{align:'center'})
+doc.setFontSize(4.8)
+doc.text(faixaIRIQ(mediaTop5),cx,cy+13,{align:'center'})
+let lx=x+51
+let ly=y+17
+let legenda=[
+['0-25','BAIXO',[22,163,74]],
+['25-50','MODERADO',[245,158,11]],
+['50-75','ALTO',[234,88,12]],
+['75-100','CRÍTICO',[220,38,38]]
+]
+legenda.forEach((l,i)=>{
+doc.setFillColor(...l[2])
+doc.roundedRect(lx,ly+i*9,4,4,.7,.7,'F')
+doc.setFont('helvetica','bold')
+doc.setFontSize(4.5)
+textoPreto()
+doc.text(l[0],lx+7,ly+3+i*9)
+doc.text(l[1],lx+7,ly+7+i*9)
 })
-let fim1=doc.lastAutoTable?.finalY||100
-doc.autoTable({
-startY:y+3,
-head:[['POS.','MUNICÍPIO','IRIQ']],
-body:top5IRIQ.map((i,idx)=>[`${idx+1}º`,i.municipio||'-',Number(i.iriq||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})]),
-styles:{fontSize:5.8,cellPadding:1.3,textColor:[17,24,39],fontStyle:'bold'},
-headStyles:{fillColor:[30,58,138],textColor:[255,255,255]},
-columnStyles:{0:{cellWidth:14},1:{cellWidth:59},2:{cellWidth:23,halign:'right'}},
-margin:{left:105,right:8}
+}
+function situacaoMunicipios(x,y,w){
+faixaTitulo('SITUAÇÃO DOS 52 MUNICÍPIOS',x,y,w)
+let h=27
+doc.setFillColor(255,255,255)
+doc.setDrawColor(219,226,234)
+doc.roundedRect(x,y+6,w,h,2,2,'FD')
+let itens=[
+['COM PLANO',comPlano,[22,163,74]],
+['EM DILAÇÃO',dilacao,[234,88,12]],
+['SEM RESPOSTA',semResposta,[220,38,38]]
+]
+let cw=w/3
+itens.forEach((i,idx)=>{
+let xx=x+idx*cw
+if(idx>0){
+doc.setDrawColor(226,232,240)
+doc.line(xx,y+10,xx,y+29)
+}
+doc.setFont('helvetica','bold')
+doc.setFontSize(5.3)
+doc.setTextColor(...i[2])
+doc.text(i[0],xx+cw/2,y+13,{align:'center'})
+doc.setFontSize(14)
+doc.text(String(i[1]),xx+cw/2,y+22,{align:'center'})
+doc.setFontSize(4.8)
+textoPreto()
+doc.text(`${((i[1]/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`,xx+cw/2,y+28,{align:'center'})
 })
-let fim2=doc.lastAutoTable?.finalY||100
-y=Math.max(fim1,fim2)+6
-y=tituloBloco('SITUAÇÃO DOS 52 MUNICÍPIOS',y)
-let wm=(194-6)/3
-card(8,y,wm,27,'PLANO DE AÇÃO',comPlano,[21,128,61],`${Math.round((comPlano/totalMunicipios)*100)}% DO TOTAL`)
-card(8+wm+3,y,wm,27,'DILAÇÃO DE PRAZO',dilacao,[161,98,7],`${Math.round((dilacao/totalMunicipios)*100)}% DO TOTAL`)
-card(8+(wm+3)*2,y,wm,27,'SEM RESPOSTA',semResposta,[185,28,28],`${Math.round((semResposta/totalMunicipios)*100)}% DO TOTAL`)
-y+=32
-y=tituloBloco('INDICADORES AMBIENTAIS',y)
-let wa=(194-3)/2
-card(8,y,wa,27,'DESMATAMENTO',desmatamento.toLocaleString('pt-BR',{maximumFractionDigits:0})+' ha',[30,58,138])
-card(8+wa+3,y,wa,27,'ÁREA QUEIMADA',areaQueimada.toLocaleString('pt-BR',{maximumFractionDigits:0})+' ha',[185,28,28])
-y+=32
-y=tituloBloco('ACHADOS EXECUTIVOS',y)
+}
+function listaCompacta(x,y,w,h,titulo,itens){
+doc.setFillColor(255,255,255)
+doc.setDrawColor(30,64,175)
+doc.roundedRect(x,y,w,h,2,2,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(5.8)
+doc.setTextColor(13,61,140)
+doc.text(titulo,x+w/2,y+6,{align:'center'})
+let yy=y+12
+itens.forEach((t,idx)=>{
+doc.setFillColor(13,61,140)
+doc.roundedRect(x+4,yy-3.5,5,5,1,1,'F')
+doc.setFont('helvetica','bold')
+doc.setFontSize(4.3)
+doc.setTextColor(255,255,255)
+doc.text(String(idx+1),x+6.5,yy,{align:'center'})
+doc.setFont('helvetica','normal')
+doc.setFontSize(4.9)
+textoPreto()
+let linhas=doc.splitTextToSize(t,w-16)
+doc.text(linhas,x+12,yy)
+yy+=Math.max(7,linhas.length*3.1+2)
+})
+}
+/*=========================================================
+CABEÇALHO
+=========================================================*/
+if(imgQueimadas)doc.addImage(imgQueimadas,'JPEG',0,0,105,50,undefined,'FAST')
+else{
+doc.setFillColor(15,23,42)
+doc.rect(0,0,105,50,'F')
+}
+if(imgLogo){
+doc.addImage(imgLogo,'PNG',9,5,43,15)
+}
+doc.setFillColor(8,32,71)
+doc.rect(105,0,105,50,'F')
+doc.setFont('helvetica','bold')
+doc.setTextColor(255,255,255)
+doc.setFontSize(17)
+doc.text('SUMÁRIO',115,13)
+doc.text('EXECUTIVO',115,22)
+doc.setFontSize(8.2)
+doc.setTextColor(163,230,53)
+doc.text('GUIA EXECUTIVO PARA',115,30)
+doc.text('PREVENÇÃO E COMBATE',115,36)
+doc.text('ÀS QUEIMADAS',115,42)
+doc.setFont('helvetica','bold')
+doc.setFontSize(5.8)
+doc.setTextColor(255,255,255)
+doc.text('Governança • Gestão de Riscos • Resiliência Municipal • Rondônia',115,46)
+doc.setFillColor(13,61,140)
+doc.rect(0,50,210,2,'F')
+/*=========================================================
+APRESENTAÇÃO
+=========================================================*/
+doc.setFillColor(248,250,252)
+doc.setDrawColor(203,213,225)
+doc.roundedRect(5,54,200,13,2,2,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(5.1)
+textoPreto()
+let apresentacao='Tribunal de Contas do Estado de Rondônia - documento de apoio para leitura estratégica, monitoramento de políticas públicas e orientação sobre prevenção e combate às queimadas e incêndios florestais.'
+doc.text(doc.splitTextToSize(apresentacao,185),105,59,{align:'center'})
+/*=========================================================
+KPIs
+=========================================================*/
+let ky=70
+let gap=1
+let kw=(200-gap*5)/6
+kpi(5,ky,kw,'FOCOS DE CALOR '+ano,focos.toLocaleString('pt-BR'),[220,38,38],'🔥',`01/01 a ${hoje.toLocaleDateString('pt-BR')}`)
+kpi(5+(kw+gap),ky,kw,'MUNICÍPIOS COM PLANO DE AÇÃO',comPlano,[22,128,61],'✓',`${((comPlano/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
+kpi(5+(kw+gap)*2,ky,kw,'MUNICÍPIOS EM DILAÇÃO',dilacao,[234,88,12],'▣',`${((dilacao/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
+kpi(5+(kw+gap)*3,ky,kw,'MUNICÍPIOS SEM RESPOSTA',semResposta,[220,38,38],'✕',`${((semResposta/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
+kpi(5+(kw+gap)*4,ky,kw,'MUNICÍPIOS CRÍTICOS',criticos,[220,38,38],'!', '')
+kpi(5+(kw+gap)*5,ky,kw,'MUNICÍPIOS PRIORITÁRIOS',prioritarios,[234,88,12],'◎','')
+/*=========================================================
+GRÁFICOS
+=========================================================*/
+let gy=98
+graficoMensal(5,gy,74,43)
+graficoEscalaIRIQ(81,gy,61,43)
+concentracaoIRIQ(144,gy,61,43)
+/*=========================================================
+SÍNTESE + AMBIENTAL
+=========================================================*/
+let sy=144
+doc.setFillColor(248,250,252)
+doc.setDrawColor(203,213,225)
+doc.roundedRect(5,sy,129,29,2,2,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(5.8)
+doc.setTextColor(13,61,140)
+doc.text('SÍNTESE DO RISCO',18,sy+7)
+doc.setFont('helvetica','normal')
+doc.setFontSize(5.2)
+textoPreto()
+let sintese=`Embora o IRIQ estadual esteja classificado como ${faixaIRIQ(iriqEstadual)} (${iriqEstadual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}), a média dos cinco municípios de maior IRIQ alcança ${mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})} (faixa ${faixaIRIQ(mediaTop5)}). O maior índice municipal é ${maiorIRIQ.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, registrado em ${top5IRIQ[0]?.municipio||'-'}. A diferença evidencia concentração territorial do risco, recomendando priorização municipal, sem que o indicador estadual agregado seja analisado isoladamente.`
+doc.text(doc.splitTextToSize(sintese,112),18,sy+12)
+faixaTitulo('INDICADORES AMBIENTAIS',137,sy,68)
+doc.setFillColor(255,255,255)
+doc.setDrawColor(219,226,234)
+doc.roundedRect(137,sy+6,68,23,2,2,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(4.4)
+textoPreto()
+doc.text('DESMATAMENTO',154,sy+12,{align:'center'})
+doc.text('ÁREA QUEIMADA',188,sy+12,{align:'center'})
+doc.setTextColor(15,23,42)
+doc.setFontSize(10.5)
+doc.text(desmatamento.toLocaleString('pt-BR',{maximumFractionDigits:0}),154,sy+21,{align:'center'})
+doc.text(areaQueimada.toLocaleString('pt-BR',{maximumFractionDigits:0}),188,sy+21,{align:'center'})
+doc.setFontSize(4.2)
+doc.text('ha',164,sy+21)
+doc.text('ha',198,sy+21)
+/*=========================================================
+SITUAÇÃO MUNICIPAL
+=========================================================*/
+situacaoMunicipios(5,177,147)
+faixaTitulo('LEGENDA DAS CLASSIFICAÇÕES',155,177,50)
+doc.setFillColor(255,255,255)
+doc.setDrawColor(30,64,175)
+doc.roundedRect(155,183,50,27,2,2,'FD')
+let classes=[
+['BAIXO: 0 a 25',[22,163,74]],
+['MODERADO: 25 a 50',[245,158,11]],
+['ALTO: 50 a 75',[234,88,12]],
+['CRÍTICO: 75 a 100',[220,38,38]]
+]
+classes.forEach((i,idx)=>{
+doc.setFillColor(...i[1])
+doc.roundedRect(159,187+idx*5.5,3,3,.5,.5,'F')
+doc.setFont('helvetica','bold')
+doc.setFontSize(4.5)
+textoPreto()
+doc.text(i[0],165,189.5+idx*5.5)
+})
+/*=========================================================
+ACHADOS + PRIORIDADES
+=========================================================*/
 let achados=[
 `${semResposta} município(s) permanecem classificados como sem resposta ao TCE-RO.`,
 `${dilacao} município(s) encontram-se em dilação de prazo.`,
 `O IRIQ estadual é ${iriqEstadual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, enquanto a média dos cinco maiores municípios alcança ${mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}.`,
-`Os três maiores IRIQ concentram-se em ${top3IRIQ.map(i=>i.municipio).join(', ')||'municípios prioritários'}.`,
-`Foram registrados ${focos.toLocaleString('pt-BR')} focos de calor em Rondônia no período analisado.`
+`O maior IRIQ municipal é ${maiorIRIQ.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, em ${top5IRIQ[0]?.municipio||'-'}.`,
+`Foram registrados ${focos.toLocaleString('pt-BR')} focos de calor no período analisado.`
 ]
-achados.forEach((texto,idx)=>{
-doc.setFillColor(248,250,252)
-doc.setDrawColor(226,232,240)
-doc.roundedRect(8,y,194,11,2,2,'FD')
-doc.setFont('helvetica','bold')
-doc.setFontSize(6)
-doc.setTextColor(30,58,138)
-doc.text(`${idx+1}.`,12,y+7)
-doc.setFont('helvetica','normal')
-doc.setTextColor(17,24,39)
-doc.text(doc.splitTextToSize(texto,180),19,y+4.5)
-y+=13
-})
-y+=3
-y=tituloBloco('PRIORIDADES PARA ACOMPANHAMENTO',y)
 let prioridades=[
-'Priorizar municípios com maiores IRIQ e concentração recente de focos de calor.',
+'Priorizar municípios com maiores IRIQ e concentração recente de focos.',
 'Acompanhar a execução efetiva dos Planos de Ação apresentados.',
-'Manter acompanhamento específico dos municípios sem resposta e daqueles em dilação.',
+'Manter atuação específica sobre municípios sem resposta e em dilação.',
 'Integrar TCE-RO, SEDAM, CBMRO, Defesa Civil e municípios no monitoramento.',
-'Utilizar IRIQ, Heatmap, CHAP, IA-CHAP e Monitoramento 4D como instrumentos permanentes de apoio à decisão.'
+'Utilizar IRIQ, Heatmap, CHAP, IA-CHAP e Monitoramento 4D como instrumentos de decisão.'
 ]
-doc.setFontSize(6.1)
-prioridades.forEach((texto,idx)=>{
+listaCompacta(5,214,98,43,'ACHADOS EXECUTIVOS',achados)
+listaCompacta(107,214,98,43,'PRIORIDADES PARA ACOMPANHAMENTO',prioridades)
+/*=========================================================
+CONCLUSÃO EXECUTIVA
+=========================================================*/
+doc.setFillColor(13,61,140)
+doc.roundedRect(28,261,154,25,2.5,2.5,'F')
 doc.setFont('helvetica','bold')
-doc.setTextColor(30,58,138)
-doc.text(`${idx+1}.`,10,y)
-doc.setFont('helvetica','normal')
-doc.setTextColor(17,24,39)
-doc.text(doc.splitTextToSize(texto,183),17,y)
-y+=8
-})
-y+=3
-doc.setFillColor(15,61,145)
-doc.roundedRect(8,y,194,34,3,3,'F')
-doc.setFont('helvetica','bold')
-doc.setFontSize(6.8)
+doc.setFontSize(6.5)
 doc.setTextColor(255,255,255)
-doc.text('CONCLUSÃO EXECUTIVA',13,y+7)
+doc.text('CONCLUSÃO EXECUTIVA',34,268)
 doc.setFont('helvetica','normal')
-doc.setFontSize(6.2)
-let conclusao=`O cenário exige leitura territorializada e atuação preventiva. O baixo IRIQ agregado do Estado não significa ausência de riscos relevantes. A concentração dos maiores índices municipais, dos focos de calor e das fragilidades de resposta justifica a continuidade do acompanhamento concomitante, priorizando os territórios de maior criticidade e promovendo integração permanente entre prevenção, fiscalização, monitoramento, governança e resposta operacional.`
-doc.text(doc.splitTextToSize(conclusao,184),13,y+14)
+doc.setFontSize(5.2)
+let conclusao='O cenário exige leitura territorializada. O baixo índice estadual não significa ausência de risco relevante: a concentração dos maiores IRIQ, dos focos de calor e das fragilidades de resposta em determinados municípios justifica acompanhamento concomitante, atuação preventiva e integração permanente dos órgãos responsáveis.'
+doc.text(doc.splitTextToSize(conclusao,140),34,274)
 doc.setFont('helvetica','italic')
+doc.setFontSize(4.6)
+textoPreto()
+doc.text('Fontes: INPE • PRODES • MapBiomas • SEDAM • CBMRO • Municípios de Rondônia • IRIQ • TCE-RO',5,292)
+doc.setFont('helvetica','bold')
 doc.setFontSize(5)
-doc.setTextColor(17,24,39)
-doc.text('Fontes: INPE • PRODES • MapBiomas • SEDAM • CBMRO • Municípios de Rondônia • IRIQ • TCE-RO',8,283)
+doc.text('PÁGINA 1 DE 1',205,292,{align:'right'})
 doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
 }
 
