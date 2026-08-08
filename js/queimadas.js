@@ -2792,172 +2792,407 @@ alert('Heatmap atualizado com sucesso.')
 074 GERAR SUMARIO EXECUTIVO
 =========================================================*/
 async function gerarPDFSumarioExecutivo0501(){
-const {jsPDF}=window.jspdf
-let doc=new jsPDF('p','mm','a4')
-const imgLogo=await toDataURL('assets/geojson/logotcero.png')
-const imgQueimadas=await toDataURL('assets/geojson/queimadas.png')
-const imgRio=await toDataURL('assets/geojson/riomadeira.jpg')
-const imgRO=await toDataURL('assets/geojson/brasaoro.png')
-const imgSEDAM=await toDataURL('assets/geojson/sedam.png')
-const imgSEPAT=await toDataURL('assets/geojson/sepat.png')
-/*=========================================================
-CAPA SUPERIOR
-=========================================================*/
-doc.addImage(imgQueimadas,'PNG',0,0,210,45)
+const{jsPDF}=window.jspdf
+let doc=new jsPDF('p','mm','a4',true)
+let hoje=new Date()
+let ano=hoje.getFullYear()
+let dataInicial=`${ano}-01-01`
+let dataFinal=formatarDataISOFocos(hoje)
+let imgLogo=await toDataURL('assets/geojson/logotcero.png').catch(()=>null)
+let imgQueimadas=await toDataURL('assets/geojson/queimadas.png').catch(()=>null)
+let imgRO=await toDataURL('assets/geojson/brasaoro.png').catch(()=>null)
+let[
+{count:totalFocos,error:erroFocos},
+{data:municipios=[],error:erroMunicipios},
+{data:executivo,error:erroExecutivo},
+{data:rankingFocos=[],error:erroRankingFocos},
+{data:rankingIRIQ=[],error:erroIRIQ},
+{data:mensal=[],error:erroMensal}
+]=await Promise.all([
+client.from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).gte('data_foco',dataInicial).lte('data_foco',dataFinal),
+client.from('vw_queimadas_municipios_resposta').select('*'),
+client.from('vw_queimadas_executivo').select('*').maybeSingle(),
+client.from('vw_queimadas_ranking_focos_atual').select('municipio,focos').order('focos',{ascending:false}).limit(10),
+client.from('queimadas_heatmap').select('municipio,iriq,risco,classificacao,focos').order('iriq',{ascending:false}).limit(10),
+client.from('vw_queimadas_focos_mensal').select('mes,focos').eq('ano',ano).order('mes',{ascending:true})
+])
+if(erroFocos)console.error('Sumário - focos:',erroFocos)
+if(erroMunicipios)console.error('Sumário - municípios:',erroMunicipios)
+if(erroExecutivo)console.error('Sumário - executivo:',erroExecutivo)
+if(erroRankingFocos)console.error('Sumário - ranking focos:',erroRankingFocos)
+if(erroIRIQ)console.error('Sumário - IRIQ:',erroIRIQ)
+if(erroMensal)console.error('Sumário - evolução mensal:',erroMensal)
+executivo=executivo||{}
+let totalMunicipios=municipios.length||52
+let comPlano=municipios.filter(i=>String(i.classificacao_ia||'').toUpperCase().includes('PLANO')).length
+let dilacao=municipios.filter(i=>String(i.classificacao_ia||'').toUpperCase().includes('DILA')).length
+let semResposta=municipios.filter(i=>String(i.classificacao_ia||'').toUpperCase().includes('SEM RESPOSTA')).length
+if(!semResposta)semResposta=Math.max(0,totalMunicipios-comPlano-dilacao)
+let focos=Number(totalFocos||0)
+let criticos=Number(executivo.municipios_criticos||0)
+let prioritarios=Number(executivo.municipios_prioritarios||0)
+let iriqEstadual=Number(executivo.iriq_estadual||0)
+let areaQueimada=Number(executivo.area_queimada_estado_ha||0)
+let desmatamento=Number(executivo.desmatamento_estado_ha||0)
+let top5IRIQ=(rankingIRIQ||[]).filter(i=>Number.isFinite(Number(i.iriq))).slice(0,5)
+let top3IRIQ=top5IRIQ.slice(0,3)
+let mediaTop5=top5IRIQ.length?top5IRIQ.reduce((s,i)=>s+Number(i.iriq||0),0)/top5IRIQ.length:0
+let maiorIRIQ=top3IRIQ.length?Number(top3IRIQ[0].iriq||0):0
+function faixaIRIQ(valor){
+valor=Number(valor||0)
+if(valor>=75)return'CRÍTICO'
+if(valor>=50)return'ALTO'
+if(valor>=25)return'MODERADO'
+return'BAIXO'
+}
+function corIRIQ(valor){
+valor=Number(valor||0)
+if(valor>=75)return[220,38,38]
+if(valor>=50)return[249,115,22]
+if(valor>=25)return[202,138,4]
+return[22,163,74]
+}
+function cabecalho(titulo,subtitulo=''){
+if(imgQueimadas)doc.addImage(imgQueimadas,'PNG',0,0,210,38)
+else{
+doc.setFillColor(15,23,42)
+doc.rect(0,0,210,38,'F')
+}
 doc.setFillColor(255,255,255)
-doc.roundedRect(102,4,103,36,2,2,'F')
-doc.addImage(imgLogo,'PNG',8,4,42,14)
-// doc.addImage(imgRO,'PNG',70,5,34,34)
+doc.roundedRect(94,4,111,29,3,3,'F')
+if(imgLogo)doc.addImage(imgLogo,'PNG',7,5,38,13)
 doc.setFont('helvetica','bold')
 doc.setTextColor(15,61,145)
-doc.setFontSize(17)
-doc.text('SUMÁRIO EXECUTIVO',154,16,{align:'center'})
-doc.setFontSize(8)
+doc.setFontSize(16)
+doc.text(titulo,149.5,14,{align:'center'})
+doc.setFontSize(7)
 doc.setTextColor(34,84,61)
-doc.text('GUIA EXECUTIVO PARA PREVENÇÃO E COMBATE ÀS QUEIMADAS',154,24,{align:'center'})
-doc.text('Governança • Gestão de Riscos • Resiliência Municipal • Rondônia',154,30,{align:'center'})
+if(subtitulo)doc.text(subtitulo,149.5,21,{align:'center'})
+doc.setFontSize(6)
+doc.setTextColor(71,85,105)
+doc.text('PCe 0501/2026 • Monitoramento das Queimadas • Rondônia',149.5,27,{align:'center'})
 doc.setFillColor(15,61,145)
-doc.rect(0,45,210,3,'F')
-doc.setFillColor(245,248,250)
-doc.roundedRect(5,50,200,16,2,2,'F')
-doc.setFont('helvetica','normal')
-doc.setTextColor(0,0,0)
-doc.setFontSize(5.5)
-
-doc.text(
-'Tribunal de Contas do Estado de Rondônia — documento de apoio para leitura estratégica, monitoramento de políticas públicas e orientação sobre prevenção e combate às queimadas e incêndios florestais.',
-10,
-58,
-{maxWidth:190}
-)
-doc.addImage(imgRio,'JPEG',0,68,210,30)
-
-doc.setFillColor(255,255,255)
-doc.setFillColor(255,255,255)
-doc.rect(0,68,210,219,'F')
-doc.rect(0,68,210,220,'F')
-doc.setGState(new doc.GState({opacity:1}))
-
-doc.setFont('helvetica','normal')
-doc.setTextColor(0,0,0)
-doc.setFontSize(5.5)
-
-let textoResumo=`
-APRESENTAÇÃO
-
-As queimadas e os incêndios florestais permanecem entre os maiores desafios ambientais, sociais e institucionais enfrentados por Rondônia. Seus impactos ultrapassam a esfera ambiental, afetando diretamente a saúde da população, a qualidade do ar, a biodiversidade, os recursos hídricos, a economia regional e a qualidade de vida das comunidades urbanas e rurais.
-
-Esses eventos decorrem de múltiplos fatores, incluindo condições climáticas adversas, uso inadequado do fogo, expansão de atividades produtivas sem planejamento adequado, fragilidades nos mecanismos preventivos e limitações na capacidade de resposta institucional.
-
-Além dos danos ambientais imediatos, as queimadas ampliam riscos à segurança territorial, pressionam os serviços públicos de saúde e defesa civil, aumentam os custos governamentais e comprometem o desenvolvimento sustentável.
-
-Nesse contexto, o Tribunal de Contas do Estado de Rondônia atua como indutor da melhoria das políticas públicas, promovendo o fortalecimento da governança, da gestão de riscos, da transparência e da efetividade das ações desenvolvidas pelos órgãos responsáveis.
-
-OBJETIVOS ESTRATÉGICOS
-
-• Fortalecer a Governança Institucional para integrar órgãos, normas, competências e fluxos decisórios relacionados à prevenção e ao combate às queimadas.
-
-• Promover Educação Ambiental mediante campanhas permanentes, capacitações e mobilização social.
-
-• Melhorar a Gestão do Fogo com planejamento territorial, prevenção ativa e resposta rápida.
-
-• Garantir o Cumprimento da Legislação Ambiental mediante fiscalização e responsabilização.
-
-• Estimular Práticas Sustentáveis de produção e conservação dos recursos naturais.
-
-• Ampliar o Monitoramento e a Inteligência para apoiar decisões baseadas em evidências.
-
-EIXOS ESTRUTURANTES
-
-• Governança e Planejamento
-
-• Monitoramento e Inteligência
-
-• Prevenção e Educação Ambiental
-
-• Resposta e Recuperação
-
-• Financiamento e Controle
-
-DIRETRIZES DE GOVERNANÇA
-
-• Marco Institucional
-
-• Responsabilidades
-
-• Avaliação Ambiental
-
-• Gestão de Conflitos
-
-• Transparência
-
-RESULTADOS ESPERADOS
-
-• Redução do desmatamento e das áreas degradadas.
-
-• Ampliação da proteção das áreas sensíveis.
-
-• Agricultura mais sustentável.
-
-• Maior educação ambiental.
-
-• Maior resiliência climática.
-
-• Monitoramento mais eficiente.
-
-• Economia sustentável.
-
-• Cooperação institucional fortalecida.
-
-PRÓXIMOS PASSOS
-
-• Implementar estratégias de governança.
-
-• Consolidar sistemas de monitoramento.
-
-• Desenvolver programas permanentes de educação ambiental.
-
-• Fortalecer a cooperação institucional.
-
-• Aprimorar a resposta operacional.
-
-• Garantir transparência e avaliação permanente.
-
-MENSAGEM AOS GESTORES
-
-A prevenção das queimadas exige liderança, integração institucional, planejamento, monitoramento e compromisso permanente. Os gestores municipais possuem papel decisivo na proteção do território, na prevenção dos incêndios florestais e na construção de respostas coordenadas diante dos riscos ambientais.
-
-A prevenção é sempre menos custosa e mais efetiva do que a reação tardia. Planejamento, fiscalização, monitoramento e educação ambiental devem constituir prioridades permanentes da administração pública.
-
-O enfrentamento desse desafio depende da atuação integrada dos órgãos governamentais, da sociedade e dos setores produtivos, produzindo resultados concretos e duradouros para a população de Rondônia.
-
-FONTES
-INPE • CENSIPAM • MAPBIOMAS • PRODES • CBMRO • SEDAM • DEFESA CIVIL • TCE-RO
-`
-textoResumo=corrigirUTF8(textoResumo)
-const linhas=doc.splitTextToSize(textoResumo,202)
-doc.text(linhas,4,72)
-
+doc.rect(0,38,210,2.5,'F')
+}
+function rodape(numero){
 doc.setFillColor(15,61,145)
 doc.rect(0,287,210,10,'F')
-
 doc.setTextColor(255,255,255)
 doc.setFont('helvetica','bold')
 doc.setFontSize(5)
-
-doc.text(
-'TRIBUNAL DE CONTAS DO ESTADO DE RONDÔNIA • PCe 0501/2026 • MONITORAMENTO DAS QUEIMADAS',
-105,
-291,
-{align:'center'}
-)
-
+doc.text('TRIBUNAL DE CONTAS DO ESTADO DE RONDÔNIA • PCe 0501/2026 • MONITORAMENTO DAS QUEIMADAS',105,291,{align:'center'})
 doc.setFont('helvetica','normal')
 doc.setFontSize(4.5)
-
+doc.text('Página '+numero+' de 3',198,294,{align:'right'})
+}
+function tituloSecao(titulo,y){
+doc.setFillColor(15,23,42)
+doc.roundedRect(8,y,194,9,2,2,'F')
+doc.setFont('helvetica','bold')
+doc.setFontSize(7.5)
+doc.setTextColor(255,255,255)
+doc.text(titulo,13,y+6)
+return y+14
+}
+function cardKPI(x,y,w,h,titulo,valor,cor=[37,99,235],subtitulo=''){
+doc.setFillColor(248,250,252)
+doc.setDrawColor(226,232,240)
+doc.roundedRect(x,y,w,h,3,3,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(14)
+doc.setTextColor(...cor)
+doc.text(String(valor),x+w/2,y+11,{align:'center'})
+doc.setFontSize(5.5)
+doc.setTextColor(51,65,85)
+doc.text(titulo,x+w/2,y+17,{align:'center'})
+if(subtitulo){
+doc.setFont('helvetica','bold')
+doc.setFontSize(5)
+doc.setTextColor(...cor)
+doc.text(doc.splitTextToSize(subtitulo,w-5),x+w/2,y+22,{align:'center'})
+}
+}
+function graficoMensal(x,y,w,h){
+let valores=Array(12).fill(0)
+;(mensal||[]).forEach(i=>{
+let mes=Number(i.mes)
+if(mes>=1&&mes<=12)valores[mes-1]=Number(i.focos||0)
+})
+let max=Math.max(...valores,1)
+let meses=['J','F','M','A','M','J','J','A','S','O','N','D']
+doc.setFillColor(248,250,252)
+doc.setDrawColor(226,232,240)
+doc.roundedRect(x,y,w,h,3,3,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(6.5)
+doc.setTextColor(15,23,42)
+doc.text('EVOLUÇÃO MENSAL DOS FOCOS',x+5,y+7)
+let baseY=y+h-8
+let areaH=h-18
+let bw=(w-12)/12
+valores.forEach((v,i)=>{
+let bh=(v/max)*areaH
+if(bh<.8&&v>0)bh=.8
+if(v>0){
+if(i===hoje.getMonth())doc.setFillColor(220,38,38)
+else doc.setFillColor(249,115,22)
+doc.roundedRect(x+6+i*bw,baseY-bh,bw-1,bh,1,1,'F')
+}
+doc.setFont('helvetica','normal')
+doc.setFontSize(4.2)
+doc.setTextColor(100,116,139)
+doc.text(meses[i],x+6+i*bw+(bw-1)/2,baseY+4,{align:'center'})
+})
+}
+function graficoRespostaMunicipal(x,y,w,h){
+let valores=[comPlano,dilacao,semResposta]
+let cores=[[22,163,74],[202,138,4],[220,38,38]]
+let nomes=['PLANO','DILAÇÃO','SEM RESPOSTA']
+let max=Math.max(...valores,1)
+doc.setFillColor(248,250,252)
+doc.setDrawColor(226,232,240)
+doc.roundedRect(x,y,w,h,3,3,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(6.5)
+doc.setTextColor(15,23,42)
+doc.text('RESPOSTA DOS MUNICÍPIOS',x+5,y+7)
+valores.forEach((v,i)=>{
+let linhaY=y+14+i*10
+doc.setFont('helvetica','bold')
+doc.setFontSize(4.8)
+doc.setTextColor(51,65,85)
+doc.text(nomes[i],x+5,linhaY+3)
+let bx=x+32
+let bw=w-43
+doc.setFillColor(226,232,240)
+doc.roundedRect(bx,linhaY,bw,4,1,1,'F')
+doc.setFillColor(...cores[i])
+doc.roundedRect(bx,linhaY,bw*(v/max),4,1,1,'F')
+doc.setFontSize(5)
+doc.text(String(v),x+w-5,linhaY+3,{align:'right'})
+})
+}
+function graficoTopIRIQ(x,y,w,h){
+let dados=top3IRIQ
+let max=Math.max(...dados.map(i=>Number(i.iriq||0)),1)
+doc.setFillColor(248,250,252)
+doc.setDrawColor(226,232,240)
+doc.roundedRect(x,y,w,h,3,3,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(6.5)
+doc.setTextColor(15,23,42)
+doc.text('3 MAIORES IRIQ MUNICIPAIS',x+5,y+7)
+dados.forEach((i,idx)=>{
+let valor=Number(i.iriq||0)
+let linhaY=y+14+idx*10
+let nome=String(i.municipio||'-')
+if(nome.length>16)nome=nome.slice(0,15)+'…'
+doc.setFont('helvetica','bold')
+doc.setFontSize(4.6)
+doc.setTextColor(51,65,85)
+doc.text(nome,x+5,linhaY+3)
+let bx=x+35
+let bw=w-47
+doc.setFillColor(226,232,240)
+doc.roundedRect(bx,linhaY,bw,4,1,1,'F')
+doc.setFillColor(...corIRIQ(valor))
+doc.roundedRect(bx,linhaY,bw*(valor/max),4,1,1,'F')
+doc.setFontSize(5)
+doc.text(valor.toFixed(2),x+w-4,linhaY+3,{align:'right'})
+})
+}
+/*=========================================================
+PÁGINA 1 - VISÃO EXECUTIVA
+=========================================================*/
+cabecalho('SUMÁRIO EXECUTIVO','PREVENÇÃO • RISCO • GOVERNANÇA • RESPOSTA')
+let y=46
+graficoMensal(8,y,63,42)
+graficoTopIRIQ(74,y,63,42)
+graficoRespostaMunicipal(140,y,62,42)
+y=93
+y=tituloSecao('INDICADORES ESTRATÉGICOS',y)
+let gap=3
+let w=(194-gap*5)/6
+let dadosKPI=[
+['FOCOS '+ano,focos.toLocaleString('pt-BR'),[220,38,38]],
+['COM PLANO',comPlano,[22,163,74]],
+['DILAÇÃO',dilacao,[202,138,4]],
+['SEM RESPOSTA',semResposta,[220,38,38]],
+['CRÍTICOS',criticos,[220,38,38]],
+['PRIORITÁRIOS',prioritarios,[249,115,22]]
+]
+dadosKPI.forEach((i,idx)=>cardKPI(8+idx*(w+gap),y,w,25,i[0],i[1],i[2]))
+y+=31
+y=tituloSecao('IRIQ - RISCO ESTADUAL E CONCENTRAÇÃO TERRITORIAL',y)
+let wI=(194-6)/3
+cardKPI(8,y,wI,29,'IRIQ ESTADUAL',iriqEstadual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),corIRIQ(iriqEstadual),faixaIRIQ(iriqEstadual))
+cardKPI(8+wI+3,y,wI,29,'MÉDIA DOS 5 MAIORES',mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),corIRIQ(mediaTop5),faixaIRIQ(mediaTop5))
+cardKPI(8+(wI+3)*2,y,wI,29,'MAIOR IRIQ MUNICIPAL',maiorIRIQ.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),corIRIQ(maiorIRIQ),top3IRIQ[0]?.municipio||'-')
+y+=35
+doc.setFillColor(239,246,255)
+doc.setDrawColor(191,219,254)
+doc.roundedRect(8,y,194,38,3,3,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(7)
+doc.setTextColor(30,58,138)
+doc.text('LEITURA EXECUTIVA',13,y+7)
+doc.setFont('helvetica','normal')
+doc.setFontSize(6.7)
+doc.setTextColor(51,65,85)
+let leitura=`No período de 01/01/${ano} a ${hoje.toLocaleDateString('pt-BR')}, foram registrados ${focos.toLocaleString('pt-BR')} focos de calor em Rondônia. Embora o IRIQ estadual esteja em ${iriqEstadual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, classificado como ${faixaIRIQ(iriqEstadual)}, a média dos cinco municípios com maiores índices alcança ${mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, classificação ${faixaIRIQ(mediaTop5)}. Essa diferença demonstra concentração territorial relevante do risco e reforça a necessidade de leitura municipalizada dos indicadores.`
+doc.text(doc.splitTextToSize(leitura,184),13,y+14)
+y+=45
+doc.setFont('helvetica','bold')
+doc.setFontSize(7)
+doc.setTextColor(15,23,42)
+doc.text('3 MAIORES IRIQ',8,y)
+doc.autoTable({
+startY:y+3,
+head:[['POS.','MUNICÍPIO','IRIQ','CLASSIFICAÇÃO']],
+body:top3IRIQ.map((i,idx)=>[`${idx+1}º`,i.municipio||'-',Number(i.iriq||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),i.classificacao||faixaIRIQ(i.iriq)]),
+styles:{fontSize:6.5,cellPadding:1.6,textColor:[51,65,85]},
+headStyles:{fillColor:[30,58,138],textColor:[255,255,255]},
+alternateRowStyles:{fillColor:[248,250,252]},
+columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:95},2:{cellWidth:32,halign:'right'},3:{cellWidth:49}},
+margin:{left:8,right:8}
+})
+rodape(1)
+/*=========================================================
+PÁGINA 2 - PRIORIDADES TERRITORIAIS
+=========================================================*/
+doc.addPage()
+cabecalho('PRIORIDADES TERRITORIAIS','FOCOS • IRIQ • MUNICÍPIOS PRIORITÁRIOS')
+y=47
+y=tituloSecao('MUNICÍPIOS COM MAIOR CONCENTRAÇÃO DE FOCOS',y)
+doc.autoTable({
+startY:y,
+head:[['POS.','MUNICÍPIO','FOCOS EM 2026']],
+body:(rankingFocos||[]).slice(0,10).map((i,idx)=>[`${idx+1}º`,i.municipio||'-',Number(i.focos||0).toLocaleString('pt-BR')]),
+styles:{fontSize:7,cellPadding:1.8,textColor:[51,65,85]},
+headStyles:{fillColor:[127,29,29],textColor:[255,255,255]},
+alternateRowStyles:{fillColor:[254,242,242]},
+columnStyles:{0:{cellWidth:22,halign:'center'},1:{cellWidth:130},2:{cellWidth:42,halign:'right'}},
+margin:{left:8,right:8}
+})
+y=(doc.lastAutoTable?.finalY||125)+7
+y=tituloSecao('TOP 5 IRIQ MUNICIPAIS',y)
+doc.autoTable({
+startY:y,
+head:[['POS.','MUNICÍPIO','IRIQ','RISCO','CLASSIFICAÇÃO']],
+body:top5IRIQ.map((i,idx)=>[`${idx+1}º`,i.municipio||'-',Number(i.iriq||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),i.risco||'-',i.classificacao||faixaIRIQ(i.iriq)]),
+styles:{fontSize:6.8,cellPadding:1.7,textColor:[51,65,85]},
+headStyles:{fillColor:[30,58,138],textColor:[255,255,255]},
+alternateRowStyles:{fillColor:[248,250,252]},
+columnStyles:{0:{cellWidth:18,halign:'center'},1:{cellWidth:77},2:{cellWidth:28,halign:'right'},3:{cellWidth:28,halign:'right'},4:{cellWidth:43}},
+margin:{left:8,right:8}
+})
+y=(doc.lastAutoTable?.finalY||190)+7
+doc.setFillColor(255,247,237)
+doc.setDrawColor(254,215,170)
+doc.roundedRect(8,y,194,39,3,3,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(7)
+doc.setTextColor(194,65,12)
+doc.text('CONCENTRAÇÃO DO RISCO',13,y+7)
+doc.setFont('helvetica','normal')
+doc.setFontSize(6.6)
+doc.setTextColor(51,65,85)
+let nomesTop3=top3IRIQ.map(i=>`${i.municipio} (${Number(i.iriq||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})})`).join(', ')
+let textoRisco=`A leitura agregada do Estado não elimina a existência de áreas de elevada criticidade. Os três maiores IRIQ municipais são ${nomesTop3}. A média dos cinco maiores municípios, de ${mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, deve ser considerada na definição das prioridades de acompanhamento, fiscalização, prevenção e resposta operacional.`
+doc.text(doc.splitTextToSize(textoRisco,184),13,y+14)
+y+=45
+doc.setFillColor(248,250,252)
+doc.setDrawColor(226,232,240)
+doc.roundedRect(8,y,194,32,3,3,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(6.8)
+doc.setTextColor(15,23,42)
+doc.text('OUTROS INDICADORES AMBIENTAIS',13,y+7)
+doc.setFontSize(11)
+doc.setTextColor(37,99,235)
+doc.text(desmatamento.toLocaleString('pt-BR',{maximumFractionDigits:0})+' ha',45,y+19,{align:'center'})
+doc.text(areaQueimada.toLocaleString('pt-BR',{maximumFractionDigits:0})+' ha',145,y+19,{align:'center'})
+doc.setFontSize(5)
+doc.setTextColor(71,85,105)
+doc.text('DESMATAMENTO',45,y+25,{align:'center'})
+doc.text('ÁREA QUEIMADA',145,y+25,{align:'center'})
+rodape(2)
+/*=========================================================
+PÁGINA 3 - GOVERNANÇA E ENCAMINHAMENTOS
+=========================================================*/
+doc.addPage()
+cabecalho('GOVERNANÇA E ENCAMINHAMENTOS','RESPOSTA MUNICIPAL • CONTROLE • PRIORIDADES')
+y=47
+y=tituloSecao('SITUAÇÃO DOS MUNICÍPIOS',y)
+let wM=(194-6)/3
+cardKPI(8,y,wM,30,'PLANO DE AÇÃO',comPlano,[22,163,74],`${Math.round((comPlano/totalMunicipios)*100)}% dos municípios`)
+cardKPI(8+wM+3,y,wM,30,'DILAÇÃO DE PRAZO',dilacao,[202,138,4],`${Math.round((dilacao/totalMunicipios)*100)}% dos municípios`)
+cardKPI(8+(wM+3)*2,y,wM,30,'SEM RESPOSTA',semResposta,[220,38,38],`${Math.round((semResposta/totalMunicipios)*100)}% dos municípios`)
+y+=37
+y=tituloSecao('ACHADOS EXECUTIVOS',y)
+let achados=[
+`Persistem ${semResposta} município(s) classificados como sem resposta ao TCE-RO.`,
+`${dilacao} município(s) permanecem em dilação de prazo.`,
+`O IRIQ estadual é ${iriqEstadual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, porém a média dos cinco maiores índices municipais alcança ${mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}.`,
+`Os três maiores IRIQ municipais concentram-se em ${top3IRIQ.map(i=>i.municipio).join(', ')||'municípios prioritários'}.`,
+`Foram identificados ${focos.toLocaleString('pt-BR')} focos de calor no Estado no período analisado.`,
+`A atuação preventiva deve combinar monitoramento territorial, execução dos planos, fiscalização, evidências e governança interfederativa.`
+]
+achados.forEach((a,idx)=>{
+doc.setFillColor(idx<3?254:248,idx<3?242:250,idx<3?242:252)
+doc.roundedRect(8,y,194,13,2,2,'F')
+doc.setFont('helvetica','bold')
+doc.setFontSize(6.5)
+doc.setTextColor(idx<3?185:37,idx<3?28:99,idx<3?28:235)
+doc.text(String(idx+1),13,y+8)
+doc.setFont('helvetica','normal')
+doc.setTextColor(51,65,85)
+doc.text(doc.splitTextToSize(a,180),20,y+5)
+y+=17
+})
+y+=3
+y=tituloSecao('PRIORIDADES DE ATUAÇÃO',y)
+let prioridades=[
+'Priorizar os municípios com maiores índices de risco e concentração recente de focos de calor.',
+'Acompanhar a apresentação e a execução efetiva dos Planos de Ação municipais.',
+'Manter acompanhamento específico dos municípios sem resposta e daqueles em dilação de prazo.',
+'Fortalecer a integração operacional entre TCE-RO, SEDAM, CBMRO, Defesa Civil e municípios.',
+'Utilizar IRIQ, Heatmap, CHAP, IA-CHAP e Monitoramento 4D como instrumentos permanentes de apoio à decisão.',
+'Ampliar a produção e validação de evidências que permitam verificar resultados concretos das ações implementadas.'
+]
+doc.setFont('helvetica','normal')
+doc.setFontSize(6.6)
+doc.setTextColor(51,65,85)
+prioridades.forEach((p,idx)=>{
+doc.setFillColor(239,246,255)
+doc.circle(12,y+2,2,'F')
+doc.setFont('helvetica','bold')
+doc.setTextColor(30,58,138)
+doc.text(String(idx+1),12,y+2.7,{align:'center'})
+doc.setFont('helvetica','normal')
+doc.setTextColor(51,65,85)
+let linhas=doc.splitTextToSize(p,180)
+doc.text(linhas,18,y+1)
+y+=Math.max(9,linhas.length*3.5+3)
+})
+y+=4
+doc.setFillColor(15,61,145)
+doc.roundedRect(8,y,194,36,3,3,'F')
+doc.setFont('helvetica','bold')
+doc.setTextColor(255,255,255)
+doc.setFontSize(7.5)
+doc.text('MENSAGEM EXECUTIVA',13,y+8)
+doc.setFont('helvetica','normal')
+doc.setFontSize(6.5)
+let mensagem=`A prevenção das queimadas exige capacidade de antecipação. Os resultados demonstram que o baixo IRIQ agregado do Estado não elimina riscos territorialmente elevados. A atuação deve concentrar esforços nos municípios de maior criticidade, assegurar a execução efetiva dos planos apresentados e fortalecer a coordenação institucional. O monitoramento concomitante permite identificar precocemente fragilidades, apoiar decisões baseadas em evidências e induzir respostas públicas mais tempestivas e efetivas.`
+doc.text(doc.splitTextToSize(mensagem,184),13,y+15)
+doc.setFont('helvetica','italic')
+doc.setFontSize(5)
+doc.setTextColor(100,116,139)
+doc.text('Fontes: INPE • PRODES • MapBiomas • SEDAM • CBMRO • Municípios de Rondônia • IRIQ • TCE-RO',8,281)
+rodape(3)
 doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
 }
-
 
 
 async function toDataURL(url){
