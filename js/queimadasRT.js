@@ -567,26 +567,37 @@ rtFonte(doc,'Fonte: monitoramento concomitante • bases institucionais • evid
 async function rtEvidencias(doc){
 rtCabecalhoPagina(doc,'13. EVIDÊNCIAS')
 let y=43
-y=rtTexto(doc,'Foram analisadas evidências provenientes da SEDAM, CBMRO, municípios rondonienses, INPE, sistemas institucionais e documentos encaminhados em resposta ao Ofício Circular n.16/2026/GABPRES/TCERO.',y,9)
+y=rtTexto(doc,'Foram analisadas evidências provenientes da SEDAM e CBMRO, com documentos encaminhados em resposta ao Ofício nº 180/2026/GABPRES/TCERO.',y,9)
 let img1=rtAdicionarImagem(doc,'painelEvidencias',10,y+5,190,82)
 let proximo=img1?img1.y+img1.h+8:y+90
 let img2=rtAdicionarImagem(doc,'painelMonitoramento4D',10,proximo,190,92)
 if(!img2)rtAdicionarImagem(doc,'painelGovernanca',10,proximo,190,92)
-rtFonte(doc,'Fonte: SEDAM • CBMRO • Municípios • INPE • documentos dos autos • Sistema de Monitoramento')
+rtFonte(doc,'Fonte: SEDAM • CBMRO • documentos dos autos • Sistema de Monitoramento')
 }
 /*=========================================================
 319 RT CONCLUSOES
 =========================================================*/
 async function rtConclusoes(doc){
 rtCabecalhoPagina(doc,'14. CONCLUSÕES')
+let{data:rankingIRIQ=[],error}=await client.from('queimadas_heatmap').select('municipio,iriq').order('iriq',{ascending:false}).limit(5)
+if(error)console.error('Erro ao consultar Top 5 IRIQ:',error)
+let top5=(rankingIRIQ||[]).filter(i=>Number.isFinite(Number(i.iriq)))
+let mediaTop5=top5.length?top5.reduce((s,i)=>s+Number(i.iriq||0),0)/top5.length:0
+let maiorIRIQ=top5.length?Number(top5[0].iriq||0):0
+let municipiosTop5=top5.map(i=>i.municipio).join(', ')
 let y=45
 y=rtTexto(doc,'Os resultados do monitoramento evidenciam avanços na estruturação das ações de enfrentamento às queimadas em Rondônia, porém persistem riscos relevantes associados à ausência de respostas municipais, fragilidades de planejamento e necessidade de fortalecimento da coordenação interinstitucional.',y,10)
 y+=8
 y=rtTexto(doc,'Os instrumentos de priorização e análise demonstram que parte do território permanece sujeita a níveis relevantes de risco, exigindo atualização permanente dos dados, execução efetiva dos planos de ação e integração das estruturas estaduais e municipais.',y,10)
 y+=8
+if(top5.length){
+let textoIRIQ=`Embora o IRIQ agregado do Estado se encontre atualmente classificado na faixa baixa, essa leitura estadual não deve ser interpretada isoladamente. Os cinco municípios com maiores índices apresentam IRIQ médio de ${mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, alcançando o maior deles ${maiorIRIQ.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}. Esse resultado evidencia concentração territorial relevante do risco e demonstra que, mesmo diante de um indicador estadual reduzido, determinados municípios apresentam situação significativamente mais elevada e demandam acompanhamento prioritário. Os cinco municípios considerados são: ${municipiosTop5}.`
+y=rtTexto(doc,textoIRIQ,y,10)
+y+=8
+}
 y=rtTexto(doc,'Conclui-se pela necessidade de continuidade do acompanhamento técnico e institucional, com prioridade para os municípios e territórios que apresentem maior criticidade, concentração de focos de calor ou baixa capacidade de resposta.',y,10)
 let img=rtAdicionarImagem(doc,'painelIndicadoresGovernanca',10,y+12,190,90)
-rtFonte(doc,'Fonte: consolidação do monitoramento • TCE-RO')
+rtFonte(doc,'Fonte: consolidação do monitoramento • IRIQ • TCE-RO')
 }
 /*=========================================================
 320 RT PROPOSTAS
