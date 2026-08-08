@@ -2888,25 +2888,22 @@ doc.setFontSize(5.6)
 doc.setTextColor(255,255,255)
 doc.text(texto,x+w/2,y+4.1,{align:'center'})
 }
-function kpi(x,y,w,titulo,valor,cor,icone,sub=''){
+function kpi(x,y,w,titulo,valor,cor,icone='',sub=''){
 doc.setFillColor(255,255,255)
 doc.setDrawColor(219,226,234)
 doc.roundedRect(x,y,w,25,2.5,2.5,'FD')
 doc.setFont('helvetica','bold')
-doc.setFontSize(12)
-doc.setTextColor(...cor)
-doc.text(icone,x+6,y+12,{align:'center'})
 doc.setFontSize(5.2)
-textoPreto()
-let tituloLinhas=doc.splitTextToSize(titulo,w-13)
-doc.text(tituloLinhas,x+11,y+6)
+doc.setTextColor(17,24,39)
+let tituloLinhas=doc.splitTextToSize(titulo,w-6)
+doc.text(tituloLinhas,x+w/2,y+6,{align:'center'})
 doc.setFontSize(12.5)
 doc.setTextColor(...cor)
 doc.text(String(valor),x+w/2,y+17,{align:'center'})
 if(sub){
 doc.setFont('helvetica','bold')
-doc.setFontSize(4.5)
-textoPreto()
+doc.setFontSize(4.6)
+doc.setTextColor(17,24,39)
 doc.text(sub,x+w/2,y+22,{align:'center'})
 }
 }
@@ -3139,9 +3136,9 @@ doc.setFillColor(248,250,252)
 doc.setDrawColor(203,213,225)
 doc.roundedRect(5,54,200,13,2,2,'FD')
 doc.setFont('helvetica','bold')
-doc.setFontSize(5.1)
+doc.setFontSize(6.2)
 textoPreto()
-let apresentacao='Tribunal de Contas do Estado de Rondônia - documento de apoio para leitura estratégica, monitoramento de políticas públicas e orientação sobre prevenção e combate às queimadas e incêndios florestais.'
+let apresentacao='Tribunal de Contas do Estado de Rondônia — documento executivo de apoio à leitura estratégica, ao monitoramento das políticas públicas e à orientação das ações de prevenção e combate às queimadas e aos incêndios florestais.'
 doc.text(doc.splitTextToSize(apresentacao,185),105,59,{align:'center'})
 /*=========================================================
 KPIs
@@ -3149,12 +3146,12 @@ KPIs
 let ky=70
 let gap=1
 let kw=(200-gap*5)/6
-kpi(5,ky,kw,'FOCOS DE CALOR '+ano,focos.toLocaleString('pt-BR'),[220,38,38],'🔥',`01/01 a ${hoje.toLocaleDateString('pt-BR')}`)
-kpi(5+(kw+gap),ky,kw,'MUNICÍPIOS COM PLANO DE AÇÃO',comPlano,[22,128,61],'✓',`${((comPlano/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
-kpi(5+(kw+gap)*2,ky,kw,'MUNICÍPIOS EM DILAÇÃO',dilacao,[234,88,12],'▣',`${((dilacao/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
-kpi(5+(kw+gap)*3,ky,kw,'MUNICÍPIOS SEM RESPOSTA',semResposta,[220,38,38],'✕',`${((semResposta/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
-kpi(5+(kw+gap)*4,ky,kw,'MUNICÍPIOS CRÍTICOS',criticos,[220,38,38],'!', '')
-kpi(5+(kw+gap)*5,ky,kw,'MUNICÍPIOS PRIORITÁRIOS',prioritarios,[234,88,12],'◎','')
+kpi(5,ky,kw,'FOCOS DE CALOR '+ano,focos.toLocaleString('pt-BR'),[220,38,38],'',`01/01 a ${hoje.toLocaleDateString('pt-BR')}`)
+kpi(5+(kw+gap),ky,kw,'MUNICÍPIOS COM PLANO DE AÇÃO',comPlano,[22,128,61],'',`${((comPlano/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
+kpi(5+(kw+gap)*2,ky,kw,'MUNICÍPIOS EM DILAÇÃO',dilacao,[234,88,12],'',`${((dilacao/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
+kpi(5+(kw+gap)*3,ky,kw,'MUNICÍPIOS SEM RESPOSTA',semResposta,[220,38,38],'',`${((semResposta/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
+kpi(5+(kw+gap)*4,ky,kw,'MUNICÍPIOS CRÍTICOS',criticos,[220,38,38],'','')
+kpi(5+(kw+gap)*5,ky,kw,'MUNICÍPIOS PRIORITÁRIOS',prioritarios,[234,88,12],'','')
 /*=========================================================
 GRÁFICOS
 =========================================================*/
@@ -3168,13 +3165,13 @@ SÍNTESE + AMBIENTAL
 let sy=144
 doc.setFillColor(248,250,252)
 doc.setDrawColor(203,213,225)
-doc.roundedRect(5,sy,129,29,2,2,'FD')
+doc.roundedRect(5,sy,129,32,2,2,'FD')
 doc.setFont('helvetica','bold')
 doc.setFontSize(5.8)
 doc.setTextColor(13,61,140)
 doc.text('SÍNTESE DO RISCO',18,sy+7)
 doc.setFont('helvetica','normal')
-doc.setFontSize(5.2)
+doc.setFontSize(6.1)
 textoPreto()
 let sintese=`Embora o IRIQ estadual esteja classificado como ${faixaIRIQ(iriqEstadual)} (${iriqEstadual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}), a média dos cinco municípios de maior IRIQ alcança ${mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})} (faixa ${faixaIRIQ(mediaTop5)}). O maior índice municipal é ${maiorIRIQ.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, registrado em ${top5IRIQ[0]?.municipio||'-'}. A diferença evidencia concentração territorial do risco, recomendando priorização municipal, sem que o indicador estadual agregado seja analisado isoladamente.`
 doc.text(doc.splitTextToSize(sintese,112),18,sy+12)
@@ -3239,21 +3236,21 @@ listaCompacta(107,214,98,43,'PRIORIDADES PARA ACOMPANHAMENTO',prioridades)
 CONCLUSÃO EXECUTIVA
 =========================================================*/
 doc.setFillColor(13,61,140)
-doc.roundedRect(28,261,154,25,2.5,2.5,'F')
+doc.roundedRect(18,259,174,27,2.5,2.5,'F')
 doc.setFont('helvetica','bold')
-doc.setFontSize(6.5)
+doc.setFontSize(7)
 doc.setTextColor(255,255,255)
-doc.text('CONCLUSÃO EXECUTIVA',34,268)
+doc.text('CONCLUSÃO EXECUTIVA',24,266)
 doc.setFont('helvetica','normal')
-doc.setFontSize(5.2)
-let conclusao='O cenário exige leitura territorializada. O baixo índice estadual não significa ausência de risco relevante: a concentração dos maiores IRIQ, dos focos de calor e das fragilidades de resposta em determinados municípios justifica acompanhamento concomitante, atuação preventiva e integração permanente dos órgãos responsáveis.'
-doc.text(doc.splitTextToSize(conclusao,140),34,274)
+doc.setFontSize(5.8)
+let conclusao='O cenário exige leitura territorializada. O baixo IRIQ estadual não representa ausência de risco relevante. A concentração dos maiores índices municipais, dos focos de calor e das fragilidades de resposta em determinados territórios justifica acompanhamento concomitante, atuação preventiva e integração permanente entre os órgãos responsáveis.'
+doc.text(doc.splitTextToSize(conclusao,160),24,273)
 doc.setFont('helvetica','italic')
-doc.setFontSize(4.6)
-textoPreto()
+doc.setFontSize(5)
+doc.setTextColor(17,24,39)
 doc.text('Fontes: INPE • PRODES • MapBiomas • SEDAM • CBMRO • Municípios de Rondônia • IRIQ • TCE-RO',5,292)
 doc.setFont('helvetica','bold')
-doc.setFontSize(5)
+doc.setFontSize(5.2)
 doc.text('PÁGINA 1 DE 1',205,292,{align:'right'})
 doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
 }
