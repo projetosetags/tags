@@ -3196,6 +3196,10 @@ doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
 }
 
 
+/*=========================================================
+075 to data url
+=========================================================*/
+
 async function toDataURL(url){
 const blob=await fetch(url).then(r=>r.blob())
 return await new Promise(resolve=>{
