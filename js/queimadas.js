@@ -2293,6 +2293,9 @@ await renderSituacaoEstrategica()
 if(nome==='auditor'){
 document.getElementById('abaAuditor')?.classList.remove('hidden')
 await renderAuditoriaConcomitante()
+if(typeof carregarMunicipiosSumarioAuditoria==='function'){
+await carregarMunicipiosSumarioAuditoria()
+}
 }
 }
 /*=========================================================
@@ -3440,3 +3443,19 @@ botao.innerHTML=textoOriginal
 }
 }
 window.exportarAbaPNG=exportarAbaPNG
+
+async function carregarMunicipiosSumarioAuditoria(){
+let select=document.getElementById('selectMunicipioSumarioAuditoria')
+if(!select)return
+const{data,error}=await client.from('vw_queimadas_municipios_resposta').select('municipio').order('municipio',{ascending:true})
+if(error){
+console.error('Erro ao carregar municípios:',error)
+return
+}
+let municipios=[...new Set((data||[]).map(i=>i.municipio).filter(Boolean))]
+select.innerHTML=`
+<option value="">Selecione o município...</option>
+${municipios.map(m=>`<option value="${m}">${m}</option>`).join('')}
+`
+}
+
