@@ -414,182 +414,164 @@ limparTempoRealMunicipio()
 /*=========================================================
 RENDER TEMPO REAL MUNICÍPIO
 =========================================================*/
-
 async function renderTempoRealMunicipio(municipio){
-
 if(!municipio)return
-
 const ano=2026
-
 let inicioAno=`${ano}-01-01`
 let fimAno=`${ano}-12-31`
-
-const {data,error}=await client
-.schema('queimadas')
-.from('queimadas_focos_inpe')
-.select('*')
-.eq('uf','RO')
-.eq('municipio',municipio)
-.gte('data_foco',inicioAno)
-.lte('data_foco',fimAno)
-.order('data_hora',{ascending:false})
-
+const{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').eq('municipio',municipio).gte('data_foco',inicioAno).lte('data_foco',fimAno).order('data_hora',{ascending:false})
 if(error){
 console.error('Erro tempo real municipal:',error)
 return
 }
-
 let registros=data||[]
-
 let hoje=new Date()
-
-let hojeISO=[
-hoje.getFullYear(),
-String(hoje.getMonth()+1).padStart(2,'0'),
-String(hoje.getDate()).padStart(2,'0')
-].join('-')
-
+let hojeISO=[hoje.getFullYear(),String(hoje.getMonth()+1).padStart(2,'0'),String(hoje.getDate()).padStart(2,'0')].join('-')
 let focosAno=registros.length
-
-let focosHoje=registros.filter(i=>
-String(i.data_foco||'').slice(0,10)===hojeISO
-).length
-
-let ultimaData=registros.length
-?registros[0].data_foco
-:null
-
+let focosHoje=registros.filter(i=>String(i.data_foco||'').slice(0,10)===hojeISO).length
+let ultimaData=registros.length?registros[0].data_foco:null
 let elFocosAno=document.getElementById('trmFocosAno')
 let elFocosHoje=document.getElementById('trmFocosHoje')
 let elUltimaData=document.getElementById('trmUltimaData')
 let elTotal=document.getElementById('trmTotalRegistros')
-
-if(elFocosAno)
-elFocosAno.textContent=focosAno.toLocaleString('pt-BR')
-
-if(elFocosHoje)
-elFocosHoje.textContent=focosHoje.toLocaleString('pt-BR')
-
-if(elUltimaData)
-elUltimaData.textContent=ultimaData
-?formatarDataBR(ultimaData)
-:'—'
-
-if(elTotal)
-elTotal.textContent=registros.length.toLocaleString('pt-BR')
-
-renderResumoTempoRealMunicipio(
-municipio,
-registros,
-focosHoje,
-ultimaData
-)
-
+if(elFocosAno)elFocosAno.textContent=focosAno.toLocaleString('pt-BR')
+if(elFocosHoje)elFocosHoje.textContent=focosHoje.toLocaleString('pt-BR')
+if(elUltimaData)elUltimaData.textContent=ultimaData?formatarDataBR(ultimaData):'—'
+if(elTotal)elTotal.textContent=registros.length.toLocaleString('pt-BR')
+await renderResumoTempoRealMunicipio(municipio,registros,focosHoje,ultimaData)
 renderGraficoTempoRealMunicipio(registros)
-
 renderFocosRecentesMunicipio(registros)
-
 }
 
 /*=========================================================
-RESUMO MUNICIPAL
+RESUMO TEMPO REAL DO MUNICÍPIO
 =========================================================*/
-
-function renderResumoTempoRealMunicipio(
-municipio,
-registros,
-focosHoje,
-ultimaData
-){
-
+async function renderResumoTempoRealMunicipio(municipio,registros,focosHoje,ultimaData){
+let lista=Array.isArray(registros)?registros:[]
+let totalMunicipio=lista.length
+let ultimo=lista.length?lista[0]:null
+let totalRO=0
+let iriq=null
+let classificacao='SEM DADOS'
+let risco=null
+let posicao='-'
+let focosHeatmap=0
+try{
+let{count,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*',{count:'exact',head:true}).eq('uf','RO').gte('data_foco','2026-01-01').lte('data_foco','2026-12-31')
+if(!error)totalRO=Number(count||0)
+}catch(e){
+console.error('Erro total RO:',e)
+}
+try{
+let{data,error}=await client.schema('queimadas').from('queimadas_heatmap').select('municipio,iriq,risco,classificacao,focos')
+if(!error&&Array.isArray(data)){
+let ranking=[...data].sort((a,b)=>Number(b.iriq||0)-Number(a.iriq||0))
+let nome=normalizarMunicipio(municipio)
+let indice=ranking.findIndex(i=>normalizarMunicipio(i.municipio)===nome)
+if(indice>=0){
+let registro=ranking[indice]
+iriq=Number(registro.iriq||0)
+risco=Number(registro.risco||0)
+classificacao=String(registro.classificacao||classificarFaixaIRIQMunicipio(iriq)).toUpperCase()
+focosHeatmap=Number(registro.focos||0)
+posicao=`${indice+1}º de ${ranking.length}`
+}
+}
+}catch(e){
+console.error('Erro ao consultar IRIQ municipal:',e)
+}
+let participacao=totalRO>0?(totalMunicipio/totalRO)*100:0
+let corIRIQ='#64748b'
+if(iriq!==null){
+if(iriq>=75)corIRIQ='#dc2626'
+else if(iriq>=50)corIRIQ='#f97316'
+else if(iriq>=25)corIRIQ='#eab308'
+else corIRIQ='#16a34a'
+}
+let resumo=document.getElementById('trmResumoMunicipio')
+if(resumo){
+resumo.innerHTML=`
+<div class="trm-resumo-grid">
+<div class="trm-resumo-item trm-iriq">
+<div class="trm-resumo-label">🤖 IRIQ MUNICIPAL</div>
+<div class="trm-resumo-valor" style="color:${corIRIQ}">${iriq!==null?iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'-'}</div>
+<div class="trm-classificacao" style="color:${corIRIQ}">${classificacao}</div>
+</div>
+<div class="trm-resumo-item">
+<div class="trm-resumo-label">🏆 POSIÇÃO NO IRIQ</div>
+<div class="trm-resumo-valor">${posicao}</div>
+</div>
+<div class="trm-resumo-item">
+<div class="trm-resumo-label">🔥 FOCOS EM 2026</div>
+<div class="trm-resumo-valor">${totalMunicipio.toLocaleString('pt-BR')}</div>
+</div>
+<div class="trm-resumo-item">
+<div class="trm-resumo-label">📊 PARTICIPAÇÃO NOS FOCOS DE RO</div>
+<div class="trm-resumo-valor">${participacao.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%</div>
+</div>
+<div class="trm-resumo-item">
+<div class="trm-resumo-label">📅 ÚLTIMO FOCO REGISTRADO</div>
+<div class="trm-resumo-valor">${ultimaData?formatarDataBR(ultimaData):'-'}</div>
+</div>
+<div class="trm-resumo-item">
+<div class="trm-resumo-label">🛰 ÚLTIMO SATÉLITE</div>
+<div class="trm-resumo-valor">${ultimo?.satelite||'-'}</div>
+</div>
+<div class="trm-resumo-item">
+<div class="trm-resumo-label">🔥 FOCOS HOJE</div>
+<div class="trm-resumo-valor">${Number(focosHoje||0).toLocaleString('pt-BR')}</div>
+</div>
+<div class="trm-resumo-item">
+<div class="trm-resumo-label">⚠️ ÍNDICE DE RISCO</div>
+<div class="trm-resumo-valor">${risco!==null?risco.toLocaleString('pt-BR',{maximumFractionDigits:2}):'-'}</div>
+</div>
+<div class="trm-resumo-item">
+<div class="trm-resumo-label">📍 FOCOS BASE HEATMAP</div>
+<div class="trm-resumo-valor">${focosHeatmap.toLocaleString('pt-BR')}</div>
+</div>
+</div>
+`
+}
 let box=document.getElementById('trmResumoFocos')
-
 if(box){
-
 box.innerHTML=`
-
-<div class="linha-info">
-<span>🏛️ Município</span>
-<b>${municipio}</b>
+<div class="resumoTR">
+<div class="resumoLinha"><div class="resumoEsquerda"><div class="resumoIcone">🏛️</div><span>Município</span></div><div class="resumoValor">${municipio}</div></div>
+<div class="resumoLinha"><div class="resumoEsquerda"><div class="resumoIcone">🔥</div><span>Focos de Calor em 2026</span></div><div class="resumoValor">${totalMunicipio.toLocaleString('pt-BR')}</div></div>
+<div class="resumoLinha"><div class="resumoEsquerda"><div class="resumoIcone">📅</div><span>Focos Hoje</span></div><div class="resumoValor">${Number(focosHoje||0).toLocaleString('pt-BR')}</div></div>
+<div class="resumoLinha"><div class="resumoEsquerda"><div class="resumoIcone">🤖</div><span>IRIQ Municipal</span></div><div class="resumoValor" style="color:${corIRIQ}">${iriq!==null?iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'-'} • ${classificacao}</div></div>
 </div>
-
-<div class="linha-info">
-<span>🔥 Focos de Calor em 2026</span>
-<b>${registros.length.toLocaleString('pt-BR')}</b>
-</div>
-
-<div class="linha-info">
-<span>📅 Focos Hoje</span>
-<b>${focosHoje.toLocaleString('pt-BR')}</b>
-</div>
-
-<div class="linha-info">
-<span>🛰️ Fonte Oficial</span>
-<b>INPE</b>
-</div>
-
 `
-
 }
-
-let monitoramento=
-document.getElementById('trmMonitoramento')
-
+let monitoramento=document.getElementById('trmMonitoramento')
 if(monitoramento){
-
 monitoramento.innerHTML=`
-
-<div class="linha-info">
-<span>🛰️ Fonte Oficial</span>
-<b>INPE</b>
+<div class="resumoTR">
+<div class="resumoLinha"><div class="resumoEsquerda"><div class="resumoIcone">🛰</div><span>Fonte Oficial</span></div><div class="resumoValor">INPE</div></div>
+<div class="resumoLinha"><div class="resumoEsquerda"><div class="resumoIcone">📍</div><span>Município Monitorado</span></div><div class="resumoValor">${municipio}</div></div>
+<div class="resumoLinha"><div class="resumoEsquerda"><div class="resumoIcone">📅</div><span>Última Data de Foco</span></div><div class="resumoValor">${ultimaData?formatarDataBR(ultimaData):'-'}</div></div>
+<div class="resumoLinha"><div class="resumoEsquerda"><div class="resumoIcone">🏆</div><span>Ranking IRIQ</span></div><div class="resumoValor">${posicao}</div></div>
 </div>
-
-<div class="linha-info">
-<span>📍 Município monitorado</span>
-<b>${municipio}</b>
-</div>
-
-<div class="linha-info">
-<span>📅 Última Data de Foco</span>
-<b>${ultimaData?formatarDataBR(ultimaData):'—'}</b>
-</div>
-
-<div class="linha-info">
-<span>🔥 Total acumulado 2026</span>
-<b>${registros.length.toLocaleString('pt-BR')}</b>
-</div>
-
 `
-
 }
-
 let sync=document.getElementById('trmSincronizacao')
-
 if(sync){
-
 let agora=new Date()
-
 sync.innerHTML=`
-
-<div class="linha-info">
-<span>📅 Última Data de Foco</span>
-<b>${ultimaData?formatarDataBR(ultimaData):'—'}</b>
+<div class="resumoTR">
+<div class="resumoLinha"><div class="resumoEsquerda"><div class="resumoIcone">📅</div><span>Última Data INPE</span></div><div class="resumoValor">${ultimaData?formatarDataBR(ultimaData):'-'}</div></div>
+<div class="resumoLinha"><div class="resumoEsquerda"><div class="resumoIcone">🔄</div><span>Consulta do Painel</span></div><div class="resumoValor">${agora.toLocaleString('pt-BR')}</div></div>
+<div class="resumoLinha"><div class="resumoEsquerda"><div class="resumoIcone">🟢</div><span>Status</span></div><div class="statusTR statusOnline">ONLINE</div></div>
 </div>
-
-<div class="linha-info">
-<span>🔄 Painel consultado em</span>
-<b>${agora.toLocaleString('pt-BR')}</b>
-</div>
-
-<div class="linha-info">
-<span>⚙️ Atualização</span>
-<b>AUTOMÁTICA</b>
-</div>
-
 `
-
 }
-
+}
+function classificarFaixaIRIQMunicipio(valor){
+valor=Number(valor||0)
+if(valor>=75)return'CRÍTICO'
+if(valor>=50)return'ALTO'
+if(valor>=25)return'MODERADO'
+return'BAIXO'
 }
 
 /*=========================================================
