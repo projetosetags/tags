@@ -2202,15 +2202,24 @@ return`${context.label}: ${valor} (${percentual}%)`
 },
 datalabels:{
 display:true,
-color:'#000000',
-font:{
-size:17,
-weight:'900'
+color:()=> '#000000',
+backgroundColor:'rgba(255,255,255,0.88)',
+borderColor:'#000000',
+borderWidth:1,
+borderRadius:4,
+padding:{
+top:4,
+bottom:4,
+left:7,
+right:7
 },
-formatter:(valor,context)=>{
-let total=context.chart.data.datasets[0].data.reduce((s,v)=>s+Number(v||0),0)
-let percentual=total?((Number(valor)/total)*100).toFixed(1).replace('.',','):'0,0'
-return`${valor}\n${percentual}%`
+font:{
+family:'Arial',
+size:19,
+weight:'bold'
+},
+formatter:(valor)=>{
+return valor
 },
 textAlign:'center',
 anchor:'center',
