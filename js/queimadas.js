@@ -2076,11 +2076,46 @@ async function iaPreverRiscos(){
 let box=document.getElementById('painelIARiscos')
 if(!box)return
 let{data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
-let top=[...data].sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0)).slice(0,5)
+let top=[...data]
+.sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0))
+.slice(0,5)
+function classificar(v){
+if(v>=75)return{nivel:'CRÍTICO',cor:'#dc2626',fundo:'#fef2f2',acao:'INTERVENÇÃO PRIORITÁRIA'}
+if(v>=50)return{nivel:'ALTO',cor:'#f97316',fundo:'#fff7ed',acao:'MONITORAMENTO INTENSIFICADO'}
+if(v>=25)return{nivel:'MODERADO',cor:'#eab308',fundo:'#fefce8',acao:'ACOMPANHAMENTO PREVENTIVO'}
+return{nivel:'BAIXO',cor:'#16a34a',fundo:'#f0fdf4',acao:'MONITORAMENTO DE ROTINA'}
+}
 box.innerHTML=`
-<div class="monitor4d-card">
-<b>PREVISÃO IA</b><br><br>
-${top.map(i=>`${i.municipio} - IRIQ ${Number(i.indice_final||i.iriq||0).toFixed(1)}`).join('<br>')}
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px">
+${top.map((i,idx)=>{
+let iriq=Number(i.indice_final||i.iriq||0)
+let c=classificar(iriq)
+return`
+<div style="background:${c.fundo};border:1px solid #e2e8f0;border-left:6px solid ${c.cor};border-radius:10px;padding:13px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<div>
+<div style="font-size:10px;font-weight:900;color:#64748b">${idx+1}ª PRIORIDADE</div>
+<div style="font-size:15px;font-weight:900;color:#0f172a;margin-top:3px">${i.municipio||'-'}</div>
+</div>
+<div style="text-align:right">
+<div style="font-size:21px;font-weight:900;color:${c.cor}">${iriq.toFixed(2).replace('.',',')}</div>
+<div style="font-size:9px;font-weight:900;color:${c.cor}">${c.nivel}</div>
+</div>
+</div>
+<div style="margin-top:10px;padding-top:9px;border-top:1px solid #e2e8f0;font-size:10px;line-height:1.5;color:#334155">
+<b>Leitura técnica:</b> o município ocupa posição prioritária no ranking integrado IRIQ, indicando necessidade de acompanhamento proporcional à criticidade identificada.
+</div>
+<div style="margin-top:7px;font-size:10px;line-height:1.5;color:#334155">
+<b>Em linguagem simples:</b> quanto maior o índice, maior deve ser a atenção preventiva do poder público. O indicador não significa que um incêndio ocorrerá, mas aponta onde a vigilância deve ser reforçada.
+</div>
+<div style="margin-top:8px;padding:6px 8px;background:#fff;border-radius:6px;font-size:9px;font-weight:900;color:${c.cor}">
+AÇÃO: ${c.acao}
+</div>
+</div>`
+}).join('')}
+</div>
+<div style="margin-top:10px;padding:9px;background:#f8fafc;border-left:4px solid #0d3d8c;font-size:10px;line-height:1.5;color:#475569">
+<b>Nota metodológica:</b> a predição apresentada constitui instrumento de priorização e inteligência analítica. Não representa previsão determinística da ocorrência de incêndio, devendo ser interpretada conjuntamente com focos de calor, condições ambientais, histórico territorial, capacidade de resposta e demais evidências disponíveis.
 </div>`
 }
 /*=========================================================
@@ -2124,14 +2159,110 @@ async function iaSugerirAcoes(){
 let box=document.getElementById('painelIASugestoes')
 if(!box)return
 let{data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
-let top=[...data].sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0)).slice(0,5)
+let top=[...data]
+.sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0))
+.slice(0,5)
+function diagnostico(iriq){
+if(iriq>=75)return{
+nivel:'CRÍTICO',
+cor:'#dc2626',
+prioridade:'IMEDIATA',
+tecnico:'Criticidade integrada elevada. Recomenda-se tratamento prioritário no acompanhamento concomitante, com intensificação da vigilância territorial, validação das estruturas de prevenção e avaliação da capacidade municipal de resposta.',
+simples:'O município está entre os que exigem maior atenção. É necessário conferir se as equipes, equipamentos, planejamento e mecanismos de resposta estão preparados antes do agravamento da situação.',
+providencias:[
+'Intensificar o monitoramento de focos de calor e sua evolução espacial e temporal.',
+'Verificar a execução efetiva do Plano de Ação Municipal e respectivas evidências.',
+'Avaliar disponibilidade de brigadistas, equipamentos, veículos, insumos e logística operacional.',
+'Verificar eventual incidência ou proximidade de focos em UCs, TIs, APPs e áreas ambientalmente sensíveis.',
+'Promover articulação preventiva entre Município, SEDAM, CBMRO, Defesa Civil e demais instituições responsáveis.',
+'Registrar evidências e alterações relevantes para subsidiar o acompanhamento concomitante do TCERO.'
+]
+}
+if(iriq>=50)return{
+nivel:'ALTO',
+cor:'#f97316',
+prioridade:'ELEVADA',
+tecnico:'O índice demonstra pressão territorial relevante e recomenda monitoramento intensificado, com atenção à evolução dos fatores que compõem a criticidade municipal.',
+simples:'O município ainda não está na faixa mais grave, mas apresenta sinais suficientes para justificar acompanhamento próximo e ações preventivas reforçadas.',
+providencias:[
+'Acompanhar periodicamente a evolução dos focos de calor.',
+'Verificar cumprimento das ações preventivas previstas no planejamento municipal.',
+'Confirmar capacidade de mobilização das equipes de resposta.',
+'Analisar áreas historicamente afetadas por queimadas e desmatamento.',
+'Verificar necessidade de reforço operacional antes da elevação da criticidade.'
+]
+}
+if(iriq>=25)return{
+nivel:'MODERADO',
+cor:'#eab308',
+prioridade:'PREVENTIVA',
+tecnico:'O município apresenta criticidade intermediária. A situação recomenda acompanhamento preventivo e observação da tendência dos indicadores para identificação precoce de agravamento.',
+simples:'A situação merece atenção, mas ainda permite atuação predominantemente preventiva. O objetivo é impedir que os indicadores evoluam para níveis mais graves.',
+providencias:[
+'Manter monitoramento periódico dos indicadores.',
+'Confirmar atualização do planejamento municipal.',
+'Orientar ações preventivas em áreas historicamente vulneráveis.',
+'Acompanhar eventual crescimento dos focos de calor.',
+'Reavaliar a prioridade caso os indicadores apresentem tendência de aumento.'
+]
+}
+return{
+nivel:'BAIXO',
+cor:'#16a34a',
+prioridade:'ROTINA',
+tecnico:'Os indicadores disponíveis apontam menor criticidade relativa no cenário estadual, sem afastar a necessidade de vigilância e manutenção das medidas preventivas.',
+simples:'O município apresenta situação comparativamente mais favorável, mas deve continuar acompanhando os dados e mantendo a prevenção.',
+providencias:[
+'Manter monitoramento de rotina.',
+'Preservar capacidade mínima de resposta.',
+'Manter atualizado o Plano de Ação.',
+'Registrar alterações relevantes nos indicadores.',
+'Reavaliar a classificação diante de mudança do cenário.'
+]
+}
+}
 box.innerHTML=`
-<div class="monitor4d-card">
-✓ Priorizar ${top[0]?.municipio||'-'}<br>
-✓ Intensificar fiscalização nos municípios críticos<br>
-✓ Reforçar brigadas nos maiores índices IRIQ<br>
-✓ Monitorar áreas queimadas MAPBIOMAS<br>
-✓ Monitorar desmatamento PRODES
+<div style="margin-bottom:10px;padding:10px 12px;background:#eff6ff;border-left:5px solid #0d3d8c;border-radius:8px;font-size:10px;line-height:1.6;color:#334155">
+<b style="color:#0d3d8c">ORIENTAÇÃO PARA LEITURA</b><br>
+As recomendações abaixo são produzidas automaticamente a partir da posição relativa dos municípios no IRIQ. Elas funcionam como apoio à priorização do acompanhamento e não substituem avaliação técnica, inspeção, fiscalização ou decisão administrativa.
+</div>
+${top.map((i,idx)=>{
+let iriq=Number(i.indice_final||i.iriq||0)
+let d=diagnostico(iriq)
+return`
+<div style="margin-bottom:12px;background:#fff;border:1px solid #e2e8f0;border-left:6px solid ${d.cor};border-radius:10px;overflow:hidden">
+<div style="padding:10px 13px;background:#f8fafc;display:flex;justify-content:space-between;align-items:center;gap:10px">
+<div>
+<span style="font-size:10px;font-weight:900;color:#64748b">${idx+1}ª PRIORIDADE</span>
+<div style="font-size:15px;font-weight:900;color:#0f172a;margin-top:2px">${i.municipio||'-'}</div>
+</div>
+<div style="text-align:right">
+<div style="font-size:19px;font-weight:900;color:${d.cor}">IRIQ ${iriq.toFixed(2).replace('.',',')}</div>
+<div style="font-size:9px;font-weight:900;color:${d.cor}">${d.nivel} • PRIORIDADE ${d.prioridade}</div>
+</div>
+</div>
+<div style="padding:12px 14px">
+<div style="font-size:10px;line-height:1.6;color:#334155">
+<b>🔬 FUNDAMENTO TÉCNICO</b><br>
+${d.tecnico}
+</div>
+<div style="margin-top:10px;padding:9px 10px;background:#f8fafc;border-radius:7px;font-size:10px;line-height:1.6;color:#334155">
+<b>💬 EM LINGUAGEM SIMPLES</b><br>
+${d.simples}
+</div>
+<div style="margin-top:11px;font-size:10px;font-weight:900;color:#0f172a">📋 PROVIDÊNCIAS SUGERIDAS</div>
+<div style="margin-top:6px;display:grid;gap:5px">
+${d.providencias.map((p,n)=>`
+<div style="display:flex;gap:7px;align-items:flex-start;font-size:10px;line-height:1.45;color:#334155">
+<span style="min-width:18px;height:18px;border-radius:50%;background:${d.cor};color:#fff;text-align:center;line-height:18px;font-size:9px;font-weight:900">${n+1}</span>
+<span>${p}</span>
+</div>`).join('')}
+</div>
+</div>
+</div>`
+}).join('')}
+<div style="padding:9px 11px;background:#f8fafc;border-left:4px solid #64748b;font-size:9px;line-height:1.5;color:#64748b">
+<b>Uso técnico:</b> as sugestões constituem apoio automatizado à auditoria e ao monitoramento concomitante. A priorização deve ser confrontada com dados atualizados do INPE, MAPBIOMAS, PRODES, informações municipais, evidências documentais e avaliação das equipes técnicas.
 </div>`
 }
 /*=========================================================
@@ -2141,19 +2272,56 @@ async function renderDashboardCHAP(){
 let box=document.getElementById('painelCHAP')
 if(!box)return
 let{data=[]}=await client.from('queimadas_chap').select('*')
-box.innerHTML=data.map(i=>{
+let lista=(data||[]).map(i=>{
 let score=Math.round((
 Number(i.criticidade||0)+
 Number(i.historico||0)+
 Number(i.abrangencia||0)+
 Number(i.prioridade||0)
 )/4*20)
-return`
-<div class="chap-card">
-<div class="chap-num">${score}%</div>
-<div class="chap-label">${i.municipio||i.orgao||'-'}</div>
+let classificacao='BAIXO'
+let cor='#16a34a'
+if(score>=90){
+classificacao='MUITO ALTO'
+cor='#dc2626'
+}else if(score>=75){
+classificacao='ALTO'
+cor='#f97316'
+}else if(score>=50){
+classificacao='MODERADO'
+cor='#eab308'
+}
+return{...i,score,classificacao,cor}
+}).sort((a,b)=>b.score-a.score)
+box.innerHTML=`
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;background:#fff;font-size:12px">
+<thead>
+<tr style="background:#0d3d8c;color:#fff">
+<th style="padding:10px;text-align:center;width:70px">POSIÇÃO</th>
+<th style="padding:10px;text-align:left">MUNICÍPIO</th>
+<th style="padding:10px;text-align:center;width:120px">CHAPT</th>
+<th style="padding:10px;text-align:center;width:150px">CLASSIFICAÇÃO</th>
+</tr>
+</thead>
+<tbody>
+${lista.map((i,idx)=>`
+<tr style="border-bottom:1px solid #e2e8f0">
+<td style="padding:9px;text-align:center;font-weight:900">${idx+1}º</td>
+<td style="padding:9px;font-weight:800;color:#0f172a">${i.municipio||i.orgao||'-'}</td>
+<td style="padding:9px;text-align:center;font-size:16px;font-weight:900;color:${i.cor}">${i.score}%</td>
+<td style="padding:9px;text-align:center">
+<span style="display:inline-block;min-width:90px;padding:4px 10px;border-radius:20px;background:${i.cor};color:#fff;font-size:10px;font-weight:900">
+${i.classificacao}
+</span>
+</td>
+</tr>`).join('')}
+</tbody>
+</table>
+</div>
+<div style="margin-top:8px;padding:8px 10px;background:#f8fafc;border-left:4px solid #0d3d8c;font-size:10px;color:#475569;line-height:1.5">
+<b>Leitura técnica:</b> o CHAPT consolida os componentes de criticidade, histórico, abrangência e prioridade registrados para cada município. O percentual apresentado permite comparação relativa e apoio à priorização das ações de monitoramento.
 </div>`
-}).join('')
 }
 
 /*=========================================================
@@ -2268,7 +2436,12 @@ document.getElementById('abaAnalise')?.classList.remove('hidden')
 await renderDashboardCHAP()
 await renderMatrizRisco5x5()
 await matrizRisco5x5Avancada()
-await iaChapAnalisar()
+let painelIAChap=document.getElementById('painelIAChap')
+if(painelIAChap){
+let card=painelIAChap.closest('.cardPainel,.cardExecutivo,.cardAnalise')
+if(card)card.style.display='none'
+else painelIAChap.style.display='none'
+}
 await iaPreverRiscos()
 await iaPriorizarMunicipios()
 await iaGerarRelatorio()
