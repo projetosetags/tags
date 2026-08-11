@@ -821,13 +821,3 @@ graficoTempoRealMunicipio=null
 
 }
 
-/*=========================================================
-TEMPO REAL MUNICIPAL INICIALIZAÇÃO
-=========================================================*/
-document.addEventListener('DOMContentLoaded',async()=>{
-try{
-await carregarMunicipiosTempoReal()
-}catch(e){
-console.error('Erro ao inicializar Tempo Real Municipal:',e)
-}
-})
