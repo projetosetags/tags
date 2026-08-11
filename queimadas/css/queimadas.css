@@ -448,3 +448,68 @@ color:#fff;
 border-color:#fff;
 box-shadow:0 8px 18px rgba(220,38,38,.28);
 }
+/*=========================================================
+FOCOS RECENTES - TEMPO REAL MUNICÍPIO
+=========================================================*/
+.trm-tabela-wrapper{
+width:100%;
+overflow-x:auto;
+border:1px solid #dbe3ee;
+border-radius:12px;
+background:#fff;
+}
+.trm-tabela-focos{
+width:100%;
+border-collapse:collapse;
+font-size:13px;
+}
+.trm-tabela-focos thead{
+background:linear-gradient(135deg,#0f172a,#173b82);
+}
+.trm-tabela-focos th{
+padding:12px 9px;
+text-align:center;
+font-size:11px;
+font-weight:900;
+letter-spacing:.3px;
+color:#fff;
+white-space:nowrap;
+}
+.trm-tabela-focos td{
+padding:10px 8px;
+text-align:center;
+border-bottom:1px solid #e5e7eb;
+color:#0f172a;
+font-weight:600;
+white-space:nowrap;
+}
+.trm-tabela-focos tbody tr:nth-child(even){
+background:#f8fafc;
+}
+.trm-tabela-focos tbody tr:hover{
+background:#eef6ff;
+}
+.trm-coordenada{
+font-family:monospace;
+font-weight:800!important;
+}
+.btn-google-earth{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:7px 11px;
+border-radius:7px;
+background:linear-gradient(135deg,#15803d,#16a34a);
+color:#fff!important;
+font-size:10px;
+font-weight:900;
+text-decoration:none!important;
+white-space:nowrap;
+box-shadow:0 3px 8px rgba(22,163,74,.22);
+transition:.2s;
+}
+.btn-google-earth:hover{
+background:linear-gradient(135deg,#166534,#15803d);
+transform:translateY(-1px);
+box-shadow:0 5px 12px rgba(22,163,74,.35);
+}
