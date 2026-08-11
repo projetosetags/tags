@@ -596,25 +596,34 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 <h2>📄 RELATÓRIOS EXECUTIVOS</h2>
 
 <div class="boxRelatoriosExecutivos">
-
 <button class="btnRelatorioPDF" onclick="gerarPDFTecnico0501()">
 <div class="btnIcone">📙</div>
 <div class="btnTitulo">RELATÓRIO TÉCNICO</div>
 <div class="btnSubtitulo">PCe 0501/2026 • PDF</div>
 </button>
-
 <button class="btnRelatorioWORD" onclick="gerarWordTecnico0501()">
 <div class="btnIcone">📘</div>
 <div class="btnTitulo">RELATÓRIO TÉCNICO</div>
 <div class="btnSubtitulo">Documento Editável WORD</div>
 </button>
-
 <button class="btnSumarioExecutivo" onclick="gerarPDFSumarioExecutivo0501()">
 <div class="btnIcone">📗</div>
 <div class="btnTitulo">SUMÁRIO EXECUTIVO</div>
 <div class="btnSubtitulo">Versão Executiva PDF</div>
 </button>
+<div class="boxSumarioMunicipalAuditoria">
+<div class="tituloSumarioMunicipalAuditoria">🏙️ SUMÁRIO EXECUTIVO MUNICIPAL</div>
+<select id="selectMunicipioSumarioAuditoria">
+<option value="">Selecione o município...</option>
+</select>
+<button class="btnGerarSumarioMunicipal" onclick="gerarPDFSumarioExecutivoMunicipalAuditoria()">
+<div class="btnIcone">🏙️</div>
+<div class="btnTitulo">GERAR SUMÁRIO</div>
+<div class="btnSubtitulo">Município selecionado • PDF</div>
+</button>
 </div>
+</div>
+
 </div>
 </section>
 
