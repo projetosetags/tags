@@ -3774,22 +3774,27 @@ columnStyles:{0:{cellWidth:38},1:{cellWidth:28},2:{cellWidth:48},3:{cellWidth:29
 075.25 CONCLUSÃO EXECUTIVA MUNICIPAL
 ---------------------------------------------------------*/
 doc.setFillColor(5,56,139)
-doc.roundedRect(6,181,285,18,2.5,2.5,'F')
+doc.roundedRect(6,181,285,25,2.5,2.5,'F')
 doc.setFont('helvetica','bold')
-doc.setFontSize(7.5)
+doc.setFontSize(7)
 doc.setTextColor(255,255,255)
-doc.text('CONCLUSÃO EXECUTIVA',13,187)
+doc.text('CONCLUSÃO EXECUTIVA',13,186)
 doc.setFont('helvetica','normal')
-doc.setFontSize(5.2)
-let conclusao=`O Município de ${municipio} apresenta IRIQ ${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, classificado como ${faixaMunicipal(iriq)}, ocupando a posição ${posicao} no ranking estadual. Foram registrados ${totalFocos.toLocaleString('pt-BR')} focos de calor em ${ano}, equivalentes a ${participacao.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}% dos registros de Rondônia. A leitura integrada recomenda acompanhamento proporcional à criticidade territorial, à concentração de focos e à capacidade de resposta do município.`
-doc.text(doc.splitTextToSize(conclusao,268),13,192)
+doc.setFontSize(4.35)
+let conclusao=`O Município de ${municipio} apresenta IRIQ de ${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, enquadrado na faixa ${faixaMunicipal(iriq)}, ocupando a ${posicao}ª posição no ranking estadual. O IRIQ — Índice de Risco Integrado de Queimadas — constitui indicador sintético destinado à comparação territorial e à priorização dos municípios, consolidando, em escala padronizada, os fatores considerados no modelo de avaliação. Quanto maior o índice, maior a necessidade relativa de atenção, acompanhamento e adoção de medidas preventivas. Sua finalidade é apoiar a decisão e a hierarquização territorial, não devendo ser interpretado isoladamente como medida absoluta da ocorrência de incêndios. O Risco Municipal alcança ${risco.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, correspondendo à classificação ${classificacao}, e expressa a criticidade territorial identificada a partir dos fatores de risco considerados no modelo, subsidiando o dimensionamento do monitoramento, prevenção, fiscalização, preparação e resposta. A coexistência de IRIQ ${faixaMunicipal(iriq)} e Risco Municipal ${classificacao} não constitui divergência: os indicadores são complementares. O IRIQ proporciona leitura integrada e comparativa da posição municipal no Estado, enquanto o Risco Municipal evidencia a intensidade da criticidade específica do território. Foram registrados ${totalFocos.toLocaleString('pt-BR')} focos de calor em ${ano}, equivalentes a ${participacao.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}% dos registros estaduais. A avaliação técnica deve considerar conjuntamente IRIQ, Risco Municipal, ranking estadual, quantidade e evolução temporal dos focos e capacidade de resposta local, permitindo estabelecer prioridades e orientar a atuação preventiva e concomitante do TCE-RO e dos demais órgãos responsáveis.`
+doc.text(
+doc.splitTextToSize(conclusao,268),
+13,
+191,
+{lineHeightFactor:1.12}
+)
 /*---------------------------------------------------------
 075.26 RODAPÉ E SALVAMENTO
 ---------------------------------------------------------*/
 doc.setFont('helvetica','normal')
 doc.setFontSize(4.8)
 textoPreto()
-doc.text('Fontes: INPE • IRIQ • Heatmap Estadual • Municípios de Rondônia • TCE-RO',7,207)
+doc.text('Fontes: INPE • IRIQ • Heatmap Estadual • Municípios de Rondônia • TCE-RO',7,208)
 doc.setFont('helvetica','bold')
 doc.setFontSize(5)
 doc.text('PÁGINA 1 DE 1',290,207,{align:'right'})
