@@ -788,27 +788,28 @@ doc.setTextColor(51,65,85)
 let texto='O mapa municipal demonstra a situação dos 52 municípios quanto ao atendimento do Ofício Circular n.16/2026/GABPRES/TCERO e à apresentação dos respectivos Planos de Ação para prevenção e enfrentamento das queimadas e incêndios florestais.'
 doc.text(doc.splitTextToSize(texto,180),15,38)
 await mostrarAbaQueimadas('executivomunicipal')
-await new Promise(r=>setTimeout(r,1200))
-if(typeof mapaMunicipalPlanos!=='undefined'&&mapaMunicipalPlanos){
+await new Promise(r=>setTimeout(r,1000))
+if(window.mapaPlanosMunicipais&&window.camadaPlanosMunicipais){
 try{
-mapaMunicipalPlanos.invalidateSize(true)
-if(typeof camadaMunicipiosPlanos!=='undefined'&&camadaMunicipiosPlanos){
-let bounds=camadaMunicipiosPlanos.getBounds()
+window.mapaPlanosMunicipais.invalidateSize(true)
+let bounds=window.camadaPlanosMunicipais.getBounds()
 if(bounds&&bounds.isValid()){
-mapaMunicipalPlanos.fitBounds(bounds,{padding:[12,12],maxZoom:7})
-}
+window.mapaPlanosMunicipais.fitBounds(bounds,{
+padding:[12,12],
+maxZoom:7
+})
 }
 }catch(e){
-console.warn('Não foi possível reenquadrar o mapa municipal:',e)
+console.warn('Erro ao reenquadrar mapa municipal:',e)
 }
 }
-await new Promise(r=>setTimeout(r,1400))
+await new Promise(r=>setTimeout(r,1200))
 let img=await capturarElemento('mapaMunicipalPlanos')
 if(img){
 let props=doc.getImageProperties(img)
 let largura=180
 let altura=(props.height*largura)/props.width
-let alturaMaxima=165
+let alturaMaxima=150
 if(altura>alturaMaxima){
 altura=alturaMaxima
 largura=(props.width*altura)/props.height
@@ -819,7 +820,7 @@ doc.setFillColor(248,250,252)
 doc.setDrawColor(203,213,225)
 doc.roundedRect(x-2,y-2,largura+4,altura+4,3,3,'FD')
 doc.addImage(img,'PNG',x,y,largura,altura,undefined,'FAST')
-let yLegenda=y+altura+9
+let yLegenda=y+altura+10
 doc.setFont('helvetica','bold')
 doc.setFontSize(7)
 doc.setTextColor(15,23,42)
@@ -827,17 +828,17 @@ doc.text('SITUAÇÃO DOS MUNICÍPIOS',15,yLegenda)
 let legenda=[
 ['PLANO DE AÇÃO',[22,163,74]],
 ['DILAÇÃO DE PRAZO',[250,204,21]],
-['SEM RESPOSTA',[239,68,68]]
+['SEM RESPOSTA',[220,38,38]]
 ]
 let lx=15
 legenda.forEach(item=>{
 doc.setFillColor(...item[1])
 doc.roundedRect(lx,yLegenda+4,5,5,1,1,'F')
 doc.setFont('helvetica','bold')
-doc.setFontSize(6.5)
+doc.setFontSize(6.2)
 doc.setTextColor(17,24,39)
 doc.text(item[0],lx+8,yLegenda+8)
-lx+=55
+lx+=58
 })
 }
 doc.setFont('helvetica','italic')
