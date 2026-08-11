@@ -2237,16 +2237,139 @@ a predição apresentada constitui instrumento de priorização e inteligência 
 </div>`
 }
 /*=========================================================
-049 QUEIMADAS FUNCTION IAPRIORIZARMUNICIPIOS
+049 QUEIMADAS FUNCTION RENDERMATRIZRESPOSTARECOMENDADA
 =========================================================*/
-async function iaPriorizarMunicipios(){
-let box=document.getElementById('painelIAPriorizacao')
+function renderMatrizRespostaRecomendada(){
+let box=document.getElementById('painelPriorizacaoMunicipal')
 if(!box)return
-let{data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
-let top=[...data].sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0)).slice(0,3)
+let niveis=[
+{
+nivel:'CRÍTICO',
+faixa:'≥ 75',
+cor:'#dc2626',
+fundo:'#fef2f2',
+resposta:'INTERVENÇÃO PRIORITÁRIA',
+acompanhamento:'IMEDIATO',
+descricao:'Prioridade máxima para análise, verificação da capacidade de resposta e acompanhamento das medidas preventivas e operacionais.'
+},
+{
+nivel:'ALTO',
+faixa:'50 a 74,99',
+cor:'#f97316',
+fundo:'#fff7ed',
+resposta:'MONITORAMENTO INTENSIFICADO',
+acompanhamento:'FREQUENTE',
+descricao:'Requer acompanhamento reforçado dos focos, tendência territorial, medidas municipais e condições capazes de elevar a criticidade.'
+},
+{
+nivel:'MODERADO',
+faixa:'25 a 49,99',
+cor:'#eab308',
+fundo:'#fefce8',
+resposta:'ACOMPANHAMENTO PREVENTIVO',
+acompanhamento:'PERIÓDICO',
+descricao:'Demanda vigilância preventiva e reavaliação sempre que houver crescimento dos focos, FRP elevado ou deterioração das condições locais.'
+},
+{
+nivel:'BAIXO',
+faixa:'< 25',
+cor:'#16a34a',
+fundo:'#f0fdf4',
+resposta:'VIGILÂNCIA DE ROTINA',
+acompanhamento:'REGULAR',
+descricao:'Manutenção do monitoramento ordinário, sem afastar reclassificação quando surgirem novas evidências ou alterações relevantes.'
+}
+]
 box.innerHTML=`
-<div class="monitor4d-card">
-${top.map((i,idx)=>`${idx+1}º ${i.municipio}<br>IRIQ: ${Number(i.indice_final||i.iriq||0).toFixed(2)}`).join('<br><br>')}
+<div style="
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px">
+${niveis.map(i=>`
+<div style="
+background:${i.fundo};
+border:1px solid #dbe3ec;
+border-top:6px solid ${i.cor};
+border-radius:10px;
+padding:15px;
+min-height:175px">
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+margin-bottom:10px">
+<div style="
+font-size:16px;
+font-weight:900;
+color:${i.cor}">
+${i.nivel}
+</div>
+<div style="
+font-size:17px;
+font-weight:900;
+color:${i.cor}">
+${i.faixa}
+</div>
+</div>
+<div style="
+font-size:11px;
+font-weight:900;
+color:#64748b;
+margin-bottom:3px">
+RESPOSTA RECOMENDADA
+</div>
+<div style="
+font-size:13px;
+font-weight:900;
+color:#0f172a;
+margin-bottom:10px">
+${i.resposta}
+</div>
+<div style="
+font-size:11px;
+font-weight:900;
+color:#64748b;
+margin-bottom:3px">
+ACOMPANHAMENTO
+</div>
+<div style="
+font-size:13px;
+font-weight:900;
+color:${i.cor};
+margin-bottom:10px">
+${i.acompanhamento}
+</div>
+<div style="
+border-top:1px solid #dbe3ec;
+padding-top:9px;
+font-size:11.5px;
+font-weight:700;
+line-height:1.55;
+color:#334155">
+${i.descricao}
+</div>
+</div>
+`).join('')}
+</div>
+<div style="
+margin-top:12px;
+padding:14px 16px;
+background:#f8fafc;
+border:1px solid #dbe3ec;
+border-left:5px solid #0d3d8c;
+border-radius:8px;
+font-size:12px;
+font-weight:700;
+line-height:1.65;
+color:#334155">
+<strong style="
+font-size:13px;
+font-weight:900;
+color:#0d3d8c">
+ORIENTAÇÃO PARA O CONTROLE EXTERNO:
+</strong>
+o nível de resposta não deve ser definido exclusivamente pelo IRIQ. A decisão deve considerar conjuntamente o risco municipal, os focos recentes, a tendência temporal, o FRP, a localização territorial, a situação do Plano de Ação, a capacidade de resposta e as demais evidências de monitoramento. Municípios que apresentem agravamento recente devem ter sua prioridade reavaliada, mesmo quando enquadrados originalmente em faixas inferiores.
 </div>`
 }
 /*=========================================================
