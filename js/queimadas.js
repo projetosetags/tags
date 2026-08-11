@@ -3480,6 +3480,21 @@ posicao=posicao>=0?posicao+1:'-'
 let maiores=[...focos].filter(i=>i.frp!==null&&i.frp!==undefined&&Number.isFinite(Number(i.frp))).sort((a,b)=>Number(b.frp||0)-Number(a.frp||0)).slice(0,5)
 let recentes=[...focos].sort(ordenarDataHora).slice(0,5)
 /*---------------------------------------------------------
+075.10 FAIXA DE TÍTULO MUNICIPAL
+---------------------------------------------------------*/
+function faixaTituloMunicipal(texto,x,y,w){
+doc.setFillColor(5,56,139)
+doc.roundedRect(x,y,w,4.5,1,1,'F')
+doc.setFontSize(5.8)
+doc.setTextColor(255,255,255)
+doc.text(
+String(texto||''),
+x+w/2,
+y+3.2,
+{align:'center'}
+)
+}
+/*---------------------------------------------------------
 075.10 RECORTE DA IMAGEM
 ---------------------------------------------------------*/
 async function recortarImagem(dataURL){
