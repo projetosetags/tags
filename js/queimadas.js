@@ -2983,7 +2983,7 @@ ${i.classificacao}
 </table>
 </div>
 <div style="margin-top:8px;padding:8px 10px;background:#f8fafc;border-left:4px solid #0d3d8c;font-size:10px;color:#475569;line-height:1.5">
-<b>Leitura técnica:</b> o CHAPT consolida os componentes de criticidade, histórico, abrangência e prioridade registrados para cada município. O percentual apresentado permite comparação relativa e apoio à priorização das ações de monitoramento.
+<b>Leitura técnica:</b> o CHAPT — Criticidade Histórica Ambiental e Pressão Territorial é um indicador analítico destinado a representar a pressão territorial associada às queimadas e aos incêndios florestais, considerando a persistência histórica das ocorrências, sua relevância ambiental e a intensidade com que esses eventos pressionam o território municipal. Sua finalidade é apoiar a identificação comparativa de áreas mais vulneráveis e subsidiar a priorização das ações de prevenção, monitoramento, fiscalização e resposta. O percentual apresentado permite comparação relativa e apoio à priorização das ações de monitoramento.
 </div>`
 }
 
