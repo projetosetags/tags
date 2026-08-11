@@ -62,7 +62,8 @@
 <button id="btnAbaMapa" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('mapa')">🗺️ MAPA ESTADUAL</button>
 <button id="btnAbaSituacao" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('situacao')">🚨 SITUAÇÃO</button>
 <button id="btnAbaMonitoramento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('monitoramento')">🔥 MONITORAMENTO</button>
-<button id="btnAbaTempoReal" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('temporeal')">🛰️ TEMPO REAL</button>
+<button id="btnAbaTempoReal" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('temporeal')">🛰️ TEMPO REAL RO</button>
+<button onclick="mostrarAbaQueimadas('temporealmunicipio')">🏙️ TEMPO REAL MUNICÍPIO</button>
 <button id="btnAbaAnalise" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('analise')">🤖 RISCOS IA</button>
 <button id="btnAbaAuditor" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('auditor')">📑 AUDITORIA</button>
 <button id="btnImprimirPainel" class="btnAbaQueimadas btnPdfQueimadas" onclick="imprimirAbaAtualQueimadas()">🖨️ PDF ABA</button>
@@ -407,16 +408,16 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 </div>
 </section>
 <!--=========================================================
-005.1 TEMPO REAL
+005.1 TEMPO REAL RO
 =========================================================-->
 <section id="abaTempoReal" class="abaQueimadas hidden">
 <div class="painelTitulo">
-🛰 CENTRO DE MONITORAMENTO EM TEMPO REAL
+🛰 CENTRO DE MONITORAMENTO EM TEMPO REAL DO ESTADO
 </div>
 <div id="painelTempoRealKPIs"></div>
 <div class="exec-duplo">
 <div class="cardExecutivo">
-<h2>🔥 FOCOS DE CALOR</h2>
+<h2>🔥 FOCOS DE CALOR RO</h2>
 <div id="painelTempoRealFocos"></div>
 </div>
 <div class="cardExecutivo">
@@ -435,7 +436,7 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 </div>
 </div>
 <div class="cardExecutivo">
-<h2>📈 EVOLUÇÃO DOS FOCOS</h2>
+<h2>📈 EVOLUÇÃO DOS FOCOS RO</h2>
 <div class="graficoTempoRealBox" style="height:390px;position:relative">
 <canvas id="graficoTempoReal"></canvas>
 </div>
@@ -445,6 +446,87 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 <div id="painelTempoRealRankingIRIQ"></div>
 <div class="fonte-card">Fonte: IRIQ Ambiental • INPE • PRODES • MapBiomas • CHAP</div>
 </div>
+</section>
+<!--=========================================================
+005.2 TEMPO REAL MUNICÍPIOS
+=========================================================-->
+<section id="view-temporealmunicipio" class="view-queimadas">
+
+<div class="titulo-secao">
+🔥 TEMPO REAL POR MUNICÍPIO
+</div>
+
+<div class="card">
+<label for="selectMunicipioTempoReal">
+<b>SELECIONE O MUNICÍPIO</b>
+</label>
+
+<select id="selectMunicipioTempoReal">
+<option value="">Selecione um município...</option>
+</select>
+</div>
+
+<div id="painelTempoRealMunicipio">
+
+<div class="kpi-grid">
+
+<div class="kpi-card">
+<div id="trmFocosAno" class="kpi-num">—</div>
+<div class="kpi-label">FOCOS EM 2026</div>
+</div>
+
+<div class="kpi-card">
+<div id="trmFocosHoje" class="kpi-num">—</div>
+<div class="kpi-label">FOCOS HOJE</div>
+</div>
+
+<div class="kpi-card">
+<div id="trmUltimaData" class="kpi-num">—</div>
+<div class="kpi-label">ÚLTIMA DATA INPE</div>
+</div>
+
+<div class="kpi-card">
+<div id="trmTotalRegistros" class="kpi-num">—</div>
+<div class="kpi-label">REGISTROS DO MUNICÍPIO</div>
+</div>
+
+</div>
+
+<div class="dashboard-grid">
+
+<div class="card">
+<h3>🔥 FOCOS DE CALOR</h3>
+<div id="trmResumoFocos"></div>
+</div>
+
+<div class="card">
+<h3>📊 EVOLUÇÃO MENSAL — 2026</h3>
+<canvas id="graficoTempoRealMunicipio"></canvas>
+</div>
+
+</div>
+
+<div class="dashboard-grid">
+
+<div class="card">
+<h3>📡 INFORMAÇÕES DO MONITORAMENTO</h3>
+<div id="trmMonitoramento"></div>
+</div>
+
+<div class="card">
+<h3>🕒 ÚLTIMA SINCRONIZAÇÃO</h3>
+<div id="trmSincronizacao"></div>
+</div>
+
+</div>
+
+<div class="card">
+<h3>🔥 FOCOS MAIS RECENTES</h3>
+<div id="trmFocosRecentes"></div>
+</div>
+
+</div>
+
 </section>
 <!--=========================================================
 006 RISCOS sugestões IA
