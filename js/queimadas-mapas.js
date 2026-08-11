@@ -471,6 +471,30 @@ if(layer.bringToFront){
 layer.bringToFront()
 }
 })
-mapaPlanosMunicipais.fitBounds(camadaPlanosMunicipais.getBounds())
+if(camadaPlanosMunicipais&&camadaPlanosMunicipais.getBounds){
+let bounds=camadaPlanosMunicipais.getBounds()
+if(bounds&&bounds.isValid()){
+mapaPlanosMunicipais.invalidateSize(true)
+mapaPlanosMunicipais.fitBounds(bounds,{
+padding:[18,18],
+maxZoom:7
+})
 }
-
+}
+window.mapaPlanosMunicipais=mapaPlanosMunicipais
+window.camadaPlanosMunicipais=camadaPlanosMunicipais
+setTimeout(()=>{
+try{
+mapaPlanosMunicipais.invalidateSize(true)
+let bounds=camadaPlanosMunicipais?.getBounds()
+if(bounds&&bounds.isValid()){
+mapaPlanosMunicipais.fitBounds(bounds,{
+padding:[18,18],
+maxZoom:7
+})
+}
+}catch(e){
+console.log('Erro ao ajustar mapa municipal:',e)
+}
+},500)
+}
