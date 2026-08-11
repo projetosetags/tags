@@ -2147,8 +2147,8 @@ hoverOffset:8
 options:{
 responsive:true,
 maintainAspectRatio:false,
-radius:'88%',
-cutout:'42%',
+radius:'92%',
+cutout:'48%',
 layout:{
 padding:{
 top:5,
