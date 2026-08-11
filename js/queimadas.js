@@ -3289,9 +3289,24 @@ graficoMensal(5,gy,74,43)
 graficoEscalaIRIQ(81,gy,61,43)
 concentracaoIRIQ(144,gy,61,43)
 /*---------------------------------------------------------
-074.25 SÍNTESE DO RISCO
+074.25 CONCEITO, FÓRMULA E FINALIDADE DO IRIQ
 ---------------------------------------------------------*/
-let sy=144
+doc.setFillColor(241,245,249)
+doc.setDrawColor(148,163,184)
+doc.roundedRect(5,143,200,12,2,2,'FD')
+doc.setFontSize(4.6)
+doc.setTextColor(17,24,39)
+let conceitoIRIQ='IRIQ — Índice de Risco Integrado de Queimadas: indicador sintético utilizado para comparar e priorizar territorialmente os municípios conforme a criticidade relacionada às queimadas e aos incêndios florestais.'
+doc.text(doc.splitTextToSize(conceitoIRIQ,190),10,147)
+doc.setFontSize(4.5)
+doc.setTextColor(13,61,140)
+doc.text('FÓRMULA: IRIQ = (Risco × 60%) + (CHAP × 40%)',10,153)
+doc.setTextColor(17,24,39)
+doc.text('FINALIDADE: orientar priorização, monitoramento, fiscalização e tomada de decisão do TCE-RO.',83,153)
+/*---------------------------------------------------------
+074.26 SÍNTESE DO RISCO
+---------------------------------------------------------*/
+let sy=158
 doc.setFillColor(248,250,252)
 doc.setDrawColor(203,213,225)
 doc.roundedRect(5,sy,129,32,2,2,'FD')
@@ -3303,7 +3318,7 @@ textoPreto()
 let sintese=`O IRIQ estadual calculado a partir dos ${rankingIRIQ.length} municípios com dados disponíveis é ${iriqEstadual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, classificado como ${faixaIRIQ(iriqEstadual)}. A média dos cinco maiores IRIQ é ${mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, e o maior índice municipal é ${maiorIRIQ.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, registrado em ${top5IRIQ[0]?.municipio||'-'}. A distribuição apresenta ${baixos} município(s) em nível baixo, ${moderados} moderado(s), ${altos} alto(s) e ${criticos} crítico(s).`
 doc.text(doc.splitTextToSize(sintese,112),18,sy+12)
 /*---------------------------------------------------------
-074.26 INDICADORES AMBIENTAIS
+074.27 INDICADORES AMBIENTAIS
 ---------------------------------------------------------*/
 faixaTitulo('INDICADORES AMBIENTAIS',137,sy,68)
 doc.setFillColor(255,255,255)
@@ -3320,13 +3335,13 @@ doc.setFontSize(4.2)
 doc.text('ha',164,sy+21)
 doc.text('ha',198,sy+21)
 /*---------------------------------------------------------
-074.27 SITUAÇÃO MUNICIPAL E LEGENDA
+074.28 SITUAÇÃO MUNICIPAL E LEGENDA
 ---------------------------------------------------------*/
-situacaoMunicipios(5,177,147)
-faixaTitulo('LEGENDA DAS CLASSIFICAÇÕES',155,177,50)
+situacaoMunicipios(5,191,147)
+faixaTitulo('LEGENDA DAS CLASSIFICAÇÕES',155,191,50)
 doc.setFillColor(255,255,255)
 doc.setDrawColor(30,64,175)
-doc.roundedRect(155,183,50,27,2,2,'FD')
+doc.roundedRect(155,197,50,27,2,2,'FD')
 let classes=[
 ['BAIXO: 0 a <25',[22,163,74]],
 ['MODERADO: 25 a <50',[245,158,11]],
@@ -3335,13 +3350,13 @@ let classes=[
 ]
 classes.forEach((i,idx)=>{
 doc.setFillColor(...i[1])
-doc.roundedRect(159,187+idx*5.5,3,3,.5,.5,'F')
+doc.roundedRect(159,201+idx*5.5,3,3,.5,.5,'F')
 doc.setFontSize(4.5)
 textoPreto()
-doc.text(i[0],165,189.5+idx*5.5)
+doc.text(i[0],165,203.5+idx*5.5)
 })
 /*---------------------------------------------------------
-074.28 ACHADOS E PRIORIDADES
+074.29 ACHADOS E PRIORIDADES
 ---------------------------------------------------------*/
 let achados=[
 `${semResposta} município(s) permanecem classificados como sem resposta ao TCE-RO.`,
@@ -3357,21 +3372,21 @@ let prioridades=[
 'Integrar TCE-RO, SEDAM, CBMRO, Defesa Civil e municípios no monitoramento.',
 'Utilizar IRIQ, Heatmap, CHAP, IA-CHAP e Monitoramento 4D como instrumentos de decisão.'
 ]
-listaCompacta(5,214,98,43,'ACHADOS EXECUTIVOS',achados)
-listaCompacta(107,214,98,43,'PRIORIDADES PARA ACOMPANHAMENTO',prioridades)
+listaCompacta(5,228,98,43,'ACHADOS EXECUTIVOS',achados)
+listaCompacta(107,228,98,43,'PRIORIDADES PARA ACOMPANHAMENTO',prioridades)
 /*---------------------------------------------------------
-074.29 CONCLUSÃO EXECUTIVA
+074.30 CONCLUSÃO EXECUTIVA
 ---------------------------------------------------------*/
 doc.setFillColor(13,61,140)
-doc.roundedRect(18,259,174,27,2.5,2.5,'F')
-doc.setFontSize(7)
+doc.roundedRect(18,273,174,14,2.5,2.5,'F')
+doc.setFontSize(6)
 doc.setTextColor(255,255,255)
-doc.text('CONCLUSÃO EXECUTIVA',24,266)
-doc.setFontSize(5.8)
-let conclusao=`O cenário exige leitura territorializada. Foram identificados ${focos.toLocaleString('pt-BR')} focos de calor no período, ${criticos} município(s) em classificação crítica e ${prioritarios} município(s) com IRIQ igual ou superior a 25. A concentração dos maiores índices municipais e as situações de ausência de resposta ou dilação justificam acompanhamento concomitante, atuação preventiva e integração permanente entre os órgãos responsáveis.`
-doc.text(doc.splitTextToSize(conclusao,160),24,273)
+doc.text('CONCLUSÃO EXECUTIVA',24,278)
+doc.setFontSize(4.5)
+let conclusao=`O cenário exige leitura territorializada. Foram identificados ${focos.toLocaleString('pt-BR')} focos de calor no período, ${criticos} município(s) em classificação crítica e ${prioritarios} município(s) com IRIQ igual ou superior a 25. A concentração territorial dos riscos orienta a priorização da atuação preventiva e do acompanhamento pelo TCE-RO.`
+doc.text(doc.splitTextToSize(conclusao,160),24,282)
 /*---------------------------------------------------------
-074.30 RODAPÉ E SALVAMENTO
+074.31 RODAPÉ E SALVAMENTO
 ---------------------------------------------------------*/
 doc.setFontSize(5)
 doc.setTextColor(17,24,39)
