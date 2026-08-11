@@ -2171,6 +2171,7 @@ mapa:'btnAbaMapa',
 planejamento:'btnAbaPlanejamento',
 monitoramento:'btnAbaMonitoramento',
 temporeal:'btnAbaTempoReal',
+temporealmunicipio:'btnAbaTempoRealMunicipio',
 analise:'btnAbaAnalise',
 situacao:'btnAbaSituacao',
 presidente:'btnAbaPresidente',
@@ -2251,6 +2252,16 @@ if(nome==='temporeal'){
 document.getElementById('abaTempoReal')?.classList.remove('hidden')
 if(typeof renderTempoReal==='function')await renderTempoReal()
 if(typeof renderGraficoTempoReal==='function')await renderGraficoTempoReal()
+}
+if(nome==='temporealmunicipio'){
+document.getElementById('abaTempoRealMunicipio')?.classList.remove('hidden')
+if(typeof carregarMunicipiosTempoReal==='function'){
+await carregarMunicipiosTempoReal()
+}
+let select=document.getElementById('selectMunicipioTempoReal')
+if(select&&select.value&&typeof renderTempoRealMunicipio==='function'){
+await renderTempoRealMunicipio(select.value)
+}
 }
 if(nome==='analise'){
 document.getElementById('abaAnalise')?.classList.remove('hidden')
