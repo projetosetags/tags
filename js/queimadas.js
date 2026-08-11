@@ -2775,10 +2775,6 @@ ${p.texto}
 
 }).join('')}
 
-/*=========================================================
-LEGENDA GERAL — APÓS O 5º MUNICÍPIO
-=========================================================*/
-
 <div style="
 margin-top:22px;
 border:1px solid #cbd5e1;
@@ -2812,7 +2808,7 @@ font-weight:900;
 color:#dc2626;
 margin-bottom:7px">
 
-🔴 VERMELHO — PROVIDÊNCIA IMEDIATA
+🔴 PROVIDÊNCIA IMEDIATA
 
 </div>
 
@@ -2838,7 +2834,7 @@ font-weight:900;
 color:#f97316;
 margin-bottom:7px">
 
-🟠 LARANJA — PROVIDÊNCIA PREVENTIVA
+🟠 PROVIDÊNCIA PREVENTIVA
 
 </div>
 
@@ -2863,7 +2859,7 @@ font-weight:900;
 color:#16a34a;
 margin-bottom:7px">
 
-🟢 VERDE — ROTINA E MANUTENÇÃO
+🟢 ROTINA E MANUTENÇÃO
 
 </div>
 
