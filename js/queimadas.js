@@ -3405,9 +3405,9 @@ async function gerarPDFSumarioExecutivoMunicipal(municipio){
 const{jsPDF}=window.jspdf
 let doc=new jsPDF('l','mm','a4',true)
 let hoje=new Date()
-let ano=hoje.getFullYear()
+let ano=2026
 let dataInicial=`${ano}-01-01`
-let dataFinal=formatarDataISOFocos(hoje)
+let dataFinal=`${ano}-12-31`
 let municipioNormalizado=normalizarMunicipio(municipio)
 /*---------------------------------------------------------
 075.2 CARREGAMENTO DOS RECURSOS VISUAIS
@@ -3415,40 +3415,47 @@ let municipioNormalizado=normalizarMunicipio(municipio)
 let imgLogo=await toDataURL('assets/geojson/logotcero.png').catch(()=>null)
 let imgQueimadasOriginal=await toDataURL('assets/geojson/queimadas.png').catch(()=>null)
 /*---------------------------------------------------------
-075.3 CONSULTA DOS DADOS MUNICIPAIS
+075.3 CONSULTA DOS DADOS MUNICIPAIS — MESMA FONTE DO TEMPO REAL
 ---------------------------------------------------------*/
 let[
-{data:focosRO=[],error:erroFocos},
+{data:focosMunicipio=[],error:erroFocosMunicipio},
+{data:focosRO=[],error:erroFocosRO},
 {data:cadastros=[],error:erroCadastro},
 {data:heatmaps=[],error:erroHeatmap}
 ]=await Promise.all([
-client.from('queimadas_focos_inpe').select('*').eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal),
+client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').eq('municipio',municipio).gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('data_foco',{ascending:false}).order('data_hora',{ascending:false}),
+client.schema('queimadas').from('queimadas_focos_inpe').select('id,municipio,data_foco').eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal),
 client.from('vw_queimadas_municipios_resposta').select('*'),
 client.from('queimadas_heatmap').select('*')
 ])
-if(erroFocos)console.error('Sumário municipal focos:',erroFocos)
+if(erroFocosMunicipio)console.error('Sumário municipal focos:',erroFocosMunicipio)
+if(erroFocosRO)console.error('Sumário municipal focos RO:',erroFocosRO)
 if(erroCadastro)console.error('Sumário municipal cadastro:',erroCadastro)
 if(erroHeatmap)console.error('Sumário municipal IRIQ:',erroHeatmap)
+focosMunicipio=focosMunicipio||[]
 focosRO=focosRO||[]
 cadastros=cadastros||[]
 heatmaps=heatmaps||[]
 /*---------------------------------------------------------
-075.4 FILTRAGEM DOS DADOS DO MUNICÍPIO
+075.4 CONSOLIDAÇÃO DOS DADOS DO MUNICÍPIO
 ---------------------------------------------------------*/
-let focos=focosRO.filter(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)
+let focos=focosMunicipio
 let cadastroMunicipio=cadastros.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)||{}
 let heatmapMunicipio=heatmaps.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)||{}
 let totalFocos=focos.length
 let totalFocosRO=focosRO.length
+console.log('SUMÁRIO MUNICIPAL:',municipio)
+console.log('TOTAL MUNICÍPIO:',totalFocos)
+console.log('TOTAL RONDÔNIA:',totalFocosRO)
 /*---------------------------------------------------------
 075.5 ORDENAÇÃO CRONOLÓGICA DOS FOCOS
 ---------------------------------------------------------*/
 let ordenarDataHora=(a,b)=>{
-let da=String(a.data_foco||'')
-let db=String(b.data_foco||'')
+let da=String(a.data_foco||'').slice(0,10)
+let db=String(b.data_foco||'').slice(0,10)
 let ha=String(a.data_hora||a.hora||'00:00:00')
 let hb=String(b.data_hora||b.hora||'00:00:00')
-return(`${db} ${hb}`).localeCompare(`${da} ${ha}`)
+return`${db} ${hb}`.localeCompare(`${da} ${ha}`)
 }
 let focosOrdenados=[...focos].sort(ordenarDataHora)
 let ultimoFoco=focosOrdenados[0]||null
@@ -3495,7 +3502,7 @@ y+3.2,
 )
 }
 /*---------------------------------------------------------
-075.10 RECORTE DA IMAGEM
+075.11 RECORTE DA IMAGEM
 ---------------------------------------------------------*/
 async function recortarImagem(dataURL){
 if(!dataURL)return null
@@ -3528,13 +3535,13 @@ img.src=dataURL
 }
 let imgQueimadas=await recortarImagem(imgQueimadasOriginal)
 /*---------------------------------------------------------
-075.11 TEXTO PADRÃO
+075.12 TEXTO PADRÃO
 ---------------------------------------------------------*/
 function textoPreto(){
 doc.setTextColor(10,25,55)
 }
 /*---------------------------------------------------------
-075.12 FAIXA DE CLASSIFICAÇÃO MUNICIPAL
+075.13 FAIXA DE CLASSIFICAÇÃO MUNICIPAL
 ---------------------------------------------------------*/
 function faixaMunicipal(v){
 v=Number(v||0)
@@ -3544,7 +3551,7 @@ if(v>=25)return'MODERADO'
 return'BAIXO'
 }
 /*---------------------------------------------------------
-075.13 COR DA CLASSIFICAÇÃO MUNICIPAL
+075.14 COR DA CLASSIFICAÇÃO MUNICIPAL
 ---------------------------------------------------------*/
 function corMunicipal(v){
 v=Number(v||0)
@@ -3554,7 +3561,7 @@ if(v>=25)return[234,179,8]
 return[22,101,52]
 }
 /*---------------------------------------------------------
-075.14 COR DA SITUAÇÃO DOCUMENTAL
+075.15 COR DA SITUAÇÃO DOCUMENTAL
 ---------------------------------------------------------*/
 function corSituacao(texto){
 let s=String(texto||'').toUpperCase()
@@ -3563,131 +3570,6 @@ if(s.includes('DILAÇÃO')||s.includes('DILACAO'))return[22,101,52]
 if(s.includes('PLANO')||s.includes('ATENDIDO'))return[22,101,52]
 return[15,23,42]
 }
-/*=========================================================
-075.15 EVOLUÇÃO MENSAL DOS FOCOS DE CALOR
-=========================================================*/
-faixaTituloMunicipal(
-`EVOLUÇÃO MENSAL DOS FOCOS (${ano})`,
-6,
-80,
-143
-)
-doc.setFillColor(255,255,255)
-doc.setDrawColor(202,213,226)
-doc.roundedRect(
-6,
-84.5,
-143,
-35,
-2,
-2,
-'FD'
-)
-/*---------------------------------------------------------
-075.15.1 IDENTIFICAR MÊS DO FOCO
----------------------------------------------------------*/
-function obterMesFoco(valor){
-if(!valor)return 0
-let texto=String(valor).trim()
-let matchISO=texto.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/)
-if(matchISO){
-let mes=Number(matchISO[2])
-return mes>=1&&mes<=12?mes:0
-}
-let matchBR=texto.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/)
-if(matchBR){
-let mes=Number(matchBR[2])
-return mes>=1&&mes<=12?mes:0
-}
-let matchBRHifen=texto.match(/^(\d{1,2})-(\d{1,2})-(\d{4})/)
-if(matchBRHifen){
-let mes=Number(matchBRHifen[2])
-return mes>=1&&mes<=12?mes:0
-}
-let data=new Date(texto)
-if(!Number.isNaN(data.getTime())){
-return data.getMonth()+1
-}
-return 0
-}
-/*---------------------------------------------------------
-075.15.2 CONSOLIDAR FOCOS POR MÊS
----------------------------------------------------------*/
-let focosPorMesMunicipal=Array(12).fill(0)
-focos.forEach(i=>{
-let mes=obterMesFoco(
-i.data_foco||
-i.data||
-i.datahora||
-i.data_hora||
-i.data_foco_br
-)
-if(mes>=1&&mes<=12){
-focosPorMesMunicipal[mes-1]++
-}
-})
-console.log('FOCOS MUNICIPAIS:',municipio,totalFocos)
-console.log('FOCOS POR MÊS:',focosPorMesMunicipal)
-console.log('SOMA DO GRÁFICO:',focosPorMesMunicipal.reduce((s,v)=>s+v,0))
-/*---------------------------------------------------------
-075.15.3 VALIDAR TOTAL DO GRÁFICO
----------------------------------------------------------*/
-let totalGrafico=focosPorMesMunicipal.reduce((s,v)=>s+v,0)
-if(totalGrafico!==totalFocos){
-console.warn(
-`DIVERGÊNCIA NO SUMÁRIO DE ${municipio}: total=${totalFocos}, gráfico=${totalGrafico}`
-)
-}
-/*---------------------------------------------------------
-075.15.4 DEFINIR ESCALA DO GRÁFICO
----------------------------------------------------------*/
-let maxFocosMensais=Math.max(...focosPorMesMunicipal,1)
-let mesesGraficoMunicipal=[
-'JAN','FEV','MAR','ABR',
-'MAI','JUN','JUL','AGO',
-'SET','OUT','NOV','DEZ'
-]
-let baseGraficoMensal=113
-let topoGraficoMensal=89
-let areaGraficoMensal=baseGraficoMensal-topoGraficoMensal
-let inicioXGraficoMensal=12
-let passoGraficoMensal=10.8
-let larguraBarraGraficoMensal=6.5
-/*---------------------------------------------------------
-075.15.5 DESENHAR BARRAS MENSAIS
----------------------------------------------------------*/
-focosPorMesMunicipal.forEach((v,i)=>{
-let alturaBarra=v
-?Math.max(1,(v/maxFocosMensais)*(areaGraficoMensal-5))
-:0
-doc.setFillColor(239,25,25)
-if(alturaBarra){
-doc.rect(
-inicioXGraficoMensal+(i*passoGraficoMensal),
-baseGraficoMensal-alturaBarra,
-larguraBarraGraficoMensal,
-alturaBarra,
-'F'
-)
-}
-doc.setFontSize(4.7)
-textoPreto()
-if(v>0){
-doc.text(
-Number(v).toLocaleString('pt-BR'),
-inicioXGraficoMensal+(i*passoGraficoMensal)+(larguraBarraGraficoMensal/2),
-baseGraficoMensal-alturaBarra-1,
-{align:'center'}
-)
-}
-doc.setFontSize(4.3)
-doc.text(
-mesesGraficoMunicipal[i],
-inicioXGraficoMensal+(i*passoGraficoMensal)+(larguraBarraGraficoMensal/2),
-117,
-{align:'center'}
-)
-})
 /*---------------------------------------------------------
 075.16 CARD KPI
 ---------------------------------------------------------*/
@@ -3756,29 +3638,43 @@ faixaTituloMunicipal(`EVOLUÇÃO MENSAL DOS FOCOS (${ano})`,6,80,143)
 doc.setFillColor(255,255,255)
 doc.setDrawColor(202,213,226)
 doc.roundedRect(6,84.5,143,35,2,2,'FD')
-let valores=Array(12).fill(0)
+let focosPorMesMunicipal=Array(12).fill(0)
 focos.forEach(i=>{
-let m=Number(String(i.data_foco||'').slice(5,7))
-if(m>=1&&m<=12)valores[m-1]++
+let dataFoco=String(i.data_foco||'').slice(0,10)
+let partes=dataFoco.split('-')
+let mesFoco=partes.length>=2?Number(partes[1]):0
+if(mesFoco>=1&&mesFoco<=12)focosPorMesMunicipal[mesFoco-1]++
 })
-let max=Math.max(...valores,1)
-let meses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
-let base=113
-let topo=89
-let area=base-topo
-let inicioX=12
-let passo=10.8
-let larguraBarra=6.5
-valores.forEach((v,i)=>{
-let bh=v?Math.max(1,(v/max)*(area-5)):0
+let totalGraficoMunicipal=focosPorMesMunicipal.reduce((s,v)=>s+v,0)
+console.log('MUNICÍPIO:',municipio)
+console.log('TOTAL TEMPO REAL/SUMÁRIO:',totalFocos)
+console.log('DISTRIBUIÇÃO MENSAL:',focosPorMesMunicipal)
+console.log('TOTAL DO GRÁFICO:',totalGraficoMunicipal)
+if(totalGraficoMunicipal!==totalFocos){
+console.error(`DIVERGÊNCIA INTERNA: ${municipio} possui ${totalFocos} focos, mas o gráfico totalizou ${totalGraficoMunicipal}.`)
+}
+let maxFocosMensais=Math.max(...focosPorMesMunicipal,1)
+let mesesGrafico=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
+let baseGrafico=113
+let topoGrafico=89
+let areaGrafico=baseGrafico-topoGrafico
+let inicioXGrafico=12
+let passoGrafico=10.8
+let larguraBarraGrafico=6.5
+focosPorMesMunicipal.forEach((v,i)=>{
+let altura=v?Math.max(1,(v/maxFocosMensais)*(areaGrafico-5)):0
 doc.setFillColor(239,25,25)
-if(bh)doc.rect(inicioX+(i*passo),base-bh,larguraBarra,bh,'F')
+if(altura){
+doc.rect(inicioXGrafico+(i*passoGrafico),baseGrafico-altura,larguraBarraGrafico,altura,'F')
+}
 doc.setFont('helvetica','bold')
 doc.setFontSize(4.7)
 textoPreto()
-if(v>0)doc.text(String(v),inicioX+(i*passo)+(larguraBarra/2),base-bh-1,{align:'center'})
+if(v>0){
+doc.text(v.toLocaleString('pt-BR'),inicioXGrafico+(i*passoGrafico)+(larguraBarraGrafico/2),baseGrafico-altura-1,{align:'center'})
+}
 doc.setFontSize(4.3)
-doc.text(meses[i],inicioX+(i*passo)+(larguraBarra/2),117,{align:'center'})
+doc.text(mesesGrafico[i],inicioXGrafico+(i*passoGrafico)+(larguraBarraGrafico/2),117,{align:'center'})
 })
 /*---------------------------------------------------------
 075.21 IRIQ E RISCO MUNICIPAL
