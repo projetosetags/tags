@@ -2240,7 +2240,7 @@ a predição apresentada constitui instrumento de priorização e inteligência 
 049 QUEIMADAS FUNCTION RENDERMATRIZRESPOSTARECOMENDADA
 =========================================================*/
 function renderMatrizRespostaRecomendada(){
-let box=document.getElementById('painelPriorizacaoMunicipal')
+let box=document.getElementById('painelIAPriorizacao')
 if(!box)return
 let niveis=[
 {
@@ -3096,20 +3096,15 @@ await renderTempoRealMunicipio(select.value)
 }
 if(nome==='analise'){
 document.getElementById('abaAnalise')?.classList.remove('hidden')
+
 await renderDashboardCHAP()
 await renderMatrizRisco5x5()
 await matrizRisco5x5Avancada()
-let painelIAChap=document.getElementById('painelIAChap')
-if(painelIAChap){
-let card=painelIAChap.closest('.cardPainel,.cardExecutivo,.cardAnalise')
-if(card)card.style.display='none'
-else painelIAChap.style.display='none'
-}
 await iaPreverRiscos()
-await iaPriorizarMunicipios()
-await iaGerarRelatorio()
+renderMatrizRespostaRecomendada()
 await iaSugerirAcoes()
 }
+
 if(nome==='relatorios'){
 document.getElementById('abaRelatorios')?.classList.remove('hidden')
 await renderGraficoEvolucaoMensal()
