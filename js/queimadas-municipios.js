@@ -2111,9 +2111,7 @@ alert('Registro atualizado com sucesso.')
 143 QUEIMADAS FUNCTION RENDERDISTRIBUICAORESPOSTAS
 =========================================================*/
 async function renderDistribuicaoRespostas(){
-const {data,error}=await client
-.from('vw_queimadas_municipios_resposta')
-.select('classificacao_cor')
+const{data,error}=await client.from('vw_queimadas_municipios_resposta').select('classificacao_cor')
 if(error)return
 let verde=0
 let amarelo=0
@@ -2124,15 +2122,15 @@ else if(i.classificacao_cor==='AMARELO')amarelo++
 else vermelho++
 })
 const ctx=document.getElementById('graficoMunicipiosResposta')
-if(window.graficoDistribuicao)
-window.graficoDistribuicao.destroy()
+if(!ctx)return
+if(window.graficoDistribuicao)window.graficoDistribuicao.destroy()
 window.graficoDistribuicao=new Chart(ctx,{
 type:'doughnut',
 data:{
 labels:[
-'🟢 Com Plano',
-'🟡 Dilação',
-'🔴 Sem Resposta'
+'Com Plano',
+'Dilação',
+'Sem Resposta'
 ],
 datasets:[{
 data:[verde,amarelo,vermelho],
@@ -2141,19 +2139,87 @@ backgroundColor:[
 '#facc15',
 '#dc2626'
 ],
-borderWidth:1
+borderColor:'#ffffff',
+borderWidth:3,
+hoverOffset:8
 }]
 },
 options:{
 responsive:true,
 maintainAspectRatio:false,
-radius:'60%',
+radius:'88%',
+cutout:'42%',
+layout:{
+padding:{
+top:5,
+right:10,
+bottom:0,
+left:10
+}
+},
 plugins:{
 legend:{
-position:'bottom'
+display:true,
+position:'bottom',
+align:'center',
+labels:{
+usePointStyle:true,
+pointStyle:'circle',
+boxWidth:9,
+boxHeight:9,
+padding:18,
+color:'#0f172a',
+font:{
+size:12,
+weight:'800'
+},
+generateLabels(chart){
+const dataset=chart.data.datasets[0]
+return chart.data.labels.map((label,i)=>({
+text:`${label}: ${Number(dataset.data[i]||0).toLocaleString('pt-BR')}`,
+fillStyle:dataset.backgroundColor[i],
+strokeStyle:dataset.backgroundColor[i],
+fontColor:'#0f172a',
+hidden:false,
+index:i
+}))
 }
 }
+},
+tooltip:{
+backgroundColor:'#0f172a',
+titleColor:'#ffffff',
+bodyColor:'#ffffff',
+padding:10,
+callbacks:{
+label:context=>{
+let total=context.dataset.data.reduce((s,v)=>s+Number(v||0),0)
+let valor=Number(context.raw||0)
+let percentual=total?((valor/total)*100).toFixed(1).replace('.',','):'0,0'
+return`${context.label}: ${valor} (${percentual}%)`
 }
+}
+},
+datalabels:{
+display:true,
+color:'#000000',
+font:{
+size:17,
+weight:'900'
+},
+formatter:(valor,context)=>{
+let total=context.chart.data.datasets[0].data.reduce((s,v)=>s+Number(v||0),0)
+let percentual=total?((Number(valor)/total)*100).toFixed(1).replace('.',','):'0,0'
+return`${valor}\n${percentual}%`
+},
+textAlign:'center',
+anchor:'center',
+align:'center',
+clamp:true
+}
+}
+},
+plugins:[ChartDataLabels]
 })
 }
 /*=========================================================
