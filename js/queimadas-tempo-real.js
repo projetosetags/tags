@@ -31,20 +31,24 @@ renderRankingIRIQTempoReal()
 ])
 }
 /*=========================================================
-002 TEMPO REAL FUNCTION BUSCARFOCOSTEMPOREAL
+002 TEMPO REAL — BUSCAR FOCOS DE CALOR
 =========================================================*/
 async function buscarFocosTempoReal(dataInicial,dataFinal){
 let todos=[]
 let inicio=0
 let limite=1000
 while(true){
-let{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('id,municipio,data_foco,data_hora,satelite,created_at').gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('id',{ascending:true}).range(inicio,inicio+limite-1)
-if(error)return{data:[],error}
+let{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('id',{ascending:true}).range(inicio,inicio+limite-1)
+if(error){
+console.error('002 Erro ao buscar focos:',error)
+return{data:[],error}
+}
 let pagina=data||[]
 todos.push(...pagina)
 if(pagina.length<limite)break
 inicio+=limite
 }
+console.log('002 TOTAL FOCOS RO:',todos.length)
 return{data:todos,error:null}
 }
 /*=========================================================
