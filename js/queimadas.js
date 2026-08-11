@@ -3548,17 +3548,131 @@ if(s.includes('DILAÇÃO')||s.includes('DILACAO'))return[22,101,52]
 if(s.includes('PLANO')||s.includes('ATENDIDO'))return[22,101,52]
 return[15,23,42]
 }
+/*=========================================================
+075.15 EVOLUÇÃO MENSAL DOS FOCOS DE CALOR
+=========================================================*/
+faixaTituloMunicipal(
+`EVOLUÇÃO MENSAL DOS FOCOS (${ano})`,
+6,
+80,
+143
+)
+doc.setFillColor(255,255,255)
+doc.setDrawColor(202,213,226)
+doc.roundedRect(
+6,
+84.5,
+143,
+35,
+2,
+2,
+'FD'
+)
 /*---------------------------------------------------------
-075.15 FAIXA DE TÍTULO
+075.15.1 IDENTIFICAR MÊS DO FOCO
 ---------------------------------------------------------*/
-function faixaTituloMunicipal(texto,x,y,w){
-doc.setFillColor(5,56,139)
-doc.roundedRect(x,y,w,4.5,1,1,'F')
-doc.setFont('helvetica','bold')
-doc.setFontSize(5.8)
-doc.setTextColor(255,255,255)
-doc.text(texto,x+w/2,y+3.2,{align:'center'})
+function obterMesFoco(valor){
+if(!valor)return 0
+let texto=String(valor).trim()
+let matchISO=texto.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/)
+if(matchISO){
+let mes=Number(matchISO[2])
+return mes>=1&&mes<=12?mes:0
 }
+let matchBR=texto.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/)
+if(matchBR){
+let mes=Number(matchBR[2])
+return mes>=1&&mes<=12?mes:0
+}
+let matchBRHifen=texto.match(/^(\d{1,2})-(\d{1,2})-(\d{4})/)
+if(matchBRHifen){
+let mes=Number(matchBRHifen[2])
+return mes>=1&&mes<=12?mes:0
+}
+let data=new Date(texto)
+if(!Number.isNaN(data.getTime())){
+return data.getMonth()+1
+}
+return 0
+}
+/*---------------------------------------------------------
+075.15.2 CONSOLIDAR FOCOS POR MÊS
+---------------------------------------------------------*/
+let valores=Array(12).fill(0)
+focos.forEach(i=>{
+let mes=obterMesFoco(
+i.data_foco||
+i.data||
+i.datahora||
+i.data_hora||
+i.data_foco_br
+)
+if(mes>=1&&mes<=12){
+valores[mes-1]++
+}
+})
+console.log('FOCOS MUNICIPAIS:',municipio,totalFocos)
+console.log('FOCOS POR MÊS:',valores)
+console.log('SOMA DO GRÁFICO:',valores.reduce((s,v)=>s+v,0))
+/*---------------------------------------------------------
+075.15.3 VALIDAR TOTAL DO GRÁFICO
+---------------------------------------------------------*/
+let totalGrafico=valores.reduce((s,v)=>s+v,0)
+if(totalGrafico!==totalFocos){
+console.warn(
+`DIVERGÊNCIA NO SUMÁRIO DE ${municipio}: total=${totalFocos}, gráfico=${totalGrafico}`
+)
+}
+/*---------------------------------------------------------
+075.15.4 DEFINIR ESCALA DO GRÁFICO
+---------------------------------------------------------*/
+let max=Math.max(...valores,1)
+let meses=[
+'JAN','FEV','MAR','ABR',
+'MAI','JUN','JUL','AGO',
+'SET','OUT','NOV','DEZ'
+]
+let base=113
+let topo=89
+let area=base-topo
+let inicioX=12
+let passo=10.8
+let larguraBarra=6.5
+/*---------------------------------------------------------
+075.15.5 DESENHAR BARRAS MENSAIS
+---------------------------------------------------------*/
+valores.forEach((v,i)=>{
+let bh=v
+?Math.max(1,(v/max)*(area-5))
+:0
+doc.setFillColor(239,25,25)
+if(bh){
+doc.rect(
+inicioX+(i*passo),
+base-bh,
+larguraBarra,
+bh,
+'F'
+)
+}
+doc.setFontSize(4.7)
+textoPreto()
+if(v>0){
+doc.text(
+Number(v).toLocaleString('pt-BR'),
+inicioX+(i*passo)+(larguraBarra/2),
+base-bh-1,
+{align:'center'}
+)
+}
+doc.setFontSize(4.3)
+doc.text(
+meses[i],
+inicioX+(i*passo)+(larguraBarra/2),
+117,
+{align:'center'}
+)
+})
 /*---------------------------------------------------------
 075.16 CARD KPI
 ---------------------------------------------------------*/
