@@ -696,32 +696,23 @@ typeof ChartDataLabels!=='undefined'
 /*=========================================================
 FOCOS RECENTES DO MUNICÍPIO
 =========================================================*/
-
 function renderFocosRecentesMunicipio(registros){
-
 let box=document.getElementById('trmFocosRecentes')
-
 if(!box)return
-
-let recentes=registros.slice(0,20)
-
+let recentes=[...(registros||[])]
+.sort((a,b)=>new Date(b.data_hora||b.data_foco)-new Date(a.data_hora||a.data_foco))
+.slice(0,20)
 if(!recentes.length){
-
 box.innerHTML=`
 <div class="fonte-card">
 Nenhum foco registrado para o município no período.
 </div>
 `
-
 return
 }
-
 box.innerHTML=`
-
-<div style="overflow-x:auto">
-
-<table class="tabela-painel">
-
+<div class="trm-tabela-wrapper">
+<table class="tabela-painel trm-tabela-focos">
 <thead>
 <tr>
 <th>DATA</th>
@@ -731,55 +722,46 @@ box.innerHTML=`
 <th>LONGITUDE</th>
 <th>RISCO FOGO</th>
 <th>FRP</th>
+<th>LOCALIZAÇÃO</th>
 </tr>
 </thead>
-
 <tbody>
-
-${recentes.map(i=>`
-
+${recentes.map(i=>{
+let lat=Number(i.latitude)
+let lon=Number(i.longitude)
+let coordenadasValidas=Number.isFinite(lat)&&Number.isFinite(lon)
+let urlEarth=coordenadasValidas
+?`https://earth.google.com/web/search/${encodeURIComponent(lat+','+lon)}`
+:''
+return `
 <tr>
-
+<td><b>${formatarDataBR(i.data_foco)}</b></td>
+<td>${i.hora||'-'}</td>
+<td>${i.satelite||'-'}</td>
+<td class="trm-coordenada">${coordenadasValidas?lat.toFixed(5):'-'}</td>
+<td class="trm-coordenada">${coordenadasValidas?lon.toFixed(5):'-'}</td>
+<td>${i.risco_fogo??'-'}</td>
+<td>${i.frp??'-'}</td>
 <td>
-${formatarDataBR(i.data_foco)}
+${coordenadasValidas?`
+<a
+class="btn-google-earth"
+href="${urlEarth}"
+target="_blank"
+rel="noopener noreferrer"
+title="Abrir localização do foco no Google Earth"
+>
+🌎 VER LOCAL
+</a>
+`:'-'}
 </td>
-
-<td>
-${i.hora||'-'}
-</td>
-
-<td>
-${i.satelite||'-'}
-</td>
-
-<td>
-${Number(i.latitude||0).toFixed(5)}
-</td>
-
-<td>
-${Number(i.longitude||0).toFixed(5)}
-</td>
-
-<td>
-${i.risco_fogo??'-'}
-</td>
-
-<td>
-${i.frp??'-'}
-</td>
-
 </tr>
-
-`).join('')}
-
-</tbody>
-
-</table>
-
-</div>
-
 `
-
+}).join('')}
+</tbody>
+</table>
+</div>
+`
 }
 
 /*=========================================================
