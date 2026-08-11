@@ -3407,7 +3407,7 @@ let doc=new jsPDF('l','mm','a4',true)
 let hoje=new Date()
 let ano=hoje.getFullYear()
 let dataInicial=`${ano}-01-01`
-let dataFinal=formatarDataISOFocos(hoje)
+let dataFinal=`${ano}-12-31`
 let municipioNormalizado=normalizarMunicipio(municipio)
 /*---------------------------------------------------------
 075.2 CARREGAMENTO DOS RECURSOS VISUAIS
@@ -3415,36 +3415,44 @@ let municipioNormalizado=normalizarMunicipio(municipio)
 let imgLogo=await toDataURL('assets/geojson/logotcero.png').catch(()=>null)
 let imgQueimadasOriginal=await toDataURL('assets/geojson/queimadas.png').catch(()=>null)
 /*---------------------------------------------------------
-075.3 CONSULTA DOS DADOS MUNICIPAIS
+075.3 CONSULTA DOS FOCOS — MESMA FONTE DO TEMPO REAL MUNICIPAL
 ---------------------------------------------------------*/
+let{data:focosMunicipio,error:erroFocos}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').eq('municipio',municipio).gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('data_hora',{ascending:false})
+if(erroFocos){
+console.error('075.3 ERRO FOCOS MUNICIPAIS:',erroFocos)
+alert(`Erro ao consultar focos de ${municipio}: ${erroFocos.message||erroFocos}`)
+return
+}
 let[
-resultadoFocos,
+{count:totalFocosROConsulta,error:erroTotalRO},
 {data:cadastros=[],error:erroCadastro},
 {data:heatmaps=[],error:erroHeatmap}
 ]=await Promise.all([
-buscarFocosTempoReal(dataInicial,dataFinal),
+client.schema('queimadas').from('queimadas_focos_inpe').select('*',{count:'exact',head:true}).eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal),
 client.from('vw_queimadas_municipios_resposta').select('*'),
 client.from('queimadas_heatmap').select('*')
 ])
-let focosRO=resultadoFocos?.data||[]
-let erroFocos=resultadoFocos?.error||null
-if(erroFocos)console.error('075.3 Erro focos:',erroFocos)
-if(erroCadastro)console.error('075.3 Erro cadastro:',erroCadastro)
-if(erroHeatmap)console.error('075.3 Erro Heatmap:',erroHeatmap)
+if(erroTotalRO)console.error('075.3 ERRO TOTAL RO:',erroTotalRO)
+if(erroCadastro)console.error('075.3 ERRO CADASTRO:',erroCadastro)
+if(erroHeatmap)console.error('075.3 ERRO HEATMAP:',erroHeatmap)
+focosMunicipio=focosMunicipio||[]
 cadastros=cadastros||[]
 heatmaps=heatmaps||[]
+console.log('========================================')
+console.log('075.3 MUNICÍPIO RECEBIDO:',municipio)
+console.log('075.3 PERÍODO:',dataInicial,dataFinal)
+console.log('075.3 FOCOS ENCONTRADOS:',focosMunicipio.length)
+console.log('075.3 PRIMEIRO REGISTRO:',focosMunicipio[0])
+console.log('075.3 TOTAL RO:',totalFocosROConsulta)
+console.log('========================================')
 /*---------------------------------------------------------
 075.4 CONSOLIDAÇÃO DOS DADOS DO MUNICÍPIO
 ---------------------------------------------------------*/
-let focos=focosRO.filter(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)
+let focos=focosMunicipio
 let cadastroMunicipio=cadastros.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)||{}
 let heatmapMunicipio=heatmaps.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)||{}
 let totalFocos=focos.length
-let totalFocosRO=focosRO.length
-console.log('075 PDF MUNICÍPIO:',municipio)
-console.log('075 PDF MUNICÍPIO NORMALIZADO:',municipioNormalizado)
-console.log('075 PDF TOTAL RO:',totalFocosRO)
-console.log('075 PDF FOCOS MUNICÍPIO:',totalFocos)
+let totalFocosRO=Number(totalFocosROConsulta||0)
 /*---------------------------------------------------------
 075.5 ORDENAÇÃO CRONOLÓGICA DOS FOCOS
 ---------------------------------------------------------*/
@@ -3464,7 +3472,10 @@ let ultimoSatelite=ultimoFoco?.satelite||'-'
 ---------------------------------------------------------*/
 let iriq=Number(heatmapMunicipio?.iriq||heatmapMunicipio?.indice_final||0)
 let risco=Number(heatmapMunicipio?.risco||heatmapMunicipio?.nivel_risco||0)
-let classificacao=String(heatmapMunicipio?.classificacao||faixaIRIQ(iriq)).toUpperCase()
+let classificacao=String(
+heatmapMunicipio?.classificacao||
+(iriq>=75?'CRÍTICO':iriq>=50?'ALTO':iriq>=25?'MODERADO':'BAIXO')
+).toUpperCase()
 let participacao=totalFocosRO>0?(totalFocos/totalFocosRO)*100:0
 /*---------------------------------------------------------
 075.7 SITUAÇÃO DOCUMENTAL DO MUNICÍPIO
