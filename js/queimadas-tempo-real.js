@@ -359,3 +359,465 @@ renderTempoReal()
 if(intervaloTempoReal)clearInterval(intervaloTempoReal)
 intervaloTempoReal=setInterval(renderTempoReal,300000)
 })
+
+
+/*=========================================================
+TEMPO REAL MUNICIPAL
+=========================================================*/
+
+let graficoTempoRealMunicipio=null
+
+async function carregarMunicipiosTempoReal(){
+
+let select=document.getElementById('selectMunicipioTempoReal')
+
+if(!select)return
+
+const {data,error}=await client
+.schema('queimadas')
+.from('queimadas_focos_inpe')
+.select('municipio')
+.eq('uf','RO')
+
+if(error){
+console.error('Erro municípios tempo real:',error)
+return
+}
+
+let municipios=[...new Set(
+(data||[])
+.map(i=>i.municipio)
+.filter(Boolean)
+)]
+
+municipios.sort((a,b)=>
+a.localeCompare(b,'pt-BR')
+)
+
+select.innerHTML=`
+<option value="">Selecione um município...</option>
+${municipios.map(m=>`
+<option value="${m}">${m}</option>
+`).join('')}
+`
+
+select.onchange=()=>{
+if(select.value){
+renderTempoRealMunicipio(select.value)
+}else{
+limparTempoRealMunicipio()
+}
+}
+
+}
+
+/*=========================================================
+RENDER TEMPO REAL MUNICÍPIO
+=========================================================*/
+
+async function renderTempoRealMunicipio(municipio){
+
+if(!municipio)return
+
+const ano=2026
+
+let inicioAno=`${ano}-01-01`
+let fimAno=`${ano}-12-31`
+
+const {data,error}=await client
+.schema('queimadas')
+.from('queimadas_focos_inpe')
+.select('*')
+.eq('uf','RO')
+.eq('municipio',municipio)
+.gte('data_foco',inicioAno)
+.lte('data_foco',fimAno)
+.order('data_hora',{ascending:false})
+
+if(error){
+console.error('Erro tempo real municipal:',error)
+return
+}
+
+let registros=data||[]
+
+let hoje=new Date()
+
+let hojeISO=[
+hoje.getFullYear(),
+String(hoje.getMonth()+1).padStart(2,'0'),
+String(hoje.getDate()).padStart(2,'0')
+].join('-')
+
+let focosAno=registros.length
+
+let focosHoje=registros.filter(i=>
+String(i.data_foco||'').slice(0,10)===hojeISO
+).length
+
+let ultimaData=registros.length
+?registros[0].data_foco
+:null
+
+let elFocosAno=document.getElementById('trmFocosAno')
+let elFocosHoje=document.getElementById('trmFocosHoje')
+let elUltimaData=document.getElementById('trmUltimaData')
+let elTotal=document.getElementById('trmTotalRegistros')
+
+if(elFocosAno)
+elFocosAno.textContent=focosAno.toLocaleString('pt-BR')
+
+if(elFocosHoje)
+elFocosHoje.textContent=focosHoje.toLocaleString('pt-BR')
+
+if(elUltimaData)
+elUltimaData.textContent=ultimaData
+?formatarDataBR(ultimaData)
+:'—'
+
+if(elTotal)
+elTotal.textContent=registros.length.toLocaleString('pt-BR')
+
+renderResumoTempoRealMunicipio(
+municipio,
+registros,
+focosHoje,
+ultimaData
+)
+
+renderGraficoTempoRealMunicipio(registros)
+
+renderFocosRecentesMunicipio(registros)
+
+}
+
+/*=========================================================
+RESUMO MUNICIPAL
+=========================================================*/
+
+function renderResumoTempoRealMunicipio(
+municipio,
+registros,
+focosHoje,
+ultimaData
+){
+
+let box=document.getElementById('trmResumoFocos')
+
+if(box){
+
+box.innerHTML=`
+
+<div class="linha-info">
+<span>🏛️ Município</span>
+<b>${municipio}</b>
+</div>
+
+<div class="linha-info">
+<span>🔥 Focos de Calor em 2026</span>
+<b>${registros.length.toLocaleString('pt-BR')}</b>
+</div>
+
+<div class="linha-info">
+<span>📅 Focos Hoje</span>
+<b>${focosHoje.toLocaleString('pt-BR')}</b>
+</div>
+
+<div class="linha-info">
+<span>🛰️ Fonte Oficial</span>
+<b>INPE</b>
+</div>
+
+`
+
+}
+
+let monitoramento=
+document.getElementById('trmMonitoramento')
+
+if(monitoramento){
+
+monitoramento.innerHTML=`
+
+<div class="linha-info">
+<span>🛰️ Fonte Oficial</span>
+<b>INPE</b>
+</div>
+
+<div class="linha-info">
+<span>📍 Município monitorado</span>
+<b>${municipio}</b>
+</div>
+
+<div class="linha-info">
+<span>📅 Última Data de Foco</span>
+<b>${ultimaData?formatarDataBR(ultimaData):'—'}</b>
+</div>
+
+<div class="linha-info">
+<span>🔥 Total acumulado 2026</span>
+<b>${registros.length.toLocaleString('pt-BR')}</b>
+</div>
+
+`
+
+}
+
+let sync=document.getElementById('trmSincronizacao')
+
+if(sync){
+
+let agora=new Date()
+
+sync.innerHTML=`
+
+<div class="linha-info">
+<span>📅 Última Data de Foco</span>
+<b>${ultimaData?formatarDataBR(ultimaData):'—'}</b>
+</div>
+
+<div class="linha-info">
+<span>🔄 Painel consultado em</span>
+<b>${agora.toLocaleString('pt-BR')}</b>
+</div>
+
+<div class="linha-info">
+<span>⚙️ Atualização</span>
+<b>AUTOMÁTICA</b>
+</div>
+
+`
+
+}
+
+}
+
+/*=========================================================
+GRÁFICO MENSAL MUNICIPAL
+=========================================================*/
+
+function renderGraficoTempoRealMunicipio(registros){
+
+let canvas=
+document.getElementById('graficoTempoRealMunicipio')
+
+if(!canvas)return
+
+let meses=Array(12).fill(0)
+
+registros.forEach(i=>{
+
+let data=String(i.data_foco||'')
+
+if(data.length>=7){
+
+let mes=Number(data.slice(5,7))-1
+
+if(mes>=0&&mes<12){
+meses[mes]++
+}
+
+}
+
+})
+
+if(graficoTempoRealMunicipio){
+graficoTempoRealMunicipio.destroy()
+}
+
+graficoTempoRealMunicipio=new Chart(
+canvas.getContext('2d'),
+{
+type:'bar',
+
+data:{
+labels:[
+'JAN','FEV','MAR','ABR',
+'MAI','JUN','JUL','AGO',
+'SET','OUT','NOV','DEZ'
+],
+
+datasets:[{
+label:'Focos de Calor',
+data:meses,
+backgroundColor:'#dc2626',
+borderRadius:5
+}]
+},
+
+options:{
+responsive:true,
+maintainAspectRatio:false,
+
+plugins:{
+legend:{
+display:false
+},
+
+datalabels:{
+anchor:'end',
+align:'top',
+font:{
+weight:'bold',
+size:11
+},
+color:'#111827',
+formatter:v=>v||''
+}
+},
+
+scales:{
+y:{
+beginAtZero:true,
+ticks:{
+precision:0
+}
+},
+
+x:{
+grid:{
+display:false
+}
+}
+}
+},
+
+plugins:[
+typeof ChartDataLabels!=='undefined'
+?ChartDataLabels
+:null
+].filter(Boolean)
+
+}
+)
+
+}
+
+/*=========================================================
+FOCOS RECENTES DO MUNICÍPIO
+=========================================================*/
+
+function renderFocosRecentesMunicipio(registros){
+
+let box=document.getElementById('trmFocosRecentes')
+
+if(!box)return
+
+let recentes=registros.slice(0,20)
+
+if(!recentes.length){
+
+box.innerHTML=`
+<div class="fonte-card">
+Nenhum foco registrado para o município no período.
+</div>
+`
+
+return
+}
+
+box.innerHTML=`
+
+<div style="overflow-x:auto">
+
+<table class="tabela-painel">
+
+<thead>
+<tr>
+<th>DATA</th>
+<th>HORA</th>
+<th>SATÉLITE</th>
+<th>LATITUDE</th>
+<th>LONGITUDE</th>
+<th>RISCO FOGO</th>
+<th>FRP</th>
+</tr>
+</thead>
+
+<tbody>
+
+${recentes.map(i=>`
+
+<tr>
+
+<td>
+${formatarDataBR(i.data_foco)}
+</td>
+
+<td>
+${i.hora||'-'}
+</td>
+
+<td>
+${i.satelite||'-'}
+</td>
+
+<td>
+${Number(i.latitude||0).toFixed(5)}
+</td>
+
+<td>
+${Number(i.longitude||0).toFixed(5)}
+</td>
+
+<td>
+${i.risco_fogo??'-'}
+</td>
+
+<td>
+${i.frp??'-'}
+</td>
+
+</tr>
+
+`).join('')}
+
+</tbody>
+
+</table>
+
+</div>
+
+`
+
+}
+
+/*=========================================================
+LIMPAR TEMPO REAL MUNICIPAL
+=========================================================*/
+
+function limparTempoRealMunicipio(){
+
+;[
+'trmFocosAno',
+'trmFocosHoje',
+'trmUltimaData',
+'trmTotalRegistros'
+].forEach(id=>{
+
+let el=document.getElementById(id)
+
+if(el)el.textContent='—'
+
+})
+
+;[
+'trmResumoFocos',
+'trmMonitoramento',
+'trmSincronizacao',
+'trmFocosRecentes'
+].forEach(id=>{
+
+let el=document.getElementById(id)
+
+if(el)el.innerHTML=''
+
+})
+
+if(graficoTempoRealMunicipio){
+graficoTempoRealMunicipio.destroy()
+graficoTempoRealMunicipio=null
+}
+
+}
+
