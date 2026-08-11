@@ -3405,9 +3405,9 @@ async function gerarPDFSumarioExecutivoMunicipal(municipio){
 const{jsPDF}=window.jspdf
 let doc=new jsPDF('l','mm','a4',true)
 let hoje=new Date()
-let ano=2026
+let ano=hoje.getFullYear()
 let dataInicial=`${ano}-01-01`
-let dataFinal=`${ano}-12-31`
+let dataFinal=formatarDataISOFocos(hoje)
 let municipioNormalizado=normalizarMunicipio(municipio)
 /*---------------------------------------------------------
 075.2 CARREGAMENTO DOS RECURSOS VISUAIS
@@ -3415,27 +3415,50 @@ let municipioNormalizado=normalizarMunicipio(municipio)
 let imgLogo=await toDataURL('assets/geojson/logotcero.png').catch(()=>null)
 let imgQueimadasOriginal=await toDataURL('assets/geojson/queimadas.png').catch(()=>null)
 /*---------------------------------------------------------
-075.3 CONSULTA DOS DADOS MUNICIPAIS — MESMA FONTE DO TEMPO REAL
+075.3 CONSULTA DOS DADOS MUNICIPAIS
 ---------------------------------------------------------*/
+async function buscarTodosFocosSumario(filtros=[]){
+let todos=[]
+let inicio=0
+let limite=1000
+while(true){
+let consulta=client.from('queimadas_focos_inpe').select('*').eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal)
+filtros.forEach(f=>{
+consulta=consulta.eq(f.campo,f.valor)
+})
+let{data,error}=await consulta.order('id',{ascending:true}).range(inicio,inicio+limite-1)
+if(error)return{data:[],error}
+let pagina=data||[]
+todos.push(...pagina)
+if(pagina.length<limite)break
+inicio+=limite
+}
+return{data:todos,error:null}
+}
 let[
-{data:focosMunicipio=[],error:erroFocosMunicipio},
-{data:focosRO=[],error:erroFocosRO},
+resultadoFocosMunicipio,
+resultadoFocosRO,
 {data:cadastros=[],error:erroCadastro},
 {data:heatmaps=[],error:erroHeatmap}
 ]=await Promise.all([
-client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').eq('municipio',municipio).gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('data_foco',{ascending:false}).order('data_hora',{ascending:false}),
-client.schema('queimadas').from('queimadas_focos_inpe').select('id,municipio,data_foco').eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal),
+buscarTodosFocosSumario([{campo:'municipio',valor:municipio}]),
+buscarTodosFocosSumario(),
 client.from('vw_queimadas_municipios_resposta').select('*'),
 client.from('queimadas_heatmap').select('*')
 ])
+let focosMunicipio=resultadoFocosMunicipio.data||[]
+let focosRO=resultadoFocosRO.data||[]
+let erroFocosMunicipio=resultadoFocosMunicipio.error
+let erroFocosRO=resultadoFocosRO.error
 if(erroFocosMunicipio)console.error('Sumário municipal focos:',erroFocosMunicipio)
-if(erroFocosRO)console.error('Sumário municipal focos RO:',erroFocosRO)
+if(erroFocosRO)console.error('Sumário focos RO:',erroFocosRO)
 if(erroCadastro)console.error('Sumário municipal cadastro:',erroCadastro)
 if(erroHeatmap)console.error('Sumário municipal IRIQ:',erroHeatmap)
-focosMunicipio=focosMunicipio||[]
-focosRO=focosRO||[]
 cadastros=cadastros||[]
 heatmaps=heatmaps||[]
+console.log('CONSULTA SUMÁRIO:',municipio)
+console.log('FOCOS MUNICÍPIO RETORNADOS:',focosMunicipio.length)
+console.log('FOCOS RO RETORNADOS:',focosRO.length)
 /*---------------------------------------------------------
 075.4 CONSOLIDAÇÃO DOS DADOS DO MUNICÍPIO
 ---------------------------------------------------------*/
@@ -3444,7 +3467,7 @@ let cadastroMunicipio=cadastros.find(i=>normalizarMunicipio(i.municipio)===munic
 let heatmapMunicipio=heatmaps.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)||{}
 let totalFocos=focos.length
 let totalFocosRO=focosRO.length
-console.log('SUMÁRIO MUNICIPAL:',municipio)
+console.log('MUNICÍPIO:',municipio)
 console.log('TOTAL MUNICÍPIO:',totalFocos)
 console.log('TOTAL RONDÔNIA:',totalFocosRO)
 /*---------------------------------------------------------
