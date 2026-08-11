@@ -3418,45 +3418,42 @@ let imgQueimadasOriginal=await toDataURL('assets/geojson/queimadas.png').catch((
 075.3 CONSULTA DOS DADOS MUNICIPAIS
 ---------------------------------------------------------*/
 let[
-{data:focosMunicipio=[],error:erroFocosMunicipio},
-{count:totalFocosROConsulta,error:erroFocosRO},
+resultadoFocos,
 {data:cadastros=[],error:erroCadastro},
 {data:heatmaps=[],error:erroHeatmap}
 ]=await Promise.all([
-client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').eq('municipio',municipio).gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('data_hora',{ascending:false}),
-client.schema('queimadas').from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal),
+buscarFocosTempoReal(dataInicial,dataFinal),
 client.from('vw_queimadas_municipios_resposta').select('*'),
 client.from('queimadas_heatmap').select('*')
 ])
-if(erroFocosMunicipio)console.error('075.3 Erro focos município:',erroFocosMunicipio)
-if(erroFocosRO)console.error('075.3 Erro total focos Rondônia:',erroFocosRO)
+let focosRO=resultadoFocos?.data||[]
+let erroFocos=resultadoFocos?.error||null
+if(erroFocos)console.error('075.3 Erro focos:',erroFocos)
 if(erroCadastro)console.error('075.3 Erro cadastro:',erroCadastro)
 if(erroHeatmap)console.error('075.3 Erro Heatmap:',erroHeatmap)
-focosMunicipio=focosMunicipio||[]
 cadastros=cadastros||[]
 heatmaps=heatmaps||[]
-console.log('075.3 MUNICÍPIO:',municipio)
-console.log('075.3 FOCOS MUNICÍPIO:',focosMunicipio.length)
-console.log('075.3 TOTAL RONDÔNIA:',totalFocosROConsulta)
 /*---------------------------------------------------------
 075.4 CONSOLIDAÇÃO DOS DADOS DO MUNICÍPIO
 ---------------------------------------------------------*/
-let focos=focosMunicipio
+let focos=focosRO.filter(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)
 let cadastroMunicipio=cadastros.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)||{}
 let heatmapMunicipio=heatmaps.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)||{}
 let totalFocos=focos.length
-let totalFocosRO=Number(totalFocosROConsulta||0)
-console.log('075.4 TOTAL FOCOS MUNICÍPIO:',totalFocos)
-console.log('075.4 TOTAL FOCOS RONDÔNIA:',totalFocosRO)
+let totalFocosRO=focosRO.length
+console.log('075 PDF MUNICÍPIO:',municipio)
+console.log('075 PDF MUNICÍPIO NORMALIZADO:',municipioNormalizado)
+console.log('075 PDF TOTAL RO:',totalFocosRO)
+console.log('075 PDF FOCOS MUNICÍPIO:',totalFocos)
 /*---------------------------------------------------------
 075.5 ORDENAÇÃO CRONOLÓGICA DOS FOCOS
 ---------------------------------------------------------*/
 let ordenarDataHora=(a,b)=>{
-let da=String(a.data_foco||'').slice(0,10)
-let db=String(b.data_foco||'').slice(0,10)
-let ha=String(a.data_hora||a.hora||'00:00:00')
-let hb=String(b.data_hora||b.hora||'00:00:00')
-return`${db} ${hb}`.localeCompare(`${da} ${ha}`)
+let dataA=String(a.data_foco||'').slice(0,10)
+let dataB=String(b.data_foco||'').slice(0,10)
+let horaA=String(a.data_hora||a.hora||'00:00:00').slice(-8)
+let horaB=String(b.data_hora||b.hora||'00:00:00').slice(-8)
+return`${dataB} ${horaB}`.localeCompare(`${dataA} ${horaA}`)
 }
 let focosOrdenados=[...focos].sort(ordenarDataHora)
 let ultimoFoco=focosOrdenados[0]||null
