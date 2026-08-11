@@ -3417,48 +3417,27 @@ let imgQueimadasOriginal=await toDataURL('assets/geojson/queimadas.png').catch((
 /*---------------------------------------------------------
 075.3 CONSULTA DOS DADOS MUNICIPAIS
 ---------------------------------------------------------*/
-async function buscarTodosFocosSumario(filtros=[]){
-let todos=[]
-let inicio=0
-let limite=1000
-while(true){
-let consulta=client.from('queimadas_focos_inpe').select('*').eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal)
-filtros.forEach(f=>{
-consulta=consulta.eq(f.campo,f.valor)
-})
-let{data,error}=await consulta.order('id',{ascending:true}).range(inicio,inicio+limite-1)
-if(error)return{data:[],error}
-let pagina=data||[]
-todos.push(...pagina)
-if(pagina.length<limite)break
-inicio+=limite
-}
-return{data:todos,error:null}
-}
 let[
-resultadoFocosMunicipio,
-resultadoFocosRO,
+{data:focosMunicipio=[],error:erroFocosMunicipio},
+{count:totalFocosROConsulta,error:erroFocosRO},
 {data:cadastros=[],error:erroCadastro},
 {data:heatmaps=[],error:erroHeatmap}
 ]=await Promise.all([
-buscarTodosFocosSumario([{campo:'municipio',valor:municipio}]),
-buscarTodosFocosSumario(),
+client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').eq('municipio',municipio).gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('data_hora',{ascending:false}),
+client.schema('queimadas').from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal),
 client.from('vw_queimadas_municipios_resposta').select('*'),
 client.from('queimadas_heatmap').select('*')
 ])
-let focosMunicipio=resultadoFocosMunicipio.data||[]
-let focosRO=resultadoFocosRO.data||[]
-let erroFocosMunicipio=resultadoFocosMunicipio.error
-let erroFocosRO=resultadoFocosRO.error
-if(erroFocosMunicipio)console.error('Sumário municipal focos:',erroFocosMunicipio)
-if(erroFocosRO)console.error('Sumário focos RO:',erroFocosRO)
-if(erroCadastro)console.error('Sumário municipal cadastro:',erroCadastro)
-if(erroHeatmap)console.error('Sumário municipal IRIQ:',erroHeatmap)
+if(erroFocosMunicipio)console.error('075.3 Erro focos município:',erroFocosMunicipio)
+if(erroFocosRO)console.error('075.3 Erro total focos Rondônia:',erroFocosRO)
+if(erroCadastro)console.error('075.3 Erro cadastro:',erroCadastro)
+if(erroHeatmap)console.error('075.3 Erro Heatmap:',erroHeatmap)
+focosMunicipio=focosMunicipio||[]
 cadastros=cadastros||[]
 heatmaps=heatmaps||[]
-console.log('CONSULTA SUMÁRIO:',municipio)
-console.log('FOCOS MUNICÍPIO RETORNADOS:',focosMunicipio.length)
-console.log('FOCOS RO RETORNADOS:',focosRO.length)
+console.log('075.3 MUNICÍPIO:',municipio)
+console.log('075.3 FOCOS MUNICÍPIO:',focosMunicipio.length)
+console.log('075.3 TOTAL RONDÔNIA:',totalFocosROConsulta)
 /*---------------------------------------------------------
 075.4 CONSOLIDAÇÃO DOS DADOS DO MUNICÍPIO
 ---------------------------------------------------------*/
@@ -3466,10 +3445,9 @@ let focos=focosMunicipio
 let cadastroMunicipio=cadastros.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)||{}
 let heatmapMunicipio=heatmaps.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)||{}
 let totalFocos=focos.length
-let totalFocosRO=focosRO.length
-console.log('MUNICÍPIO:',municipio)
-console.log('TOTAL MUNICÍPIO:',totalFocos)
-console.log('TOTAL RONDÔNIA:',totalFocosRO)
+let totalFocosRO=Number(totalFocosROConsulta||0)
+console.log('075.4 TOTAL FOCOS MUNICÍPIO:',totalFocos)
+console.log('075.4 TOTAL FOCOS RONDÔNIA:',totalFocosRO)
 /*---------------------------------------------------------
 075.5 ORDENAÇÃO CRONOLÓGICA DOS FOCOS
 ---------------------------------------------------------*/
