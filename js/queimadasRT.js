@@ -778,14 +778,72 @@ if(!img)rtAdicionarImagem(doc,'mapaRO',10,y+6,190,205)
 rtFonte(doc,'Fonte: TCE-RO • INPE • SEDAM • Base Cartográfica Estadual • OpenStreetMap')
 }
 /*=========================================================
-326 RT MAPA MUNICIPAL
+323 RT MAPA MUNICIPAL
 =========================================================*/
 async function rtMapaMunicipal(doc){
 rtCabecalhoPagina(doc,'ANEXO II - MAPA MUNICIPAL DOS PLANOS DE AÇÃO')
-let y=43
-y=rtTexto(doc,'O mapa municipal demonstra a situação dos 52 municípios quanto ao atendimento ao Ofício Circular n.16/2026/GABPRES/TCERO e à apresentação dos respectivos planos de ação.',y,9)
-rtAdicionarImagem(doc,'mapaMunicipalPlanos',10,y+6,190,205)
-rtFonte(doc,'Fonte: Municípios do Estado de Rondônia • TCE-RO')
+doc.setFont('helvetica','normal')
+doc.setFontSize(10)
+doc.setTextColor(51,65,85)
+let texto='O mapa municipal demonstra a situação dos 52 municípios quanto ao atendimento do Ofício Circular n.16/2026/GABPRES/TCERO e à apresentação dos respectivos Planos de Ação para prevenção e enfrentamento das queimadas e incêndios florestais.'
+doc.text(doc.splitTextToSize(texto,180),15,38)
+await mostrarAbaQueimadas('executivomunicipal')
+await new Promise(r=>setTimeout(r,1200))
+if(typeof mapaMunicipalPlanos!=='undefined'&&mapaMunicipalPlanos){
+try{
+mapaMunicipalPlanos.invalidateSize(true)
+if(typeof camadaMunicipiosPlanos!=='undefined'&&camadaMunicipiosPlanos){
+let bounds=camadaMunicipiosPlanos.getBounds()
+if(bounds&&bounds.isValid()){
+mapaMunicipalPlanos.fitBounds(bounds,{padding:[12,12],maxZoom:7})
+}
+}
+}catch(e){
+console.warn('Não foi possível reenquadrar o mapa municipal:',e)
+}
+}
+await new Promise(r=>setTimeout(r,1400))
+let img=await capturarElemento('mapaMunicipalPlanos')
+if(img){
+let props=doc.getImageProperties(img)
+let largura=180
+let altura=(props.height*largura)/props.width
+let alturaMaxima=165
+if(altura>alturaMaxima){
+altura=alturaMaxima
+largura=(props.width*altura)/props.height
+}
+let x=(210-largura)/2
+let y=58
+doc.setFillColor(248,250,252)
+doc.setDrawColor(203,213,225)
+doc.roundedRect(x-2,y-2,largura+4,altura+4,3,3,'FD')
+doc.addImage(img,'PNG',x,y,largura,altura,undefined,'FAST')
+let yLegenda=y+altura+9
+doc.setFont('helvetica','bold')
+doc.setFontSize(7)
+doc.setTextColor(15,23,42)
+doc.text('SITUAÇÃO DOS MUNICÍPIOS',15,yLegenda)
+let legenda=[
+['PLANO DE AÇÃO',[22,163,74]],
+['DILAÇÃO DE PRAZO',[250,204,21]],
+['SEM RESPOSTA',[239,68,68]]
+]
+let lx=15
+legenda.forEach(item=>{
+doc.setFillColor(...item[1])
+doc.roundedRect(lx,yLegenda+4,5,5,1,1,'F')
+doc.setFont('helvetica','bold')
+doc.setFontSize(6.5)
+doc.setTextColor(17,24,39)
+doc.text(item[0],lx+8,yLegenda+8)
+lx+=55
+})
+}
+doc.setFont('helvetica','italic')
+doc.setFontSize(7)
+doc.setTextColor(100,116,139)
+doc.text('Fonte: Municípios do Estado de Rondônia • TCE-RO',15,273)
 }
 /*=========================================================
 327 RT MONITORAMENTO 4D
