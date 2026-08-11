@@ -441,6 +441,7 @@ if(elTotal)elTotal.textContent=registros.length.toLocaleString('pt-BR')
 await renderResumoTempoRealMunicipio(municipio,registros,focosHoje,ultimaData)
 renderGraficoTempoRealMunicipio(registros)
 renderFocosRecentesMunicipio(registros)
+renderMaioresFocosMunicipio(registros)
 }
 
 /*=========================================================
@@ -785,3 +786,71 @@ graficoTempoRealMunicipio=null
 
 }
 
+/*=========================================================
+MAIORES FOCOS DO MUNICÍPIO EM 2026
+=========================================================*/
+function renderMaioresFocosMunicipio(registros){
+let box=document.getElementById('trmMaioresFocos')
+if(!box)return
+let maiores=[...(registros||[])]
+.filter(i=>i.frp!==null&&i.frp!==undefined&&Number.isFinite(Number(i.frp)))
+.sort((a,b)=>Number(b.frp||0)-Number(a.frp||0))
+.slice(0,10)
+if(!maiores.length){
+box.innerHTML=`
+<div class="fonte-card">
+Nenhum registro com valor de FRP disponível para este município em 2026.
+</div>
+`
+return
+}
+box.innerHTML=`
+<div class="trm-tabela-wrapper">
+<table class="tabela-painel trm-tabela-focos">
+<thead>
+<tr>
+<th>POS.</th>
+<th>DATA</th>
+<th>HORA</th>
+<th>SATÉLITE</th>
+<th>LATITUDE</th>
+<th>LONGITUDE</th>
+<th>RISCO FOGO</th>
+<th>FRP</th>
+<th>LOCALIZAÇÃO</th>
+</tr>
+</thead>
+<tbody>
+${maiores.map((i,index)=>{
+let lat=Number(i.latitude)
+let lon=Number(i.longitude)
+let coordenadasValidas=Number.isFinite(lat)&&Number.isFinite(lon)
+let urlEarth=coordenadasValidas
+?`https://earth.google.com/web/search/${encodeURIComponent(lat+','+lon)}`
+:''
+let frp=Number(i.frp||0)
+return`
+<tr>
+<td><b>${index+1}º</b></td>
+<td><b>${formatarDataBR(i.data_foco)}</b></td>
+<td>${i.hora||'-'}</td>
+<td>${i.satelite||'-'}</td>
+<td class="trm-coordenada">${coordenadasValidas?lat.toFixed(5):'-'}</td>
+<td class="trm-coordenada">${coordenadasValidas?lon.toFixed(5):'-'}</td>
+<td>${i.risco_fogo??'-'}</td>
+<td><b>${frp.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}</b></td>
+<td>
+${coordenadasValidas?`
+<a class="btn-google-earth" href="${urlEarth}" target="_blank" rel="noopener noreferrer" title="Abrir localização do foco no Google Earth">
+🌎 VER LOCAL
+</a>
+`:'-'}
+</td>
+</tr>
+`
+}).join('')}
+</tbody>
+</table>
+</div>
+`
+}
