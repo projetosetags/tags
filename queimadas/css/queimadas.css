@@ -513,3 +513,119 @@ background:linear-gradient(135deg,#166534,#15803d);
 transform:translateY(-1px);
 box-shadow:0 5px 12px rgba(22,163,74,.35);
 }
+
+/*=========================================================
+TEMPO REAL MUNICÍPIO
+=========================================================*/
+#abaTempoRealMunicipio{
+font-family:Arial,Helvetica,sans-serif;
+color:#0f172a;
+}
+#abaTempoRealMunicipio .kpi-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:0;
+margin:14px 0;
+background:#fff;
+border-radius:16px;
+overflow:hidden;
+box-shadow:0 8px 22px rgba(15,23,42,.08);
+}
+#abaTempoRealMunicipio .kpi-card{
+min-height:105px;
+padding:22px 24px;
+background:linear-gradient(135deg,#fff,#f8fafc);
+border:1px solid #dbe4ef;
+border-left:6px solid #2563eb;
+display:flex;
+flex-direction:column;
+justify-content:center;
+}
+#abaTempoRealMunicipio .kpi-num{
+font-size:32px;
+line-height:1;
+font-weight:950;
+color:#071b3d;
+letter-spacing:-1px;
+margin-bottom:10px;
+}
+#abaTempoRealMunicipio .kpi-label{
+font-size:11px;
+font-weight:900;
+letter-spacing:1px;
+color:#526782;
+text-transform:uppercase;
+}
+#selectMunicipioTempoReal{
+width:100%;
+max-width:520px;
+height:46px;
+padding:0 14px;
+border:2px solid #dbe3ee;
+border-radius:9px;
+background:#fff;
+color:#0f172a;
+font-size:14px;
+font-weight:800;
+outline:none;
+cursor:pointer;
+}
+#selectMunicipioTempoReal:focus{
+border-color:#2563eb;
+box-shadow:0 0 0 3px rgba(37,99,235,.10);
+}
+.trm-resumo-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+}
+.trm-resumo-item{
+min-height:75px;
+padding:14px;
+border:1px solid #dbe3ee;
+border-radius:10px;
+background:linear-gradient(135deg,#fff,#f8fafc);
+display:flex;
+flex-direction:column;
+justify-content:center;
+}
+.trm-resumo-label{
+font-size:10px;
+font-weight:900;
+letter-spacing:.6px;
+color:#64748b;
+text-transform:uppercase;
+margin-bottom:6px;
+}
+.trm-resumo-valor{
+font-size:19px;
+font-weight:950;
+color:#0f172a;
+}
+.trm-iriq{
+background:linear-gradient(135deg,#eff6ff,#fff);
+border:2px solid #2563eb;
+}
+.trm-iriq .trm-resumo-valor{
+font-size:27px;
+color:#0d3d8c;
+}
+.trm-classificacao{
+font-size:11px;
+font-weight:950;
+margin-top:4px;
+}
+@media(max-width:900px){
+#abaTempoRealMunicipio .kpi-grid{
+grid-template-columns:repeat(2,1fr);
+}
+.trm-resumo-grid{
+grid-template-columns:repeat(2,1fr);
+}
+}
+@media(max-width:550px){
+#abaTempoRealMunicipio .kpi-grid,
+.trm-resumo-grid{
+grid-template-columns:1fr;
+}
+}
