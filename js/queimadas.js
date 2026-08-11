@@ -2397,114 +2397,536 @@ Baseado em MAPBIOMAS, PRODES, CHAP, Plano SEDAM, POTIF e Plano Unificado TCE-RO.
 051 QUEIMADAS FUNCTION IASUGERIRACOES
 =========================================================*/
 async function iaSugerirAcoes(){
+
 let box=document.getElementById('painelIASugestoes')
 if(!box)return
-let{data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
+
+let{data=[]}=await client
+.from('vw_queimadas_ranking_estadual')
+.select('*')
+
 let top=[...data]
-.sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0))
+.sort((a,b)=>
+Number(b.indice_final||b.iriq||0)-
+Number(a.indice_final||a.iriq||0)
+)
 .slice(0,5)
+
+/*=========================================================
+051.1 DIAGNÓSTICO POR FAIXA DE IRIQ
+=========================================================*/
 function diagnostico(iriq){
+
 if(iriq>=75)return{
 nivel:'CRÍTICO',
 cor:'#dc2626',
 prioridade:'IMEDIATA',
 tecnico:'Criticidade integrada elevada. Recomenda-se tratamento prioritário no acompanhamento concomitante, com intensificação da vigilância territorial, validação das estruturas de prevenção e avaliação da capacidade municipal de resposta.',
-simples:'O município está entre os que exigem maior atenção. É necessário conferir se as equipes, equipamentos, planejamento e mecanismos de resposta estão preparados antes do agravamento da situação.',
+simples:'O município está entre os que exigem maior atenção. É necessário conferir se equipes, equipamentos, planejamento e mecanismos de resposta estão preparados antes do agravamento da situação.',
 providencias:[
-'Intensificar o monitoramento de focos de calor e sua evolução espacial e temporal.',
-'Verificar a execução efetiva do Plano de Ação Municipal e respectivas evidências.',
-'Avaliar disponibilidade de brigadistas, equipamentos, veículos, insumos e logística operacional.',
-'Verificar eventual incidência ou proximidade de focos em UCs, TIs, APPs e áreas ambientalmente sensíveis.',
-'Promover articulação preventiva entre Município, SEDAM, CBMRO, Defesa Civil e demais instituições responsáveis.',
-'Registrar evidências e alterações relevantes para subsidiar o acompanhamento concomitante do TCERO.'
+{
+texto:'Intensificar o monitoramento dos focos de calor, avaliando distribuição espacial, frequência, recorrência e evolução temporal.',
+tipo:'vermelho'
+},
+{
+texto:'Verificar a execução efetiva do Plano de Ação Municipal, confrontando as ações previstas com as evidências documentais e operacionais apresentadas.',
+tipo:'vermelho'
+},
+{
+texto:'Avaliar a disponibilidade operacional de brigadistas, equipes, veículos, equipamentos, insumos e logística para resposta a incêndios.',
+tipo:'vermelho'
+},
+{
+texto:'Verificar eventual incidência ou proximidade de focos em Unidades de Conservação, Terras Indígenas, APPs e demais áreas ambientalmente sensíveis.',
+tipo:'laranja'
+},
+{
+texto:'Promover articulação preventiva entre Município, SEDAM, CBMRO, Defesa Civil e demais instituições responsáveis.',
+tipo:'laranja'
+},
+{
+texto:'Registrar evidências, alterações relevantes e providências adotadas para subsidiar o acompanhamento concomitante do TCE-RO.',
+tipo:'verde'
+}
 ]
 }
+
 if(iriq>=50)return{
 nivel:'ALTO',
 cor:'#f97316',
 prioridade:'ELEVADA',
-tecnico:'O índice demonstra pressão territorial relevante e recomenda monitoramento intensificado, com atenção à evolução dos fatores que compõem a criticidade municipal.',
+tecnico:'O índice demonstra pressão territorial relevante e recomenda monitoramento intensificado, com atenção à evolução dos fatores que compõem a criticidade municipal e à capacidade operacional de prevenção e resposta.',
 simples:'O município ainda não está na faixa mais grave, mas apresenta sinais suficientes para justificar acompanhamento próximo e ações preventivas reforçadas.',
 providencias:[
-'Acompanhar periodicamente a evolução dos focos de calor.',
-'Verificar cumprimento das ações preventivas previstas no planejamento municipal.',
-'Confirmar capacidade de mobilização das equipes de resposta.',
-'Analisar áreas historicamente afetadas por queimadas e desmatamento.',
-'Verificar necessidade de reforço operacional antes da elevação da criticidade.'
+{
+texto:'Acompanhar de forma intensificada a evolução dos focos de calor e a tendência dos indicadores municipais.',
+tipo:'laranja'
+},
+{
+texto:'Verificar o cumprimento das ações preventivas previstas no planejamento municipal.',
+tipo:'laranja'
+},
+{
+texto:'Confirmar a capacidade de mobilização das equipes e estruturas de resposta.',
+tipo:'laranja'
+},
+{
+texto:'Analisar áreas historicamente afetadas por queimadas, incêndios florestais e desmatamento.',
+tipo:'laranja'
+},
+{
+texto:'Manter registro atualizado das evidências e das providências municipais para acompanhamento do TCE-RO.',
+tipo:'verde'
+}
 ]
 }
+
 if(iriq>=25)return{
 nivel:'MODERADO',
 cor:'#eab308',
 prioridade:'PREVENTIVA',
-tecnico:'O município apresenta criticidade intermediária. A situação recomenda acompanhamento preventivo e observação da tendência dos indicadores para identificação precoce de agravamento.',
-simples:'A situação merece atenção, mas ainda permite atuação predominantemente preventiva. O objetivo é impedir que os indicadores evoluam para níveis mais graves.',
+tecnico:'O município apresenta criticidade intermediária. A situação recomenda acompanhamento preventivo e observação sistemática da tendência dos indicadores para identificação precoce de eventual agravamento.',
+simples:'A situação merece atenção, mas ainda permite atuação predominantemente preventiva. O objetivo é evitar que o crescimento dos focos ou outras vulnerabilidades façam o município avançar para níveis mais graves.',
 providencias:[
-'Manter monitoramento periódico dos indicadores.',
-'Confirmar atualização do planejamento municipal.',
-'Orientar ações preventivas em áreas historicamente vulneráveis.',
-'Acompanhar eventual crescimento dos focos de calor.',
-'Reavaliar a prioridade caso os indicadores apresentem tendência de aumento.'
+{
+texto:'Manter monitoramento periódico dos indicadores de risco e dos focos de calor registrados no território municipal.',
+tipo:'laranja'
+},
+{
+texto:'Confirmar a atualização do planejamento municipal e a execução das medidas preventivas previstas.',
+tipo:'laranja'
+},
+{
+texto:'Orientar ações preventivas nas áreas historicamente vulneráveis ou com recorrência de focos.',
+tipo:'laranja'
+},
+{
+texto:'Acompanhar eventual crescimento dos focos de calor e alterações relevantes na distribuição territorial.',
+tipo:'verde'
+},
+{
+texto:'Reavaliar a prioridade municipal caso os indicadores apresentem tendência consistente de aumento.',
+tipo:'verde'
+}
 ]
 }
+
 return{
 nivel:'BAIXO',
 cor:'#16a34a',
 prioridade:'ROTINA',
-tecnico:'Os indicadores disponíveis apontam menor criticidade relativa no cenário estadual, sem afastar a necessidade de vigilância e manutenção das medidas preventivas.',
-simples:'O município apresenta situação comparativamente mais favorável, mas deve continuar acompanhando os dados e mantendo a prevenção.',
+tecnico:'Os indicadores disponíveis apontam menor criticidade relativa no cenário estadual, sem afastar a necessidade de vigilância permanente e manutenção das medidas preventivas.',
+simples:'O cenário atual permite acompanhamento de rotina. Isso não significa ausência de risco. Qualquer crescimento relevante dos focos ou mudança dos indicadores deve provocar nova avaliação.',
 providencias:[
-'Manter monitoramento de rotina.',
-'Preservar capacidade mínima de resposta.',
-'Manter atualizado o Plano de Ação.',
-'Registrar alterações relevantes nos indicadores.',
-'Reavaliar a classificação diante de mudança do cenário.'
+{
+texto:'Manter acompanhamento regular dos focos de calor e dos indicadores territoriais.',
+tipo:'verde'
+},
+{
+texto:'Verificar periodicamente a manutenção das ações preventivas previstas pelo município.',
+tipo:'verde'
+},
+{
+texto:'Preservar canais de comunicação com os órgãos responsáveis pela prevenção e resposta.',
+tipo:'verde'
+},
+{
+texto:'Reavaliar a classificação diante de aumento relevante dos focos ou alteração dos fatores de risco.',
+tipo:'laranja'
+}
 ]
 }
+
 }
+
+/*=========================================================
+051.2 CORES DAS PROVIDÊNCIAS
+=========================================================*/
+function corProvidencia(tipo){
+
+if(tipo==='vermelho')return{
+cor:'#dc2626',
+fundo:'#fef2f2',
+borda:'#fecaca'
+}
+
+if(tipo==='laranja')return{
+cor:'#f97316',
+fundo:'#fff7ed',
+borda:'#fed7aa'
+}
+
+return{
+cor:'#16a34a',
+fundo:'#f0fdf4',
+borda:'#bbf7d0'
+}
+
+}
+
+/*=========================================================
+051.3 RENDERIZAÇÃO
+=========================================================*/
 box.innerHTML=`
-<div style="margin-bottom:10px;padding:10px 12px;background:#eff6ff;border-left:5px solid #0d3d8c;border-radius:8px;font-size:10px;line-height:1.6;color:#334155">
-<b style="color:#0d3d8c">ORIENTAÇÃO PARA LEITURA</b><br>
+
+<div style="
+margin-bottom:18px;
+padding:16px 18px;
+background:#eff6ff;
+border-left:6px solid #0d3d8c;
+border-radius:8px;
+font-size:15px;
+font-weight:800;
+line-height:1.6;
+color:#334155">
+
+<b style="
+font-size:16px;
+font-weight:900;
+color:#0d3d8c">
+ORIENTAÇÃO PARA LEITURA
+</b>
+
+<br>
+
 As recomendações abaixo são produzidas automaticamente a partir da posição relativa dos municípios no IRIQ. Elas funcionam como apoio à priorização do acompanhamento e não substituem avaliação técnica, inspeção, fiscalização ou decisão administrativa.
+
 </div>
+
 ${top.map((i,idx)=>{
+
 let iriq=Number(i.indice_final||i.iriq||0)
 let d=diagnostico(iriq)
+
 return`
-<div style="margin-bottom:12px;background:#fff;border:1px solid #e2e8f0;border-left:6px solid ${d.cor};border-radius:10px;overflow:hidden">
-<div style="padding:10px 13px;background:#f8fafc;display:flex;justify-content:space-between;align-items:center;gap:10px">
+
+<div style="
+margin-bottom:18px;
+background:#fff;
+border:1px solid #e2e8f0;
+border-left:7px solid ${d.cor};
+border-radius:10px;
+overflow:hidden">
+
+<div style="
+padding:15px 18px;
+background:#f8fafc;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px">
+
 <div>
-<span style="font-size:10px;font-weight:900;color:#64748b">${idx+1}ª PRIORIDADE</span>
-<div style="font-size:15px;font-weight:900;color:#0f172a;margin-top:2px">${i.municipio||'-'}</div>
+
+<span style="
+font-size:14px;
+font-weight:900;
+color:#64748b">
+${idx+1}ª PRIORIDADE
+</span>
+
+<div style="
+font-size:22px;
+font-weight:900;
+color:#0f172a;
+margin-top:3px">
+${i.municipio||'-'}
 </div>
+
+</div>
+
 <div style="text-align:right">
-<div style="font-size:19px;font-weight:900;color:${d.cor}">IRIQ ${iriq.toFixed(2).replace('.',',')}</div>
-<div style="font-size:9px;font-weight:900;color:${d.cor}">${d.nivel} • PRIORIDADE ${d.prioridade}</div>
+
+<div style="
+font-size:25px;
+font-weight:900;
+color:${d.cor}">
+IRIQ ${iriq.toFixed(2).replace('.',',')}
 </div>
+
+<div style="
+font-size:14px;
+font-weight:900;
+color:${d.cor}">
+${d.nivel} • PRIORIDADE ${d.prioridade}
 </div>
-<div style="padding:12px 14px">
-<div style="font-size:10px;line-height:1.6;color:#334155">
-<b>🔬 FUNDAMENTO TÉCNICO</b><br>
+
+</div>
+
+</div>
+
+<div style="padding:17px 19px">
+
+<div style="
+font-size:15px;
+font-weight:900;
+line-height:1.6;
+color:#0f172a">
+
+🔬 FUNDAMENTO TÉCNICO
+
+</div>
+
+<div style="
+font-size:15px;
+font-weight:800;
+line-height:1.6;
+color:#334155;
+margin-top:4px;
+margin-bottom:14px">
+
 ${d.tecnico}
+
 </div>
-<div style="margin-top:10px;padding:9px 10px;background:#f8fafc;border-radius:7px;font-size:10px;line-height:1.6;color:#334155">
-<b>💬 EM LINGUAGEM SIMPLES</b><br>
+
+<div style="
+padding:12px 14px;
+background:#f8fafc;
+border-radius:7px;
+font-size:15px;
+font-weight:800;
+line-height:1.6;
+color:#334155">
+
+<b style="
+font-size:15px;
+font-weight:900;
+color:#0f172a">
+
+💬 EM LINGUAGEM SIMPLES
+
+</b>
+
+<br>
+
 ${d.simples}
+
 </div>
-<div style="margin-top:11px;font-size:10px;font-weight:900;color:#0f172a">📋 PROVIDÊNCIAS SUGERIDAS</div>
-<div style="margin-top:6px;display:grid;gap:5px">
-${d.providencias.map((p,n)=>`
-<div style="display:flex;gap:7px;align-items:flex-start;font-size:10px;line-height:1.45;color:#334155">
-<span style="min-width:18px;height:18px;border-radius:50%;background:${d.cor};color:#fff;text-align:center;line-height:18px;font-size:9px;font-weight:900">${n+1}</span>
-<span>${p}</span>
-</div>`).join('')}
+
+<div style="
+margin-top:15px;
+margin-bottom:9px;
+font-size:16px;
+font-weight:900;
+color:#0f172a">
+
+📋 PROVIDÊNCIAS SUGERIDAS
+
 </div>
+
+<div style="
+display:grid;
+gap:7px">
+
+${d.providencias.map((p,n)=>{
+
+let cp=corProvidencia(p.tipo)
+
+return`
+
+<div style="
+display:flex;
+gap:10px;
+align-items:flex-start;
+padding:9px 11px;
+background:${cp.fundo};
+border:1px solid ${cp.borda};
+border-radius:7px">
+
+<span style="
+min-width:38px;
+height:29px;
+border-radius:15px;
+background:${cp.cor};
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:14px;
+font-weight:900">
+
+${idx+1}.${n+1}
+
+</span>
+
+<span style="
+font-size:15px;
+font-weight:900;
+line-height:1.5;
+color:#334155">
+
+${p.texto}
+
+</span>
+
 </div>
-</div>`
+
+`
+
 }).join('')}
-<div style="padding:9px 11px;background:#f8fafc;border-left:4px solid #64748b;font-size:9px;line-height:1.5;color:#64748b">
-<b>Uso técnico:</b> as sugestões constituem apoio automatizado à auditoria e ao monitoramento concomitante. A priorização deve ser confrontada com dados atualizados do INPE, MAPBIOMAS, PRODES, informações municipais, evidências documentais e avaliação das equipes técnicas.
-</div>`
+
+</div>
+
+</div>
+
+</div>
+
+`
+
+}).join('')}
+
+/*=========================================================
+LEGENDA GERAL — APÓS O 5º MUNICÍPIO
+=========================================================*/
+
+<div style="
+margin-top:22px;
+border:1px solid #cbd5e1;
+border-radius:10px;
+overflow:hidden;
+background:#fff">
+
+<div style="
+background:#0d3d8c;
+padding:13px 18px;
+font-size:18px;
+font-weight:900;
+color:#fff">
+
+LEGENDA GERAL DAS PROVIDÊNCIAS SUGERIDAS
+
+</div>
+
+<div style="
+display:grid;
+grid-template-columns:repeat(3,1fr)">
+
+<div style="
+padding:18px;
+background:#fef2f2;
+border-right:1px solid #e2e8f0">
+
+<div style="
+font-size:17px;
+font-weight:900;
+color:#dc2626;
+margin-bottom:7px">
+
+🔴 VERMELHO — PROVIDÊNCIA IMEDIATA
+
+</div>
+
+<div style="
+font-size:15px;
+font-weight:800;
+line-height:1.6">
+
+Medida de maior urgência. Indica necessidade de verificação ou atuação prioritária diante de situação que possa exigir resposta rápida ou intervenção preventiva.
+
+</div>
+
+</div>
+
+<div style="
+padding:18px;
+background:#fff7ed;
+border-right:1px solid #e2e8f0">
+
+<div style="
+font-size:17px;
+font-weight:900;
+color:#f97316;
+margin-bottom:7px">
+
+🟠 LARANJA — PROVIDÊNCIA PREVENTIVA
+
+</div>
+
+<div style="
+font-size:15px;
+font-weight:800;
+line-height:1.6">
+
+Medida destinada a evitar agravamento do cenário. Indica necessidade de acompanhamento reforçado, verificação preventiva e atenção à evolução dos indicadores.
+
+</div>
+
+</div>
+
+<div style="
+padding:18px;
+background:#f0fdf4">
+
+<div style="
+font-size:17px;
+font-weight:900;
+color:#16a34a;
+margin-bottom:7px">
+
+🟢 VERDE — ROTINA E MANUTENÇÃO
+
+</div>
+
+<div style="
+font-size:15px;
+font-weight:800;
+line-height:1.6">
+
+Medida de acompanhamento contínuo, registro e manutenção. Não representa ausência de risco, mas situação compatível com tratamento ordinário enquanto não houver agravamento.
+
+</div>
+
+</div>
+
+</div>
+
+<div style="
+padding:15px 18px;
+background:#f8fafc;
+border-top:1px solid #e2e8f0;
+font-size:15px;
+font-weight:800;
+line-height:1.6;
+color:#334155">
+
+<b style="
+font-weight:900;
+color:#0f172a">
+
+REGRA DE LEITURA:
+
+</b>
+
+a cor da providência representa sua urgência operacional e não substitui a classificação do IRIQ do município.
+
+</div>
+
+</div>
+
+<div style="
+margin-top:14px;
+padding:13px 15px;
+background:#f8fafc;
+border-left:5px solid #64748b;
+font-size:14px;
+font-weight:800;
+line-height:1.6;
+color:#64748b">
+
+<b style="
+font-weight:900;
+color:#334155">
+
+USO TÉCNICO:
+
+</b>
+
+as sugestões constituem apoio automatizado à auditoria e ao monitoramento concomitante. A priorização deve ser confrontada com dados atualizados do INPE, MAPBIOMAS, PRODES, informações municipais, evidências documentais e avaliação das equipes técnicas.
+
+</div>
+
+`
+
 }
 /*=========================================================
 052 QUEIMADAS FUNCTION RENDERDASHBOARDCHAP
