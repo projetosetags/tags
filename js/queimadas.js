@@ -3295,62 +3295,159 @@ SUMÁRIO EXECUTIVO MUNICIPAL - PDF
 =========================================================*/
 async function gerarPDFSumarioExecutivoMunicipal(municipio){
 const{jsPDF}=window.jspdf
-let doc=new jsPDF('p','mm','a4',true)
+let doc=new jsPDF('l','mm','a4',true)
 let hoje=new Date()
 let ano=hoje.getFullYear()
 let dataInicial=`${ano}-01-01`
 let dataFinal=formatarDataISOFocos(hoje)
-let municipioSemAcento=String(municipio||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()
-let variantesMunicipio=[municipio,municipioSemAcento,municipio.toUpperCase(),municipioSemAcento.toUpperCase()]
+
+let municipioNormalizado=normalizarMunicipio(municipio)
+
 let imgLogo=await toDataURL('assets/geojson/logotcero.png').catch(()=>null)
 let imgQueimadasOriginal=await toDataURL('assets/geojson/queimadas.png').catch(()=>null)
+
 let[
-{data:focosMunicipio=[],error:erroFocos},
-{data:cadastroMunicipio,error:erroCadastro},
-{data:heatmapMunicipio,error:erroHeatmap},
-{count:totalFocosRO,error:erroTotalRO}
+{data:focosRO=[],error:erroFocos},
+{data:cadastros=[],error:erroCadastro},
+{data:heatmaps=[],error:erroHeatmap}
 ]=await Promise.all([
-client.from('queimadas_focos_inpe').select('*').eq('uf','RO').in('municipio',variantesMunicipio).gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('data_hora',{ascending:false}),
-client.from('vw_queimadas_municipios_resposta').select('*').eq('municipio',municipio).maybeSingle(),
-client.from('queimadas_heatmap').select('municipio,iriq,risco,classificacao,focos').eq('municipio',municipio).maybeSingle(),
-client.from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal)
+client
+.from('queimadas_focos_inpe')
+.select('*')
+.eq('uf','RO')
+.gte('data_foco',dataInicial)
+.lte('data_foco',dataFinal),
+client
+.from('vw_queimadas_municipios_resposta')
+.select('*'),
+client
+.from('queimadas_heatmap')
+.select('*')
 ])
+
 if(erroFocos)console.error('Sumário municipal focos:',erroFocos)
 if(erroCadastro)console.error('Sumário municipal cadastro:',erroCadastro)
 if(erroHeatmap)console.error('Sumário municipal IRIQ:',erroHeatmap)
-if(erroTotalRO)console.error('Sumário municipal total RO:',erroTotalRO)
-let focos=focosMunicipio||[]
+
+focosRO=focosRO||[]
+cadastros=cadastros||[]
+heatmaps=heatmaps||[]
+
+let focos=focosRO.filter(i=>
+normalizarMunicipio(i.municipio)===municipioNormalizado
+)
+
+let cadastroMunicipio=cadastros.find(i=>
+normalizarMunicipio(i.municipio)===municipioNormalizado
+)||{}
+
+let heatmapMunicipio=heatmaps.find(i=>
+normalizarMunicipio(i.municipio)===municipioNormalizado
+)||{}
+
 let totalFocos=focos.length
-let ultimaData=focos.length?focos[0].data_foco:null
-let ultimoSatelite=focos.length?focos[0].satelite:'-'
-let iriq=Number(heatmapMunicipio?.iriq||0)
-let risco=Number(heatmapMunicipio?.risco||0)
-let classificacao=String(heatmapMunicipio?.classificacao||faixaIRIQ(iriq)).toUpperCase()
-let participacao=Number(totalFocosRO||0)>0?(totalFocos/Number(totalFocosRO))*100:0
-let situacao=String(cadastroMunicipio?.classificacao_ia||'-')
-let documento=cadastroMunicipio?.lnumerodocenviado||cadastroMunicipio?.llnumerodocenviado||'-'
-let recebimento=cadastroMunicipio?.ldatarecebimentodoc?formatarDataBR(cadastroMunicipio.ldatarecebimentodoc):'-'
-let observacao=cadastroMunicipio?.observacao||'-'
-let ranking=[]
-try{
-let{data:r=[]}=await client.from('queimadas_heatmap').select('municipio,iriq').order('iriq',{ascending:false})
-ranking=r||[]
-}catch(e){}
-let posicao=ranking.findIndex(i=>normalizarMunicipio(i.municipio)===normalizarMunicipio(municipio))
+let totalFocosRO=focosRO.length
+
+let ordenarDataHora=(a,b)=>{
+let da=String(a.data_foco||'')
+let db=String(b.data_foco||'')
+let ha=String(a.data_hora||a.hora||'00:00:00')
+let hb=String(b.data_hora||b.hora||'00:00:00')
+return(`${db} ${hb}`).localeCompare(`${da} ${ha}`)
+}
+
+let focosOrdenados=[...focos].sort(ordenarDataHora)
+
+let ultimoFoco=focosOrdenados[0]||null
+let ultimaData=ultimoFoco?.data_foco||null
+let ultimoSatelite=ultimoFoco?.satelite||'-'
+
+let iriq=Number(
+heatmapMunicipio?.iriq||
+heatmapMunicipio?.indice_final||
+0
+)
+
+let risco=Number(
+heatmapMunicipio?.risco||
+heatmapMunicipio?.nivel_risco||
+0
+)
+
+let classificacao=String(
+heatmapMunicipio?.classificacao||
+faixaIRIQ(iriq)
+).toUpperCase()
+
+let participacao=totalFocosRO>0
+?(totalFocos/totalFocosRO)*100
+:0
+
+let situacao=String(
+cadastroMunicipio?.classificacao_ia||
+cadastroMunicipio?.situacao||
+cadastroMunicipio?.status||
+'-'
+).toUpperCase()
+
+let documento=
+cadastroMunicipio?.lnumerodocenviado||
+cadastroMunicipio?.llnumerodocenviado||
+cadastroMunicipio?.numero_documento||
+'-'
+
+let recebimento=
+cadastroMunicipio?.ldatarecebimentodoc
+?formatarDataBR(cadastroMunicipio.ldatarecebimentodoc)
+:'-'
+
+let observacao=
+cadastroMunicipio?.observacao||
+cadastroMunicipio?.observacoes||
+'-'
+
+let ranking=[...heatmaps]
+.sort((a,b)=>
+Number(b.iriq||b.indice_final||0)-
+Number(a.iriq||a.indice_final||0)
+)
+
+let posicao=ranking.findIndex(i=>
+normalizarMunicipio(i.municipio)===municipioNormalizado
+)
+
 posicao=posicao>=0?posicao+1:'-'
-let maiores=[...focos].filter(i=>i.frp!==null&&i.frp!==undefined&&Number.isFinite(Number(i.frp))).sort((a,b)=>Number(b.frp||0)-Number(a.frp||0)).slice(0,5)
-let recentes=[...focos].sort((a,b)=>new Date(b.data_hora||b.data_foco)-new Date(a.data_hora||a.data_foco)).slice(0,5)
+
+let maiores=[...focos]
+.filter(i=>
+i.frp!==null&&
+i.frp!==undefined&&
+Number.isFinite(Number(i.frp))
+)
+.sort((a,b)=>Number(b.frp||0)-Number(a.frp||0))
+.slice(0,5)
+
+let recentes=[...focos]
+.sort(ordenarDataHora)
+.slice(0,5)
+
 async function recortarImagem(dataURL){
 if(!dataURL)return null
+
 return await new Promise(resolve=>{
+
 let img=new Image()
+
 img.onload=()=>{
-let proporcaoDestino=105/50
+
+let proporcaoDestino=150/35
 let proporcaoOrigem=img.naturalWidth/img.naturalHeight
+
 let sx=0
 let sy=0
 let sw=img.naturalWidth
 let sh=img.naturalHeight
+
 if(proporcaoOrigem>proporcaoDestino){
 sw=img.naturalHeight*proporcaoDestino
 sx=(img.naturalWidth-sw)/2
@@ -3358,213 +3455,875 @@ sx=(img.naturalWidth-sw)/2
 sh=img.naturalWidth/proporcaoDestino
 sy=(img.naturalHeight-sh)/2
 }
+
 let canvas=document.createElement('canvas')
-canvas.width=1600
-canvas.height=Math.round(1600/proporcaoDestino)
+
+canvas.width=1800
+canvas.height=Math.round(1800/proporcaoDestino)
+
 let ctx=canvas.getContext('2d')
-ctx.drawImage(img,sx,sy,sw,sh,0,0,canvas.width,canvas.height)
+
+ctx.drawImage(
+img,
+sx,sy,sw,sh,
+0,0,
+canvas.width,
+canvas.height
+)
+
 resolve(canvas.toDataURL('image/jpeg',.96))
+
 }
+
 img.onerror=()=>resolve(null)
 img.src=dataURL
+
 })
 }
+
 let imgQueimadas=await recortarImagem(imgQueimadasOriginal)
+
 function textoPreto(){
-doc.setTextColor(17,24,39)
+doc.setTextColor(10,25,55)
 }
+
 function faixaMunicipal(v){
 v=Number(v||0)
+
 if(v>=75)return'CRÍTICO'
 if(v>=50)return'ALTO'
 if(v>=25)return'MODERADO'
+
 return'BAIXO'
 }
+
 function corMunicipal(v){
 v=Number(v||0)
-if(v>=75)return[220,38,38]
-if(v>=50)return[234,88,12]
-if(v>=25)return[245,158,11]
-return[22,163,74]
+
+if(v>=75)return[239,25,25]
+if(v>=50)return[249,115,22]
+if(v>=25)return[234,179,8]
+
+return[22,101,52]
 }
+
+function corSituacao(texto){
+
+let s=String(texto||'').toUpperCase()
+
+if(s.includes('SEM RESPOSTA'))return[220,38,38]
+
+if(
+s.includes('DILAÇÃO')||
+s.includes('DILACAO')
+)return[22,101,52]
+
+if(
+s.includes('PLANO')||
+s.includes('ATENDIDO')
+)return[22,101,52]
+
+return[15,23,42]
+}
+
 function faixaTituloMunicipal(texto,x,y,w){
-doc.setFillColor(13,61,140)
-doc.roundedRect(x,y,w,7,1.5,1.5,'F')
+
+doc.setFillColor(5,56,139)
+
+doc.roundedRect(
+x,y,w,4.5,
+1,1,
+'F'
+)
+
 doc.setFont('helvetica','bold')
-doc.setFontSize(7.2)
+doc.setFontSize(5.8)
 doc.setTextColor(255,255,255)
-doc.text(texto,x+w/2,y+4.9,{align:'center'})
+
+doc.text(
+texto,
+x+w/2,
+y+3.2,
+{align:'center'}
+)
+
 }
-function kpiMunicipal(x,y,w,titulo,valor,cor,sub=''){
+
+function kpiMunicipal(
+x,
+y,
+w,
+titulo,
+valor,
+cor,
+sub=''
+){
+
 doc.setFillColor(255,255,255)
-doc.setDrawColor(219,226,234)
-doc.roundedRect(x,y,w,27,2.2,2.2,'FD')
-doc.setFont('helvetica','bold')
-doc.setFontSize(6.3)
-textoPreto()
-let tituloLinhas=doc.splitTextToSize(titulo,w-5)
-doc.text(tituloLinhas,x+w/2,y+6,{align:'center'})
-doc.setFontSize(15)
-doc.setTextColor(...cor)
-doc.text(String(valor),x+w/2,y+18,{align:'center'})
-if(sub){
+doc.setDrawColor(202,213,226)
+
+doc.roundedRect(
+x,y,w,23,
+2,2,
+'FD'
+)
+
 doc.setFont('helvetica','bold')
 doc.setFontSize(5.5)
+
 textoPreto()
-doc.text(doc.splitTextToSize(sub,w-5),x+w/2,y+24,{align:'center'})
+
+doc.text(
+titulo,
+x+w/2,
+y+5,
+{align:'center'}
+)
+
+doc.setFontSize(
+String(valor).length>12?10.5:14
+)
+
+doc.setTextColor(...cor)
+
+doc.text(
+String(valor),
+x+w/2,
+y+14.5,
+{align:'center'}
+)
+
+if(sub){
+
+doc.setFont('helvetica','bold')
+doc.setFontSize(5)
+
+textoPreto()
+
+let linhas=doc.splitTextToSize(
+String(sub),
+w-4
+)
+
+doc.text(
+linhas,
+x+w/2,
+y+20,
+{align:'center'}
+)
+
 }
+
 }
-/* CABEÇALHO */
-if(imgQueimadas)doc.addImage(imgQueimadas,'JPEG',0,0,105,46)
-doc.setFillColor(10,25,55)
-doc.rect(105,0,105,46,'F')
-if(imgLogo)doc.addImage(imgLogo,'PNG',8,5,38,13)
+
+/*=========================================================
+CABEÇALHO
+=========================================================*/
+
+if(imgQueimadas){
+
+doc.addImage(
+imgQueimadas,
+'JPEG',
+2,
+2,
+148,
+34
+)
+
+}
+
+doc.setFillColor(4,28,72)
+
+doc.rect(
+150,
+2,
+145,
+34,
+'F'
+)
+
+if(imgLogo){
+
+doc.addImage(
+imgLogo,
+'PNG',
+7,
+5,
+46,
+15
+)
+
+}
+
 doc.setFont('helvetica','bold')
 doc.setTextColor(255,255,255)
-doc.setFontSize(18)
-doc.text('SUMÁRIO EXECUTIVO',112,14)
-doc.setFontSize(14)
-doc.text('MUNICIPAL',112,23)
-doc.setFontSize(10.5)
+
+doc.setFontSize(15)
+
+doc.text(
+'SUMÁRIO EXECUTIVO',
+160,
+12
+)
+
+doc.setFontSize(11)
+
+doc.text(
+'MUNICIPAL',
+160,
+19
+)
+
+doc.setFontSize(13)
+
 doc.setTextColor(163,230,53)
-doc.text(municipio.toUpperCase(),112,32)
-doc.setFontSize(6.8)
-doc.setTextColor(255,255,255)
-doc.text(`PCe 0501/2026 • Atualização: ${hoje.toLocaleDateString('pt-BR')}`,112,40)
-/* TEXTO DE APOIO */
-doc.setFillColor(248,250,252)
-doc.setDrawColor(219,226,234)
-doc.roundedRect(5,50,200,14,2,2,'FD')
-doc.setFont('helvetica','bold')
-doc.setFontSize(6.8)
-textoPreto()
-doc.text(doc.splitTextToSize(`Tribunal de Contas do Estado de Rondônia — leitura executiva do Município de ${municipio} para acompanhamento das queimadas e incêndios florestais.`,188),105,56.5,{align:'center'})
-/* KPIs */
-kpiMunicipal(5,68,38,'FOCOS EM 2026',totalFocos.toLocaleString('pt-BR'),[220,38,38],`${participacao.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}% de RO`)
-kpiMunicipal(46,68,38,'IRIQ MUNICIPAL',iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),corMunicipal(iriq),faixaMunicipal(iriq))
-kpiMunicipal(87,68,38,'POSIÇÃO IRIQ',posicao,[13,61,140],'ranking estadual')
-kpiMunicipal(128,68,38,'ÚLTIMO FOCO',ultimaData?formatarDataBR(ultimaData):'-',[15,23,42],ultimoSatelite||'-')
-kpiMunicipal(169,68,36,'SITUAÇÃO',situacao,[22,163,74],recebimento)
-/* GRÁFICO MENSAL */
-faixaTituloMunicipal(`EVOLUÇÃO MENSAL DOS FOCOS (${ano})`,5,99,95)
-doc.setFillColor(255,255,255)
-doc.setDrawColor(219,226,234)
-doc.roundedRect(5,106,95,47,2,2,'FD')
-let valores=Array(12).fill(0)
-focos.forEach(i=>{
-let m=Number(String(i.data_foco||'').slice(5,7))
-if(m>=1&&m<=12)valores[m-1]++
-})
-let max=Math.max(...valores,1)
-let meses=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ']
-let base=143
-let top=111
-let area=base-top
-let bw=7
-valores.forEach((v,i)=>{
-let bh=v?Math.max(1,(v/max)*(area-7)):0
-doc.setFillColor(220,38,38)
-if(bh)doc.roundedRect(10+i*bw,base-bh,5.5,bh,.5,.5,'F')
-doc.setFont('helvetica','bold')
-doc.setFontSize(4.8)
-textoPreto()
-if(v>0)doc.text(String(v),12.7+i*bw,base-bh-1,{align:'center'})
-doc.setFontSize(4.5)
-doc.text(meses[i],12.7+i*bw,149,{align:'center'})
-})
-/* RISCO / IRIQ */
-faixaTituloMunicipal('IRIQ E RISCO MUNICIPAL',105,99,100)
-doc.setFillColor(255,255,255)
-doc.setDrawColor(219,226,234)
-doc.roundedRect(105,106,100,47,2,2,'FD')
-doc.setFont('helvetica','bold')
-doc.setFontSize(7.5)
-textoPreto()
-doc.text('IRIQ',122,116,{align:'center'})
-doc.setFontSize(20)
-doc.setTextColor(...corMunicipal(iriq))
-doc.text(iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),122,130,{align:'center'})
-doc.setFontSize(6.2)
-doc.text(faixaMunicipal(iriq),122,138,{align:'center'})
-doc.setDrawColor(220,225,232)
-doc.line(145,109,145,147)
-doc.setFontSize(7.5)
-textoPreto()
-doc.text('RISCO',168,116,{align:'center'})
-doc.setFontSize(19)
-doc.setTextColor(...corMunicipal(risco))
-doc.text(risco.toLocaleString('pt-BR',{maximumFractionDigits:2}),168,130,{align:'center'})
-doc.setFontSize(6.2)
-doc.text(classificacao,168,138,{align:'center'})
+
+doc.text(
+String(municipio).toUpperCase(),
+160,
+27
+)
+
 doc.setFontSize(5.8)
+
+doc.setTextColor(255,255,255)
+
+doc.text(
+`PCe 0501/2026  •  Atualização: ${hoje.toLocaleDateString('pt-BR')}`,
+160,
+33
+)
+
+/*=========================================================
+TEXTO INSTITUCIONAL
+=========================================================*/
+
+doc.setFillColor(248,250,252)
+doc.setDrawColor(202,213,226)
+
+doc.roundedRect(
+6,
+38,
+285,
+15,
+2,
+2,
+'FD'
+)
+
+doc.setFont('helvetica','bold')
+doc.setFontSize(8.5)
+
 textoPreto()
-doc.text(`Posição estadual: ${posicao}º`,168,146,{align:'center'})
-/* SITUAÇÃO DOCUMENTAL */
-faixaTituloMunicipal('SITUAÇÃO DO MUNICÍPIO NO ACOMPANHAMENTO',5,157,200)
+
+let textoApoio=
+`Tribunal de Contas do Estado de Rondônia — leitura executiva do Município de ${municipio} para acompanhamento das queimadas e incêndios florestais.`
+
+doc.text(
+doc.splitTextToSize(textoApoio,270),
+148.5,
+44.5,
+{align:'center'}
+)
+
+/*=========================================================
+KPIs
+=========================================================*/
+
+let yKpi=55
+
+kpiMunicipal(
+6,yKpi,55,
+'FOCOS EM 2026',
+totalFocos.toLocaleString('pt-BR'),
+[239,25,25],
+`${participacao.toLocaleString('pt-BR',{
+minimumFractionDigits:1,
+maximumFractionDigits:1
+})}% de RO`
+)
+
+kpiMunicipal(
+63,yKpi,58,
+'IRIQ MUNICIPAL',
+iriq.toLocaleString('pt-BR',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}),
+corMunicipal(iriq),
+faixaMunicipal(iriq)
+)
+
+kpiMunicipal(
+123,yKpi,52,
+'POSIÇÃO IRIQ',
+posicao,
+[4,28,72],
+'ranking estadual'
+)
+
+kpiMunicipal(
+177,yKpi,57,
+'ÚLTIMO FOCO',
+ultimaData?formatarDataBR(ultimaData):'-',
+[4,28,72],
+ultimoSatelite
+)
+
+kpiMunicipal(
+236,yKpi,55,
+'SITUAÇÃO',
+situacao,
+corSituacao(situacao),
+documento!=='-'?documento:recebimento
+)
+
+/*=========================================================
+GRÁFICO MENSAL
+=========================================================*/
+
+faixaTituloMunicipal(
+`EVOLUÇÃO MENSAL DOS FOCOS (${ano})`,
+6,
+80,
+143
+)
+
 doc.setFillColor(255,255,255)
-doc.setDrawColor(219,226,234)
-doc.roundedRect(5,164,200,35,2,2,'FD')
+doc.setDrawColor(202,213,226)
+
+doc.roundedRect(
+6,
+84.5,
+143,
+35,
+2,
+2,
+'FD'
+)
+
+let valores=Array(12).fill(0)
+
+focos.forEach(i=>{
+
+let m=Number(
+String(i.data_foco||'').slice(5,7)
+)
+
+if(m>=1&&m<=12){
+valores[m-1]++
+}
+
+})
+
+let max=Math.max(...valores,1)
+
+let meses=[
+'JAN','FEV','MAR','ABR',
+'MAI','JUN','JUL','AGO',
+'SET','OUT','NOV','DEZ'
+]
+
+let base=113
+let topo=89
+let area=base-topo
+
+let inicioX=12
+let passo=10.8
+let larguraBarra=6.5
+
+valores.forEach((v,i)=>{
+
+let bh=v
+?Math.max(1,(v/max)*(area-5))
+:0
+
+doc.setFillColor(239,25,25)
+
+if(bh){
+
+doc.rect(
+inicioX+(i*passo),
+base-bh,
+larguraBarra,
+bh,
+'F'
+)
+
+}
+
+doc.setFont('helvetica','bold')
+doc.setFontSize(4.7)
+
+textoPreto()
+
+if(v>0){
+
+doc.text(
+String(v),
+inicioX+(i*passo)+(larguraBarra/2),
+base-bh-1,
+{align:'center'}
+)
+
+}
+
+doc.setFontSize(4.3)
+
+doc.text(
+meses[i],
+inicioX+(i*passo)+(larguraBarra/2),
+117,
+{align:'center'}
+)
+
+})
+
+/*=========================================================
+IRIQ E RISCO
+=========================================================*/
+
+faixaTituloMunicipal(
+'IRIQ E RISCO MUNICIPAL',
+153,
+80,
+138
+)
+
+doc.setFillColor(255,255,255)
+doc.setDrawColor(202,213,226)
+
+doc.roundedRect(
+153,
+84.5,
+138,
+35,
+2,
+2,
+'FD'
+)
+
+let centroIRIQ=188
+let centroRisco=257
+
 doc.setFont('helvetica','bold')
 doc.setFontSize(6.5)
+
 textoPreto()
-doc.text(`Situação: ${situacao}`,10,172)
-doc.text(`Documento: ${documento}`,10,181)
-doc.text(`Recebimento: ${recebimento}`,105,181)
-doc.setFont('helvetica','normal')
+
+doc.text(
+'IRIQ',
+centroIRIQ,
+91
+)
+
+doc.setFontSize(17)
+
+doc.setTextColor(
+...corMunicipal(iriq)
+)
+
+doc.text(
+iriq.toLocaleString('pt-BR',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}),
+centroIRIQ,
+102,
+{align:'center'}
+)
+
+doc.setFontSize(6)
+
+doc.text(
+faixaMunicipal(iriq),
+centroIRIQ,
+109,
+{align:'center'}
+)
+
+doc.setDrawColor(210,218,228)
+
+doc.line(
+222,
+87,
+222,
+116
+)
+
+doc.setFontSize(6.5)
+
+textoPreto()
+
+doc.text(
+'RISCO',
+centroRisco,
+91,
+{align:'center'}
+)
+
+doc.setFontSize(17)
+
+doc.setTextColor(
+...corMunicipal(risco)
+)
+
+doc.text(
+risco.toLocaleString('pt-BR',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}),
+centroRisco,
+102,
+{align:'center'}
+)
+
+doc.setFontSize(6)
+
+doc.text(
+classificacao,
+centroRisco,
+109,
+{align:'center'}
+)
+
+doc.setFontSize(5.3)
+
+textoPreto()
+
+doc.text(
+`Posição estadual: ${posicao}${posicao!=='-'?'º':''}`,
+centroRisco,
+116,
+{align:'center'}
+)
+
+/*=========================================================
+SITUAÇÃO DO MUNICÍPIO
+=========================================================*/
+
+faixaTituloMunicipal(
+'SITUAÇÃO DO MUNICÍPIO NO ACOMPANHAMENTO',
+6,
+122,
+285
+)
+
+doc.setFillColor(255,255,255)
+doc.setDrawColor(202,213,226)
+
+doc.roundedRect(
+6,
+126.5,
+285,
+20,
+2,
+2,
+'FD'
+)
+
+doc.setFont('helvetica','bold')
 doc.setFontSize(5.8)
-doc.text(doc.splitTextToSize(`Observação: ${observacao}`,188),10,190)
-/* MAIORES FOCOS */
-faixaTituloMunicipal('5 MAIORES FOCOS DE 2026 — FRP',5,203,98)
+
+textoPreto()
+
+doc.text(
+'Situação:',
+18,
+132.5
+)
+
+doc.setTextColor(
+...corSituacao(situacao)
+)
+
+doc.text(
+situacao,
+36,
+132.5
+)
+
+textoPreto()
+
+doc.text(
+`Recebimento: ${recebimento}`,
+128,
+132.5
+)
+
+doc.text(
+`Documento: ${documento}`,
+18,
+138.5
+)
+
+doc.setFont('helvetica','normal')
+doc.setFontSize(5.2)
+
+doc.text(
+doc.splitTextToSize(
+`Observação: ${observacao}`,
+260
+),
+18,
+144
+)
+
+/*=========================================================
+5 MAIORES FOCOS
+=========================================================*/
+
+faixaTituloMunicipal(
+'5 MAIORES FOCOS DE 2026 — FRP',
+6,
+149,
+137
+)
+
 doc.autoTable({
-startY:210,
-margin:{left:5,right:107},
-head:[['POS','DATA','SATÉLITE','FRP']],
+
+startY:153.5,
+
+margin:{
+left:6,
+right:154
+},
+
+tableWidth:137,
+
+head:[
+[
+'POS',
+'DATA',
+'SATÉLITE',
+'FRP'
+]
+],
+
 body:maiores.map((i,idx)=>[
 idx+1,
 formatarDataBR(i.data_foco),
 i.satelite||'-',
-Number(i.frp||0).toLocaleString('pt-BR',{maximumFractionDigits:1})
+Number(i.frp||0).toLocaleString(
+'pt-BR',
+{
+minimumFractionDigits:1,
+maximumFractionDigits:1
+}
+)
 ]),
-styles:{fontSize:6.1,cellPadding:1.8,textColor:[17,24,39],fontStyle:'bold'},
-headStyles:{fillColor:[13,61,140],textColor:[255,255,255],fontStyle:'bold',fontSize:6.2},
-alternateRowStyles:{fillColor:[248,250,252]}
+
+styles:{
+fontSize:5.3,
+cellPadding:1.15,
+textColor:[17,24,39],
+fontStyle:'bold',
+halign:'center',
+valign:'middle'
+},
+
+headStyles:{
+fillColor:[5,56,139],
+textColor:[255,255,255],
+fontStyle:'bold',
+fontSize:5.2
+},
+
+alternateRowStyles:{
+fillColor:[248,250,252]
+},
+
+columnStyles:{
+0:{cellWidth:13},
+1:{cellWidth:37},
+2:{cellWidth:50},
+3:{cellWidth:37}
+}
+
 })
-/* FOCOS RECENTES */
-faixaTituloMunicipal('5 FOCOS MAIS RECENTES',107,203,98)
+
+/*=========================================================
+5 FOCOS MAIS RECENTES
+=========================================================*/
+
+faixaTituloMunicipal(
+'5 FOCOS MAIS RECENTES',
+148,
+149,
+143
+)
+
 doc.autoTable({
-startY:210,
-margin:{left:107,right:5},
-head:[['DATA','HORA','SATÉLITE','FRP']],
+
+startY:153.5,
+
+margin:{
+left:148,
+right:6
+},
+
+tableWidth:143,
+
+head:[
+[
+'DATA',
+'HORA',
+'SATÉLITE',
+'FRP'
+]
+],
+
 body:recentes.map(i=>[
+
 formatarDataBR(i.data_foco),
-i.hora||'-',
+
+String(
+i.data_hora||
+i.hora||
+'-'
+).slice(0,8),
+
 i.satelite||'-',
-i.frp??'-'
+
+i.frp!==null&&i.frp!==undefined
+?Number(i.frp).toLocaleString(
+'pt-BR',
+{
+minimumFractionDigits:1,
+maximumFractionDigits:1
+}
+)
+:'-'
+
 ]),
-styles:{fontSize:6.1,cellPadding:1.8,textColor:[17,24,39],fontStyle:'bold'},
-headStyles:{fillColor:[13,61,140],textColor:[255,255,255],fontStyle:'bold',fontSize:6.2},
-alternateRowStyles:{fillColor:[248,250,252]}
+
+styles:{
+fontSize:5.3,
+cellPadding:1.15,
+textColor:[17,24,39],
+fontStyle:'bold',
+halign:'center',
+valign:'middle'
+},
+
+headStyles:{
+fillColor:[5,56,139],
+textColor:[255,255,255],
+fontStyle:'bold',
+fontSize:5.2
+},
+
+alternateRowStyles:{
+fillColor:[248,250,252]
+},
+
+columnStyles:{
+0:{cellWidth:38},
+1:{cellWidth:28},
+2:{cellWidth:48},
+3:{cellWidth:29}
+}
+
 })
-/* CONCLUSÃO */
-doc.setFillColor(13,61,140)
-doc.roundedRect(13,249,184,33,2.5,2.5,'F')
+
+/*=========================================================
+CONCLUSÃO EXECUTIVA
+=========================================================*/
+
+doc.setFillColor(5,56,139)
+
+doc.roundedRect(
+6,
+181,
+285,
+18,
+2.5,
+2.5,
+'F'
+)
+
 doc.setFont('helvetica','bold')
-doc.setFontSize(8.5)
-doc.setTextColor(255,255,255)
-doc.text('CONCLUSÃO EXECUTIVA',20,258)
-doc.setFont('helvetica','normal')
-doc.setFontSize(6.5)
-let conclusao=`O Município de ${municipio} apresenta IRIQ ${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, classificado como ${faixaMunicipal(iriq)}, ocupando a posição ${posicao} no ranking estadual. Foram registrados ${totalFocos.toLocaleString('pt-BR')} focos de calor em ${ano}, equivalentes a ${participacao.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}% dos registros de Rondônia. A leitura integrada recomenda acompanhamento proporcional à criticidade territorial, à concentração de focos e à capacidade de resposta do município.`
-doc.text(doc.splitTextToSize(conclusao,170),20,266)
-/* RODAPÉ */
-doc.setFont('helvetica','italic')
-doc.setFontSize(5.8)
+doc.setFontSize(7.5)
+
+doc.setTextColor(
+255,255,255
+)
+
+doc.text(
+'CONCLUSÃO EXECUTIVA',
+13,
+187
+)
+
+doc.setFont(
+'helvetica',
+'normal'
+)
+
+doc.setFontSize(5.2)
+
+let conclusao=
+`O Município de ${municipio} apresenta IRIQ ${iriq.toLocaleString(
+'pt-BR',
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+)}, classificado como ${faixaMunicipal(iriq)}, ocupando a posição ${posicao} no ranking estadual. Foram registrados ${totalFocos.toLocaleString('pt-BR')} focos de calor em ${ano}, equivalentes a ${participacao.toLocaleString(
+'pt-BR',
+{
+minimumFractionDigits:1,
+maximumFractionDigits:1
+}
+)}% dos registros de Rondônia. A leitura integrada recomenda acompanhamento proporcional à criticidade territorial, à concentração de focos e à capacidade de resposta do município.`
+
+doc.text(
+doc.splitTextToSize(
+conclusao,
+268
+),
+13,
+192
+)
+
+/*=========================================================
+RODAPÉ
+=========================================================*/
+
+doc.setFont(
+'helvetica',
+'normal'
+)
+
+doc.setFontSize(4.8)
+
 textoPreto()
-doc.text('Fontes: INPE • IRIQ • Heatmap Estadual • Municípios de Rondônia • TCE-RO',5,291)
-doc.setFont('helvetica','bold')
-doc.setFontSize(6)
-doc.text('PÁGINA 1 DE 1',205,291,{align:'right'})
-doc.save(`Sumario_Executivo_Municipal_${municipio.replace(/\s+/g,'_')}_${ano}.pdf`)
+
+doc.text(
+'Fontes: INPE • IRIQ • Heatmap Estadual • Municípios de Rondônia • TCE-RO',
+7,
+207
+)
+
+doc.setFont(
+'helvetica',
+'bold'
+)
+
+doc.setFontSize(5)
+
+doc.text(
+'PÁGINA 1 DE 1',
+290,
+207,
+{align:'right'}
+)
+
+doc.save(
+`Sumario_Executivo_Municipal_${municipio.replace(/\s+/g,'_')}_${ano}.pdf`
+)
+
 }
 /*=========================================================
 SUMÁRIO EXECUTIVO MUNICIPAL - AUDITORIA
