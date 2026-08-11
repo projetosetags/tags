@@ -549,35 +549,223 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 008 SALA DE SITUAÇÃO
 =========================================================-->
 <section id="abaSituacao" class="abaQueimadas hidden">
+
 <div class="painelTitulo">🚨 SITUAÇÃO E GOVERNANÇA</div>
+
 <div class="situacaoGridPrincipal">
+
 <div class="cardExecutivo situacaoBox">
 <h2>📊 SITUAÇÃO ESTADUAL</h2>
 <div id="painelSalaSituacaoEstadual"></div>
-<div class="fonteSituacao">Fonte: INPE Programa Queimadas • PRODES • MapBiomas • IRIQ/TCE-RO</div>
+<div class="fonteSituacao">
+Fonte: INPE Programa Queimadas • PRODES • MapBiomas • IRIQ/TCE-RO
 </div>
+</div>
+
 <div class="cardExecutivo situacaoBox">
+
 <h2>🤖 IA-CHAP</h2>
+
 <div id="painelTopIAChap"></div>
-<div class="infoPainel">
-<details>
-<summary>Como interpretar o IA-CHAP?</summary>
-<p>O IA-CHAP utiliza como referência o Modelo de Competência Organizacional CHAP e a metodologia M-RAIG instituída pela Resolução n. 463/2026/TCE-RO.</p>
-<p><b>C</b> = Conhecimento • diagnóstico baseado em dados, evidências e informações verificáveis.</p>
-<p><b>H</b> = Habilidade • planejamento, estratégias, métodos e ações.</p>
-<p><b>A</b> = Atitude • execução, monitoramento e prestação de contas.</p>
-<p><b>P</b> = Propósito • resultados, impactos e geração de valor público.</p>
-<p><b>Quanto maior o Score IA-CHAP, maior a prioridade de acompanhamento pelo TCE-RO.</b></p>
-</details>
+
+<div class="chapMetodologiaBox">
+
+<div class="chapMetodologiaCabecalho" onclick="toggleMetodologiaCHAP()">
+<div>
+<span id="chapToggle" class="chapToggle">−</span>
+<strong>COMO INTERPRETAR E UTILIZAR O IA-CHAP</strong>
 </div>
-<div class="fonteSituacao">Fonte: Modelo CHAP • Metodologia M-RAIG • Resolução n. 463/2026/TCE-RO</div>
+<span id="chapAcao" class="chapAcao">OCULTAR</span>
+</div>
+
+<div id="chapMetodologiaConteudo" class="chapMetodologiaConteudo">
+
+<div class="chapIntroducao">
+<strong>MODELO CHAP</strong>
+<p>
+O IA-CHAP utiliza como referência o Modelo de Competência Organizacional CHAP e a metodologia M-RAIG instituída pela Resolução n. 463/2026/TCE-RO. A metodologia estrutura a análise em quatro dimensões complementares — Conhecimento, Habilidade, Atitude e Propósito — permitindo organizar informações, avaliar a capacidade de atuação e apoiar a priorização do acompanhamento pelo Tribunal de Contas.
+</p>
+</div>
+
+<div class="chapDimensoes">
+
+<div class="chapDimensao">
+<div class="chapLetra">C</div>
+<div>
+<strong>CONHECIMENTO</strong>
+<p>
+Representa a capacidade de conhecer e compreender adequadamente a situação analisada. Envolve diagnóstico baseado em dados, informações verificáveis, evidências, indicadores, registros históricos e demais elementos necessários à compreensão do problema.
+</p>
+<p>
+<b>Na prática:</b> busca verificar se existem informações suficientes e confiáveis para compreender o cenário e fundamentar decisões.
+</p>
 </div>
 </div>
+
+<div class="chapDimensao">
+<div class="chapLetra">H</div>
+<div>
+<strong>HABILIDADE</strong>
+<p>
+Representa a capacidade de transformar conhecimento em planejamento e estratégia. Abrange métodos, procedimentos, organização, instrumentos de gestão e definição das ações necessárias ao enfrentamento da situação identificada.
+</p>
+<p>
+<b>Na prática:</b> avalia se existe planejamento adequado e capacidade técnica e organizacional para atuar.
+</p>
+</div>
+</div>
+
+<div class="chapDimensao">
+<div class="chapLetra">A</div>
+<div>
+<strong>ATITUDE</strong>
+<p>
+Representa a passagem do planejamento para a execução. Considera a realização efetiva das ações, o monitoramento, a adoção das providências necessárias, a produção de evidências e a prestação de contas dos resultados alcançados.
+</p>
+<p>
+<b>Na prática:</b> verifica se aquilo que foi diagnosticado e planejado está efetivamente sendo executado.
+</p>
+</div>
+</div>
+
+<div class="chapDimensao">
+<div class="chapLetra">P</div>
+<div>
+<strong>PROPÓSITO</strong>
+<p>
+Representa a orientação da atuação para resultados, impactos e geração de valor público. Busca verificar se conhecimento, planejamento e execução convergem para a solução ou mitigação do problema e para a entrega de resultados relevantes à sociedade.
+</p>
+<p>
+<b>Na prática:</b> responde se as ações realizadas estão produzindo resultado e contribuindo para a finalidade pública pretendida.
+</p>
+</div>
+</div>
+
+</div>
+
+<div class="chapFluxoTitulo">
+LÓGICA DE APLICAÇÃO
+</div>
+
+<div class="chapFluxo">
+
+<div>
+<span>1</span>
+<strong>CONHECER</strong>
+<small>Diagnóstico e evidências</small>
+</div>
+
+<div class="chapSeta">→</div>
+
+<div>
+<span>2</span>
+<strong>PLANEJAR</strong>
+<small>Estratégias e métodos</small>
+</div>
+
+<div class="chapSeta">→</div>
+
+<div>
+<span>3</span>
+<strong>EXECUTAR</strong>
+<small>Ações e monitoramento</small>
+</div>
+
+<div class="chapSeta">→</div>
+
+<div>
+<span>4</span>
+<strong>GERAR VALOR</strong>
+<small>Resultados e impactos</small>
+</div>
+
+</div>
+
+<div class="chapCalculo">
+
+<strong>COMO É FORMADO O SCORE IA-CHAP</strong>
+
+<p>
+O Score IA-CHAP apresentado no painel corresponde à consolidação dos critérios utilizados pelo sistema para avaliar as dimensões do modelo. A pontuação permite estabelecer uma referência comparativa entre os objetos monitorados e apoiar sua ordenação segundo a necessidade relativa de acompanhamento.
+</p>
+
+<div class="chapFormula">
+SCORE IA-CHAP = avaliação integrada de C + H + A + P
+</div>
+
+<p>
+Quanto maior a pontuação resultante, maior é a prioridade relativa atribuída pelo modelo para fins de acompanhamento. O Score deve ser interpretado como instrumento de apoio à inteligência e à priorização, e não como conclusão automática de auditoria.
+</p>
+
+</div>
+
+<div class="chapUso">
+
+<strong>COMO UTILIZAR O RESULTADO NO TCE-RO</strong>
+
+<div class="chapUsoGrid">
+
+<div>
+<b>1. COMPARAR</b>
+<p>Comparar os Scores dos objetos ou municípios avaliados e identificar aqueles que apresentam maior prioridade relativa.</p>
+</div>
+
+<div>
+<b>2. PRIORIZAR</b>
+<p>Direcionar a atenção técnica para situações que, segundo o modelo, demandam acompanhamento mais próximo.</p>
+</div>
+
+<div>
+<b>3. CONFRONTAR</b>
+<p>Confrontar o resultado automatizado com indicadores, documentos, evidências, dados oficiais e informações obtidas no acompanhamento.</p>
+</div>
+
+<div>
+<b>4. REAVALIAR</b>
+<p>Atualizar a leitura sempre que novas informações modificarem o diagnóstico, o planejamento, a execução ou os resultados observados.</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="chapLinguagemSimples">
+<strong>💬 EM LINGUAGEM SIMPLES</strong>
+<p>
+O CHAP verifica uma sequência lógica: <b>sabemos exatamente qual é o problema? Sabemos como enfrentá-lo? Estamos realmente fazendo o que foi planejado? E as ações estão produzindo o resultado esperado?</b>
+</p>
+<p>
+O IA-CHAP utiliza essa lógica para auxiliar o TCE-RO a organizar e comparar as situações monitoradas. Quanto maior o Score, maior a indicação de prioridade para acompanhamento.
+</p>
+</div>
+
+<div class="chapAlerta">
+<strong>⚠️ ORIENTAÇÃO TÉCNICA</strong>
+<p>
+O Score IA-CHAP constitui instrumento de apoio à inteligência, seleção e priorização. A pontuação não representa, isoladamente, constatação de irregularidade, responsabilização, aplicação de sanção ou conclusão de auditoria. O resultado deve ser analisado conjuntamente com as evidências, os indicadores, a materialidade, a relevância, o risco e o julgamento profissional da equipe técnica.
+</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="fonteSituacao">
+Fonte: Modelo CHAP • Metodologia M-RAIG • Resolução n. 463/2026/TCE-RO
+</div>
+
+</div>
+
+</div>
+
 <div class="cardExecutivo situacaoBox">
 <h2>📈 INDICADORES ESTRATÉGICOS DE GOVERNANÇA</h2>
 <div id="painelIndicadoresGovernanca"></div>
-<div class="fonteSituacao">Fonte: TCE-RO • IRIQ • CHAP • Monitoramento Integrado</div>
+<div class="fonteSituacao">
+Fonte: TCE-RO • IRIQ • CHAP • Monitoramento Integrado
 </div>
+</div>
+
 </section>
 <!--=========================================================
 009 AUDITORIA
