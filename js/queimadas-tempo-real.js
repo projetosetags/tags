@@ -38,7 +38,7 @@ let todos=[]
 let inicio=0
 let limite=1000
 while(true){
-let{data,error}=await client.from('queimadas_focos_inpe').select('id,municipio,data_foco,data_hora,satelite,created_at').gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('id',{ascending:true}).range(inicio,inicio+limite-1)
+let{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('id,municipio,data_foco,data_hora,satelite,created_at').gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('id',{ascending:true}).range(inicio,inicio+limite-1)
 if(error)return{data:[],error}
 let pagina=data||[]
 todos.push(...pagina)
