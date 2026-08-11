@@ -629,3 +629,20 @@ grid-template-columns:repeat(2,1fr);
 grid-template-columns:1fr;
 }
 }
+/*=========================================================
+DISTRIBUIÇÃO DAS RESPOSTAS - MUNICÍPIOS
+=========================================================*/
+.graficoRespostaBox{
+position:relative;
+width:100%;
+height:320px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+#graficoMunicipiosResposta{
+width:100%!important;
+height:100%!important;
+max-width:none!important;
+max-height:none!important;
+}
