@@ -3598,7 +3598,7 @@ return 0
 /*---------------------------------------------------------
 075.15.2 CONSOLIDAR FOCOS POR MÊS
 ---------------------------------------------------------*/
-let valores=Array(12).fill(0)
+let focosPorMesMunicipal=Array(12).fill(0)
 focos.forEach(i=>{
 let mes=obterMesFoco(
 i.data_foco||
@@ -3608,16 +3608,16 @@ i.data_hora||
 i.data_foco_br
 )
 if(mes>=1&&mes<=12){
-valores[mes-1]++
+focosPorMesMunicipal[mes-1]++
 }
 })
 console.log('FOCOS MUNICIPAIS:',municipio,totalFocos)
-console.log('FOCOS POR MÊS:',valores)
-console.log('SOMA DO GRÁFICO:',valores.reduce((s,v)=>s+v,0))
+console.log('FOCOS POR MÊS:',focosPorMesMunicipal)
+console.log('SOMA DO GRÁFICO:',focosPorMesMunicipal.reduce((s,v)=>s+v,0))
 /*---------------------------------------------------------
 075.15.3 VALIDAR TOTAL DO GRÁFICO
 ---------------------------------------------------------*/
-let totalGrafico=valores.reduce((s,v)=>s+v,0)
+let totalGrafico=focosPorMesMunicipal.reduce((s,v)=>s+v,0)
 if(totalGrafico!==totalFocos){
 console.warn(
 `DIVERGÊNCIA NO SUMÁRIO DE ${municipio}: total=${totalFocos}, gráfico=${totalGrafico}`
@@ -3626,32 +3626,32 @@ console.warn(
 /*---------------------------------------------------------
 075.15.4 DEFINIR ESCALA DO GRÁFICO
 ---------------------------------------------------------*/
-let max=Math.max(...valores,1)
-let meses=[
+let maxFocosMensais=Math.max(...focosPorMesMunicipal,1)
+let mesesGraficoMunicipal=[
 'JAN','FEV','MAR','ABR',
 'MAI','JUN','JUL','AGO',
 'SET','OUT','NOV','DEZ'
 ]
-let base=113
-let topo=89
-let area=base-topo
-let inicioX=12
-let passo=10.8
-let larguraBarra=6.5
+let baseGraficoMensal=113
+let topoGraficoMensal=89
+let areaGraficoMensal=baseGraficoMensal-topoGraficoMensal
+let inicioXGraficoMensal=12
+let passoGraficoMensal=10.8
+let larguraBarraGraficoMensal=6.5
 /*---------------------------------------------------------
 075.15.5 DESENHAR BARRAS MENSAIS
 ---------------------------------------------------------*/
-valores.forEach((v,i)=>{
-let bh=v
-?Math.max(1,(v/max)*(area-5))
+focosPorMesMunicipal.forEach((v,i)=>{
+let alturaBarra=v
+?Math.max(1,(v/maxFocosMensais)*(areaGraficoMensal-5))
 :0
 doc.setFillColor(239,25,25)
-if(bh){
+if(alturaBarra){
 doc.rect(
-inicioX+(i*passo),
-base-bh,
-larguraBarra,
-bh,
+inicioXGraficoMensal+(i*passoGraficoMensal),
+baseGraficoMensal-alturaBarra,
+larguraBarraGraficoMensal,
+alturaBarra,
 'F'
 )
 }
@@ -3660,15 +3660,15 @@ textoPreto()
 if(v>0){
 doc.text(
 Number(v).toLocaleString('pt-BR'),
-inicioX+(i*passo)+(larguraBarra/2),
-base-bh-1,
+inicioXGraficoMensal+(i*passoGraficoMensal)+(larguraBarraGraficoMensal/2),
+baseGraficoMensal-alturaBarra-1,
 {align:'center'}
 )
 }
 doc.setFontSize(4.3)
 doc.text(
-meses[i],
-inicioX+(i*passo)+(larguraBarra/2),
+mesesGraficoMunicipal[i],
+inicioXGraficoMensal+(i*passoGraficoMensal)+(larguraBarraGraficoMensal/2),
 117,
 {align:'center'}
 )
