@@ -3415,53 +3415,48 @@ let municipioNormalizado=normalizarMunicipio(municipio)
 let imgLogo=await toDataURL('assets/geojson/logotcero.png').catch(()=>null)
 let imgQueimadasOriginal=await toDataURL('assets/geojson/queimadas.png').catch(()=>null)
 /*---------------------------------------------------------
-075.3 CONSULTA DOS FOCOS — MESMA FONTE DO TEMPO REAL MUNICIPAL
+075.3 CONSULTA DOS DADOS MUNICIPAIS — MESMA FONTE DO TEMPO REAL
 ---------------------------------------------------------*/
-let{data:focosMunicipio,error:erroFocos}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').eq('municipio',municipio).gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('data_hora',{ascending:false})
-if(erroFocos){
-console.error('075.3 ERRO FOCOS MUNICIPAIS:',erroFocos)
-alert(`Erro ao consultar focos de ${municipio}: ${erroFocos.message||erroFocos}`)
+let resultadoFocos=await buscarFocosTempoReal(dataInicial,dataFinal)
+if(resultadoFocos.error){
+console.error('Erro ao carregar focos para o PDF municipal:',resultadoFocos.error)
 return
 }
+let focosRO=resultadoFocos.data||[]
 let[
-{count:totalFocosROConsulta,error:erroTotalRO},
 {data:cadastros=[],error:erroCadastro},
 {data:heatmaps=[],error:erroHeatmap}
 ]=await Promise.all([
-client.schema('queimadas').from('queimadas_focos_inpe').select('*',{count:'exact',head:true}).eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal),
 client.from('vw_queimadas_municipios_resposta').select('*'),
 client.from('queimadas_heatmap').select('*')
 ])
-if(erroTotalRO)console.error('075.3 ERRO TOTAL RO:',erroTotalRO)
-if(erroCadastro)console.error('075.3 ERRO CADASTRO:',erroCadastro)
-if(erroHeatmap)console.error('075.3 ERRO HEATMAP:',erroHeatmap)
-focosMunicipio=focosMunicipio||[]
+if(erroCadastro)console.error('Sumário municipal cadastro:',erroCadastro)
+if(erroHeatmap)console.error('Sumário municipal IRIQ:',erroHeatmap)
 cadastros=cadastros||[]
 heatmaps=heatmaps||[]
-console.log('========================================')
-console.log('075.3 MUNICÍPIO RECEBIDO:',municipio)
-console.log('075.3 PERÍODO:',dataInicial,dataFinal)
-console.log('075.3 FOCOS ENCONTRADOS:',focosMunicipio.length)
-console.log('075.3 PRIMEIRO REGISTRO:',focosMunicipio[0])
-console.log('075.3 TOTAL RO:',totalFocosROConsulta)
-console.log('========================================')
 /*---------------------------------------------------------
-075.4 CONSOLIDAÇÃO DOS DADOS DO MUNICÍPIO
+075.4 FILTRAGEM DOS DADOS DO MUNICÍPIO
 ---------------------------------------------------------*/
-let focos=focosMunicipio
-let cadastroMunicipio=cadastros.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)||{}
-let heatmapMunicipio=heatmaps.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)||{}
+let focos=focosRO.filter(i=>
+normalizarMunicipio(i.municipio)===municipioNormalizado
+)
+let cadastroMunicipio=cadastros.find(i=>
+normalizarMunicipio(i.municipio)===municipioNormalizado
+)||{}
+let heatmapMunicipio=heatmaps.find(i=>
+normalizarMunicipio(i.municipio)===municipioNormalizado
+)||{}
 let totalFocos=focos.length
-let totalFocosRO=Number(totalFocosROConsulta||0)
+let totalFocosRO=focosRO.length
 /*---------------------------------------------------------
-075.5 ORDENAÇÃO CRONOLÓGICA DOS FOCOS
+075.5 ORDENAÇÃO CRONOLÓGICA DOS FOCOS — MESMA LÓGICA DO TEMPO REAL
 ---------------------------------------------------------*/
 let ordenarDataHora=(a,b)=>{
-let dataA=String(a.data_foco||'').slice(0,10)
-let dataB=String(b.data_foco||'').slice(0,10)
-let horaA=String(a.data_hora||a.hora||'00:00:00').slice(-8)
-let horaB=String(b.data_hora||b.hora||'00:00:00').slice(-8)
-return`${dataB} ${horaB}`.localeCompare(`${dataA} ${horaA}`)
+let da=String(a.data_foco||'')
+let db=String(b.data_foco||'')
+let ha=String(a.data_hora||a.hora||'00:00:00')
+let hb=String(b.data_hora||b.hora||'00:00:00')
+return(`${db} ${hb}`).localeCompare(`${da} ${ha}`)
 }
 let focosOrdenados=[...focos].sort(ordenarDataHora)
 let ultimoFoco=focosOrdenados[0]||null
