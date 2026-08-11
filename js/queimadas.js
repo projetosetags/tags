@@ -2991,22 +2991,24 @@ doc.text(iriqEstadual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFra
 doc.setFontSize(5.2)
 doc.text(faixaIRIQ(iriqEstadual),x+w/2,y+h-3,{align:'center'})
 }
+
+
 function concentracaoIRIQ(x,y,w,h){
 faixaTitulo('CONCENTRAÇÃO DO IRIQ MUNICIPAL',x,y,w)
 doc.setFillColor(255,255,255)
 doc.setDrawColor(219,226,234)
 doc.roundedRect(x,y+6,w,h-6,2,2,'FD')
 let cx=x+w/2
-let cy=y+27
-let raio=13
+let cy=y+25
+let raio=15
 let canvas=document.createElement('canvas')
-canvas.width=500
-canvas.height=500
+canvas.width=600
+canvas.height=600
 let ctx=canvas.getContext('2d')
-ctx.clearRect(0,0,500,500)
-let centro=250
-let r=180
-let ri=105
+ctx.clearRect(0,0,600,600)
+let centro=300
+let r=230
+let ri=135
 let partes=[
 {valor:25,cor:'#16a34a'},
 {valor:25,cor:'#f59e0b'},
@@ -3023,41 +3025,60 @@ ctx.closePath()
 ctx.fillStyle=p.cor
 ctx.fill()
 ctx.strokeStyle='#ffffff'
-ctx.lineWidth=5
+ctx.lineWidth=8
 ctx.stroke()
 inicio=fim
 })
 let donut=canvas.toDataURL('image/png')
 doc.addImage(donut,'PNG',cx-raio,cy-raio,raio*2,raio*2)
 doc.setFont('helvetica','bold')
+doc.setTextColor(0,0,0)
 doc.setFontSize(4.2)
-textoPreto()
-doc.text('MÉDIA DOS',cx,cy-3,{align:'center'})
-doc.text('5 MAIORES',cx,cy+1.5,{align:'center'})
-doc.setFontSize(9.5)
+doc.text('MÉDIA DOS',cx,cy-2.5,{align:'center'})
+doc.text('5 MAIORES',cx,cy+2,{align:'center'})
+doc.setFillColor(255,255,255)
+doc.setDrawColor(15,23,42)
+doc.roundedRect(cx-10,cy+16,20,9,1.5,1.5,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(8.5)
+doc.setTextColor(0,0,0)
+doc.text(
+mediaTop5.toLocaleString('pt-BR',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}),
+cx,
+cy+22,
+{align:'center'}
+)
+doc.setFontSize(4.3)
 doc.setTextColor(...corIRIQ(mediaTop5))
-doc.text(mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),cx,cy+8,{align:'center'})
-doc.setFontSize(4.6)
-doc.text(faixaIRIQ(mediaTop5),cx,cy+13,{align:'center'})
+doc.text(
+faixaIRIQ(mediaTop5),
+cx,
+cy+29,
+{align:'center'}
+)
 let legenda=[
 ['BAIXO',[22,163,74]],
 ['MOD.',[245,158,11]],
 ['ALTO',[234,88,12]],
 ['CRÍT.',[220,38,38]]
 ]
-let inicioX=x+4
+let inicioX=x+3
 let yLegenda=y+h-7
-let espaco=(w-8)/4
+let larguraItem=(w-6)/4
 legenda.forEach((l,i)=>{
-let lx=inicioX+i*espaco
+let lx=inicioX+i*larguraItem
 doc.setFillColor(...l[1])
-doc.roundedRect(lx,yLegenda,3,3,.5,.5,'F')
+doc.roundedRect(lx,yLegenda,3.2,3.2,.5,.5,'F')
 doc.setFont('helvetica','bold')
-doc.setFontSize(3.2)
-textoPreto()
-doc.text(l[0],lx+4,yLegenda+2.4)
+doc.setFontSize(3.4)
+doc.setTextColor(0,0,0)
+doc.text(l[0],lx+4.5,yLegenda+2.5)
 })
 }
+
 function situacaoMunicipios(x,y,w){
 faixaTitulo('SITUAÇÃO DOS 52 MUNICÍPIOS',x,y,w)
 let h=27
