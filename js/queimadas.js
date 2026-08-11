@@ -2080,42 +2080,160 @@ let top=[...data]
 .sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0))
 .slice(0,5)
 function classificar(v){
-if(v>=75)return{nivel:'CRÍTICO',cor:'#dc2626',fundo:'#fef2f2',acao:'INTERVENÇÃO PRIORITÁRIA'}
-if(v>=50)return{nivel:'ALTO',cor:'#f97316',fundo:'#fff7ed',acao:'MONITORAMENTO INTENSIFICADO'}
-if(v>=25)return{nivel:'MODERADO',cor:'#eab308',fundo:'#fefce8',acao:'ACOMPANHAMENTO PREVENTIVO'}
-return{nivel:'BAIXO',cor:'#16a34a',fundo:'#f0fdf4',acao:'MONITORAMENTO DE ROTINA'}
+if(v>=75)return{
+nivel:'CRÍTICO',
+cor:'#dc2626',
+fundo:'#fef2f2',
+acao:'INTERVENÇÃO PRIORITÁRIA'
+}
+if(v>=50)return{
+nivel:'ALTO',
+cor:'#f97316',
+fundo:'#fff7ed',
+acao:'MONITORAMENTO INTENSIFICADO'
+}
+if(v>=25)return{
+nivel:'MODERADO',
+cor:'#eab308',
+fundo:'#fefce8',
+acao:'ACOMPANHAMENTO PREVENTIVO'
+}
+return{
+nivel:'BAIXO',
+cor:'#16a34a',
+fundo:'#f0fdf4',
+acao:'MONITORAMENTO DE ROTINA'
+}
 }
 box.innerHTML=`
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px">
+<div style="display:grid;grid-template-columns:repeat(5,minmax(190px,1fr));gap:12px">
 ${top.map((i,idx)=>{
 let iriq=Number(i.indice_final||i.iriq||0)
 let c=classificar(iriq)
 return`
-<div style="background:${c.fundo};border:1px solid #e2e8f0;border-left:6px solid ${c.cor};border-radius:10px;padding:13px">
-<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<div style="
+background:${c.fundo};
+border:1px solid #dbe3ec;
+border-left:6px solid ${c.cor};
+border-radius:10px;
+padding:15px;
+min-height:135px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+font-weight:700">
 <div>
-<div style="font-size:10px;font-weight:900;color:#64748b">${idx+1}ª PRIORIDADE</div>
-<div style="font-size:15px;font-weight:900;color:#0f172a;margin-top:3px">${i.municipio||'-'}</div>
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:10px">
+<div>
+<div style="
+font-size:12px;
+font-weight:900;
+color:#475569">
+${idx+1}ª PRIORIDADE
+</div>
+<div style="
+font-size:17px;
+font-weight:900;
+color:#0f172a;
+margin-top:5px;
+line-height:1.2">
+${i.municipio||'-'}
+</div>
 </div>
 <div style="text-align:right">
-<div style="font-size:21px;font-weight:900;color:${c.cor}">${iriq.toFixed(2).replace('.',',')}</div>
-<div style="font-size:9px;font-weight:900;color:${c.cor}">${c.nivel}</div>
+<div style="
+font-size:25px;
+font-weight:900;
+line-height:1;
+color:${c.cor}">
+${iriq.toFixed(2).replace('.',',')}
+</div>
+<div style="
+font-size:11px;
+font-weight:900;
+margin-top:5px;
+color:${c.cor}">
+${c.nivel}
 </div>
 </div>
-<div style="margin-top:10px;padding-top:9px;border-top:1px solid #e2e8f0;font-size:10px;line-height:1.5;color:#334155">
-<b>Leitura técnica:</b> o município ocupa posição prioritária no ranking integrado IRIQ, indicando necessidade de acompanhamento proporcional à criticidade identificada.
 </div>
-<div style="margin-top:7px;font-size:10px;line-height:1.5;color:#334155">
-<b>Em linguagem simples:</b> quanto maior o índice, maior deve ser a atenção preventiva do poder público. O indicador não significa que um incêndio ocorrerá, mas aponta onde a vigilância deve ser reforçada.
 </div>
-<div style="margin-top:8px;padding:6px 8px;background:#fff;border-radius:6px;font-size:9px;font-weight:900;color:${c.cor}">
+<div style="
+margin-top:15px;
+padding:8px 9px;
+background:#fff;
+border:1px solid #e2e8f0;
+border-radius:6px;
+font-size:11px;
+font-weight:900;
+line-height:1.3;
+color:${c.cor}">
 AÇÃO: ${c.acao}
 </div>
 </div>`
 }).join('')}
 </div>
-<div style="margin-top:10px;padding:9px;background:#f8fafc;border-left:4px solid #0d3d8c;font-size:10px;line-height:1.5;color:#475569">
-<b>Nota metodológica:</b> a predição apresentada constitui instrumento de priorização e inteligência analítica. Não representa previsão determinística da ocorrência de incêndio, devendo ser interpretada conjuntamente com focos de calor, condições ambientais, histórico territorial, capacidade de resposta e demais evidências disponíveis.
+<div style="
+margin-top:14px;
+padding:14px 16px;
+background:#fff;
+border:1px solid #d6dee8;
+border-left:5px solid #0d3d8c;
+border-radius:8px;
+font-size:12px;
+font-weight:700;
+line-height:1.7;
+color:#1e293b">
+<div style="
+font-size:13px;
+font-weight:900;
+color:#0d3d8c;
+margin-bottom:8px">
+LEGENDA E INTERPRETAÇÃO
+</div>
+<div style="margin-bottom:7px">
+<strong style="font-weight:900">IRIQ — Índice de Risco Integrado de Queimadas:</strong>
+indicador utilizado para comparar a criticidade relativa dos municípios e apoiar a definição das prioridades de acompanhamento, fiscalização e atuação preventiva.
+</div>
+<div style="
+display:flex;
+flex-wrap:wrap;
+align-items:center;
+gap:18px;
+margin:8px 0;
+font-size:12px;
+font-weight:900">
+<span style="color:#dc2626">● CRÍTICO: ≥ 75</span>
+<span style="color:#f97316">● ALTO: 50 a 74,99</span>
+<span style="color:#eab308">● MODERADO: 25 a 49,99</span>
+<span style="color:#16a34a">● BAIXO: &lt; 25</span>
+</div>
+<div>
+<strong style="font-weight:900">Como interpretar:</strong>
+quanto maior o IRIQ, maior a criticidade relativa identificada e, consequentemente, maior deve ser a prioridade atribuída ao acompanhamento preventivo, à análise territorial e à verificação da capacidade de resposta do município.
+</div>
+</div>
+<div style="
+margin-top:11px;
+padding:13px 15px;
+background:#f8fafc;
+border:1px solid #e2e8f0;
+border-left:5px solid #0d3d8c;
+font-size:11.5px;
+font-weight:700;
+line-height:1.65;
+color:#334155">
+<strong style="
+font-size:12px;
+font-weight:900;
+color:#0f172a">
+Nota metodológica:
+</strong>
+a predição apresentada constitui instrumento de priorização e inteligência analítica. Não representa previsão determinística da ocorrência de incêndio ou queimada. Os resultados devem ser interpretados conjuntamente com os registros de focos de calor, condições ambientais, histórico territorial, exposição, vulnerabilidade, capacidade de resposta municipal e demais evidências disponíveis no sistema de monitoramento.
 </div>`
 }
 /*=========================================================
