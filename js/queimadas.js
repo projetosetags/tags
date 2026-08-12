@@ -4877,3 +4877,20 @@ ${municipios.map(m=>`<option value="${m}">${m}</option>`).join('')}
 `
 }
 
+
+function toggleMetodologiaCHAP(){
+let conteudo=document.getElementById('chapMetodologiaConteudo')
+let toggle=document.getElementById('chapToggle')
+let acao=document.getElementById('chapAcao')
+if(!conteudo)return
+let oculto=conteudo.style.display==='none'
+if(oculto){
+conteudo.style.display='block'
+if(toggle)toggle.textContent='−'
+if(acao)acao.textContent='OCULTAR'
+}else{
+conteudo.style.display='none'
+if(toggle)toggle.textContent='+'
+if(acao)acao.textContent='EXIBIR'
+}
+}
