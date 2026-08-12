@@ -332,21 +332,20 @@ return iriq.toFixed(2)
 110.1 CLASSIFICAÇÃO MUNICIPAL ATUAL
 =========================================================*/
 function classificarMunicipioAtual(i){
-let obs=String(i?.observacao||i?.observacoes||'').trim()
-let texto=obs.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()
-let data1=i?.ldatarecebimentodoc||''
-let data2=i?.lldatarecebimentodoc||''
-let doc1=String(i?.lnumerodocenviado||'').trim()
-let doc2=String(i?.llnumerodocenviado||'').trim()
-let possuiPlano=texto.includes('PLACOM')||texto.includes('PLANO DE ACAO')||texto.includes('PLANO MUNICIPAL')||texto.includes('PLANO DE CONTINGENCIA')||texto.includes('PLANO ANUAL')||texto.includes('PIMF')
-let possuiDilacao=texto.includes('DILACAO')||texto.includes('PRORROGACAO')||texto.includes('SOLICITACAO DE PRAZO')
-let possuiRecebimento=Boolean((data1&&doc1)||(data2&&doc2))
+let obs=String(i.observacao||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()
+let data1=i.ldatarecebimentodoc||''
+let data2=i.lldatarecebimentodoc||''
+let doc1=i.lnumerodocenviado||''
+let doc2=i.llnumerodocenviado||''
+let possuiPlano=/PLACOM|PLANO DE ACAO|PLANO MUNICIPAL|PLANO DE CONTINGENCIA|PLANO ANUAL|PIMF/.test(obs)
+let possuiDilacao=/DILACAO|PRORROGACAO|SOLICITACAO DE PRAZO/.test(obs)
 let classificacaoAtual='VERMELHO'
-let situacaoAtual='SEM RESPOSTA'
-if(possuiRecebimento&&possuiPlano){classificacaoAtual='VERDE';situacaoAtual='PLANO DE AÇÃO'}
-else if(possuiRecebimento&&possuiDilacao){classificacaoAtual='AMARELO';situacaoAtual='DILAÇÃO DE PRAZO'}
-else if(possuiRecebimento){classificacaoAtual='VERDE';situacaoAtual='PLANO DE AÇÃO'}
-return{...i,classificacaoAtual,situacaoAtual,documentoAtual:doc2||doc1||'-',recebimentoAtual:data2||data1||''}
+if(possuiPlano)classificacaoAtual='VERDE'
+else if(possuiDilacao)classificacaoAtual='AMARELO'
+else if(data1||data2||doc1||doc2)classificacaoAtual='VERDE'
+let documentoAtual=doc2||doc1||'-'
+let recebimentoAtual=data2||data1||''
+return{...i,classificacaoAtual,documentoAtual,recebimentoAtual}
 }
 /*=========================================================
 111 QUEIMADAS FUNCTION RENDERPLANOSMUNICIPAIS
@@ -1348,68 +1347,51 @@ box.innerHTML=html
 =========================================================*/
 async function renderMapaMunicipal(){
 let box=document.getElementById('mapaMunicipalRO')
-if(!box||!document.body.contains(box)||box.offsetWidth===0||box.offsetHeight===0)return
+if(!box||!document.body.contains(box)||!box.offsetWidth||!box.offsetHeight)return
 if(window.mapaMunicipalRO){
 window.mapaMunicipalRO.remove()
 window.mapaMunicipalRO=null
 }
 window.mapaMunicipalRO=L.map(box).setView([-10.9,-63.3],7)
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-attribution:'OpenStreetMap'
-}).addTo(window.mapaMunicipalRO)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(window.mapaMunicipalRO)
 let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*')
-if(error){
-console.error('Erro mapa municipal:',error)
-return
-}
+if(error){console.error(error);return}
+let lista=data.map(classificarMunicipioAtual)
 let situacao={}
-data.map(classificarMunicipioAtual).forEach(i=>{
-situacao[String(i.municipio||'').trim().toUpperCase()]=i
-})
+lista.forEach(i=>situacao[String(i.municipio||'').trim().toUpperCase()]=i)
+console.log('MAPA CLASSIFICAÇÃO:',lista.map(i=>({
+municipio:i.municipio,
+cor:i.classificacaoAtual,
+documento:i.documentoAtual,
+recebimento:i.recebimentoAtual
+})))
 let geo=await fetch('./assets/geojson/municipios-ro.geojson')
 let geojson=await geo.json()
 window.layerMunicipios=L.geoJSON(geojson,{
 style:f=>{
 let nome=String(f.properties.nome||f.properties.NOME||f.properties.municipio||'').trim().toUpperCase()
 let m=situacao[nome]
-let cor='#94a3b8'
-if(m?.classificacaoAtual==='VERDE')cor='#16a34a'
-if(m?.classificacaoAtual==='AMARELO')cor='#facc15'
-if(m?.classificacaoAtual==='VERMELHO')cor='#dc2626'
-return{
-color:'#ffffff',
-weight:1,
-fillColor:cor,
-fillOpacity:.85
-}
+let cor=m?.classificacaoAtual==='VERDE'?'#16a34a':m?.classificacaoAtual==='AMARELO'?'#facc15':m?.classificacaoAtual==='VERMELHO'?'#dc2626':'#94a3b8'
+return{color:'#334155',weight:1,fillColor:cor,fillOpacity:.85}
 },
 onEachFeature:(f,l)=>{
 let nome=String(f.properties.nome||f.properties.NOME||f.properties.municipio||'')
 let m=situacao[nome.trim().toUpperCase()]
 l.dadosMunicipio=m
-if(!m){
-l.bindPopup(`<b>${nome}</b><br>Sem classificação`)
-return
-}
+if(!m){l.bindPopup(`<b>${nome}</b><br>Sem classificação`);return}
 let icone=m.classificacaoAtual==='VERDE'?'🟢':m.classificacaoAtual==='AMARELO'?'🟡':'🔴'
-let titulo=m.classificacaoAtual==='VERDE'?'Plano de Ação':m.classificacaoAtual==='AMARELO'?'Dilação de prazo':'Sem resposta'
-let documento=m.documentoAtual||'-'
-let recebimento=m.recebimentoAtual?formatarDataBR(m.recebimentoAtual):'-'
+let titulo=m.classificacaoAtual==='VERDE'?'Plano de Ação Apresentado':m.classificacaoAtual==='AMARELO'?'Dilação de Prazo':'Sem Resposta'
 l.bindPopup(`
-<b>${m.municipio||nome}</b><br>
-<b>Situação:</b><br>
-${icone} <b>${titulo}</b><br><br>
-<b>Documento:</b><br>
-${documento}<br><br>
-<b>Recebimento:</b><br>
-${recebimento}<br><br>
+<b>${m.municipio||nome}</b><hr>
+<b>Situação:</b><br>${icone} <b>${titulo}</b><br><br>
+<b>Documento:</b><br>${m.documentoAtual||'-'}<br><br>
+<b>Recebimento:</b><br>${m.recebimentoAtual?formatarDataBR(m.recebimentoAtual):'-'}<br><br>
 ${m.observacao||'-'}
 `)
 }
 }).addTo(window.mapaMunicipalRO)
 window.mapaMunicipalRO.fitBounds(window.layerMunicipios.getBounds())
 }
-
 /*=========================================================
 133 QUEIMADAS FUNCTION FILTRARMAPAMUNICIPAL
 =========================================================*/
