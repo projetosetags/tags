@@ -1981,7 +1981,44 @@ clamp:true
 plugins:typeof ChartDataLabels!=='undefined'?[ChartDataLabels]:[]
 })
 }
-
+/*=========================================================
+144 QUEIMADAS FUNCTION RENDERESTATISTICASMUNICIPAIS
+=========================================================*/
+async function renderEstatisticasMunicipais(){
+let box=document.getElementById('painelEstatisticasMunicipais')
+if(!box)return
+const{data,error}=await client.from('vw_queimadas_municipios_resposta').select('*')
+if(error){console.error('Erro estatísticas municipais:',error);return}
+let lista=(data||[]).map(classificarMunicipioAtual)
+let total=lista.length
+let verde=lista.filter(i=>i.classificacaoAtual==='VERDE').length
+let amarelo=lista.filter(i=>i.classificacaoAtual==='AMARELO').length
+let vermelho=lista.filter(i=>i.classificacaoAtual==='VERMELHO').length
+let atendimento=total?((verde/total)*100).toFixed(1):'0.0'
+box.innerHTML=`
+<div class="gridKPIMunicipios">
+<div class="kpiCard">
+<div class="kpiNumero">${total}</div>
+<div class="kpiTitulo">Municípios</div>
+</div>
+<div class="kpiCard">
+<div class="kpiNumero">${verde}</div>
+<div class="kpiTitulo">🟢 Com Plano</div>
+</div>
+<div class="kpiCard">
+<div class="kpiNumero">${amarelo}</div>
+<div class="kpiTitulo">🟡 Dilação</div>
+</div>
+<div class="kpiCard">
+<div class="kpiNumero">${vermelho}</div>
+<div class="kpiTitulo">🔴 Sem Resposta</div>
+</div>
+<div class="kpiCard">
+<div class="kpiNumero">${atendimento}%</div>
+<div class="kpiTitulo">Atendimento</div>
+</div>
+</div>`
+}
 function obterMedalhaFocos(indice){
 if(indice===0)return'🥇'
 if(indice===1)return'🥈'
