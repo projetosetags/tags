@@ -1299,7 +1299,7 @@ box.innerHTML=html
 async function recalcularODSIA(){
 let[{data:ranking=[]},{data:chap=[]},{data:monitoramento=[]},{data:mapbiomas=[]},{data:prodes=[]}]=await Promise.all([
 client.from('vw_queimadas_ranking_estadual').select('*'),
-client.from('queimadas_chap').select('*'),
+client.from('queimadas_ipt').select('*'),
 client.from('queimadas_monitoramento').select('*'),
 client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
@@ -1329,7 +1329,7 @@ async function recalcularODSIAAvancado(){
 let[{data:executivo},{data:ranking=[]},{data:chap=[]},{data:riscos=[]},{data:monitoramento=[]},{data:ucs=[]},{data:mapbiomas=[]},{data:prodes=[]}]=await Promise.all([
 client.from('vw_queimadas_executivo').select('*').single(),
 client.from('vw_queimadas_ranking_estadual').select('*'),
-client.from('queimadas_chap').select('*'),
+client.from('queimadas_ipt').select('*'),
 client.from('queimadas_riscos').select('*'),
 client.from('queimadas_monitoramento').select('*'),
 client.from('queimadas_ucs').select('*'),
@@ -1521,7 +1521,7 @@ async function iaChapAnalisar(){
 let box=document.getElementById('painelIAChap')
 if(!box)return
 let{data=[]}=await client
-.from('queimadas_chap')
+.from('queimadas_ipt')
 .select('*')
 .order('resultado',{ascending:false})
 box.innerHTML=data.map(i=>{
@@ -2930,7 +2930,7 @@ as sugestões constituem apoio automatizado à auditoria e ao monitoramento conc
 async function renderDashboardCHAP(){
 let box=document.getElementById('painelCHAP')
 if(!box)return
-let{data=[]}=await client.from('queimadas_chap').select('*')
+let{data=[]}=await client.from('queimadas_ipt').select('*')
 let lista=(data||[]).map(i=>{
 let score=Math.round((
 Number(i.criticidade||0)+
