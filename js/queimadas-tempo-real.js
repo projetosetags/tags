@@ -356,7 +356,7 @@ if(indice===2)return'🥉'
 return'🏛️'
 }
 /*=========================================================
-010 TEMPO REAL DOMCONTENTLOADED
+013 TEMPO REAL DOMCONTENTLOADED
 =========================================================*/
 document.addEventListener('DOMContentLoaded',()=>{
 renderTempoReal()
