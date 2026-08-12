@@ -1986,67 +1986,39 @@ let modal=document.getElementById('modalMunicipio')
 if(modal)modal.remove()
 }
 
-/*=========================================================
-142 QUEIMADAS FUNCTION SALVARMUNICIPIO
-=========================================================*/
+/*=========================================================*
+*142 QUEIMADAS FUNCTION SALVARMUNICIPIO*
+*=========================================================*/
 async function salvarMunicipio(municipioOriginal){
 municipioOriginal=String(municipioOriginal||'').trim()
-if(!municipioOriginal){
-alert('Município não identificado.')
-return
-}
+if(!municipioOriginal){alert('Município não identificado.');return}
 let btn=document.querySelector('#modalMunicipio .btnSalvarMunicipio')
-if(btn){
-btn.disabled=true
-btn.innerHTML='⏳ SALVANDO...'
-}
-let dataRec1=document.getElementById('mDataRec1').value||''
-let dataRec2=document.getElementById('mDataRec2').value||''
-let doc1=document.getElementById('mDoc1').value.trim()
-let doc2=document.getElementById('mDoc2').value.trim()
-let observacao=document.getElementById('mObs').value.trim()
+if(btn){btn.disabled=true;btn.innerHTML='⏳ SALVANDO...'}
+try{
+let dataRec1=document.getElementById('mDataRec1')?.value||''
+let dataRec2=document.getElementById('mDataRec2')?.value||''
+let doc1=document.getElementById('mDoc1')?.value.trim()||''
+let doc2=document.getElementById('mDoc2')?.value.trim()||''
+let observacao=document.getElementById('mObs')?.value.trim()||''
 let texto=observacao.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()
 let possuiDocumento1=Boolean(dataRec1&&doc1)
 let possuiDocumento2=Boolean(dataRec2&&doc2)
 let possuiRecebimento=possuiDocumento1||possuiDocumento2
-let possuiPlano=
-texto.includes('PLANO DE ACAO')||
-texto.includes('PLANO MUNICIPAL')||
-texto.includes('PLANO DE CONTINGENCIA')||
-texto.includes('PLANO ANUAL')||
-texto.includes('PIMF')
-let possuiDilacao=
-texto.includes('DILACAO')||
-texto.includes('PRORROGACAO')||
-texto.includes('SOLICITACAO DE PRAZO')
-let planoAcao=false
-let dilacaoPrazo=false
-let semResposta=false
-if(possuiRecebimento&&possuiPlano){
-planoAcao=true
-dilacaoPrazo=false
-semResposta=false
-}else if(possuiRecebimento&&possuiDilacao){
-planoAcao=false
-dilacaoPrazo=true
-semResposta=false
-}else if(possuiRecebimento){
-planoAcao=true
-dilacaoPrazo=false
-semResposta=false
-}else{
-planoAcao=false
-dilacaoPrazo=false
-semResposta=true
-}
+let possuiPlano=texto.includes('PLACOM')||texto.includes('PLANO DE ACAO')||texto.includes('PLANO MUNICIPAL')||texto.includes('PLANO DE CONTINGENCIA')||texto.includes('PLANO ANUAL')||texto.includes('PIMF')
+let possuiDilacao=texto.includes('DILACAO')||texto.includes('PRORROGACAO')||texto.includes('SOLICITACAO DE PRAZO')
+let planoAcao=false,dilacaoPrazo=false,semResposta=false
+if(possuiRecebimento&&possuiPlano){planoAcao=true}
+else if(possuiRecebimento&&possuiDilacao){dilacaoPrazo=true}
+else if(possuiRecebimento){planoAcao=true}
+else{semResposta=true}
 let payload={
-nroficioenviadotcero:document.getElementById('mOficio').value||null,
-dataenviodoc:document.getElementById('mDataEnvio').value||null,
-paginaenviodoc:document.getElementById('mPaginaEnvio').value||null,
+nroficioenviadotcero:document.getElementById('mOficio')?.value||null,
+dataenviodoc:document.getElementById('mDataEnvio')?.value||null,
+paginaenviodoc:document.getElementById('mPaginaEnvio')?.value||null,
 ldatarecebimentodoc:dataRec1||null,
 lldatarecebimentodoc:dataRec2||null,
-lpaginarecebimentodoc:document.getElementById('mPagRec1').value||null,
-llpaginarecebimentodoc:document.getElementById('mPagRec2').value||null,
+lpaginarecebimentodoc:document.getElementById('mPagRec1')?.value||null,
+llpaginarecebimentodoc:document.getElementById('mPagRec2')?.value||null,
 lnumerodocenviado:doc1||null,
 llnumerodocenviado:doc2||null,
 observacao:observacao||null,
@@ -2054,48 +2026,16 @@ plano_acao:planoAcao,
 dilacao_prazo:dilacaoPrazo,
 sem_resposta:semResposta
 }
-let resposta=await fetch(
-`${window.S_URL}/functions/v1/municipios-edicao-protegida`,
-{
+let resposta=await fetch(`${window.S_URL}/functions/v1/municipios-edicao-protegida`,{
 method:'POST',
-headers:{
-'Content-Type':'application/json',
-'apikey':window.S_KEY,
-'Authorization':`Bearer ${window.S_KEY}`
-},
-body:JSON.stringify({
-acao:'salvar',
-senha:window.senhaEdicaoMunicipio||'',
-municipio:municipioOriginal,
-payload
+headers:{'Content-Type':'application/json','apikey':window.S_KEY,'Authorization':`Bearer ${window.S_KEY}`},
+body:JSON.stringify({acao:'salvar',senha:window.senhaEdicaoMunicipio||'',municipio:municipioOriginal,payload})
 })
-}
-)
-let resultado=await resposta.json()
+let resultado={}
+try{resultado=await resposta.json()}catch(e){resultado={erro:`Resposta inválida do servidor (${resposta.status})`}}
 if(!resposta.ok||!resultado.sucesso){
-console.error('Erro ao salvar município:',resultado)
-if(btn){
-btn.disabled=false
-btn.innerHTML='💾 SALVAR'
-}
-alert('Alteração não autorizada: '+(resultado.erro||'erro desconhecido'))
-return
-}
-if(error){
-console.error('Erro ao salvar município:',error)
-if(btn){
-btn.disabled=false
-btn.innerHTML='💾 SALVAR'
-}
-alert('Erro ao salvar: '+error.message)
-return
-}
-if(!data||!data.length){
-if(btn){
-btn.disabled=false
-btn.innerHTML='💾 SALVAR'
-}
-alert('Nenhum registro foi atualizado.')
+console.error('Erro ao salvar município:',resposta.status,resultado)
+alert('Alteração não autorizada: '+(resultado.erro||`erro HTTP ${resposta.status}`))
 return
 }
 fecharModalMunicipio()
@@ -2115,6 +2055,12 @@ await renderMunicipiosOficio('RESUMO')
 await renderMunicipiosOficio('CADASTRO')
 }
 alert('Registro atualizado com sucesso.')
+}catch(error){
+console.error('Erro ao salvar município:',error)
+alert('Erro ao salvar: '+(error?.message||error))
+}finally{
+if(btn){btn.disabled=false;btn.innerHTML='💾 SALVAR'}
+}
 }
 /*=========================================================
 143 QUEIMADAS FUNCTION RENDERDISTRIBUICAORESPOSTAS
