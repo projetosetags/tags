@@ -1348,10 +1348,7 @@ box.innerHTML=html
 =========================================================*/
 async function renderMapaMunicipal(){
 let box=document.getElementById('mapaMunicipalRO')
-if(!box)return
-if(!document.body.contains(box))return
-if(box.offsetWidth===0)return
-if(box.offsetHeight===0)return
+if(!box||!document.body.contains(box)||box.offsetWidth===0||box.offsetHeight===0)return
 if(window.mapaMunicipalRO){
 window.mapaMunicipalRO.remove()
 window.mapaMunicipalRO=null
@@ -1360,34 +1357,25 @@ window.mapaMunicipalRO=L.map(box).setView([-10.9,-63.3],7)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 attribution:'OpenStreetMap'
 }).addTo(window.mapaMunicipalRO)
-let {data,error}=await client
-.from('vw_queimadas_municipios_resposta')
-.select('*')
+let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*')
 if(error){
-console.log(error)
+console.error('Erro mapa municipal:',error)
 return
 }
 let situacao={}
-;(data||[]).forEach(i=>{
-situacao[(i.municipio||'').trim().toUpperCase()]=i
+data.map(classificarMunicipioAtual).forEach(i=>{
+situacao[String(i.municipio||'').trim().toUpperCase()]=i
 })
 let geo=await fetch('./assets/geojson/municipios-ro.geojson')
 let geojson=await geo.json()
 window.layerMunicipios=L.geoJSON(geojson,{
 style:f=>{
-let nome=String(
-f.properties.nome||
-f.properties.NOME||
-f.properties.municipio||
-''
-).trim().toUpperCase()
+let nome=String(f.properties.nome||f.properties.NOME||f.properties.municipio||'').trim().toUpperCase()
 let m=situacao[nome]
 let cor='#94a3b8'
-if(m){
-if(m.classificacao_cor==='VERDE')cor='#16a34a'
-if(m.classificacao_cor==='AMARELO')cor='#facc15'
-if(m.classificacao_cor==='VERMELHO')cor='#dc2626'
-}
+if(m?.classificacaoAtual==='VERDE')cor='#16a34a'
+if(m?.classificacaoAtual==='AMARELO')cor='#facc15'
+if(m?.classificacaoAtual==='VERMELHO')cor='#dc2626'
 return{
 color:'#ffffff',
 weight:1,
@@ -1396,33 +1384,30 @@ fillOpacity:.85
 }
 },
 onEachFeature:(f,l)=>{
-let nome=String(
-f.properties.nome||
-f.properties.NOME||
-f.properties.municipio||
-''
-)
+let nome=String(f.properties.nome||f.properties.NOME||f.properties.municipio||'')
 let m=situacao[nome.trim().toUpperCase()]
 l.dadosMunicipio=m
 if(!m){
-l.bindPopup(`
-<b>${nome}</b><br>
-Sem classificação
-`)
+l.bindPopup(`<b>${nome}</b><br>Sem classificação`)
 return
 }
+let icone=m.classificacaoAtual==='VERDE'?'🟢':m.classificacaoAtual==='AMARELO'?'🟡':'🔴'
+let titulo=m.classificacaoAtual==='VERDE'?'Plano de Ação':m.classificacaoAtual==='AMARELO'?'Dilação de prazo':'Sem resposta'
+let documento=m.documentoAtual||'-'
+let recebimento=m.recebimentoAtual?formatarDataBR(m.recebimentoAtual):'-'
 l.bindPopup(`
 <b>${m.municipio||nome}</b><br>
-Situação: ${m.classificacao_ia||'-'}<br>
-Documento: ${m.lnumerodocenviado||m.llnumerodocenviado||'-'}<br>
-Recebimento: ${m.ldatarecebimentodoc||'-'}<br>
+<b>Situação:</b><br>
+${icone} <b>${titulo}</b><br><br>
+<b>Documento:</b><br>
+${documento}<br><br>
+<b>Recebimento:</b><br>
+${recebimento}<br><br>
 ${m.observacao||'-'}
 `)
 }
 }).addTo(window.mapaMunicipalRO)
-window.mapaMunicipalRO.fitBounds(
-window.layerMunicipios.getBounds()
-)
+window.mapaMunicipalRO.fitBounds(window.layerMunicipios.getBounds())
 }
 
 /*=========================================================
