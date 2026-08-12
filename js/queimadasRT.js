@@ -839,9 +839,13 @@ window.mapaPlanosMunicipais.invalidateSize(true)
 let bounds=window.camadaPlanosMunicipais.getBounds()
 if(bounds&&bounds.isValid()){
 window.mapaPlanosMunicipais.fitBounds(bounds,{
-padding:[12,12],
-maxZoom:7
+paddingTopLeft:[55,35],
+paddingBottomRight:[55,35],
+maxZoom:7,
+animate:false
 })
+let zoomAtual=window.mapaPlanosMunicipais.getZoom()
+window.mapaPlanosMunicipais.setZoom(zoomAtual-0.35,{animate:false})
 }
 }catch(e){
 console.warn('Erro ao reenquadrar mapa municipal:',e)
@@ -999,9 +1003,9 @@ doc.text(linhas,48,y)
 y+=Math.max(12,linhas.length*5+5)
 })
 }
-/*=========================================================
-331 RT FICHA TECNICA
-=========================================================*/
+/*=========================================================*
+*331 RT FICHA TECNICA*
+*=========================================================*/
 async function rtFichaTecnica(doc){
 rtCabecalhoPagina(doc,'20. FICHA TÉCNICA')
 doc.setFillColor(248,250,252)
@@ -1010,20 +1014,33 @@ doc.setFont('helvetica','bold')
 doc.setFontSize(12)
 doc.setTextColor(15,23,42)
 doc.text('TRIBUNAL DE CONTAS DO ESTADO DE RONDÔNIA',25,60)
-doc.setFont('helvetica','normal')
-doc.setFontSize(10)
-doc.setTextColor(51,65,85)
-let linhas=[['Processo','PCe 0501/2026'],['Objeto','Monitoramento das Queimadas e Incêndios Florestais'],['Documento','Relatório Técnico de Monitoramento'],['Coordenador dos Trabalhos','Manoel Fernandes Neto'],['Equipe Técnica','Luís Fernando Bueno'],['Supervisão','Raimundo Paulo Dias Barros Vieira'],['Ferramentas','Heatmap • IRIQ • IPT • CHAP/M-RAIG • Matriz 5x5 • Monitoramento 4D'],['Data de Emissão',new Date().toLocaleDateString('pt-BR')]]
+let linhas=[
+['Processo','PCe 0501/2026'],
+['Objeto','Monitoramento das Queimadas e Incêndios Florestais'],
+['Documento','Relatório Técnico de Monitoramento'],
+['Coordenador dos Trabalhos','Manoel Fernandes Neto'],
+['Equipe Técnica','Luís Fernando Bueno'],
+['Supervisão','Raimundo Paulo Dias Barros Vieira'],
+['Ferramentas','Heatmap • IRIQ • IPT • CHAP/M-RAIG • Matriz 5x5 • Monitoramento 4D'],
+['Data de Emissão',new Date().toLocaleDateString('pt-BR')]
+]
+let xCampo=25
+let xValor=82
+let larguraValor=103
 let y=82
 linhas.forEach(([campo,valor])=>{
 doc.setFont('helvetica','bold')
-doc.text(campo+':',25,y)
+doc.setFontSize(9.5)
+doc.setTextColor(51,65,85)
+doc.text(campo+':',xCampo,y)
 doc.setFont('helvetica','normal')
-let txt=doc.splitTextToSize(valor,120)
-doc.text(txt,70,y)
-y+=Math.max(16,txt.length*5+8)
+doc.setFontSize(9.5)
+let txt=doc.splitTextToSize(String(valor),larguraValor)
+doc.text(txt,xValor,y)
+let alturaTexto=txt.length*4.8
+y+=Math.max(16,alturaTexto+8)
 })
-rtFonte(doc,'TCE-RO • PCe 0501/2026')
+rtFonte(doc,'TCE-RO • PCe 0501/2026 e SEI n. 01590/2026')
 }
 /*=========================================================
 332 RT ASSINATURAS
