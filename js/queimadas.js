@@ -3915,6 +3915,25 @@ let imgQueimadasOriginal=await toDataURL('assets/geojson/queimadas.png').catch((
 /*---------------------------------------------------------
 074.1 CONSULTAR DADOS COMPLETOS
 ---------------------------------------------------------*/
+async function buscarTodosFocosEstado(dataInicial,dataFinal){
+let todos=[]
+let inicio=0
+let tamanho=1000
+while(true){
+let{data=[],error}=await client
+.from('queimadas_focos_inpe')
+.select('*')
+.gte('data_foco',dataInicial)
+.lte('data_foco',dataFinal)
+.order('data_foco',{ascending:true})
+.range(inicio,inicio+tamanho-1)
+if(error)throw error
+todos.push(...data)
+if(data.length<tamanho)break
+inicio+=tamanho
+}
+return{data:todos,error:null}
+}
 let[
 {data:focosINPE=[],error:erroFocos},
 {data:municipios=[],error:erroMunicipios},
@@ -3922,7 +3941,7 @@ let[
 {data:mapbiomas=[],error:erroMapbiomas},
 {data:prodes=[],error:erroProdes}
 ]=await Promise.all([
-client.from('queimadas_focos_inpe').select('*').gte('data_foco',dataInicial).lte('data_foco',dataFinal),
+buscarTodosFocosEstado(dataInicial,dataFinal),
 client.from('vw_queimadas_municipios_resposta').select('*'),
 client.from('vw_queimadas_ranking_estadual').select('*'),
 client.from('queimadas_mapbiomas').select('*'),
@@ -3930,7 +3949,7 @@ client.from('queimadas_prodes').select('*')
 ])
 if(erroFocos)console.error('Sumário focos:',erroFocos)
 if(erroMunicipios)console.error('Sumário municípios:',erroMunicipios)
-if(erroHeatmap)console.error('Sumário Heatmap:',erroHeatmap)
+if(erroHeatmap)console.error('Sumário Ranking Estadual:',erroHeatmap)
 if(erroMapbiomas)console.error('Sumário MapBiomas:',erroMapbiomas)
 if(erroProdes)console.error('Sumário PRODES:',erroProdes)
 focosINPE=focosINPE||[]
@@ -4052,25 +4071,8 @@ function numeroSeguro(valor){
 let n=Number(valor)
 return Number.isFinite(n)?n:0
 }
-let areaQueimada=mapbiomas.reduce((s,i)=>{
-return s+numeroSeguro(
-i.area_queimada_estado_ha??
-i.area_queimada_ha??
-i.area_queimada??
-i.area??
-0
-)
-},0)
-let desmatamento=prodes.reduce((s,i)=>{
-return s+numeroSeguro(
-i.desmatamento_estado_ha??
-i.area_desmatada_ha??
-i.area_desmatada??
-i.desmatamento??
-i.area??
-0
-)
-},0)
+let areaQueimada=mapbiomas.reduce((s,i)=>s+numeroSeguro(i.area_queimada_hectares),0)
+let desmatamento=prodes.reduce((s,i)=>s+numeroSeguro(i.desmatamento_hectares),0)
 /*---------------------------------------------------------
 074.10 FAIXA DO IRIQ
 ---------------------------------------------------------*/
