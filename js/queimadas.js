@@ -4897,8 +4897,9 @@ let finalTabelaMaiores=doc.lastAutoTable?.finalY||178
 /*---------------------------------------------------------*
 *075.25 CONCLUSÃO EXECUTIVA MUNICIPAL*
 *---------------------------------------------------------*/
-let yConclusao=Math.max(finalTabelaMaiores,finalTabelaRecentes)+5
-if(yConclusao<181)yConclusao=181
+let finalTabelas=doc.lastAutoTable?.finalY||178
+let yConclusao=finalTabelas+6
+if(yConclusao<183)yConclusao=183
 let faixaIRIQ=faixaMunicipal(iriq)
 let corIRIQ=faixaIRIQ==='CRÍTICO'?[185,28,28]:faixaIRIQ==='ALTO'?[234,88,12]:faixaIRIQ==='MODERADO'?[202,138,4]:[21,128,61]
 let corRisco=classificacao==='CRÍTICO'?[185,28,28]:classificacao==='ALTO'?[234,88,12]:classificacao==='MODERADO'?[202,138,4]:[21,128,61]
@@ -4913,8 +4914,8 @@ let yIndicadores=yConclusao+11
 let indicadores=[
 {titulo:'IRIQ',valor:iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),cor:corIRIQ,x:13,w:42},
 {titulo:'FAIXA',valor:faixaIRIQ,cor:corIRIQ,x:58,w:45},
-{titulo:'POSIÇÃO',valor:`${posicao}ª`,cor:[37,99,235],x:106,w:38},
-{titulo:'RISCO',valor:risco.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),cor:corRisco,x:147,w:42},
+{titulo:'POSIÇÃO ESTADUAL',valor:`${posicao}ª`,cor:[37,99,235],x:106,w:38},
+{titulo:'RISCO MUNICIPAL',valor:risco.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),cor:corRisco,x:147,w:42},
 {titulo:'CLASSIFICAÇÃO',valor:classificacao,cor:corRisco,x:192,w:48},
 {titulo:'FOCOS '+ano,valor:totalFocos.toLocaleString('pt-BR'),cor:[220,38,38],x:243,w:41}
 ]
@@ -4922,7 +4923,7 @@ indicadores.forEach(item=>{
 doc.setFillColor(255,255,255)
 doc.roundedRect(item.x,yIndicadores,item.w,9,1.5,1.5,'F')
 doc.setFont('helvetica','bold')
-doc.setFontSize(4.7)
+doc.setFontSize(4.5)
 doc.setTextColor(71,85,105)
 doc.text(item.titulo,item.x+2,yIndicadores+3)
 doc.setFontSize(7)
