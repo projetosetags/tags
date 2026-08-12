@@ -217,21 +217,21 @@ titulo:"📡 O que representa o Radar de Aderência?",
 objetivo:"Demonstrar visualmente o nível de contribuição institucional para cada Objetivo do Desenvolvimento Sustentável.",
 interpretacao:"Quanto mais distante do centro estiver cada eixo, maior é a aderência institucional.",
 decisao:"Identificar rapidamente quais ODS necessitam de fortalecimento.",
-fonte:"Agenda 2030 • ONU • IA-CHAP."
+fonte:"Agenda 2030 • ONU • Indicadores Ambientais • IPT/TCE-RO."
 },
 MaturidadeODS:{
 titulo:"📊 O que representa a Maturidade dos ODS?",
 objetivo:"Avaliar o estágio de evolução institucional na implementação da Agenda 2030.",
 interpretacao:"Os níveis representam a capacidade da organização em incorporar os ODS ao planejamento, execução, monitoramento e avaliação.",
 decisao:"Direcionar investimentos para fortalecer a governança climática e institucional.",
-fonte:"Modelo CHAP • Governança Pública • OECD • TCU."
+fonte:"Agenda 2030 • Governança Pública • OECD • TCU • Indicadores de Monitoramento TCE-RO."
 },
 IA:{
 titulo:"🤖 Como funciona a Análise Inteligente?",
-objetivo:"Utilizar Inteligência Artificial para apoiar a interpretação dos indicadores monitorados.",
-interpretacao:"A IA identifica padrões, tendências, riscos, oportunidades e níveis de aderência aos ODS.",
-decisao:"As recomendações servem como apoio ao gestor, sem substituir a análise técnica especializada.",
-fonte:"Modelo IA-CHAP • TCERO • Inteligência Analítica."
+objetivo:"Utilizar análise automatizada e inteligência analítica para apoiar a interpretação integrada dos indicadores ambientais, territoriais, operacionais e de governança monitorados.",
+interpretacao:"O sistema cruza indicadores como IRIQ, IPT, risco municipal, focos de calor, áreas queimadas, desmatamento, execução das ações e demais evidências disponíveis para identificar padrões, tendências, criticidades e prioridades de acompanhamento.",
+decisao:"Os resultados constituem instrumento de apoio ao planejamento, à priorização e ao acompanhamento pelo TCE-RO, não substituindo a análise técnica, a validação das evidências nem o exercício profissional do auditor.",
+fonte:"TCE-RO • IRIQ • IPT • MAPBIOMAS • PRODES • INPE • Inteligência Analítica."
 },
 Gantt:{
 titulo:"📅 O que representa o Cronograma Gantt?",
@@ -738,43 +738,7 @@ Theory of Change (UNDP); OECD Public Governance; Banco Mundial; Referencial de A
 `
 
 }
-/*=========================================================
-008 QUEIMADAS FUNCTION ANALISARCHAPIA
-=========================================================*/
-function analisarCHAPIA(registro){
-let diagnostico=[]
-let ods=[]
-let riscos=[]
-if(!registro.insumo)diagnostico.push('Conhecimento insuficiente.')
-if(!registro.atividade)diagnostico.push('Habilidade operacional não demonstrada.')
-if(!registro.produto)diagnostico.push('Produto estratégico não identificado.')
-if(!registro.resultado)diagnostico.push('Resultado esperado não definido.')
-if(!registro.impacto)diagnostico.push('Impacto social não definido.')
-let texto=JSON.stringify(registro||{}).toLowerCase()
-if(texto.includes('queimada')||texto.includes('incendio')){
-ods.push('ODS 13')
-ods.push('ODS 15')
-riscos.push('Eventos climáticos extremos')
-}
-if(texto.includes('desmatamento')){
-ods.push('ODS 15')
-riscos.push('Perda de cobertura florestal')
-}
-if(texto.includes('fiscalizacao')||texto.includes('fiscalização')){
-ods.push('ODS 16')
-riscos.push('Baixa capacidade operacional')
-}
-if(texto.includes('brigada')||texto.includes('brigadista')){
-ods.push('ODS 15')
-riscos.push('Déficit de pessoal especializado')
-}
-return{
-score:Math.max(0,100-(diagnostico.length*15)),
-diagnostico:[...new Set(diagnostico)],
-ods:[...new Set(ods)],
-riscos:[...new Set(riscos)]
-}
-}
+
 /*=========================================================
 009 QUEIMADAS FUNCTION CARREGARKPISEXECUTIVOS
 =========================================================*/
@@ -1163,14 +1127,14 @@ html+=`<div class="fonte-card">Fonte: MAPBIOMAS (Áreas Queimadas 2021-2025 • 
 html+=`
 <div class="fonte-card" style="font-size:10px;line-height:1.4">
 <b>Metodologia IRIQ Estadual:</b><br>
-IRIQ = (Risco × 30%) + (CHAP × 10%) + (Área Queimada Normalizada × 35%) + (Desmatamento Normalizado × 25%).<br>
+IRIQ = (Risco Municipal × 30%) + (IPT × 10%) + (Área Queimada Normalizada × 35%) + (Desmatamento Normalizado × 25%).<br>
 A normalização utiliza o maior valor estadual observado no período 2021-2025, atribuindo 100 pontos ao município de maior impacto e calculando proporcionalmente os demais municípios.<br><br>
 <b>Classificação HeatMap Estadual:</b><br>
 🔴 Crítico: IRIQ ≥ 75<br>
 🟠 Alto: IRIQ de 50 a 74,99<br>
 🟡 Moderado: IRIQ de 25 a 49,99<br>
 🟢 Baixo: IRIQ abaixo de 25<br><br>
-<b>Fontes:</b> INPE (Focos de Calor), MAPBIOMAS (Áreas Queimadas 2021-2025), PRODES (Desmatamento 2021-2025), CHAP e Painéis de Monitoramento TCE-RO.
+<b>Fontes:</b> INPE (Focos de Calor), MAPBIOMAS (Áreas Queimadas 2021-2025), PRODES (Desmatamento 2021-2025), IPT e Painéis de Monitoramento TCE-RO.
 </div>`  
 box.innerHTML=html
 }
@@ -1192,7 +1156,7 @@ box.innerHTML=`
 <div class="heat-amarelo"><div style="font-size:26px;font-weight:900">${moderado}</div><div>MODERADO</div><div>25-49</div></div>
 <div class="heat-verde"><div style="font-size:26px;font-weight:900">${baixo}</div><div>BAIXO</div><div>0-24</div></div>
 </div>
-<div class="fonte-card">Fonte: IRIQ Ambiental • MAPBIOMAS • PRODES • CHAP</div>`
+<div class="fonte-card">Fonte: IRIQ Ambiental • MAPBIOMAS • PRODES • IPT/TCE-RO</div>`
 }
 /*=========================================================
 018 QUEIMADAS FUNCTION RENDERCEPCIFAVANCADO
@@ -1290,7 +1254,7 @@ html+=`
 <div style="margin-top:8px;font-size:11px;color:#475569">${o.justificativa||''}</div>
 </div>`
 })
-html+='</div><div class="fonte-card">Fonte: Agenda 2030 • ONU • MAPBIOMAS • PRODES • IA-CHAP</div></div>'
+html+='</div><div class="fonte-card">Fonte: Agenda 2030 • ONU • MAPBIOMAS • PRODES • IPT/TCE-RO • Inteligência Analítica</div></div>'
 box.innerHTML=html
 }
 /*=========================================================
@@ -1541,7 +1505,7 @@ html+=`
 <div class="ods-titulo">${o.ods}</div>
 <div class="ods-meta">${o.descricao||''}</div>
 <div class="ods-ia">${o.justificativa||''}</div>
-<div class="fonte-card">Fonte: MAPBIOMAS • PRODES • IA-CHAP</div>
+<div class="fonte-card">Fonte: MAPBIOMAS • PRODES • IPT/TCE-RO • Inteligência Analítica</div>
 </div>`
 })
 html+='</div></div>'
@@ -1591,7 +1555,7 @@ box.innerHTML=`
 <h2>MATURIDADE ODS</h2>
 <div class="chap-num">${media.toFixed(1)}%</div>
 <div class="chap-label">${nivel}</div>
-<div class="fonte-card">Fonte: MAPBIOMAS • PRODES • IA-CHAP • Agenda 2030</div>
+<div class="fonte-card">Fonte: MAPBIOMAS • PRODES • IPT/TCE-RO • Agenda 2030 • Inteligência Analítica</div>
 </div>`
 }
 /*=========================================================
@@ -1604,10 +1568,10 @@ let{data=[]}=await client.from('queimadas_ods').select('*').order('peso',{ascend
 let ods=data[0]
 box.innerHTML=`
 <div class="cardExecutivo">
-<h2>ANÁLISE IA-CHAP</h2>
-<p>A ODS mais aderente ao Projeto Queimadas é <b>${ods?.ods||'-'}</b>, com aderência de <b>${Number(ods?.peso||0).toFixed(1)}%</b>.</p>
-<p>${ods?.justificativa||'Análise baseada em indicadores ambientais, governança, monitoramento, MAPBIOMAS, PRODES e IA-CHAP.'}</p>
-<div class="fonte-card">Fonte: MAPBIOMAS • PRODES • IA-CHAP • Agenda 2030</div>
+<h2>ANÁLISE INTELIGENTE DE ADERÊNCIA AOS ODS</h2>
+<p>A ODS com maior aderência ao Projeto Queimadas é <b>${ods?.ods||'-'}</b>, com índice calculado de <b>${Number(ods?.peso||0).toFixed(1)}%</b>.</p>
+<p>${ods?.justificativa||'Análise automatizada baseada na integração de indicadores ambientais, territoriais, de governança e monitoramento, considerando MAPBIOMAS, PRODES, IRIQ, IPT e demais dados disponíveis no Projeto Queimadas.'}</p>
+<div class="fonte-card">Fonte: Agenda 2030 • MAPBIOMAS • PRODES • IRIQ • IPT/TCE-RO • Inteligência Analítica</div>
 </div>`
 }
 /*=========================================================
@@ -1680,30 +1644,7 @@ Nível ${Number(i.nivel_risco||0).toFixed(0)}
 html+='</div>'
 box.innerHTML=html
 }
-/*=========================================================
-031 QUEIMADAS FUNCTION IACHAPANALISAR
-=========================================================*/
-async function iaChapAnalisar(){
-let box=document.getElementById('painelIAChap')
-if(!box)return
-let{data=[]}=await client
-.from('queimadas_ipt')
-.select('*')
-.order('resultado',{ascending:false})
-box.innerHTML=data.map(i=>{
-let score=Math.round((
-Number(i.criticidade||0)+
-Number(i.historico||0)+
-Number(i.abrangencia||0)+
-Number(i.prioridade||0)
-)/4*20)
-return`
-<div class="chap-card">
-<div class="chap-num">${score}%</div>
-<div class="chap-label">${i.municipio||i.orgao||'-'}</div>
-</div>`
-}).join('')
-}
+
 /*=========================================================
 032 QUEIMADAS FUNCTION RENDERGOVERNANCA
 =========================================================*/
@@ -2556,7 +2497,7 @@ box.innerHTML=`
 Desmatamento: ${formatarNumero(desmatamento)} ha<br>
 Municípios Críticos: ${criticos}<br>
 Municípios Alto Risco: ${alto}<br><br>
-Baseado em MAPBIOMAS, PRODES, CHAP, Plano SEDAM, POTIF e Plano Unificado TCE-RO.
+Baseado em MAPBIOMAS, PRODES, IRIQ, IPT, Plano SEDAM, POTIF e Plano Unificado TCE-RO.
 </div>`
 }
 /*=========================================================
@@ -3091,62 +3032,226 @@ as sugestões constituem apoio automatizado à auditoria e ao monitoramento conc
 
 }
 /*=========================================================
-052 QUEIMADAS FUNCTION RENDERDASHBOARDCHAP
+052 QUEIMADAS FUNCTION RENDERDASHBOARDIPT
 =========================================================*/
-async function renderDashboardCHAP(){
+async function renderDashboardIPT(){
+
 let box=document.getElementById('painelCHAP')
 if(!box)return
-let{data=[]}=await client.from('queimadas_ipt').select('*')
+
+let{data=[],error}=await client
+.from('queimadas_ipt')
+.select('municipio,indice_ipt')
+.order('indice_ipt',{ascending:false})
+
+if(error){
+console.error('Erro ao carregar IPT:',error)
+box.innerHTML=`
+<div style="
+padding:14px;
+background:#fef2f2;
+border-left:5px solid #dc2626;
+border-radius:8px;
+font-size:12px;
+font-weight:800;
+color:#991b1b">
+Não foi possível carregar o Índice de Pressão Territorial — IPT.
+</div>`
+return
+}
+
 let lista=(data||[]).map(i=>{
-let score=Math.round((
-Number(i.criticidade||0)+
-Number(i.historico||0)+
-Number(i.abrangencia||0)+
-Number(i.prioridade||0)
-)/4*20)
+
+let score=Number(i.indice_ipt||0)
+
 let classificacao='BAIXO'
 let cor='#16a34a'
-if(score>=90){
-classificacao='MUITO ALTO'
+
+if(score>=75){
+classificacao='CRÍTICO'
 cor='#dc2626'
-}else if(score>=75){
+}else if(score>=50){
 classificacao='ALTO'
 cor='#f97316'
-}else if(score>=50){
+}else if(score>=25){
 classificacao='MODERADO'
 cor='#eab308'
 }
-return{...i,score,classificacao,cor}
-}).sort((a,b)=>b.score-a.score)
+
+return{
+...i,
+score,
+classificacao,
+cor
+}
+
+})
+
 box.innerHTML=`
+
 <div style="overflow-x:auto">
-<table style="width:100%;border-collapse:collapse;background:#fff;font-size:12px">
+
+<table style="
+width:100%;
+border-collapse:collapse;
+background:#fff;
+font-size:12px">
+
 <thead>
-<tr style="background:#0d3d8c;color:#fff">
-<th style="padding:10px;text-align:center;width:70px">POSIÇÃO</th>
-<th style="padding:10px;text-align:left">MUNICÍPIO</th>
-<th style="padding:10px;text-align:center;width:120px">CHAPT</th>
-<th style="padding:10px;text-align:center;width:150px">CLASSIFICAÇÃO</th>
+
+<tr style="
+background:#0d3d8c;
+color:#fff">
+
+<th style="
+padding:10px;
+text-align:center;
+width:70px">
+POSIÇÃO
+</th>
+
+<th style="
+padding:10px;
+text-align:left">
+MUNICÍPIO
+</th>
+
+<th style="
+padding:10px;
+text-align:center;
+width:120px">
+IPT
+</th>
+
+<th style="
+padding:10px;
+text-align:center;
+width:150px">
+CLASSIFICAÇÃO
+</th>
+
 </tr>
+
 </thead>
+
 <tbody>
+
 ${lista.map((i,idx)=>`
+
 <tr style="border-bottom:1px solid #e2e8f0">
-<td style="padding:9px;text-align:center;font-weight:900">${idx+1}º</td>
-<td style="padding:9px;font-weight:800;color:#0f172a">${i.municipio||i.orgao||'-'}</td>
-<td style="padding:9px;text-align:center;font-size:16px;font-weight:900;color:${i.cor}">${i.score}%</td>
+
+<td style="
+padding:9px;
+text-align:center;
+font-weight:900">
+${idx+1}º
+</td>
+
+<td style="
+padding:9px;
+font-weight:800;
+color:#0f172a">
+${i.municipio||'-'}
+</td>
+
+<td style="
+padding:9px;
+text-align:center;
+font-size:16px;
+font-weight:900;
+color:${i.cor}">
+${i.score.toFixed(2).replace('.',',')}
+</td>
+
 <td style="padding:9px;text-align:center">
-<span style="display:inline-block;min-width:90px;padding:4px 10px;border-radius:20px;background:${i.cor};color:#fff;font-size:10px;font-weight:900">
+
+<span style="
+display:inline-block;
+min-width:90px;
+padding:4px 10px;
+border-radius:20px;
+background:${i.cor};
+color:#fff;
+font-size:10px;
+font-weight:900">
 ${i.classificacao}
 </span>
+
 </td>
-</tr>`).join('')}
+
+</tr>
+
+`).join('')}
+
 </tbody>
+
 </table>
+
 </div>
-<div style="margin-top:8px;padding:8px 10px;background:#f8fafc;border-left:4px solid #0d3d8c;font-size:10px;color:#475569;line-height:1.5">
-<b>Leitura técnica:</b> o CHAPT — Criticidade Histórica Ambiental e Pressão Territorial é um indicador analítico destinado a representar a pressão territorial associada às queimadas e aos incêndios florestais, considerando a persistência histórica das ocorrências, sua relevância ambiental e a intensidade com que esses eventos pressionam o território municipal. Sua finalidade é apoiar a identificação comparativa de áreas mais vulneráveis e subsidiar a priorização das ações de prevenção, monitoramento, fiscalização e resposta. O percentual apresentado permite comparação relativa e apoio à priorização das ações de monitoramento.
-</div>`
+
+<div style="
+margin-top:10px;
+padding:12px 14px;
+background:#f8fafc;
+border-left:5px solid #0d3d8c;
+border-radius:7px;
+font-size:11.5px;
+font-weight:700;
+color:#475569;
+line-height:1.65">
+
+<b style="
+font-size:12px;
+font-weight:900;
+color:#0d3d8c">
+LEITURA TÉCNICA DO IPT
+</b><br>
+
+O <b>IPT — Índice de Pressão Territorial</b> representa, em escala
+padronizada, a intensidade relativa das pressões ambientais observadas
+sobre o território municipal no contexto das queimadas e dos incêndios
+florestais.
+
+O índice funciona como instrumento de apoio à análise territorial,
+permitindo comparar os municípios e identificar aqueles que apresentam
+maior pressão e, consequentemente, demandam maior atenção no
+monitoramento preventivo.
+
+<br><br>
+
+<b>Interpretação:</b>
+quanto maior o IPT, maior é a pressão territorial identificada.
+O indicador deve ser analisado conjuntamente com o IRIQ, focos de calor,
+áreas queimadas, desmatamento, localização das ocorrências, unidades de
+conservação, terras indígenas, capacidade municipal de resposta e demais
+evidências disponíveis.
+
+<br><br>
+
+<b>Faixas utilizadas no painel:</b><br>
+<span style="color:#dc2626;font-weight:900">● CRÍTICO:</span> IPT ≥ 75<br>
+<span style="color:#f97316;font-weight:900">● ALTO:</span> IPT de 50 a 74,99<br>
+<span style="color:#eab308;font-weight:900">● MODERADO:</span> IPT de 25 a 49,99<br>
+<span style="color:#16a34a;font-weight:900">● BAIXO:</span> IPT abaixo de 25
+
+<br><br>
+
+<b>Uso no Controle Externo:</b>
+o IPT não deve ser utilizado isoladamente para determinar a prioridade
+de fiscalização. Sua função é complementar a análise integrada dos riscos,
+subsidiando a seleção territorial, o acompanhamento concomitante e a
+definição das providências preventivas pelo TCE-RO.
+
+</div>
+
+<div style="
+margin-top:7px;
+font-size:9.5px;
+font-weight:700;
+color:#64748b">
+Fonte: Índice de Pressão Territorial — IPT • Monitoramento Integrado TCE-RO
+</div>
+`
 }
 
 /*=========================================================
@@ -3259,7 +3364,7 @@ await renderTempoRealMunicipio(select.value)
 if(nome==='analise'){
 document.getElementById('abaAnalise')?.classList.remove('hidden')
 
-await renderDashboardCHAP()
+await renderDashboardIPT()
 await renderMatrizRisco5x5()
 await matrizRisco5x5Avancada()
 await iaPreverRiscos()
@@ -3720,7 +3825,7 @@ box.innerHTML=`
 <div class="linha-ranking"><span>🚨 Municípios Críticos</span><b>${criticos}</b></div>
 <div class="linha-ranking"><span>⚠️ Alto Risco</span><b>${altos}</b></div>
 <div class="linha-ranking"><span>🟡 Risco Moderado</span><b>${moderados}</b></div>
-<div class="linha-ranking"><span>🤖 Metodologia</span><b>CHAP + M-RAIG</b></div>
+<div class="linha-ranking"><span>📊 Índice Territorial</span><b>IPT</b></div>
 `
 }
 
@@ -4293,7 +4398,7 @@ let conceitoIRIQ='IRIQ — Índice de Risco Integrado de Queimadas: indicador si
 doc.text(doc.splitTextToSize(conceitoIRIQ,190),10,147)
 doc.setFontSize(4.5)
 doc.setTextColor(13,61,140)
-doc.text('FÓRMULA: IRIQ = (Risco × 60%) + (CHAP × 40%)',10,153)
+doc.text('FÓRMULA: IRIQ = (Risco × 60%) + (IPT × 40%)',10,153)
 doc.setTextColor(17,24,39)
 doc.text('FINALIDADE: orientar priorização, monitoramento, fiscalização e tomada de decisão do TCE-RO.',83,153)
 /*---------------------------------------------------------
@@ -4363,7 +4468,7 @@ let prioridades=[
 'Acompanhar a execução efetiva dos Planos de Ação apresentados.',
 'Manter atuação específica sobre municípios sem resposta e em dilação.',
 'Integrar TCE-RO, SEDAM, CBMRO, Defesa Civil e municípios no monitoramento.',
-'Utilizar IRIQ, Heatmap, CHAP, IA-CHAP e Monitoramento 4D como instrumentos de decisão.'
+'Utilizar IRIQ, IPT, Heatmap e Monitoramento 4D como instrumentos integrados de apoio à decisão.'
 ]
 listaCompacta(5,228,98,43,'ACHADOS EXECUTIVOS',achados)
 listaCompacta(107,228,98,43,'PRIORIDADES PARA ACOMPANHAMENTO',prioridades)
