@@ -296,7 +296,7 @@ RELATÓRIO TÉCNICO COMPLETO
 📝 WORD TÉCNICO
 </button>
 <div class="fonte-card">
-IRIQ • Heatmap • CHAP • IA-CHAP • Matriz 5x5 • Evidências • Mapas
+IRIQ • IPT • Heatmap • Matriz 5x5 • Evidências • Mapas
 </div>
 </div>
 <div class="chap-card">
