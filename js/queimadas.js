@@ -4564,16 +4564,16 @@ let classificacao=String(heatmapMunicipio?.classificacao||(iriq>=75?'CRÍTICO':i
 let participacao=totalFocosRO>0?(totalFocos/totalFocosRO)*100:0
 let observacao=String(cadastroMunicipio?.observacao||cadastroMunicipio?.observacoes||'').trim()
 let situacaoOriginal=String(cadastroMunicipio?.classificacao_ia||cadastroMunicipio?.situacao||cadastroMunicipio?.status||'-').toUpperCase()
-let documentoOriginal=String(cadastroMunicipio?.lnumerodocenviado||cadastroMunicipio?.llnumerodocenviado||cadastroMunicipio?.numero_documento||'-').trim()
-let dataOriginal=cadastroMunicipio?.ldatarecebimentodoc||null
-let textoCadastro=`${situacaoOriginal} ${documentoOriginal} ${observacao}`
-let possuiPlano=/PLACOM|PLANO\s+DE\s+CONTING[ÊE]NCIA|PLANO\s+DE\s+A[CÇ][ÃA]O/i.test(textoCadastro)
+let documento1=cadastroMunicipio?.lnumerodocenviado||cadastroMunicipio?.llnumerodocenviado||cadastroMunicipio?.numero_documento||'-'
+let documento2=cadastroMunicipio?.lnumerodocenviado2||cadastroMunicipio?.llnumerodocenviado2||cadastroMunicipio?.numero_documento2||''
+let dataRecebimento1=cadastroMunicipio?.ldatarecebimentodoc||cadastroMunicipio?.data_recebimento1||''
+let dataRecebimento2=cadastroMunicipio?.ldatarecebimentodoc2||cadastroMunicipio?.data_recebimento2||''
+let documento=String(documento2||documento1||'-').trim()
+let dataRecebimento=dataRecebimento2||dataRecebimento1||''
+let recebimento=dataRecebimento?formatarDataBR(dataRecebimento):'-'
+let textoCadastro=`${situacaoOriginal} ${documento} ${observacao}`.toUpperCase()
+let possuiPlano=/PLACOM|PLANO DE CONTING[ÊE]NCIA|PLANO DE A[CÇ][ÃA]O/.test(textoCadastro)
 let situacao=possuiPlano?'PLANO DE AÇÃO':situacaoOriginal
-let matchDocumentoPlano=observacao.match(/DOCUMENTO\s*(?:N[º°.]?\s*)?(\d{1,6}\/\d{2,4})[^.;\n]*(?:PLACOM|PLANO\s+DE\s+CONTING[ÊE]NCIA|PLANO\s+DE\s+A[CÇ][ÃA]O)/i)
-let documento=matchDocumentoPlano?.[1]||documentoOriginal
-let matchDataPlano=observacao.match(/(?:PLACOM|PLANO\s+DE\s+CONTING[ÊE]NCIA|PLANO\s+DE\s+A[CÇ][ÃA]O)[^.;\n]{0,100}?(?:RECEBIDO|RECEBIMENTO|DATA)?\s*(?:EM|:)?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i)
-let dataPlano=matchDataPlano?.[1]||null
-let recebimento=dataPlano?dataPlano.replace(/\./g,'/').replace(/-/g,'/'):possuiPlano?'-':dataOriginal?formatarDataBR(dataOriginal):'-'
 let ranking=[...heatmaps].sort((a,b)=>Number(b.iriq||b.indice_final||0)-Number(a.iriq||a.indice_final||0))
 let posicao=ranking.findIndex(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)
 posicao=posicao>=0?posicao+1:'-'
