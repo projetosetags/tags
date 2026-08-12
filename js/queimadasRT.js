@@ -117,133 +117,100 @@ doc.text('TCE-RO • Sistema de Monitoramento Inteligente de Queimadas • '+new
 doc.text('Página '+pagina+' de '+total,195,290,{align:'right'})
 }
 }
-/*=========================================================
-301 RT GERAR PDF TECNICO 0501
-=========================================================*/
+/*=========================================================*
+*301 RT GERAR PDF TECNICO 0501*
+*=========================================================*/
 async function gerarPDFTecnico0501(){
-
 let botao=document.querySelector('[onclick="gerarPDFTecnico0501()"]')
 let textoOriginal=botao?.innerHTML||''
-
 if(botao){
 botao.disabled=true
 botao.innerHTML='⏳ GERANDO RELATÓRIO...'
 }
-
 try{
-
 await prepararImagensRelatorioRT()
-
 const{jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4',true)
-
 await rtCapa(doc)
-
 doc.addPage()
 await rtSumarioVisual(doc)
-
 doc.addPage()
 await rtIntroducao(doc)
-
 doc.addPage()
 await rtObjeto(doc)
-
 doc.addPage()
 await rtMetodologia(doc)
-
 doc.addPage()
 await rtSituacaoEstadual(doc)
-
 doc.addPage()
 await rtAnaliseMunicipal(doc)
-
 doc.addPage()
 await rtHeatmap(doc)
-
 doc.addPage()
 await rtIRIQ(doc)
-
 doc.addPage()
 await rtIPT(doc)
-
 doc.addPage()
 await rtMatrizRisco(doc)
-
 doc.addPage()
 await rtMunicipiosCriticos(doc)
-
 await adicionarTop10RiscosPDF(doc)
-
 await adicionarTabelaMunicipiosPDF(doc)
-
 doc.addPage()
 await rtAchados(doc)
-
 doc.addPage()
 await rtEvidencias(doc)
-
 doc.addPage()
 await rtConclusoes(doc)
-
 doc.addPage()
 await rtPropostas(doc)
-
 doc.addPage()
 await rtPainelSituacaoVisual(doc)
-
 doc.addPage()
 await rtPainelMonitoramentoVisual(doc)
-
 doc.addPage()
 await rtPainelTempoRealVisual(doc)
-
 doc.addPage()
 await rtAnexos(doc)
-
 doc.addPage()
 await rtMapaEstadual(doc)
-
 doc.addPage()
 await rtMapaMunicipal(doc)
-
 doc.addPage()
 await rtMonitoramento4D(doc)
-
 doc.addPage()
 await rtReferencias(doc)
-
 doc.addPage()
 await rtSiglas(doc)
-
 doc.addPage()
 await rtGlossario(doc)
-
 doc.addPage()
 await rtFichaTecnica(doc)
-
 doc.addPage()
 await rtAssinaturas(doc)
-
 rtRodape(doc)
-
+/*=========================================================*
+*NUMERAÇÃO FINAL DAS PÁGINAS*
+*=========================================================*/
+let totalPaginas=doc.internal.getNumberOfPages()
+for(let pagina=1;pagina<=totalPaginas;pagina++){
+doc.setPage(pagina)
+doc.setFont('helvetica','normal')
+doc.setFontSize(7)
+doc.setTextColor(100,116,139)
+doc.text(`${pagina} de ${totalPaginas}`,200,290,{align:'right'})
+}
 doc.save('RT_PCe_0501_2026_QUEIMADAS_'+new Date().toISOString().slice(0,10)+'.pdf')
-
 await mostrarAbaQueimadas('auditor')
-
 }catch(error){
-
 console.error('Erro ao gerar relatório técnico:',error)
 alert('Erro ao gerar o relatório técnico: '+(error.message||error))
-
 }finally{
-
 if(botao){
 botao.disabled=false
 botao.innerHTML=textoOriginal
 }
-
 }
-
 }
 /*=========================================================
 302 RT CAPA
@@ -503,48 +470,72 @@ doc.text(doc.splitTextToSize(textoSintese,168),20,y+12)
 }
 rtFonte(doc,'Fonte: TCE-RO • INPE Programa Queimadas • IRIQ • IPT • Heatmap Estadual • Ofício Circular n.16/2026/GABPRES/TCERO e Ofício nº 180/2026/GABPRES/TCERO• atualização automática')
 }
-/*=========================================================
-304 RT INTRODUCAO
-=========================================================*/
+/*=========================================================*
+*304 RT INTRODUCAO*
+*=========================================================*/
 async function rtIntroducao(doc){
 rtCabecalhoPagina(doc,'1. INTRODUÇÃO')
 let y=45
-y=rtTexto(doc,'O presente relatório técnico apresenta os resultados do monitoramento das ações de prevenção, preparação, resposta e mitigação relacionadas às queimadas e incêndios florestais no Estado de Rondônia.',y,11)
-y+=8
-y=rtTexto(doc,'O acompanhamento consolida informações ambientais, operacionais, institucionais e territoriais, possibilitando a identificação de riscos, prioridades, fragilidades de governança e oportunidades de atuação preventiva e corretiva.',y,11)
-y+=8
-rtTexto(doc,'A utilização de painéis gerenciais, bases oficiais, mapas, indicadores e metodologias de avaliação de risco amplia a capacidade de análise e proporciona rastreabilidade às informações utilizadas no processo de controle externo.',y,11)
+y=rtTexto(doc,'O presente Relatório Técnico apresenta os resultados do monitoramento das ações de prevenção, preparação, resposta e mitigação relacionadas às queimadas e aos incêndios florestais no Estado de Rondônia, desenvolvido no âmbito do Processo PCe n. 0501/2026, com enfoque na atuação estadual e municipal e na identificação tempestiva de situações que demandem acompanhamento, orientação ou atuação do Tribunal de Contas do Estado de Rondônia.',y,10)
+y+=7
+y=rtTexto(doc,'O acompanhamento possui caráter contínuo, preventivo, concomitante e orientativo, buscando integrar informações ambientais, territoriais, operacionais e institucionais para proporcionar uma visão sistêmica da capacidade do Estado e dos municípios de enfrentar os riscos associados às queimadas e aos incêndios florestais. A análise abrange planejamento, governança, estrutura administrativa, capacidade operacional, prevenção, monitoramento, fiscalização, resposta e produção de evidências relativas às ações executadas.',y,10)
+y+=7
+y=rtTexto(doc,'Para essa finalidade, são consolidados dados provenientes de bases oficiais, planos de ação, documentos institucionais, evidências apresentadas pelos jurisdicionados, informações geoespaciais e indicadores desenvolvidos para apoiar a avaliação técnica. A utilização integrada dessas fontes permite identificar tendências, áreas de maior pressão territorial, municípios prioritários, fragilidades de governança e situações que possam comprometer a efetividade das políticas públicas de prevenção e enfrentamento dos incêndios florestais.',y,10)
+y+=7
+y=rtTexto(doc,'O modelo de acompanhamento utiliza painéis gerenciais, mapas temáticos, séries históricas, dados de focos de calor, informações sobre áreas queimadas e desmatamento e instrumentos específicos de análise e classificação de riscos. Entre as ferramentas empregadas destacam-se o Índice de Pressão Territorial – IPT, o Índice de Risco Integrado de Queimadas – IRIQ, o CHAP/M-RAIG, o Heatmap Estadual, a Matriz de Risco 5x5 e o Monitoramento 4D.',y,10)
+y+=7
+y=rtTexto(doc,'Esses instrumentos são empregados de forma complementar, permitindo combinar diferentes dimensões da realidade territorial e institucional. A análise integrada contribui para uma avaliação mais consistente da criticidade dos municípios, da capacidade de resposta dos entes públicos e da necessidade relativa de priorização das ações de controle externo.',y,10)
+y+=7
+y=rtTexto(doc,'A abordagem adotada busca fortalecer a atuação preventiva e concomitante do TCE-RO, permitindo que situações relevantes sejam identificadas antes da consolidação dos danos e possibilitando a emissão de orientações, alertas e encaminhamentos fundamentados em evidências. O monitoramento também proporciona maior rastreabilidade às informações utilizadas no processo de controle externo e favorece a atualização contínua das análises ao longo do período crítico de queimadas.',y,10)
+y+=7
+rtTexto(doc,'Dessa forma, o relatório constitui instrumento de apoio à tomada de decisão e ao diálogo institucional com os órgãos estaduais e municipais responsáveis, buscando contribuir para o aperfeiçoamento da governança ambiental, a redução dos riscos e o fortalecimento das ações de planejamento, prevenção, preparação, fiscalização, monitoramento e resposta às queimadas e aos incêndios florestais em Rondônia.',y,10)
 rtFonte(doc,'Fonte: TCE-RO • Processo PCe 0501/2026')
 }
-/*=========================================================
-305 RT OBJETO
-=========================================================*/
+/*=========================================================*
+*305 RT OBJETO*
+*=========================================================*/
 async function rtObjeto(doc){
 rtCabecalhoPagina(doc,'2. OBJETO')
 let y=45
-y=rtTexto(doc,'Avaliar a implementação dos planos de ação estaduais e municipais destinados ao enfrentamento das queimadas e incêndios florestais, verificando a capacidade de planejamento, prevenção, resposta, monitoramento e governança dos entes envolvidos.',y,11)
-y+=12
-rtTexto(doc,'O monitoramento também busca apoiar a tomada de decisão, priorizar territórios e riscos relevantes e acompanhar a produção das evidências necessárias à verificação do cumprimento das ações planejadas.',y,11)
+y=rtTexto(doc,'O presente monitoramento tem por objeto avaliar a implementação, a evolução e a efetividade dos planos de ação e das medidas estaduais e municipais destinadas à prevenção, preparação, monitoramento, fiscalização, resposta e mitigação das queimadas e dos incêndios florestais no Estado de Rondônia.',y,10)
+y+=8
+y=rtTexto(doc,'A atuação compreende a análise das ações planejadas pelos entes jurisdicionados, de sua execução, dos resultados alcançados, da produção de evidências comprobatórias e da capacidade institucional e operacional existente para enfrentar os riscos associados às queimadas e aos incêndios florestais, especialmente durante os períodos de maior criticidade ambiental.',y,10)
+y+=8
+y=rtTexto(doc,'Busca-se verificar se as ações planejadas apresentam correspondência com os riscos identificados nos respectivos territórios, se existem estruturas adequadas de coordenação e governança, se as medidas preventivas estão sendo executadas tempestivamente e se os órgãos responsáveis dispõem de capacidade suficiente para monitorar, fiscalizar e responder às ocorrências.',y,10)
+y+=8
+y=rtTexto(doc,'O objeto do acompanhamento também abrange a identificação e a priorização dos territórios sujeitos a maior pressão ambiental. Para tanto, são considerados indicadores territoriais, ambientais, institucionais e operacionais capazes de revelar diferenças relevantes entre os municípios e subsidiar uma atuação de controle externo proporcional ao nível de risco observado.',y,10)
+y+=8
+y=rtTexto(doc,'Nesse contexto, o monitoramento busca acompanhar a execução dos planos e das ações estaduais e municipais; identificar atrasos, omissões, fragilidades e riscos relevantes; avaliar a capacidade institucional e operacional dos entes envolvidos; acompanhar a evolução dos indicadores ambientais; priorizar municípios e territórios que demandem maior atenção; e verificar a existência e a qualidade das evidências comprobatórias das ações executadas.',y,10)
+y+=8
+y=rtTexto(doc,'As informações produzidas também subsidiam a emissão de orientações, alertas, recomendações e demais medidas de controle externo, permitindo relacionar o planejamento institucional às condições efetivamente observadas no território e direcionar a atuação para situações de maior relevância, materialidade, risco e impacto potencial.',y,10)
+y+=8
+rtTexto(doc,'A finalidade do acompanhamento não consiste apenas em registrar o cumprimento formal das ações planejadas, mas em verificar se sua implementação contribui efetivamente para reduzir vulnerabilidades, ampliar a capacidade de prevenção e resposta e mitigar os impactos ambientais, sociais, econômicos e institucionais decorrentes das queimadas e dos incêndios florestais.',y,10)
 rtFonte(doc,'Fonte: PCe 0501/2026 • TCE-RO')
 }
-/*=========================================================
-306 RT METODOLOGIA
-=========================================================*/
+/*=========================================================*
+*306 RT METODOLOGIA*
+*=========================================================*/
 async function rtMetodologia(doc){
 rtCabecalhoPagina(doc,'3. METODOLOGIA')
 let y=45
-y=rtTexto(doc,'A metodologia empregada combina monitoramento contínuo de bases institucionais, informações oficiais provenientes dos órgãos públicos e ferramentas analíticas destinadas à classificação, priorização e acompanhamento dos riscos.',y,10)
-let itens=['IPT para mensuração da pressão territorial e apoio à priorização municipal.','IRIQ para hierarquização territorial dos riscos de queimadas.','CHAP/M-RAIG para análise da competência organizacional, considerando Conhecimento, Habilidade, Atitude e Propósito.','Heatmap Estadual para representação da criticidade municipal.','Matriz de Risco 5x5 para avaliação da combinação entre probabilidade e impacto.','Monitoramento 4D para acompanhamento de execução, resultados, impactos e riscos.','INPE, PRODES, MapBiomas, planos de ação, documentos e evidências institucionais como fontes de dados.']
-y+=8
-doc.setFontSize(9)
-doc.setTextColor(51,65,85)
-itens.forEach((item,i)=>{
-let linhas=doc.splitTextToSize((i+1)+'. '+item,172)
-doc.text(linhas,20,y)
-y+=linhas.length*4.5+4
-})
+y=rtTexto(doc,'A metodologia empregada combina monitoramento contínuo de bases institucionais, informações oficiais provenientes dos órgãos públicos, análise territorial, indicadores ambientais e ferramentas destinadas à classificação, priorização e acompanhamento dos riscos. A avaliação possui caráter multidimensional, buscando integrar aspectos territoriais, ambientais, institucionais, operacionais e de governança.',y,9)
+y+=5
+y=rtTexto(doc,'O Índice de Pressão Territorial – IPT é utilizado para mensurar comparativamente a pressão territorial associada às queimadas e apoiar a identificação dos municípios que demandam maior atenção. O Índice de Risco Integrado de Queimadas – IRIQ complementa essa avaliação mediante a hierarquização territorial dos riscos, contribuindo para a definição das prioridades de acompanhamento.',y,9)
+y+=5
+y=rtTexto(doc,'O CHAP constitui instrumento de análise da competência organizacional a partir de quatro dimensões: Conhecimento, Habilidade, Atitude e Propósito. O Conhecimento considera o domínio técnico, normativo e institucional necessário à execução das ações; a Habilidade examina a capacidade de transformar conhecimento em atuação efetiva; a Atitude observa iniciativa, comprometimento, tempestividade e capacidade de mobilização; e o Propósito avalia o alinhamento das ações e decisões aos objetivos e resultados pretendidos.',y,9)
+y+=5
+y=rtTexto(doc,'A aplicação do CHAP permite identificar se determinada fragilidade decorre predominantemente de insuficiência de conhecimento, limitações na capacidade de execução, ausência de iniciativa ou desalinhamento entre planejamento, atuação e resultados. Dessa forma, a avaliação ultrapassa a verificação meramente formal das ações e contribui para compreender fatores institucionais que podem influenciar a capacidade de prevenção e resposta.',y,9)
+y+=5
+y=rtTexto(doc,'O M-RAIG é empregado de forma complementar na estruturação e interpretação dos riscos institucionais e de governança identificados durante o acompanhamento. Sua utilização permite organizar a análise das causas, consequências, controles existentes e respostas relacionadas aos riscos, estabelecendo conexão entre capacidade institucional, governança, execução das ações e resultados esperados.',y,9)
+y+=5
+y=rtTexto(doc,'A integração entre CHAP e M-RAIG amplia a dimensão qualitativa da metodologia: enquanto o CHAP auxilia na compreensão da competência e da capacidade organizacional dos responsáveis pela execução das ações, o M-RAIG contribui para estruturar os riscos decorrentes das fragilidades identificadas e apoiar a definição das respostas de controle.',y,9)
+y+=5
+y=rtTexto(doc,'A metodologia utiliza ainda o Heatmap Estadual para representação espacial da criticidade municipal; a Matriz de Risco 5x5 para avaliação da combinação entre probabilidade e impacto; e o Monitoramento 4D para acompanhamento da execução, dos resultados, dos impactos e dos riscos ao longo do período analisado.',y,9)
+y+=5
+rtTexto(doc,'As análises são fundamentadas em dados do INPE, PRODES e MapBiomas, informações constantes dos planos de ação, documentos encaminhados pelos jurisdicionados, evidências institucionais e demais registros produzidos durante o acompanhamento, assegurando maior rastreabilidade e integração entre as diferentes fontes utilizadas no processo de controle externo.',y,9)
 rtFonte(doc,'Fonte: TCE-RO • INPE • PRODES • MapBiomas • SEDAM • CBMRO • municípios de Rondônia')
 }
+
 /*=========================================================
 307 RT SITUACAO ESTADUAL
 =========================================================*/
@@ -598,24 +589,46 @@ let img=rtAdicionarImagem(doc,'painelMunicipiosPrioritarios',10,y+5,190,205)
 if(!img)rtAdicionarImagem(doc,'painelSalaSituacaoEstadual',10,y+5,190,205)
 rtFonte(doc,'Fonte: IRIQ • TCE-RO • INPE • indicadores ambientais e históricos')
 }
-/*=========================================================
-311 RT IPT
-=========================================================*/
+/*=========================================================*
+*311 RT IPT*
+*=========================================================*/
 async function rtIPT(doc){
 rtCabecalhoPagina(doc,'8. IPT — ÍNDICE DE PRESSÃO TERRITORIAL')
 let y=43
-y=rtTexto(doc,'O Índice de Pressão Territorial (IPT) representa a pressão territorial associada às queimadas e incêndios florestais, permitindo a comparação entre os municípios e apoiando a identificação dos territórios que demandam maior prioridade de prevenção, monitoramento, fiscalização e resposta.',y,9)
-rtAdicionarImagem(doc,'painelIPT',10,y+6,190,205)
+y=rtTexto(doc,'O Índice de Pressão Territorial – IPT constitui instrumento de apoio à análise comparativa da pressão exercida sobre o território em relação às queimadas e aos incêndios florestais. Sua aplicação permite organizar e interpretar informações territoriais e ambientais de forma integrada, contribuindo para identificar municípios que apresentam maior concentração de fatores associados à ocorrência, propagação ou impacto desses eventos.',y,9)
+y+=5
+y=rtTexto(doc,'O índice é utilizado como ferramenta de priorização territorial, permitindo comparar os municípios sob uma referência comum e direcionar a atenção do controle externo para localidades que apresentam maior pressão relativa. Dessa forma, o IPT não deve ser interpretado isoladamente como indicação da ocorrência de um incêndio, mas como indicador destinado a revelar diferenças de pressão entre os territórios analisados e apoiar a definição das prioridades de acompanhamento.',y,9)
+y+=5
+y=rtTexto(doc,'No contexto do monitoramento realizado pelo TCE-RO, os resultados do IPT subsidiam o planejamento das ações de prevenção, monitoramento, fiscalização e resposta, bem como a seleção de municípios que demandam análise mais detalhada. A posição relativa de cada município permite estabelecer uma leitura territorial do risco e identificar concentrações que podem justificar maior atenção institucional.',y,9)
+y+=5
+y=rtTexto(doc,'A interpretação do IPT deve ser realizada conjuntamente com os demais instrumentos empregados no monitoramento, especialmente o IRIQ, os registros de focos de calor, as informações de áreas queimadas e desmatamento, o Heatmap Estadual, a Matriz de Risco 5x5, os planos de ação e as evidências apresentadas pelos entes jurisdicionados. Essa integração reduz o risco de decisões baseadas em um único indicador e fortalece a análise técnica.',y,9)
+y+=5
+y=rtTexto(doc,'Quanto maior o valor relativo apresentado pelo IPT, maior é a pressão territorial identificada no município e, consequentemente, maior tende a ser sua relevância para fins de acompanhamento. Valores menores indicam pressão comparativamente inferior dentro do universo analisado, sem significar ausência de risco ou dispensa das medidas permanentes de prevenção e preparação.',y,9)
+y+=5
+y=rtTexto(doc,'A utilização do índice permite, portanto, transformar diferentes informações territoriais em um instrumento objetivo de comparação e priorização. O IPT funciona como elemento de triagem técnica, apoiando a identificação dos territórios que justificam aprofundamento da análise, verificação das ações planejadas e acompanhamento mais próximo da capacidade municipal de prevenção e resposta.',y,9)
+y+=6
+rtAdicionarImagem(doc,'painelIPT',10,y,190,112)
 rtFonte(doc,'Fonte: IPT • TCE-RO')
 }
-/*=========================================================
-313 RT MATRIZ RISCO
-=========================================================*/
+/*=========================================================*
+*313 RT MATRIZ RISCO*
+*=========================================================*/
 async function rtMatrizRisco(doc){
 rtCabecalhoPagina(doc,'10. MATRIZ DE RISCO 5X5')
 let y=43
-y=rtTexto(doc,'A Matriz de Risco 5x5 classifica os eventos monitorados segundo a combinação entre probabilidade de ocorrência e impacto potencial, permitindo identificar os riscos que demandam atuação prioritária.',y,9)
-rtAdicionarImagem(doc,'painelMatriz5x5',10,y+6,190,205)
+y=rtTexto(doc,'A Matriz de Risco 5x5 constitui instrumento de classificação e priorização dos eventos monitorados, relacionando a probabilidade de ocorrência ao impacto potencial de cada situação identificada. A combinação dessas duas dimensões permite posicionar os riscos em diferentes níveis de criticidade e apoiar a definição das situações que demandam maior atenção institucional.',y,9)
+y+=5
+y=rtTexto(doc,'A matriz proporciona uma representação visual dos riscos associados às queimadas e aos incêndios florestais, permitindo comparar eventos ambientais, territoriais, operacionais e de governança sob uma mesma estrutura de avaliação. Quanto maior a combinação entre probabilidade e impacto, maior será a criticidade do risco e, consequentemente, maior a necessidade de acompanhamento, prevenção, mitigação ou resposta.',y,9)
+y+=6
+rtAdicionarImagem(doc,'painelMatriz5x5',10,y,190,120)
+y+=126
+y=rtTexto(doc,'A leitura da matriz é realizada pelo cruzamento entre os dois eixos de avaliação. Um deles representa a probabilidade de ocorrência do evento e o outro representa a magnitude de seu impacto. O ponto de encontro dessas duas dimensões determina a posição do risco na matriz e sua correspondente faixa de criticidade.',y,8)
+y+=4
+y=rtTexto(doc,'As áreas de menor criticidade representam situações com menor combinação entre probabilidade e impacto. À medida que o risco avança para as faixas intermediárias, aumenta a necessidade de acompanhamento e adoção de controles. As áreas de maior criticidade concentram eventos cuja combinação entre elevada probabilidade e elevado impacto recomenda tratamento prioritário e acompanhamento mais próximo.',y,8)
+y+=4
+y=rtTexto(doc,'Para utilização prática, deve-se localizar o evento na matriz, observar sua posição e verificar o nível de criticidade correspondente. Os riscos situados nas faixas mais elevadas devem receber prioridade na análise, na definição de medidas preventivas e corretivas e no acompanhamento das providências adotadas pelos responsáveis.',y,8)
+y+=4
+rtTexto(doc,'A Matriz de Risco 5x5 não deve ser utilizada isoladamente. Sua interpretação é integrada aos demais indicadores e evidências do monitoramento, permitindo ao TCE-RO direcionar recursos de fiscalização e acompanhamento para situações que apresentem maior probabilidade de ocorrência, maior impacto potencial ou combinação relevante desses fatores.',y,8)
 rtFonte(doc,'Fonte: Matriz de Risco 5x5 • TCE-RO')
 }
 /*=========================================================
