@@ -51,9 +51,9 @@ async function prepararImagensRelatorioRT(){
 RT_IMAGENS={}
 await capturarPainelRTAba('executivo',['painelKPIs','painelFocosCalor','painelMunicipiosPrioritarios','painelIRIQHeatmapUnificado'])
 await capturarPainelRTAba('executivomunicipal',['painelKPIsMunicipais','painelTabelaMunicipios','mapaMunicipalPlanos','painelEstatisticasMunicipais'])
-await capturarPainelRTAba('situacao',['painelSalaSituacaoEstadual','painelTopIAChap','painelIndicadoresGovernanca'])
+await capturarPainelRTAba('situacao',['painelSalaSituacaoEstadual','painelTopIAIPT','painelIndicadoresGovernanca'])
 await capturarPainelRTAba('monitoramento',['painelAcoesSedam','painelAcoesCBM','painelAcoesTCERO','painelGovernanca','painelMonitoramento4D','painelExecucaoFisica','painelExecucaoFinanceira','painelEvidencias'])
-await capturarPainelRTAba('analise',['painelCHAP','painelIAChap','painelMatriz5x5'])
+await capturarPainelRTAba('analise',['painelIPT','painelMatriz5x5'])
 await capturarPainelRTAba('temporeal',['painelTempoRealKPIs','painelTempoRealFocos','painelTempoRealRanking','graficoTempoReal'])
 await capturarPainelRTAba('mapa',['mapaROEstadual','mapaRO'])
 await capturarPainelRTAba('auditor',['painelAuditorKPIs','painelTopRiscos','painelAchadosAutomaticos'])
@@ -121,87 +121,129 @@ doc.text('Página '+pagina+' de '+total,195,290,{align:'right'})
 301 RT GERAR PDF TECNICO 0501
 =========================================================*/
 async function gerarPDFTecnico0501(){
+
 let botao=document.querySelector('[onclick="gerarPDFTecnico0501()"]')
 let textoOriginal=botao?.innerHTML||''
+
 if(botao){
 botao.disabled=true
 botao.innerHTML='⏳ GERANDO RELATÓRIO...'
 }
+
 try{
+
 await prepararImagensRelatorioRT()
+
 const{jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4',true)
+
 await rtCapa(doc)
+
 doc.addPage()
 await rtSumarioVisual(doc)
+
 doc.addPage()
 await rtIntroducao(doc)
+
 doc.addPage()
 await rtObjeto(doc)
+
 doc.addPage()
 await rtMetodologia(doc)
+
 doc.addPage()
 await rtSituacaoEstadual(doc)
+
 doc.addPage()
 await rtAnaliseMunicipal(doc)
+
 doc.addPage()
 await rtHeatmap(doc)
+
 doc.addPage()
 await rtIRIQ(doc)
+
 doc.addPage()
-await rtCHAP(doc)
-doc.addPage()
-await rtIACHAP(doc)
+await rtIPT(doc)
+
 doc.addPage()
 await rtMatrizRisco(doc)
+
 doc.addPage()
 await rtMunicipiosCriticos(doc)
+
 await adicionarTop10RiscosPDF(doc)
+
 await adicionarTabelaMunicipiosPDF(doc)
+
 doc.addPage()
 await rtAchados(doc)
+
 doc.addPage()
 await rtEvidencias(doc)
+
 doc.addPage()
 await rtConclusoes(doc)
+
 doc.addPage()
 await rtPropostas(doc)
+
 doc.addPage()
 await rtPainelSituacaoVisual(doc)
+
 doc.addPage()
 await rtPainelMonitoramentoVisual(doc)
+
 doc.addPage()
 await rtPainelTempoRealVisual(doc)
+
 doc.addPage()
 await rtAnexos(doc)
+
 doc.addPage()
 await rtMapaEstadual(doc)
+
 doc.addPage()
 await rtMapaMunicipal(doc)
+
 doc.addPage()
 await rtMonitoramento4D(doc)
+
 doc.addPage()
 await rtReferencias(doc)
+
 doc.addPage()
 await rtSiglas(doc)
+
 doc.addPage()
 await rtGlossario(doc)
+
 doc.addPage()
 await rtFichaTecnica(doc)
+
 doc.addPage()
 await rtAssinaturas(doc)
+
 rtRodape(doc)
+
 doc.save('RT_PCe_0501_2026_QUEIMADAS_'+new Date().toISOString().slice(0,10)+'.pdf')
+
 await mostrarAbaQueimadas('auditor')
+
 }catch(error){
+
 console.error('Erro ao gerar relatório técnico:',error)
 alert('Erro ao gerar o relatório técnico: '+(error.message||error))
+
 }finally{
+
 if(botao){
 botao.disabled=false
 botao.innerHTML=textoOriginal
 }
+
 }
+
 }
 /*=========================================================
 302 RT CAPA
@@ -285,7 +327,7 @@ let y=39
 /* CABEÇALHO VISUAL */
 let img1=rtAdicionarImagem(doc,'painelTempoRealKPIs',15,y,56,34)
 let img2=rtAdicionarImagem(doc,'painelKPIsMunicipais',77,y,56,34)
-let img3=rtAdicionarImagem(doc,'painelTopIAChap',139,y,56,34)
+let img3=rtAdicionarImagem(doc,'painelTopIAIPT',139,y,56,34)
 if(!img1){
 doc.setFillColor(239,246,255)
 doc.roundedRect(15,y,56,30,3,3,'F')
@@ -459,7 +501,7 @@ let maior3=top3IRIQ[2]
 let textoSintese=`Embora o IRIQ estadual seja ${iriqEstadual.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})} (${faixaEstado}), a média dos cinco municípios com maiores índices alcança ${mediaTop5.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})} (${faixaTop5}), evidenciando concentração territorial do risco. Destacam-se ${maior1?.municipio||'-'} (${Number(maior1?.iriq||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}), ${maior2?.municipio||'-'} (${Number(maior2?.iriq||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}) e ${maior3?.municipio||'-'} (${Number(maior3?.iriq||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}). O cenário recomenda manutenção do acompanhamento concomitante e priorização dos territórios de maior risco, dos municípios sem resposta e dos entes ainda em dilação.`
 doc.text(doc.splitTextToSize(textoSintese,168),20,y+12)
 }
-rtFonte(doc,'Fonte: TCE-RO • INPE Programa Queimadas • IRIQ • Heatmap Estadual • Ofício Circular n.16/2026/GABPRES/TCERO e Ofício nº 180/2026/GABPRES/TCERO• atualização automática')
+rtFonte(doc,'Fonte: TCE-RO • INPE Programa Queimadas • IRIQ • IPT • Heatmap Estadual • Ofício Circular n.16/2026/GABPRES/TCERO e Ofício nº 180/2026/GABPRES/TCERO• atualização automática')
 }
 /*=========================================================
 304 RT INTRODUCAO
@@ -492,7 +534,7 @@ async function rtMetodologia(doc){
 rtCabecalhoPagina(doc,'3. METODOLOGIA')
 let y=45
 y=rtTexto(doc,'A metodologia empregada combina monitoramento contínuo de bases institucionais, informações oficiais provenientes dos órgãos públicos e ferramentas analíticas destinadas à classificação, priorização e acompanhamento dos riscos.',y,10)
-let itens=['CHAP e IA-CHAP para estruturação, avaliação e priorização dos cenários monitorados.','IRIQ para hierarquização territorial dos riscos de queimadas.','Heatmap Estadual para representação da criticidade municipal.','Matriz de Risco 5x5 para avaliação da combinação entre probabilidade e impacto.','Monitoramento 4D para acompanhamento de execução, resultados, impactos e riscos.','INPE, PRODES, MapBiomas, planos de ação, documentos e evidências institucionais como fontes de dados.']
+let itens=['IPT para mensuração da pressão territorial e apoio à priorização municipal.','IRIQ para hierarquização territorial dos riscos de queimadas.','CHAP/M-RAIG para análise da competência organizacional, considerando Conhecimento, Habilidade, Atitude e Propósito.','Heatmap Estadual para representação da criticidade municipal.','Matriz de Risco 5x5 para avaliação da combinação entre probabilidade e impacto.','Monitoramento 4D para acompanhamento de execução, resultados, impactos e riscos.','INPE, PRODES, MapBiomas, planos de ação, documentos e evidências institucionais como fontes de dados.']
 y+=8
 doc.setFontSize(9)
 doc.setTextColor(51,65,85)
@@ -557,25 +599,14 @@ if(!img)rtAdicionarImagem(doc,'painelSalaSituacaoEstadual',10,y+5,190,205)
 rtFonte(doc,'Fonte: IRIQ • TCE-RO • INPE • indicadores ambientais e históricos')
 }
 /*=========================================================
-311 RT CHAP
+311 RT IPT
 =========================================================*/
-async function rtCHAP(doc){
-rtCabecalhoPagina(doc,'8. CHAP')
+async function rtIPT(doc){
+rtCabecalhoPagina(doc,'8. IPT — ÍNDICE DE PRESSÃO TERRITORIAL')
 let y=43
-y=rtTexto(doc,'O modelo CHAP estrutura a análise das capacidades e riscos associados à prevenção, preparação, resposta e acompanhamento das queimadas, oferecendo suporte à identificação das fragilidades institucionais e operacionais.',y,9)
-rtAdicionarImagem(doc,'painelCHAP',10,y+6,190,205)
-rtFonte(doc,'Fonte: Modelo CHAP • TCE-RO')
-}
-/*=========================================================
-312 RT IA CHAP
-=========================================================*/
-async function rtIACHAP(doc){
-rtCabecalhoPagina(doc,'9. IA-CHAP')
-let y=43
-y=rtTexto(doc,'O IA-CHAP amplia a capacidade de análise mediante tratamento integrado das evidências, histórico, governança, riscos e critérios de prioridade, apoiando o acompanhamento técnico e a tomada de decisão.',y,9)
-let img=rtAdicionarImagem(doc,'painelIAChap',10,y+6,190,205)
-if(!img)rtAdicionarImagem(doc,'painelTopIAChap',10,y+6,190,205)
-rtFonte(doc,'Fonte: IA-CHAP • M-RAIG • Resolução n. 463/2026/TCE-RO')
+y=rtTexto(doc,'O Índice de Pressão Territorial (IPT) representa a pressão territorial associada às queimadas e incêndios florestais, permitindo a comparação entre os municípios e apoiando a identificação dos territórios que demandam maior prioridade de prevenção, monitoramento, fiscalização e resposta.',y,9)
+rtAdicionarImagem(doc,'painelIPT',10,y+6,190,205)
+rtFonte(doc,'Fonte: IPT • TCE-RO')
 }
 /*=========================================================
 313 RT MATRIZ RISCO
@@ -696,7 +727,7 @@ rtFonte(doc,'Fonte: consolidação do monitoramento • IRIQ • TCE-RO')
 =========================================================*/
 async function rtPropostas(doc){
 rtCabecalhoPagina(doc,'15. PROPOSTAS DE ENCAMINHAMENTO')
-let propostas=['Fortalecer a governança estadual e interfederativa para enfrentamento das queimadas.','Atualizar e monitorar continuamente os planos municipais de ação.','Priorizar os municípios e territórios classificados nos níveis de maior risco.','Utilizar CHAP, IA-CHAP, IRIQ e demais instrumentos de priorização como apoio à tomada de decisão.','Integrar bases de dados estaduais, municipais e federais.','Fortalecer ações preventivas antes e durante o período crítico de estiagem.','Monitorar periodicamente a execução física e financeira dos planos.','Manter mecanismos permanentes de sala de situação e acompanhamento dos riscos.','Intensificar ações de fiscalização e controle ambiental nos territórios prioritários.','Promover capacitação contínua e aperfeiçoamento das equipes envolvidas.']
+let propostas=['Fortalecer a governança estadual e interfederativa para enfrentamento das queimadas.','Atualizar e monitorar continuamente os planos municipais de ação.','Priorizar os municípios e territórios classificados nos níveis de maior risco.','Utilizar IRIQ, IPT e demais instrumentos de priorização como apoio à tomada de decisão.','Integrar bases de dados estaduais, municipais e federais.','Fortalecer ações preventivas antes e durante o período crítico de estiagem.','Monitorar periodicamente a execução física e financeira dos planos.','Manter mecanismos permanentes de sala de situação e acompanhamento dos riscos.','Intensificar ações de fiscalização e controle ambiental nos territórios prioritários.','Promover capacitação contínua e aperfeiçoamento das equipes envolvidas.']
 let y=44
 propostas.forEach((p,i)=>{
 doc.setFillColor(248,250,252)
@@ -720,9 +751,9 @@ async function rtPainelSituacaoVisual(doc){
 rtCabecalhoPagina(doc,'PAINEL DE SITUAÇÃO E GOVERNANÇA')
 let img1=rtAdicionarImagem(doc,'painelSalaSituacaoEstadual',10,40,190,135)
 let y=img1?img1.y+img1.h+8:48
-let img2=rtAdicionarImagem(doc,'painelTopIAChap',10,y,190,95)
+let img2=rtAdicionarImagem(doc,'painelTopIAIPT',10,y,190,95)
 if(!img2)rtAdicionarImagem(doc,'painelIndicadoresGovernanca',10,y,190,95)
-rtFonte(doc,'Fonte: INPE • PRODES • MapBiomas • IRIQ • CHAP • IA-CHAP • TCE-RO')
+rtFonte(doc,'Fonte: INPE • PRODES • MapBiomas • IRIQ • IPT • IA-CHAP • TCE-RO')
 }
 /*=========================================================
 322 RT PAINEL MONITORAMENTO VISUAL
@@ -754,7 +785,7 @@ rtFonte(doc,'Fonte: INPE Programa Queimadas • dados filtrados para Rondônia �
 =========================================================*/
 async function rtAnexos(doc){
 rtCabecalhoPagina(doc,'16. ANEXOS')
-let anexos=['Mapa Estadual de Risco e áreas ambientais monitoradas.','Mapa Municipal dos Planos de Ação.','Painel de Situação e Governança.','Heatmap Estadual.','IRIQ Estadual.','Painel CHAP.','Painel IA-CHAP.','Matriz de Risco 5x5.','Tabela Consolidada dos 52 Municípios.','Planos de Ação Estaduais e Municipais.','Evidências Documentais.','Monitoramento 4D.','Indicadores Estratégicos.','Evolução dos Focos de Calor.','Demais documentos de suporte utilizados na análise.']
+let anexos=['Mapa Estadual de Risco e áreas ambientais monitoradas.','Mapa Municipal dos Planos de Ação.','Painel de Situação e Governança.','Heatmap Estadual.','IRIQ Estadual.','Painel IPT.','Matriz de Risco 5x5.','Tabela Consolidada dos 52 Municípios.','Planos de Ação Estaduais e Municipais.','Evidências Documentais.','Monitoramento 4D.','Indicadores Estratégicos.','Evolução dos Focos de Calor.','Demais documentos de suporte utilizados na análise.']
 let y=45
 doc.setFontSize(9)
 doc.setTextColor(51,65,85)
@@ -864,7 +895,7 @@ rtFonte(doc,'Fonte: Sistema de Monitoramento Inteligente de Queimadas • TCE-RO
 =========================================================*/
 async function rtReferencias(doc){
 rtCabecalhoPagina(doc,'17. REFERÊNCIAS')
-let refs=['Instituto Nacional de Pesquisas Espaciais - INPE. Programa Queimadas.','MapBiomas Brasil. Coleções de Uso e Cobertura da Terra.','Projeto de Monitoramento do Desmatamento na Amazônia Legal por Satélite - PRODES.','Secretaria de Estado do Desenvolvimento Ambiental - SEDAM.','Corpo de Bombeiros Militar do Estado de Rondônia - CBMRO.','Tribunal de Contas do Estado de Rondônia - TCE-RO.','Plano de Ação da SEDAM para Enfrentamento das Queimadas.','Plano Operacional relacionado às ações do CBMRO.','Plano Unificado de Enfrentamento às Queimadas.','Metodologia CHAP.','Metodologia IA-CHAP e M-RAIG.','Heatmap Estadual de Queimadas.','Índice de Risco Integrado de Queimadas - IRIQ.','Processo PCe 0501/2026.','Ofício Circular n.16/2026/GABPRES/TCERO.']
+let refs=['Instituto Nacional de Pesquisas Espaciais - INPE. Programa Queimadas.','MapBiomas Brasil. Coleções de Uso e Cobertura da Terra.','Projeto de Monitoramento do Desmatamento na Amazônia Legal por Satélite - PRODES.','Secretaria de Estado do Desenvolvimento Ambiental - SEDAM.','Corpo de Bombeiros Militar do Estado de Rondônia - CBMRO.','Tribunal de Contas do Estado de Rondônia - TCE-RO.','Plano de Ação da SEDAM para Enfrentamento das Queimadas.','Plano Operacional relacionado às ações do CBMRO.','Plano Unificado de Enfrentamento às Queimadas.','Índice de Pressão Territorial - IPT.','Modelo de Competência Organizacional CHAP e metodologia M-RAIG.','Heatmap Estadual de Queimadas.','Índice de Risco Integrado de Queimadas - IRIQ.','Processo PCe 0501/2026.','Ofício Circular n.16/2026/GABPRES/TCERO.']
 let y=45
 doc.setFont('helvetica','normal')
 doc.setFontSize(9)
@@ -881,7 +912,7 @@ rtFonte(doc,'Referências institucionais e bases utilizadas no monitoramento')
 =========================================================*/
 async function rtSiglas(doc){
 rtCabecalhoPagina(doc,'18. SIGLAS E ABREVIATURAS')
-let siglas=[['CBMRO','Corpo de Bombeiros Militar do Estado de Rondônia'],['CHAP','Modelo de Competência Organizacional utilizado no monitoramento'],['IA-CHAP','Inteligência Artificial aplicada ao CHAP'],['INPE','Instituto Nacional de Pesquisas Espaciais'],['IRIQ','Índice de Risco Integrado de Queimadas'],['ODS','Objetivos de Desenvolvimento Sustentável'],['PCe','Processo de Controle Externo'],['PRODES','Projeto de Monitoramento do Desmatamento na Amazônia Legal por Satélite'],['SEDAM','Secretaria de Estado do Desenvolvimento Ambiental'],['TCE-RO','Tribunal de Contas do Estado de Rondônia'],['TI','Terra Indígena'],['UC','Unidade de Conservação']]
+let siglas=[['CBMRO','Corpo de Bombeiros Militar do Estado de Rondônia'],['CHAP','Conhecimento, Habilidade, Atitude e Propósito'],['INPE','Instituto Nacional de Pesquisas Espaciais'],['IPT','Índice de Pressão Territorial'],['IRIQ','Índice de Risco Integrado de Queimadas'],['M-RAIG','Metodologia de Referência para Avaliação Integrada de Governança'],['ODS','Objetivos de Desenvolvimento Sustentável'],['PCe','Processo de Controle Externo'],['PRODES','Projeto de Monitoramento do Desmatamento na Amazônia Legal por Satélite'],['SEDAM','Secretaria de Estado do Desenvolvimento Ambiental'],['TCE-RO','Tribunal de Contas do Estado de Rondônia'],['TI','Terra Indígena'],['UC','Unidade de Conservação']]
 doc.autoTable({startY:42,head:[['SIGLA','DESCRIÇÃO']],body:siglas,styles:{fontSize:9,cellPadding:3,textColor:[51,65,85]},headStyles:{fillColor:[15,23,42],textColor:[255,255,255]},alternateRowStyles:{fillColor:[248,250,252]},margin:{left:15,right:15}})
 }
 /*=========================================================
@@ -889,7 +920,7 @@ doc.autoTable({startY:42,head:[['SIGLA','DESCRIÇÃO']],body:siglas,styles:{font
 =========================================================*/
 async function rtGlossario(doc){
 rtCabecalhoPagina(doc,'19. GLOSSÁRIO')
-let termos=[['Queimada','Utilização controlada ou não do fogo em vegetação natural ou antrópica.'],['Foco de Calor','Registro orbital de temperatura compatível com a ocorrência de fogo.'],['Heatmap','Representação gráfica dos níveis de risco por território.'],['IRIQ','Indicador composto utilizado para classificação e priorização dos riscos de queimadas.'],['Governança','Conjunto de mecanismos de coordenação, decisão, acompanhamento e controle das ações.'],['Monitoramento 4D','Acompanhamento integrado da execução, resultados, impactos e riscos.'],['CHAP','Modelo utilizado para avaliação estruturada das capacidades e prioridades.'],['IA-CHAP','Aplicação analítica de inteligência artificial ao modelo CHAP.'],['Matriz 5x5','Ferramenta de avaliação de risco baseada em probabilidade e impacto.'],['Sala de Situação','Ambiente de acompanhamento integrado dos eventos e indicadores críticos.']]
+let termos=[['Queimada','Utilização controlada ou não do fogo em vegetação natural ou antrópica.'],['Foco de Calor','Registro orbital de temperatura compatível com a ocorrência de fogo.'],['Heatmap','Representação gráfica dos níveis de risco por território.'],['IRIQ','Indicador composto utilizado para classificação e priorização dos riscos de queimadas.'],['IPT','Índice de Pressão Territorial utilizado para mensurar comparativamente a pressão territorial associada às queimadas e incêndios florestais.'],['Governança','Conjunto de mecanismos de coordenação, decisão, acompanhamento e controle das ações.'],['Monitoramento 4D','Acompanhamento integrado da execução, resultados, impactos e riscos.'],['CHAP','Modelo de Competência Organizacional estruturado nas dimensões Conhecimento, Habilidade, Atitude e Propósito.'],['Matriz 5x5','Ferramenta de avaliação de risco baseada em probabilidade e impacto.'],['Sala de Situação','Ambiente de acompanhamento integrado dos eventos e indicadores críticos.']]
 let y=45
 termos.forEach(([titulo,texto])=>{
 doc.setFont('helvetica','bold')
@@ -917,7 +948,7 @@ doc.text('TRIBUNAL DE CONTAS DO ESTADO DE RONDÔNIA',25,60)
 doc.setFont('helvetica','normal')
 doc.setFontSize(10)
 doc.setTextColor(51,65,85)
-let linhas=[['Processo','PCe 0501/2026'],['Objeto','Monitoramento das Queimadas e Incêndios Florestais'],['Documento','Relatório Técnico de Monitoramento'],['Coordenador dos Trabalhos','Manoel Fernandes Neto'],['Equipe Técnica','Luís Fernando Bueno'],['Supervisão','Raimundo Paulo Dias Barros Vieira'],['Ferramentas','Heatmap • IRIQ • CHAP • IA-CHAP • Matriz 5x5 • Monitoramento 4D'],['Data de Emissão',new Date().toLocaleDateString('pt-BR')]]
+let linhas=[['Processo','PCe 0501/2026'],['Objeto','Monitoramento das Queimadas e Incêndios Florestais'],['Documento','Relatório Técnico de Monitoramento'],['Coordenador dos Trabalhos','Manoel Fernandes Neto'],['Equipe Técnica','Luís Fernando Bueno'],['Supervisão','Raimundo Paulo Dias Barros Vieira'],['Ferramentas','Heatmap • IRIQ • IPT • CHAP/M-RAIG • Matriz 5x5 • Monitoramento 4D'],['Data de Emissão',new Date().toLocaleDateString('pt-BR')]]
 let y=82
 linhas.forEach(([campo,valor])=>{
 doc.setFont('helvetica','bold')
