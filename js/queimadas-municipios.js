@@ -329,23 +329,24 @@ if(iriq<0)iriq=0
 return iriq.toFixed(2)
 }
 /*=========================================================
-110.1 QUEIMADAS CLASSIFICAÇÃO MUNICIPAL ATUAL
+110.1 CLASSIFICAÇÃO MUNICIPAL ATUAL
 =========================================================*/
 function classificarMunicipioAtual(i){
 let obs=String(i?.observacao||i?.observacoes||'').trim()
 let texto=obs.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()
-let data1=i?.ldatarecebimentodoc||i?.data_recebimento1||''
-let data2=i?.lldatarecebimentodoc||i?.ldatarecebimentodoc2||i?.data_recebimento2||''
-let doc1=i?.lnumerodocenviado||i?.numero_documento||''
-let doc2=i?.llnumerodocenviado||i?.lnumerodocenviado2||i?.llnumerodocenviado2||i?.numero_documento2||''
+let data1=i?.ldatarecebimentodoc||''
+let data2=i?.lldatarecebimentodoc||''
+let doc1=String(i?.lnumerodocenviado||'').trim()
+let doc2=String(i?.llnumerodocenviado||'').trim()
 let possuiPlano=texto.includes('PLACOM')||texto.includes('PLANO DE ACAO')||texto.includes('PLANO MUNICIPAL')||texto.includes('PLANO DE CONTINGENCIA')||texto.includes('PLANO ANUAL')||texto.includes('PIMF')
 let possuiDilacao=texto.includes('DILACAO')||texto.includes('PRORROGACAO')||texto.includes('SOLICITACAO DE PRAZO')
 let possuiRecebimento=Boolean((data1&&doc1)||(data2&&doc2))
-let situacao='SEM RESPOSTA',cor='VERMELHO'
-if(possuiRecebimento&&possuiPlano){situacao='PLANO DE AÇÃO';cor='VERDE'}
-else if(possuiRecebimento&&possuiDilacao){situacao='DILAÇÃO DE PRAZO';cor='AMARELO'}
-else if(possuiRecebimento){situacao='PLANO DE AÇÃO';cor='VERDE'}
-return{...i,situacaoAtual:situacao,classificacaoAtual:cor,documentoAtual:String(doc2||doc1||'-').trim(),recebimentoAtual:data2||data1||''}
+let classificacaoAtual='VERMELHO'
+let situacaoAtual='SEM RESPOSTA'
+if(possuiRecebimento&&possuiPlano){classificacaoAtual='VERDE';situacaoAtual='PLANO DE AÇÃO'}
+else if(possuiRecebimento&&possuiDilacao){classificacaoAtual='AMARELO';situacaoAtual='DILAÇÃO DE PRAZO'}
+else if(possuiRecebimento){classificacaoAtual='VERDE';situacaoAtual='PLANO DE AÇÃO'}
+return{...i,classificacaoAtual,situacaoAtual,documentoAtual:doc2||doc1||'-',recebimentoAtual:data2||data1||''}
 }
 /*=========================================================
 111 QUEIMADAS FUNCTION RENDERPLANOSMUNICIPAIS
