@@ -3924,7 +3924,7 @@ let[
 ]=await Promise.all([
 client.from('queimadas_focos_inpe').select('*').gte('data_foco',dataInicial).lte('data_foco',dataFinal),
 client.from('vw_queimadas_municipios_resposta').select('*'),
-client.from('queimadas_heatmap').select('*'),
+client.from('vw_queimadas_ranking_estadual').select('*'),
 client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
 ])
@@ -3993,20 +3993,45 @@ let mes=Number(data.slice(5,7))
 if(mes>=1&&mes<=12)focosMensais[mes-1]++
 })
 /*---------------------------------------------------------
-074.6 CONSOLIDAR IRIQ MUNICIPAL
+074.6 CONSOLIDAR IRIQ DOS 52 MUNICÍPIOS
 ---------------------------------------------------------*/
-let rankingIRIQ=(heatmap||[]).map(i=>{
-let iriq=Number(i.iriq??i.indice_final??0)
+let mapaIRIQ=new Map()
+
+;(heatmap||[]).forEach(i=>{
+let municipio=String(i.municipio||'').trim()
+if(!municipio)return
+
+let chave=normalizarTextoSumario(municipio)
+let iriq=Number(i.indice_final??i.iriq??0)
 let risco=Number(i.risco??i.nivel_risco??0)
-return{
+
+let registro={
 ...i,
+municipio,
 iriq:Number.isFinite(iriq)?iriq:0,
 risco:Number.isFinite(risco)?risco:0
 }
-}).filter(i=>i.municipio).sort((a,b)=>b.iriq-a.iriq)
+
+if(!mapaIRIQ.has(chave)){
+mapaIRIQ.set(chave,registro)
+}else{
+let atual=mapaIRIQ.get(chave)
+if(registro.iriq>atual.iriq)mapaIRIQ.set(chave,registro)
+}
+})
+
+let rankingIRIQ=[...mapaIRIQ.values()]
+.sort((a,b)=>b.iriq-a.iriq)
+
 let top5IRIQ=rankingIRIQ.slice(0,5)
-let mediaTop5=top5IRIQ.length?top5IRIQ.reduce((s,i)=>s+i.iriq,0)/top5IRIQ.length:0
-let maiorIRIQ=top5IRIQ.length?top5IRIQ[0].iriq:0
+
+let mediaTop5=top5IRIQ.length
+?top5IRIQ.reduce((s,i)=>s+Number(i.iriq||0),0)/top5IRIQ.length
+:0
+
+let maiorIRIQ=top5IRIQ.length
+?Number(top5IRIQ[0].iriq||0)
+:0
 /*---------------------------------------------------------
 074.7 CALCULAR IRIQ ESTADUAL
 ---------------------------------------------------------*/
