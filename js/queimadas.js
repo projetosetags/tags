@@ -4564,16 +4564,33 @@ let classificacao=String(heatmapMunicipio?.classificacao||(iriq>=75?'CRÍTICO':i
 let participacao=totalFocosRO>0?(totalFocos/totalFocosRO)*100:0
 let observacao=String(cadastroMunicipio?.observacao||cadastroMunicipio?.observacoes||'').trim()
 let situacaoOriginal=String(cadastroMunicipio?.classificacao_ia||cadastroMunicipio?.situacao||cadastroMunicipio?.status||'-').toUpperCase()
-let documento1=cadastroMunicipio?.lnumerodocenviado||cadastroMunicipio?.llnumerodocenviado||cadastroMunicipio?.numero_documento||'-'
-let documento2=cadastroMunicipio?.lnumerodocenviado2||cadastroMunicipio?.llnumerodocenviado2||cadastroMunicipio?.numero_documento2||''
-let dataRecebimento1=cadastroMunicipio?.ldatarecebimentodoc||cadastroMunicipio?.data_recebimento1||''
-let dataRecebimento2=cadastroMunicipio?.ldatarecebimentodoc2||cadastroMunicipio?.data_recebimento2||''
-let documento=String(documento2||documento1||'-').trim()
-let dataRecebimento=dataRecebimento2||dataRecebimento1||''
+let documento1=String(cadastroMunicipio?.lnumerodocenviado||cadastroMunicipio?.numero_documento||'').trim()
+let documento2=String(cadastroMunicipio?.llnumerodocenviado||'').trim()
+let dataRecebimento1=cadastroMunicipio?.ldatarecebimentodoc||''
+let dataRecebimento2=cadastroMunicipio?.lldatarecebimentodoc||''
+let dataRecebimento=''
+let documento='-'
+if(dataRecebimento1&&dataRecebimento2){
+let t1=new Date(String(dataRecebimento1).slice(0,10)+'T00:00:00').getTime()
+let t2=new Date(String(dataRecebimento2).slice(0,10)+'T00:00:00').getTime()
+if(t2>=t1){dataRecebimento=dataRecebimento2;documento=documento2||documento1||'-'}
+else{dataRecebimento=dataRecebimento1;documento=documento1||documento2||'-'}
+}else if(dataRecebimento2){
+dataRecebimento=dataRecebimento2
+documento=documento2||documento1||'-'
+}else if(dataRecebimento1){
+dataRecebimento=dataRecebimento1
+documento=documento1||documento2||'-'
+}else{
+documento=documento2||documento1||'-'
+}
 let recebimento=dataRecebimento?formatarDataBR(dataRecebimento):'-'
-let textoCadastro=`${situacaoOriginal} ${documento} ${observacao}`.toUpperCase()
-let possuiPlano=/PLACOM|PLANO DE CONTING[ÊE]NCIA|PLANO DE A[CÇ][ÃA]O/.test(textoCadastro)
-let situacao=possuiPlano?'PLANO DE AÇÃO':situacaoOriginal
+let textoCadastro=`${situacaoOriginal} ${documento1} ${documento2} ${observacao}`.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()
+let possuiPlano=Boolean(cadastroMunicipio?.plano_acao)||/PLACOM|PLANO DE CONTINGENCIA|PLANO DE ACAO|PLANO MUNICIPAL|PLANO ANUAL|PIMF/.test(textoCadastro)
+let possuiDilacao=Boolean(cadastroMunicipio?.dilacao_prazo)
+let semResposta=Boolean(cadastroMunicipio?.sem_resposta)
+let situacao=possuiPlano?'PLANO DE AÇÃO':possuiDilacao?'DILAÇÃO DE PRAZO':semResposta?'SEM RESPOSTA':situacaoOriginal
+console.log('DADOS MUNICIPAIS PDF:',{municipio,dataRecebimento1,documento1,dataRecebimento2,documento2,dataRecebimento,documento,recebimento,possuiPlano,situacao})
 let ranking=[...heatmaps].sort((a,b)=>Number(b.iriq||b.indice_final||0)-Number(a.iriq||a.indice_final||0))
 let posicao=ranking.findIndex(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)
 posicao=posicao>=0?posicao+1:'-'
