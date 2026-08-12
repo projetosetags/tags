@@ -55,7 +55,7 @@ async function renderTopIAChap(){
 let box=document.getElementById('painelTopIAChap')
 if(!box)return
 let{data=[]}=await client
-.from('queimadas_chap')
+.from('queimadas_ipt')
 .select('*')
 .order('resultado',{ascending:false})
 .limit(10)
