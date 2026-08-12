@@ -4581,7 +4581,7 @@ normalizarMunicipio(i.municipio)===municipioNormalizado
 let totalFocos=focos.length
 let totalFocosRO=focosRO.length
 /*---------------------------------------------------------
-075.5 ORDENAÇÃO CRONOLÓGICA DOS FOCOS — MESMA LÓGICA DO TEMPO REAL
+075.5 ORDENAÇÃO CRONOLÓGICA DOS FOCOS
 ---------------------------------------------------------*/
 let ordenarDataHora=(a,b)=>{
 let da=String(a.data_foco||'')
@@ -4627,15 +4627,11 @@ let recentes=[...focos].sort(ordenarDataHora).slice(0,5)
 ---------------------------------------------------------*/
 function faixaTituloMunicipal(texto,x,y,w){
 doc.setFillColor(5,56,139)
-doc.roundedRect(x,y,w,4.5,1,1,'F')
-doc.setFontSize(5.8)
+doc.roundedRect(x,y,w,5,1,1,'F')
+doc.setFont('helvetica','bold')
+doc.setFontSize(7)
 doc.setTextColor(255,255,255)
-doc.text(
-String(texto||''),
-x+w/2,
-y+3.2,
-{align:'center'}
-)
+doc.text(String(texto||''),x+w/2,y+3.6,{align:'center'})
 }
 /*---------------------------------------------------------
 075.11 RECORTE DA IMAGEM
@@ -4714,15 +4710,16 @@ doc.setFillColor(255,255,255)
 doc.setDrawColor(202,213,226)
 doc.roundedRect(x,y,w,23,2,2,'FD')
 doc.setFont('helvetica','bold')
-doc.setFontSize(5.5)
+doc.setFontSize(6.5)
 textoPreto()
-doc.text(titulo,x+w/2,y+5,{align:'center'})
+let tituloLinhas=doc.splitTextToSize(String(titulo),w-5)
+doc.text(tituloLinhas,x+w/2,y+5,{align:'center'})
 doc.setFontSize(String(valor).length>12?10.5:14)
 doc.setTextColor(...cor)
 doc.text(String(valor),x+w/2,y+14.5,{align:'center'})
 if(sub){
 doc.setFont('helvetica','bold')
-doc.setFontSize(5)
+doc.setFontSize(5.8)
 textoPreto()
 let linhas=doc.splitTextToSize(String(sub),w-4)
 doc.text(linhas,x+w/2,y+20,{align:'center'})
@@ -4744,7 +4741,7 @@ doc.text('MUNICIPAL',160,19)
 doc.setFontSize(13)
 doc.setTextColor(163,230,53)
 doc.text(String(municipio).toUpperCase(),160,27)
-doc.setFontSize(5.8)
+doc.setFontSize(6.5)
 doc.setTextColor(255,255,255)
 doc.text(`PCe 0501/2026  •  Atualização: ${hoje.toLocaleDateString('pt-BR')}`,160,33)
 /*---------------------------------------------------------
@@ -4754,7 +4751,7 @@ doc.setFillColor(248,250,252)
 doc.setDrawColor(202,213,226)
 doc.roundedRect(6,38,285,15,2,2,'FD')
 doc.setFont('helvetica','bold')
-doc.setFontSize(8.5)
+doc.setFontSize(9)
 textoPreto()
 let textoApoio=`Tribunal de Contas do Estado de Rondônia — leitura executiva do Município de ${municipio} para acompanhamento das queimadas e incêndios florestais.`
 doc.text(doc.splitTextToSize(textoApoio,270),148.5,44.5,{align:'center'})
@@ -4773,7 +4770,7 @@ kpiMunicipal(236,yKpi,55,'SITUAÇÃO',situacao,corSituacao(situacao),documento!=
 faixaTituloMunicipal(`EVOLUÇÃO MENSAL DOS FOCOS (${ano})`,6,80,143)
 doc.setFillColor(255,255,255)
 doc.setDrawColor(202,213,226)
-doc.roundedRect(6,84.5,143,35,2,2,'FD')
+doc.roundedRect(6,85,143,34.5,2,2,'FD')
 let focosPorMesMunicipal=Array(12).fill(0)
 focos.forEach(i=>{
 let dataFoco=String(i.data_foco||'').slice(0,10)
@@ -4782,10 +4779,6 @@ let mesFoco=partes.length>=2?Number(partes[1]):0
 if(mesFoco>=1&&mesFoco<=12)focosPorMesMunicipal[mesFoco-1]++
 })
 let totalGraficoMunicipal=focosPorMesMunicipal.reduce((s,v)=>s+v,0)
-console.log('MUNICÍPIO:',municipio)
-console.log('TOTAL TEMPO REAL/SUMÁRIO:',totalFocos)
-console.log('DISTRIBUIÇÃO MENSAL:',focosPorMesMunicipal)
-console.log('TOTAL DO GRÁFICO:',totalGraficoMunicipal)
 if(totalGraficoMunicipal!==totalFocos){
 console.error(`DIVERGÊNCIA INTERNA: ${municipio} possui ${totalFocos} focos, mas o gráfico totalizou ${totalGraficoMunicipal}.`)
 }
@@ -4800,16 +4793,14 @@ let larguraBarraGrafico=6.5
 focosPorMesMunicipal.forEach((v,i)=>{
 let altura=v?Math.max(1,(v/maxFocosMensais)*(areaGrafico-5)):0
 doc.setFillColor(239,25,25)
-if(altura){
-doc.rect(inicioXGrafico+(i*passoGrafico),baseGrafico-altura,larguraBarraGrafico,altura,'F')
-}
+if(altura)doc.rect(inicioXGrafico+(i*passoGrafico),baseGrafico-altura,larguraBarraGrafico,altura,'F')
 doc.setFont('helvetica','bold')
-doc.setFontSize(4.7)
+doc.setFontSize(5.5)
 textoPreto()
 if(v>0){
 doc.text(v.toLocaleString('pt-BR'),inicioXGrafico+(i*passoGrafico)+(larguraBarraGrafico/2),baseGrafico-altura-1,{align:'center'})
 }
-doc.setFontSize(4.3)
+doc.setFontSize(5)
 doc.text(mesesGrafico[i],inicioXGrafico+(i*passoGrafico)+(larguraBarraGrafico/2),117,{align:'center'})
 })
 /*---------------------------------------------------------
@@ -4818,29 +4809,29 @@ doc.text(mesesGrafico[i],inicioXGrafico+(i*passoGrafico)+(larguraBarraGrafico/2)
 faixaTituloMunicipal('IRIQ E RISCO MUNICIPAL',153,80,138)
 doc.setFillColor(255,255,255)
 doc.setDrawColor(202,213,226)
-doc.roundedRect(153,84.5,138,35,2,2,'FD')
+doc.roundedRect(153,85,138,34.5,2,2,'FD')
 let centroIRIQ=188
 let centroRisco=257
 doc.setFont('helvetica','bold')
-doc.setFontSize(6.5)
+doc.setFontSize(7.5)
 textoPreto()
 doc.text('IRIQ',centroIRIQ,91,{align:'center'})
 doc.setFontSize(17)
 doc.setTextColor(...corMunicipal(iriq))
 doc.text(iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),centroIRIQ,102,{align:'center'})
-doc.setFontSize(6)
+doc.setFontSize(7)
 doc.text(faixaMunicipal(iriq),centroIRIQ,109,{align:'center'})
 doc.setDrawColor(210,218,228)
 doc.line(222,87,222,116)
-doc.setFontSize(6.5)
+doc.setFontSize(7.5)
 textoPreto()
 doc.text('RISCO',centroRisco,91,{align:'center'})
 doc.setFontSize(17)
 doc.setTextColor(...corMunicipal(risco))
 doc.text(risco.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),centroRisco,102,{align:'center'})
-doc.setFontSize(6)
+doc.setFontSize(7)
 doc.text(classificacao,centroRisco,109,{align:'center'})
-doc.setFontSize(5.3)
+doc.setFontSize(6)
 textoPreto()
 doc.text(`Posição estadual: ${posicao}${posicao!=='-'?'º':''}`,centroRisco,116,{align:'center'})
 /*---------------------------------------------------------
@@ -4849,25 +4840,25 @@ doc.text(`Posição estadual: ${posicao}${posicao!=='-'?'º':''}`,centroRisco,11
 faixaTituloMunicipal('SITUAÇÃO DO MUNICÍPIO NO ACOMPANHAMENTO',6,122,285)
 doc.setFillColor(255,255,255)
 doc.setDrawColor(202,213,226)
-doc.roundedRect(6,126.5,285,20,2,2,'FD')
+doc.roundedRect(6,127,285,19.5,2,2,'FD')
 doc.setFont('helvetica','bold')
-doc.setFontSize(5.8)
+doc.setFontSize(6.8)
 textoPreto()
-doc.text('Situação:',18,132.5)
+doc.text('Situação:',18,133)
 doc.setTextColor(...corSituacao(situacao))
-doc.text(situacao,36,132.5)
+doc.text(situacao,36,133)
 textoPreto()
-doc.text(`Recebimento: ${recebimento}`,128,132.5)
-doc.text(`Documento: ${documento}`,18,138.5)
+doc.text(`Recebimento: ${recebimento}`,128,133)
+doc.text(`Documento: ${documento}`,18,139)
 doc.setFont('helvetica','normal')
-doc.setFontSize(5.2)
+doc.setFontSize(6)
 doc.text(doc.splitTextToSize(`Observação: ${observacao}`,260),18,144)
 /*---------------------------------------------------------
 075.23 TABELA — 5 MAIORES FOCOS POR FRP
 ---------------------------------------------------------*/
 faixaTituloMunicipal('5 MAIORES FOCOS DE 2026 — FRP',6,149,137)
 doc.autoTable({
-startY:153.5,
+startY:154,
 margin:{left:6,right:154},
 tableWidth:137,
 head:[['POS','DATA','SATÉLITE','FRP']],
@@ -4877,8 +4868,8 @@ formatarDataBR(i.data_foco),
 i.satelite||'-',
 Number(i.frp||0).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})
 ]),
-styles:{fontSize:5.3,cellPadding:1.15,textColor:[17,24,39],fontStyle:'bold',halign:'center',valign:'middle'},
-headStyles:{fillColor:[5,56,139],textColor:[255,255,255],fontStyle:'bold',fontSize:5.2},
+styles:{fontSize:6.3,cellPadding:1.15,textColor:[17,24,39],fontStyle:'bold',halign:'center',valign:'middle'},
+headStyles:{fillColor:[5,56,139],textColor:[255,255,255],fontStyle:'bold',fontSize:6.3},
 alternateRowStyles:{fillColor:[248,250,252]},
 columnStyles:{0:{cellWidth:13},1:{cellWidth:37},2:{cellWidth:50},3:{cellWidth:37}}
 })
@@ -4887,7 +4878,7 @@ columnStyles:{0:{cellWidth:13},1:{cellWidth:37},2:{cellWidth:50},3:{cellWidth:37
 ---------------------------------------------------------*/
 faixaTituloMunicipal('5 FOCOS MAIS RECENTES',148,149,143)
 doc.autoTable({
-startY:153.5,
+startY:154,
 margin:{left:148,right:6},
 tableWidth:143,
 head:[['DATA','HORA','SATÉLITE','FRP']],
@@ -4897,8 +4888,8 @@ String(i.data_hora||i.hora||'-').slice(0,8),
 i.satelite||'-',
 i.frp!==null&&i.frp!==undefined?Number(i.frp).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}):'-'
 ]),
-styles:{fontSize:5.3,cellPadding:1.15,textColor:[17,24,39],fontStyle:'bold',halign:'center',valign:'middle'},
-headStyles:{fillColor:[5,56,139],textColor:[255,255,255],fontStyle:'bold',fontSize:5.2},
+styles:{fontSize:6.3,cellPadding:1.15,textColor:[17,24,39],fontStyle:'bold',halign:'center',valign:'middle'},
+headStyles:{fillColor:[5,56,139],textColor:[255,255,255],fontStyle:'bold',fontSize:6.3},
 alternateRowStyles:{fillColor:[248,250,252]},
 columnStyles:{0:{cellWidth:38},1:{cellWidth:28},2:{cellWidth:48},3:{cellWidth:29}}
 })
@@ -4908,27 +4899,27 @@ columnStyles:{0:{cellWidth:38},1:{cellWidth:28},2:{cellWidth:48},3:{cellWidth:29
 doc.setFillColor(5,56,139)
 doc.roundedRect(6,181,285,25,2.5,2.5,'F')
 doc.setFont('helvetica','bold')
-doc.setFontSize(7)
+doc.setFontSize(8)
 doc.setTextColor(255,255,255)
 doc.text('CONCLUSÃO EXECUTIVA',13,186)
 doc.setFont('helvetica','normal')
-doc.setFontSize(4.35)
+doc.setFontSize(5.2)
 let conclusao=`O Município de ${municipio} apresenta IRIQ de ${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, enquadrado na faixa ${faixaMunicipal(iriq)}, ocupando a ${posicao}ª posição no ranking estadual. O IRIQ — Índice de Risco Integrado de Queimadas — constitui indicador sintético destinado à comparação territorial e à priorização dos municípios, consolidando, em escala padronizada, os fatores considerados no modelo de avaliação. Quanto maior o índice, maior a necessidade relativa de atenção, acompanhamento e adoção de medidas preventivas. Sua finalidade é apoiar a decisão e a hierarquização territorial, não devendo ser interpretado isoladamente como medida absoluta da ocorrência de incêndios. O Risco Municipal alcança ${risco.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, correspondendo à classificação ${classificacao}, e expressa a criticidade territorial identificada a partir dos fatores de risco considerados no modelo, subsidiando o dimensionamento do monitoramento, prevenção, fiscalização, preparação e resposta. A coexistência de IRIQ ${faixaMunicipal(iriq)} e Risco Municipal ${classificacao} não constitui divergência: os indicadores são complementares. O IRIQ proporciona leitura integrada e comparativa da posição municipal no Estado, enquanto o Risco Municipal evidencia a intensidade da criticidade específica do território. Foram registrados ${totalFocos.toLocaleString('pt-BR')} focos de calor em ${ano}, equivalentes a ${participacao.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}% dos registros estaduais. A avaliação técnica deve considerar conjuntamente IRIQ, Risco Municipal, ranking estadual, quantidade e evolução temporal dos focos e capacidade de resposta local, permitindo estabelecer prioridades e orientar a atuação preventiva e concomitante do TCE-RO e dos demais órgãos responsáveis.`
 doc.text(
 doc.splitTextToSize(conclusao,268),
 13,
 191,
-{lineHeightFactor:1.12}
+{lineHeightFactor:1.05}
 )
 /*---------------------------------------------------------
 075.26 RODAPÉ E SALVAMENTO
 ---------------------------------------------------------*/
 doc.setFont('helvetica','normal')
-doc.setFontSize(4.8)
+doc.setFontSize(5.8)
 textoPreto()
 doc.text('Fontes: INPE • IRIQ • Heatmap Estadual • Municípios de Rondônia • TCE-RO',7,208)
 doc.setFont('helvetica','bold')
-doc.setFontSize(5)
+doc.setFontSize(5.8)
 doc.text('PÁGINA 1 DE 1',290,207,{align:'right'})
 doc.save(`Sumario_Executivo_Municipal_${municipio.replace(/\s+/g,'_')}_${ano}.pdf`)
 }
