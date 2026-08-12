@@ -575,105 +575,43 @@ if(valor>=25)return'MODERADO'
 return'BAIXO'
 }
 
-/*=========================================================
-GRÁFICO MENSAL MUNICIPAL
-=========================================================*/
-
+/*=========================================================*
+*GRÁFICO MENSAL MUNICIPAL*
+*=========================================================*/
 function renderGraficoTempoRealMunicipio(registros){
-
-let canvas=
-document.getElementById('graficoTempoRealMunicipio')
-
+let canvas=document.getElementById('graficoTempoRealMunicipio')
 if(!canvas)return
-
 let meses=Array(12).fill(0)
-
 registros.forEach(i=>{
-
-let data=String(i.data_foco||'')
-
-if(data.length>=7){
-
-let mes=Number(data.slice(5,7))-1
-
-if(mes>=0&&mes<12){
-meses[mes]++
-}
-
-}
-
+let mes=Number(String(i.data_foco||'').slice(5,7))-1
+if(mes>=0&&mes<12)meses[mes]++
 })
-
-if(graficoTempoRealMunicipio){
-graficoTempoRealMunicipio.destroy()
+if(graficoTempoRealMunicipio&&typeof graficoTempoRealMunicipio.destroy==='function')graficoTempoRealMunicipio.destroy()
+graficoTempoRealMunicipio=null
+if(typeof Chart!=='undefined'&&typeof Chart.getChart==='function'){
+let existente=Chart.getChart(canvas)
+if(existente&&typeof existente.destroy==='function')existente.destroy()
 }
-
-graficoTempoRealMunicipio=new Chart(
-canvas.getContext('2d'),
-{
+graficoTempoRealMunicipio=new Chart(canvas.getContext('2d'),{
 type:'bar',
-
 data:{
-labels:[
-'JAN','FEV','MAR','ABR',
-'MAI','JUN','JUL','AGO',
-'SET','OUT','NOV','DEZ'
-],
-
-datasets:[{
-label:'Focos de Calor',
-data:meses,
-backgroundColor:'#dc2626',
-borderRadius:5
-}]
+labels:['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'],
+datasets:[{label:'Focos de Calor',data:meses,backgroundColor:'#dc2626',borderRadius:5}]
 },
-
 options:{
 responsive:true,
 maintainAspectRatio:false,
-
 plugins:{
-legend:{
-display:false
+legend:{display:false},
+datalabels:{anchor:'end',align:'top',font:{weight:'bold',size:11},color:'#111827',formatter:v=>v||''}
 },
-
-datalabels:{
-anchor:'end',
-align:'top',
-font:{
-weight:'bold',
-size:11
-},
-color:'#111827',
-formatter:v=>v||''
-}
-},
-
 scales:{
-y:{
-beginAtZero:true,
-ticks:{
-precision:0
+y:{beginAtZero:true,ticks:{precision:0}},
+x:{grid:{display:false}}
 }
 },
-
-x:{
-grid:{
-display:false
-}
-}
-}
-},
-
-plugins:[
-typeof ChartDataLabels!=='undefined'
-?ChartDataLabels
-:null
-].filter(Boolean)
-
-}
-)
-
+plugins:[typeof ChartDataLabels!=='undefined'?ChartDataLabels:null].filter(Boolean)
+})
 }
 
 /*=========================================================
