@@ -189,17 +189,7 @@ await rtFichaTecnica(doc)
 doc.addPage()
 await rtAssinaturas(doc)
 rtRodape(doc)
-/*=========================================================*
-*NUMERAÇÃO FINAL DAS PÁGINAS*
-*=========================================================*/
-let totalPaginas=doc.internal.getNumberOfPages()
-for(let pagina=1;pagina<=totalPaginas;pagina++){
-doc.setPage(pagina)
-doc.setFont('helvetica','normal')
-doc.setFontSize(7)
-doc.setTextColor(100,116,139)
-doc.text(`${pagina} de ${totalPaginas}`,200,290,{align:'right'})
-}
+
 doc.save('RT_PCe_0501_2026_QUEIMADAS_'+new Date().toISOString().slice(0,10)+'.pdf')
 await mostrarAbaQueimadas('auditor')
 }catch(error){
