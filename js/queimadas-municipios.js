@@ -1896,11 +1896,13 @@ if(btn){btn.disabled=false;btn.innerHTML='💾 SALVAR'}
 =========================================================*/
 async function renderDistribuicaoRespostas(){
 const{data,error}=await client.from('vw_queimadas_municipios_resposta').select('*')
-if(error){console.error('Erro distribuição municipal:',error);return}
+if(error){console.error(error);return}
 let lista=(data||[]).map(classificarMunicipioAtual)
 let verde=lista.filter(i=>i.classificacaoAtual==='VERDE').length
 let amarelo=lista.filter(i=>i.classificacaoAtual==='AMARELO').length
 let vermelho=lista.filter(i=>i.classificacaoAtual==='VERMELHO').length
+console.log('CLASSIFICAÇÃO ATUAL:',{verde,amarelo,vermelho})
+console.log('JARU ATUAL:',lista.find(i=>normalizarMunicipio(i.municipio)===normalizarMunicipio('Jaru')))
 const ctx=document.getElementById('graficoMunicipiosResposta')
 if(!ctx)return
 if(window.graficoDistribuicao)window.graficoDistribuicao.destroy()
@@ -1908,13 +1910,7 @@ window.graficoDistribuicao=new Chart(ctx,{
 type:'doughnut',
 data:{
 labels:['Com Plano','Dilação','Sem Resposta'],
-datasets:[{
-data:[verde,amarelo,vermelho],
-backgroundColor:['#16a34a','#facc15','#dc2626'],
-borderColor:'#ffffff',
-borderWidth:3,
-hoverOffset:8
-}]
+datasets:[{data:[verde,amarelo,vermelho],backgroundColor:['#16a34a','#facc15','#dc2626'],borderColor:'#ffffff',borderWidth:3,hoverOffset:8}]
 },
 options:{
 responsive:true,
@@ -1937,42 +1933,32 @@ color:'#0f172a',
 font:{size:12,weight:'800'},
 generateLabels(chart){
 const dataset=chart.data.datasets[0]
-return chart.data.labels.map((label,i)=>({
-text:`${label}: ${Number(dataset.data[i]||0).toLocaleString('pt-BR')}`,
-fillStyle:dataset.backgroundColor[i],
-strokeStyle:dataset.backgroundColor[i],
-fontColor:'#0f172a',
-hidden:false,
-index:i
-}))
+return chart.data.labels.map((label,i)=>({text:`${label}: ${Number(dataset.data[i]||0).toLocaleString('pt-BR')}`,fillStyle:dataset.backgroundColor[i],strokeStyle:dataset.backgroundColor[i],fontColor:'#0f172a',hidden:false,index:i}))
 }
 }
 },
 tooltip:{
 backgroundColor:'#0f172a',
-titleColor:'#ffffff',
-bodyColor:'#ffffff',
+titleColor:'#fff',
+bodyColor:'#fff',
 padding:10,
-callbacks:{
-label:context=>{
+callbacks:{label:context=>{
 let total=context.dataset.data.reduce((s,v)=>s+Number(v||0),0)
 let valor=Number(context.raw||0)
 let percentual=total?((valor/total)*100).toFixed(1).replace('.',','):'0,0'
 return`${context.label}: ${valor} (${percentual}%)`
-}
-}
+}}
 },
 datalabels:{
 display:true,
-color:'#000000',
-backgroundColor:'rgba(255,255,255,0.88)',
-borderColor:'#000000',
+color:'#000',
+backgroundColor:'rgba(255,255,255,.88)',
+borderColor:'#000',
 borderWidth:1,
 borderRadius:4,
 padding:{top:4,bottom:4,left:7,right:7},
 font:{family:'Arial',size:19,weight:'bold'},
-formatter:valor=>valor,
-textAlign:'center',
+formatter:v=>v,
 anchor:'center',
 align:'center',
 clamp:true
@@ -1989,35 +1975,20 @@ async function renderEstatisticasMunicipais(){
 let box=document.getElementById('painelEstatisticasMunicipais')
 if(!box)return
 const{data,error}=await client.from('vw_queimadas_municipios_resposta').select('*')
-if(error){console.error('Erro estatísticas municipais:',error);return}
+if(error){console.error(error);return}
 let lista=(data||[]).map(classificarMunicipioAtual)
 let total=lista.length
 let verde=lista.filter(i=>i.classificacaoAtual==='VERDE').length
 let amarelo=lista.filter(i=>i.classificacaoAtual==='AMARELO').length
 let vermelho=lista.filter(i=>i.classificacaoAtual==='VERMELHO').length
 let atendimento=total?((verde/total)*100).toFixed(1):'0.0'
-box.innerHTML=`
-<div class="gridKPIMunicipios">
-<div class="kpiCard">
-<div class="kpiNumero">${total}</div>
-<div class="kpiTitulo">Municípios</div>
-</div>
-<div class="kpiCard">
-<div class="kpiNumero">${verde}</div>
-<div class="kpiTitulo">🟢 Com Plano</div>
-</div>
-<div class="kpiCard">
-<div class="kpiNumero">${amarelo}</div>
-<div class="kpiTitulo">🟡 Dilação</div>
-</div>
-<div class="kpiCard">
-<div class="kpiNumero">${vermelho}</div>
-<div class="kpiTitulo">🔴 Sem Resposta</div>
-</div>
-<div class="kpiCard">
-<div class="kpiNumero">${atendimento}%</div>
-<div class="kpiTitulo">Atendimento</div>
-</div>
+console.log('KPIs MUNICIPAIS:',{total,verde,amarelo,vermelho,atendimento})
+box.innerHTML=`<div class="gridKPIMunicipios">
+<div class="kpiCard"><div class="kpiNumero">${total}</div><div class="kpiTitulo">Municípios</div></div>
+<div class="kpiCard"><div class="kpiNumero">${verde}</div><div class="kpiTitulo">🟢 Com Plano</div></div>
+<div class="kpiCard"><div class="kpiNumero">${amarelo}</div><div class="kpiTitulo">🟡 Dilação</div></div>
+<div class="kpiCard"><div class="kpiNumero">${vermelho}</div><div class="kpiTitulo">🔴 Sem Resposta</div></div>
+<div class="kpiCard"><div class="kpiNumero">${atendimento}%</div><div class="kpiTitulo">Atendimento</div></div>
 </div>`
 }
 function obterMedalhaFocos(indice){
