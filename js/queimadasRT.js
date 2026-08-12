@@ -821,15 +821,15 @@ let img=rtAdicionarImagem(doc,'mapaROEstadual',10,y+6,190,205)
 if(!img)rtAdicionarImagem(doc,'mapaRO',10,y+6,190,205)
 rtFonte(doc,'Fonte: TCE-RO • INPE • SEDAM • Base Cartográfica Estadual • OpenStreetMap')
 }
-/*=========================================================
-323 RT MAPA MUNICIPAL
-=========================================================*/
+/*=========================================================*
+*323 RT MAPA MUNICIPAL*
+*=========================================================*/
 async function rtMapaMunicipal(doc){
 rtCabecalhoPagina(doc,'ANEXO II - MAPA MUNICIPAL DOS PLANOS DE AÇÃO')
 doc.setFont('helvetica','normal')
-doc.setFontSize(10)
+doc.setFontSize(9)
 doc.setTextColor(51,65,85)
-let texto='O mapa municipal demonstra a situação dos 52 municípios quanto ao atendimento do Ofício Circular n.16/2026/GABPRES/TCERO e à apresentação dos respectivos Planos de Ação para prevenção e enfrentamento das queimadas e incêndios florestais.'
+let texto='O mapa municipal demonstra a situação dos 52 municípios quanto ao atendimento do Ofício Circular n. 16/2026/GABPRES/TCERO e à apresentação dos respectivos Planos de Ação para prevenção e enfrentamento das queimadas e incêndios florestais.'
 doc.text(doc.splitTextToSize(texto,180),15,38)
 await mostrarAbaQueimadas('executivomunicipal')
 await new Promise(r=>setTimeout(r,1000))
@@ -853,18 +853,18 @@ if(img){
 let props=doc.getImageProperties(img)
 let largura=180
 let altura=(props.height*largura)/props.width
-let alturaMaxima=150
+let alturaMaxima=92
 if(altura>alturaMaxima){
 altura=alturaMaxima
 largura=(props.width*altura)/props.height
 }
 let x=(210-largura)/2
-let y=58
+let y=54
 doc.setFillColor(248,250,252)
 doc.setDrawColor(203,213,225)
 doc.roundedRect(x-2,y-2,largura+4,altura+4,3,3,'FD')
 doc.addImage(img,'PNG',x,y,largura,altura,undefined,'FAST')
-let yLegenda=y+altura+10
+let yLegenda=y+altura+8
 doc.setFont('helvetica','bold')
 doc.setFontSize(7)
 doc.setTextColor(15,23,42)
@@ -884,11 +884,63 @@ doc.setTextColor(17,24,39)
 doc.text(item[0],lx+8,yLegenda+8)
 lx+=58
 })
+let ySituacao=yLegenda+19
+doc.setFont('helvetica','normal')
+doc.setFontSize(8)
+doc.setTextColor(51,65,85)
+let textoSituacao='A representação espacial permite visualizar a distribuição territorial das respostas apresentadas pelos municípios e identificar, de forma imediata, localidades com pendências relacionadas à apresentação dos Planos de Ação. As três situações representadas no mapa correspondem ao estágio de atendimento registrado no acompanhamento realizado pelo TCE-RO.'
+let linhasSituacao=doc.splitTextToSize(textoSituacao,180)
+doc.text(linhasSituacao,15,ySituacao)
+ySituacao+=linhasSituacao.length*3.7+5
+doc.setFont('helvetica','bold')
+doc.setFontSize(7.5)
+doc.setTextColor(22,163,74)
+doc.text('PLANO DE AÇÃO',15,ySituacao)
+doc.setFont('helvetica','normal')
+doc.setTextColor(51,65,85)
+let textoPlano='Municípios que apresentaram resposta acompanhada do respectivo Plano de Ação, passando o acompanhamento a concentrar-se na análise do conteúdo, execução das medidas previstas e evidências produzidas.'
+let linhasPlano=doc.splitTextToSize(textoPlano,145)
+doc.text(linhasPlano,47,ySituacao)
+ySituacao+=Math.max(5,linhasPlano.length*3.5)+3
+doc.setFont('helvetica','bold')
+doc.setFontSize(7.5)
+doc.setTextColor(202,138,4)
+doc.text('DILAÇÃO DE PRAZO',15,ySituacao)
+doc.setFont('helvetica','normal')
+doc.setTextColor(51,65,85)
+let textoDilatacao='Municípios que solicitaram prazo adicional para apresentação ou complementação das informações requeridas, permanecendo sujeitos ao acompanhamento até o atendimento da solicitação.'
+let linhasDilatacao=doc.splitTextToSize(textoDilatacao,145)
+doc.text(linhasDilatacao,47,ySituacao)
+ySituacao+=Math.max(5,linhasDilatacao.length*3.5)+3
+doc.setFont('helvetica','bold')
+doc.setFontSize(7.5)
+doc.setTextColor(220,38,38)
+doc.text('SEM RESPOSTA',15,ySituacao)
+doc.setFont('helvetica','normal')
+doc.setTextColor(51,65,85)
+let textoSemResposta='Municípios para os quais não foi identificada resposta no acompanhamento considerado pelo relatório, configurando situação que demanda atenção específica quanto ao atendimento da solicitação do Tribunal.'
+let linhasSemResposta=doc.splitTextToSize(textoSemResposta,145)
+doc.text(linhasSemResposta,47,ySituacao)
+ySituacao+=Math.max(5,linhasSemResposta.length*3.5)+5
+doc.setFillColor(248,250,252)
+doc.setDrawColor(203,213,225)
+let textoAnalise='A leitura conjunta do mapa e da situação de atendimento constitui instrumento de apoio à priorização do controle externo. Os municípios sem resposta demandam acompanhamento quanto à apresentação das informações solicitadas; aqueles com dilação de prazo devem permanecer monitorados até o encerramento do prazo concedido; e, para os municípios que apresentaram Plano de Ação, o acompanhamento deve avançar para a avaliação da execução, dos resultados e das evidências das medidas planejadas.'
+let linhasAnalise=doc.splitTextToSize(textoAnalise,170)
+let alturaQuadro=linhasAnalise.length*3.6+12
+doc.roundedRect(15,ySituacao,180,alturaQuadro,2,2,'FD')
+doc.setFont('helvetica','bold')
+doc.setFontSize(7.5)
+doc.setTextColor(15,23,42)
+doc.text('LEITURA PARA O CONTROLE EXTERNO',20,ySituacao+6)
+doc.setFont('helvetica','normal')
+doc.setFontSize(7.5)
+doc.setTextColor(51,65,85)
+doc.text(linhasAnalise,20,ySituacao+11)
 }
 doc.setFont('helvetica','italic')
 doc.setFontSize(7)
 doc.setTextColor(100,116,139)
-doc.text('Fonte: Municípios do Estado de Rondônia • TCE-RO',15,273)
+doc.text('Fonte: Municípios do Estado de Rondônia • TCE-RO • Processo PCe 0501/2026',15,273)
 }
 /*=========================================================
 327 RT MONITORAMENTO 4D
