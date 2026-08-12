@@ -1987,7 +1987,7 @@ if(modal)modal.remove()
 }
 
 /*=========================================================*
-*142 QUEIMADAS FUNCTION SALVARMUNICIPIO*
+*142 QUEIMADAS FUNCTION SALVARMUNICIPIO
 *=========================================================*/
 async function salvarMunicipio(municipioOriginal){
 municipioOriginal=String(municipioOriginal||'').trim()
@@ -2007,10 +2007,10 @@ let possuiRecebimento=possuiDocumento1||possuiDocumento2
 let possuiPlano=texto.includes('PLACOM')||texto.includes('PLANO DE ACAO')||texto.includes('PLANO MUNICIPAL')||texto.includes('PLANO DE CONTINGENCIA')||texto.includes('PLANO ANUAL')||texto.includes('PIMF')
 let possuiDilacao=texto.includes('DILACAO')||texto.includes('PRORROGACAO')||texto.includes('SOLICITACAO DE PRAZO')
 let planoAcao=false,dilacaoPrazo=false,semResposta=false
-if(possuiRecebimento&&possuiPlano){planoAcao=true}
-else if(possuiRecebimento&&possuiDilacao){dilacaoPrazo=true}
-else if(possuiRecebimento){planoAcao=true}
-else{semResposta=true}
+if(possuiRecebimento&&possuiPlano){planoAcao=true;dilacaoPrazo=false;semResposta=false}
+else if(possuiRecebimento&&possuiDilacao){planoAcao=false;dilacaoPrazo=true;semResposta=false}
+else if(possuiRecebimento){planoAcao=true;dilacaoPrazo=false;semResposta=false}
+else{planoAcao=false;dilacaoPrazo=false;semResposta=true}
 let payload={
 nroficioenviadotcero:document.getElementById('mOficio')?.value||null,
 dataenviodoc:document.getElementById('mDataEnvio')?.value||null,
@@ -2026,6 +2026,9 @@ plano_acao:planoAcao,
 dilacao_prazo:dilacaoPrazo,
 sem_resposta:semResposta
 }
+console.log('SALVANDO MUNICÍPIO:',municipioOriginal)
+console.log('CLASSIFICAÇÃO:',{possuiPlano,possuiDilacao,possuiRecebimento,planoAcao,dilacaoPrazo,semResposta})
+console.log('PAYLOAD:',payload)
 let resposta=await fetch(`${window.S_URL}/functions/v1/municipios-edicao-protegida`,{
 method:'POST',
 headers:{'Content-Type':'application/json','apikey':window.S_KEY,'Authorization':`Bearer ${window.S_KEY}`},
@@ -2038,6 +2041,7 @@ console.error('Erro ao salvar município:',resposta.status,resultado)
 alert('Alteração não autorizada: '+(resultado.erro||`erro HTTP ${resposta.status}`))
 return
 }
+console.log('MUNICÍPIO ATUALIZADO:',resultado)
 fecharModalMunicipio()
 window.senhaEdicaoMunicipio=''
 await Promise.all([
