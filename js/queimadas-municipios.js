@@ -1894,34 +1894,22 @@ if(btn){btn.disabled=false;btn.innerHTML='💾 SALVAR'}
 143 QUEIMADAS FUNCTION RENDERDISTRIBUICAORESPOSTAS
 =========================================================*/
 async function renderDistribuicaoRespostas(){
-const{data,error}=await client.from('vw_queimadas_municipios_resposta').select('classificacao_cor')
-if(error)return
-let verde=0
-let amarelo=0
-let vermelho=0
-data.forEach(i=>{
-if(i.classificacao_cor==='VERDE')verde++
-else if(i.classificacao_cor==='AMARELO')amarelo++
-else vermelho++
-})
+const{data,error}=await client.from('vw_queimadas_municipios_resposta').select('*')
+if(error){console.error('Erro distribuição municipal:',error);return}
+let lista=(data||[]).map(classificarMunicipioAtual)
+let verde=lista.filter(i=>i.classificacaoAtual==='VERDE').length
+let amarelo=lista.filter(i=>i.classificacaoAtual==='AMARELO').length
+let vermelho=lista.filter(i=>i.classificacaoAtual==='VERMELHO').length
 const ctx=document.getElementById('graficoMunicipiosResposta')
 if(!ctx)return
 if(window.graficoDistribuicao)window.graficoDistribuicao.destroy()
 window.graficoDistribuicao=new Chart(ctx,{
 type:'doughnut',
 data:{
-labels:[
-'Com Plano',
-'Dilação',
-'Sem Resposta'
-],
+labels:['Com Plano','Dilação','Sem Resposta'],
 datasets:[{
 data:[verde,amarelo,vermelho],
-backgroundColor:[
-'#16a34a',
-'#facc15',
-'#dc2626'
-],
+backgroundColor:['#16a34a','#facc15','#dc2626'],
 borderColor:'#ffffff',
 borderWidth:3,
 hoverOffset:8
@@ -1932,14 +1920,7 @@ responsive:true,
 maintainAspectRatio:false,
 radius:'92%',
 cutout:'48%',
-layout:{
-padding:{
-top:5,
-right:10,
-bottom:0,
-left:10
-}
-},
+layout:{padding:{top:5,right:10,bottom:0,left:10}},
 plugins:{
 legend:{
 display:true,
@@ -1952,10 +1933,7 @@ boxWidth:9,
 boxHeight:9,
 padding:18,
 color:'#0f172a',
-font:{
-size:12,
-weight:'800'
-},
+font:{size:12,weight:'800'},
 generateLabels(chart){
 const dataset=chart.data.datasets[0]
 return chart.data.labels.map((label,i)=>({
@@ -1985,25 +1963,14 @@ return`${context.label}: ${valor} (${percentual}%)`
 },
 datalabels:{
 display:true,
-color:()=> '#000000',
+color:'#000000',
 backgroundColor:'rgba(255,255,255,0.88)',
 borderColor:'#000000',
 borderWidth:1,
 borderRadius:4,
-padding:{
-top:4,
-bottom:4,
-left:7,
-right:7
-},
-font:{
-family:'Arial',
-size:19,
-weight:'bold'
-},
-formatter:(valor)=>{
-return valor
-},
+padding:{top:4,bottom:4,left:7,right:7},
+font:{family:'Arial',size:19,weight:'bold'},
+formatter:valor=>valor,
 textAlign:'center',
 anchor:'center',
 align:'center',
@@ -2011,50 +1978,8 @@ clamp:true
 }
 }
 },
-plugins:[ChartDataLabels]
+plugins:typeof ChartDataLabels!=='undefined'?[ChartDataLabels]:[]
 })
-}
-/*=========================================================
-144 QUEIMADAS FUNCTION RENDERESTATISTICASMUNICIPAIS
-=========================================================*/
-async function renderEstatisticasMunicipais(){
-const {data,error}=await client
-.from('vw_queimadas_municipios_resposta')
-.select('*')
-if(error)return
-let verde=0
-let amarelo=0
-let vermelho=0
-data.forEach(i=>{
-if(i.classificacao_cor==='VERDE')verde++
-else if(i.classificacao_cor==='AMARELO')amarelo++
-else vermelho++
-})
-let total=data.length
-document.getElementById('painelEstatisticasMunicipais').innerHTML=`
-<div class="gridKPIMunicipios">
-<div class="kpiCard">
-<div class="kpiNumero">${total}</div>
-<div class="kpiTitulo">Municípios</div>
-</div>
-<div class="kpiCard">
-<div class="kpiNumero">${verde}</div>
-<div class="kpiTitulo">🟢 Com Plano</div>
-</div>
-<div class="kpiCard">
-<div class="kpiNumero">${amarelo}</div>
-<div class="kpiTitulo">🟡 Dilação</div>
-</div>
-<div class="kpiCard">
-<div class="kpiNumero">${vermelho}</div>
-<div class="kpiTitulo">🔴 Sem Resposta</div>
-</div>
-<div class="kpiCard">
-<div class="kpiNumero">${((verde/total)*100).toFixed(1)}%</div>
-<div class="kpiTitulo">Atendimento</div>
-</div>
-</div>
-`
 }
 
 function obterMedalhaFocos(indice){
