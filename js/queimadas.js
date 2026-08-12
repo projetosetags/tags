@@ -4164,7 +4164,7 @@ doc.text(sub,x+w/2,y+22,{align:'center'})
 074.16 CRIAR GRÁFICO MENSAL
 ---------------------------------------------------------*/
 function graficoMensal(x,y,w,h){
-faixaTitulo(`EVOLUÇÃO MENSAL DOS FOCOS (${ano})`,x,y,w)
+faixaTitulo(`EVOLUÇÃO MENSAL DOS FOCOS EM RONDÔNIA (${ano})`,x,y,w)
 doc.setFillColor(255,255,255)
 doc.setDrawColor(219,226,234)
 doc.roundedRect(x,y+6,w,h-6,2,2,'FD')
@@ -4398,7 +4398,7 @@ doc.text(doc.splitTextToSize(apresentacao,185),105,59,{align:'center'})
 let ky=70
 let gap=1
 let kw=(200-gap*5)/6
-kpi(5,ky,kw,'FOCOS DE CALOR '+ano,focos.toLocaleString('pt-BR'),[220,38,38],`01/01 a ${hoje.toLocaleDateString('pt-BR')}`)
+kpi(5,ky,kw,'FOCOS DE CALOR EM RONDÔNIA '+ano,focos.toLocaleString('pt-BR'),[220,38,38],`01/01 a ${hoje.toLocaleDateString('pt-BR')}`)
 kpi(5+(kw+gap),ky,kw,'MUNICÍPIOS COM PLANO DE AÇÃO',comPlano,[22,128,61],`${((comPlano/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
 kpi(5+(kw+gap)*2,ky,kw,'MUNICÍPIOS EM DILAÇÃO',dilacao,[234,88,12],`${((dilacao/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
 kpi(5+(kw+gap)*3,ky,kw,'MUNICÍPIOS SEM RESPOSTA',semResposta,[220,38,38],`${((semResposta/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
