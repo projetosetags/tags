@@ -4546,6 +4546,7 @@ client.from('queimadas_heatmap').select('*')
 if(erroCadastro)console.error('Sumário municipal cadastro:',erroCadastro)
 if(erroHeatmap)console.error('Sumário municipal IRIQ:',erroHeatmap)
 cadastros=cadastros||[]
+console.log('CADASTRO MUNICIPAL PDF:',cadastros.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado))
 heatmaps=heatmaps||[]
 let focos=focosRO.filter(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)
 let cadastroMunicipio=cadastros.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)||{}
