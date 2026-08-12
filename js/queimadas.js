@@ -4562,10 +4562,18 @@ let iriq=Number(heatmapMunicipio?.iriq||heatmapMunicipio?.indice_final||0)
 let risco=Number(heatmapMunicipio?.risco||heatmapMunicipio?.nivel_risco||0)
 let classificacao=String(heatmapMunicipio?.classificacao||(iriq>=75?'CRÍTICO':iriq>=50?'ALTO':iriq>=25?'MODERADO':'BAIXO')).toUpperCase()
 let participacao=totalFocosRO>0?(totalFocos/totalFocosRO)*100:0
-let situacao=String(cadastroMunicipio?.classificacao_ia||cadastroMunicipio?.situacao||cadastroMunicipio?.status||'-').toUpperCase()
-let documento=cadastroMunicipio?.lnumerodocenviado||cadastroMunicipio?.llnumerodocenviado||cadastroMunicipio?.numero_documento||'-'
-let recebimento=cadastroMunicipio?.ldatarecebimentodoc?formatarDataBR(cadastroMunicipio.ldatarecebimentodoc):'-'
-let observacao=cadastroMunicipio?.observacao||cadastroMunicipio?.observacoes||'-'
+let observacao=String(cadastroMunicipio?.observacao||cadastroMunicipio?.observacoes||'').trim()
+let situacaoOriginal=String(cadastroMunicipio?.classificacao_ia||cadastroMunicipio?.situacao||cadastroMunicipio?.status||'-').toUpperCase()
+let documentoOriginal=String(cadastroMunicipio?.lnumerodocenviado||cadastroMunicipio?.llnumerodocenviado||cadastroMunicipio?.numero_documento||'-').trim()
+let dataOriginal=cadastroMunicipio?.ldatarecebimentodoc||null
+let textoCadastro=`${situacaoOriginal} ${documentoOriginal} ${observacao}`
+let possuiPlano=/PLACOM|PLANO\s+DE\s+CONTING[ÊE]NCIA|PLANO\s+DE\s+A[CÇ][ÃA]O/i.test(textoCadastro)
+let situacao=possuiPlano?'PLANO DE AÇÃO':situacaoOriginal
+let matchDocumentoPlano=observacao.match(/DOCUMENTO\s*(?:N[º°.]?\s*)?(\d{1,6}\/\d{2,4})[^.;\n]*(?:PLACOM|PLANO\s+DE\s+CONTING[ÊE]NCIA|PLANO\s+DE\s+A[CÇ][ÃA]O)/i)
+let documento=matchDocumentoPlano?.[1]||documentoOriginal
+let matchDataPlano=observacao.match(/(?:PLACOM|PLANO\s+DE\s+CONTING[ÊE]NCIA|PLANO\s+DE\s+A[CÇ][ÃA]O)[^.;\n]{0,100}?(?:RECEBIDO|RECEBIMENTO|DATA)?\s*(?:EM|:)?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i)
+let dataPlano=matchDataPlano?.[1]||null
+let recebimento=dataPlano?dataPlano.replace(/\./g,'/').replace(/-/g,'/'):possuiPlano?'-':dataOriginal?formatarDataBR(dataOriginal):'-'
 let ranking=[...heatmaps].sort((a,b)=>Number(b.iriq||b.indice_final||0)-Number(a.iriq||a.indice_final||0))
 let posicao=ranking.findIndex(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)
 posicao=posicao>=0?posicao+1:'-'
