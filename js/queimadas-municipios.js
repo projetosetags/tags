@@ -942,45 +942,58 @@ maximumFractionDigits:2
 125 QUEIMADAS FUNCTION RENDERMUNICIPIOSOFICIO
 =========================================================*/
 async function renderMunicipiosOficio(){
+
 let box=document.getElementById('painelMunicipiosOficio')
 if(!box)return
 
-let {data:kpi=[]}=await client
-.from('vw_queimadas_kpis_resposta')
+let{data=[],error}=await client
+.from('vw_queimadas_municipios_resposta')
 .select('*')
-.limit(1)
 
-let k=kpi?.[0]||{}
+if(error){
+console.error('Erro municípios ofício:',error)
+return
+}
+
+let lista=data.map(classificarMunicipioAtual)
+
+let total=lista.length
+let planos=lista.filter(i=>i.classificacaoAtual==='VERDE').length
+let dilacoes=lista.filter(i=>i.classificacaoAtual==='AMARELO').length
+let semResposta=lista.filter(i=>i.classificacaoAtual==='VERMELHO').length
 
 box.innerHTML=`
 <div class="chap-grid">
 
 <div class="chap-card">
-<div class="chap-num">${k.total_municipios||52}</div>
+<div class="chap-num">${total}</div>
 <div class="chap-label">MUNICÍPIOS OFICIADOS</div>
-<div class="fonte-card">Fonte: Ofício Circular n.16/2026/GABPRES/TCERO</div>
+<div class="fonte-card">
+Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
+</div>
 </div>
 
 <div class="chap-card">
-<div class="chap-num" style="color:#16a34a">${k.planos_apresentados||0}</div>
+<div class="chap-num" style="color:#16a34a">${planos}</div>
 <div class="chap-label">PLANO APRESENTADO</div>
 <div class="fonte-card">Classificação Verde</div>
 </div>
 
 <div class="chap-card">
-<div class="chap-num" style="color:#facc15">${k.dilacao_prazo||0}</div>
+<div class="chap-num" style="color:#facc15">${dilacoes}</div>
 <div class="chap-label">DILAÇÃO DE PRAZO</div>
 <div class="fonte-card">Classificação Amarela</div>
 </div>
 
 <div class="chap-card">
-<div class="chap-num" style="color:#dc2626">${k.sem_resposta||0}</div>
+<div class="chap-num" style="color:#dc2626">${semResposta}</div>
 <div class="chap-label">SEM RESPOSTA</div>
 <div class="fonte-card">Classificação Vermelha</div>
 </div>
 
 </div>
 `
+
 }
 
 /*=========================================================
@@ -1141,60 +1154,174 @@ em razão da concentração de focos de calor, áreas queimadas, desmatamento ac
 async function renderGraficoMunicipios(){
 let canvas=document.getElementById('graficoMunicipiosResposta')
 if(!canvas)return
-let {data,error}=await client
-.from('vw_queimadas_kpis_resposta')
+
+let{data=[],error}=await client
+.from('vw_queimadas_municipios_resposta')
 .select('*')
-.limit(1)
-if(error)return
-let k=data?.[0]||{}
+
+if(error){
+console.error('Erro gráfico municípios:',error)
+return
+}
+
+let lista=data.map(classificarMunicipioAtual)
+
+let verde=lista.filter(i=>i.classificacaoAtual==='VERDE').length
+let amarelo=lista.filter(i=>i.classificacaoAtual==='AMARELO').length
+let vermelho=lista.filter(i=>i.classificacaoAtual==='VERMELHO').length
+
+console.log('GRÁFICO MUNICÍPIOS ATUAL:',{
+verde,
+amarelo,
+vermelho
+})
+
 if(window.chartMunicipiosResposta){
 window.chartMunicipiosResposta.destroy()
+window.chartMunicipiosResposta=null
 }
+
+if(window.graficoDistribuicao){
+window.graficoDistribuicao.destroy()
+window.graficoDistribuicao=null
+}
+
 window.chartMunicipiosResposta=new Chart(canvas,{
 type:'doughnut',
+
 data:{
 labels:[
-'Plano Apresentado',
-'Dilação de Prazo',
+'Com Plano',
+'Dilação',
 'Sem Resposta'
 ],
+
 datasets:[{
 data:[
-Number(k.planos_apresentados||0),
-Number(k.dilacao_prazo||0),
-Number(k.sem_resposta||0)
+verde,
+amarelo,
+vermelho
 ],
+
 backgroundColor:[
 '#16a34a',
 '#facc15',
 '#dc2626'
 ],
-borderWidth:2
+
+borderColor:'#ffffff',
+borderWidth:3,
+hoverOffset:8
 }]
 },
+
 options:{
 responsive:true,
 maintainAspectRatio:false,
+radius:'92%',
+cutout:'48%',
+
+layout:{
+padding:{
+top:5,
+right:10,
+bottom:0,
+left:10
+}
+},
+
 plugins:{
+
 legend:{
-position:'bottom'
-},
-title:{
 display:true,
-text:'Situação dos Municípios Oficiados'
-},
-datalabels:{
-color:'#000',
+position:'bottom',
+align:'center',
+
+labels:{
+usePointStyle:true,
+pointStyle:'circle',
+boxWidth:9,
+boxHeight:9,
+padding:18,
+color:'#0f172a',
+
 font:{
+size:12,
+weight:'800'
+},
+
+generateLabels(chart){
+const dataset=chart.data.datasets[0]
+
+return chart.data.labels.map((label,i)=>({
+text:`${label}: ${Number(dataset.data[i]||0).toLocaleString('pt-BR')}`,
+fillStyle:dataset.backgroundColor[i],
+strokeStyle:dataset.backgroundColor[i],
+fontColor:'#0f172a',
+hidden:false,
+index:i
+}))
+}
+}
+},
+
+tooltip:{
+backgroundColor:'#0f172a',
+titleColor:'#ffffff',
+bodyColor:'#ffffff',
+padding:10,
+
+callbacks:{
+label:context=>{
+let total=context.dataset.data.reduce((s,v)=>s+Number(v||0),0)
+let valor=Number(context.raw||0)
+
+let percentual=total
+?((valor/total)*100).toFixed(1).replace('.',',')
+:'0,0'
+
+return`${context.label}: ${valor} (${percentual}%)`
+}
+}
+},
+
+datalabels:{
+display:true,
+color:'#000000',
+backgroundColor:'rgba(255,255,255,0.88)',
+borderColor:'#000000',
+borderWidth:1,
+borderRadius:4,
+
+padding:{
+top:4,
+bottom:4,
+left:7,
+right:7
+},
+
+font:{
+family:'Arial',
+size:19,
 weight:'bold'
 },
-formatter:v=>v
-}
-}
-}
-})
+
+formatter:valor=>valor,
+textAlign:'center',
+anchor:'center',
+align:'center',
+clamp:true
 }
 
+}
+},
+
+plugins:typeof ChartDataLabels!=='undefined'
+?[ChartDataLabels]
+:[]
+})
+
+}
 /*=========================================================
 131 QUEIMADAS FUNCTION RENDERTABELAMUNICIPIOS
 =========================================================*/
