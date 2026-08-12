@@ -1297,36 +1297,97 @@ box.innerHTML=html
 022 QUEIMADAS FUNCTION RECALCULARODSIA
 =========================================================*/
 async function recalcularODSIA(){
-let[{data:ranking=[]},{data:chap=[]},{data:monitoramento=[]},{data:mapbiomas=[]},{data:prodes=[]}]=await Promise.all([
+
+let[
+{data:ranking=[]},
+{data:ipt=[]},
+{data:monitoramento=[]},
+{data:mapbiomas=[]},
+{data:prodes=[]}
+]=await Promise.all([
 client.from('vw_queimadas_ranking_estadual').select('*'),
 client.from('queimadas_ipt').select('*'),
 client.from('queimadas_monitoramento').select('*'),
 client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
 ])
-let mediaCriticidade=ranking.length?ranking.reduce((s,i)=>s+Number(i.indice_final||0),0)/ranking.length:0
-let mediaChap=chap.length?chap.reduce((s,i)=>s+Number(i.resultado||0),0)/chap.length:0
+
+let mediaCriticidade=ranking.length
+?ranking.reduce((s,i)=>s+Number(i.indice_final||0),0)/ranking.length
+:0
+
+let mediaIPT=ipt.length
+?ipt.reduce((s,i)=>s+Number(i.indice_ipt||0),0)/ipt.length
+:0
+
 let concluidos=monitoramento.filter(i=>Number(i.percentual||0)>=100).length
-let desempenho=monitoramento.length?(concluidos/monitoramento.length)*100:0
-let areaQueimada=mapbiomas.reduce((s,i)=>s+Number(i.area_queimada||i.area||0),0)
-let areaDesmatada=prodes.reduce((s,i)=>s+Number(i.area_desmatada||i.area||0),0)
-let pressao=Math.min(100,(areaQueimada*0.0001)+(areaDesmatada*0.0001)+mediaCriticidade)
-let peso13=Math.min(100,(pressao*0.50)+(mediaChap*0.30)+(desempenho*0.20))
-let peso15=Math.min(100,(pressao*0.40)+(mediaChap*0.40)+(desempenho*0.20))
-let peso16=Math.min(100,(desempenho*0.70)+(mediaChap*0.30))
-let peso11=Math.min(100,(mediaCriticidade*0.60)+(desempenho*0.40))
-let peso17=Math.min(100,(desempenho*0.80)+(mediaChap*0.20))
+
+let desempenho=monitoramento.length
+?(concluidos/monitoramento.length)*100
+:0
+
+let areaQueimada=mapbiomas.reduce(
+(s,i)=>s+Number(i.area_queimada||i.area||0),0
+)
+
+let areaDesmatada=prodes.reduce(
+(s,i)=>s+Number(i.area_desmatada||i.area||0),0
+)
+
+let pressao=Math.min(
+100,
+(areaQueimada*0.0001)+
+(areaDesmatada*0.0001)+
+mediaCriticidade
+)
+
+let peso13=Math.min(
+100,
+(pressao*0.50)+(mediaIPT*0.30)+(desempenho*0.20)
+)
+
+let peso15=Math.min(
+100,
+(pressao*0.40)+(mediaIPT*0.40)+(desempenho*0.20)
+)
+
+let peso16=Math.min(
+100,
+(desempenho*0.70)+(mediaIPT*0.30)
+)
+
+let peso11=Math.min(
+100,
+(mediaCriticidade*0.60)+(desempenho*0.40)
+)
+
+let peso17=Math.min(
+100,
+(desempenho*0.80)+(mediaIPT*0.20)
+)
+
 await client.from('queimadas_ods').update({peso:peso13}).eq('ods','ODS 13')
 await client.from('queimadas_ods').update({peso:peso15}).eq('ods','ODS 15')
 await client.from('queimadas_ods').update({peso:peso16}).eq('ods','ODS 16')
 await client.from('queimadas_ods').update({peso:peso11}).eq('ods','ODS 11')
 await client.from('queimadas_ods').update({peso:peso17}).eq('ods','ODS 17')
+
 }
 /*=========================================================
 023 QUEIMADAS FUNCTION RECALCULARODSIAAVANCADO
 =========================================================*/
 async function recalcularODSIAAvancado(){
-let[{data:executivo},{data:ranking=[]},{data:chap=[]},{data:riscos=[]},{data:monitoramento=[]},{data:ucs=[]},{data:mapbiomas=[]},{data:prodes=[]}]=await Promise.all([
+
+let[
+{data:executivo},
+{data:ranking=[]},
+{data:ipt=[]},
+{data:riscos=[]},
+{data:monitoramento=[]},
+{data:ucs=[]},
+{data:mapbiomas=[]},
+{data:prodes=[]}
+]=await Promise.all([
 client.from('vw_queimadas_executivo').select('*').single(),
 client.from('vw_queimadas_ranking_estadual').select('*'),
 client.from('queimadas_ipt').select('*'),
@@ -1336,29 +1397,134 @@ client.from('queimadas_ucs').select('*'),
 client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
 ])
-let areaQueimada=mapbiomas.reduce((s,i)=>s+Number(i.area_queimada||i.area||0),0)
-let areaDesmatada=prodes.reduce((s,i)=>s+Number(i.area_desmatada||i.area||0),0)
-let mediaCriticidade=ranking.length?ranking.reduce((s,i)=>s+Number(i.indice_final||0),0)/ranking.length:0
-let mediaRisco=riscos.length?riscos.reduce((s,i)=>s+Number(i.nivel_risco||0),0)/riscos.length:0
-let mediaChap=chap.length?chap.reduce((s,i)=>s+Number(i.resultado||0),0)/chap.length:0
-let concluidos=monitoramento.filter(i=>Number(i.percentual||0)>=100).length
-let andamento=monitoramento.filter(i=>Number(i.percentual||0)>0&&Number(i.percentual||0)<100).length
-let desempenho=monitoramento.length?(concluidos/monitoramento.length)*100:0
-let execucao=monitoramento.length?((concluidos+(andamento*0.5))/monitoramento.length)*100:0
-let pressaoAmbiental=Math.min(100,(mediaCriticidade*0.30)+(mediaRisco*0.20)+(areaQueimada*0.00005)+(areaDesmatada*0.00005)+(mediaChap*0.20))
-let governanca=Math.min(100,(desempenho*0.50)+(execucao*0.30)+(mediaChap*0.20))
-let conservacao=Math.min(100,(ucs.length>=49?100:ucs.length*2))
-let parceria=Math.min(100,(governanca*0.60)+(execucao*0.40))
-let peso13=Math.min(100,(pressaoAmbiental*0.60)+(governanca*0.20)+(execucao*0.20))
-let peso15=Math.min(100,(conservacao*0.50)+(pressaoAmbiental*0.30)+(execucao*0.20))
-let peso16=Math.min(100,(governanca*0.70)+(execucao*0.30))
-let peso11=Math.min(100,(Number(executivo?.iriq_estadual||0)*0.70)+(execucao*0.30))
-let peso17=Math.min(100,(parceria*0.60)+(governanca*0.40))
-await client.from('queimadas_ods').update({peso:peso13,resultado:peso13,origem:'IA-CHAP AVANÇADO'}).eq('ods','ODS 13')
-await client.from('queimadas_ods').update({peso:peso15,resultado:peso15,origem:'IA-CHAP AVANÇADO'}).eq('ods','ODS 15')
-await client.from('queimadas_ods').update({peso:peso16,resultado:peso16,origem:'IA-CHAP AVANÇADO'}).eq('ods','ODS 16')
-await client.from('queimadas_ods').update({peso:peso11,resultado:peso11,origem:'IA-CHAP AVANÇADO'}).eq('ods','ODS 11')
-await client.from('queimadas_ods').update({peso:peso17,resultado:peso17,origem:'IA-CHAP AVANÇADO'}).eq('ods','ODS 17')
+
+let areaQueimada=mapbiomas.reduce(
+(s,i)=>s+Number(i.area_queimada||i.area||0),0
+)
+
+let areaDesmatada=prodes.reduce(
+(s,i)=>s+Number(i.area_desmatada||i.area||0),0
+)
+
+let mediaCriticidade=ranking.length
+?ranking.reduce((s,i)=>s+Number(i.indice_final||0),0)/ranking.length
+:0
+
+let mediaRisco=riscos.length
+?riscos.reduce((s,i)=>s+Number(i.nivel_risco||0),0)/riscos.length
+:0
+
+let mediaIPT=ipt.length
+?ipt.reduce((s,i)=>s+Number(i.indice_ipt||0),0)/ipt.length
+:0
+
+let concluidos=monitoramento.filter(
+i=>Number(i.percentual||0)>=100
+).length
+
+let andamento=monitoramento.filter(
+i=>Number(i.percentual||0)>0&&Number(i.percentual||0)<100
+).length
+
+let desempenho=monitoramento.length
+?(concluidos/monitoramento.length)*100
+:0
+
+let execucao=monitoramento.length
+?((concluidos+(andamento*0.5))/monitoramento.length)*100
+:0
+
+let pressaoAmbiental=Math.min(
+100,
+(mediaCriticidade*0.30)+
+(mediaRisco*0.20)+
+(areaQueimada*0.00005)+
+(areaDesmatada*0.00005)+
+(mediaIPT*0.20)
+)
+
+let governanca=Math.min(
+100,
+(desempenho*0.50)+
+(execucao*0.30)+
+(mediaIPT*0.20)
+)
+
+let conservacao=Math.min(
+100,
+ucs.length>=49?100:ucs.length*2
+)
+
+let parceria=Math.min(
+100,
+(governanca*0.60)+(execucao*0.40)
+)
+
+let peso13=Math.min(
+100,
+(pressaoAmbiental*0.60)+(governanca*0.20)+(execucao*0.20)
+)
+
+let peso15=Math.min(
+100,
+(conservacao*0.50)+(pressaoAmbiental*0.30)+(execucao*0.20)
+)
+
+let peso16=Math.min(
+100,
+(governanca*0.70)+(execucao*0.30)
+)
+
+let peso11=Math.min(
+100,
+(Number(executivo?.iriq_estadual||0)*0.70)+(execucao*0.30)
+)
+
+let peso17=Math.min(
+100,
+(parceria*0.60)+(governanca*0.40)
+)
+
+await client.from('queimadas_ods')
+.update({
+peso:peso13,
+resultado:peso13,
+origem:'IPT AVANÇADO'
+})
+.eq('ods','ODS 13')
+
+await client.from('queimadas_ods')
+.update({
+peso:peso15,
+resultado:peso15,
+origem:'IPT AVANÇADO'
+})
+.eq('ods','ODS 15')
+
+await client.from('queimadas_ods')
+.update({
+peso:peso16,
+resultado:peso16,
+origem:'IPT AVANÇADO'
+})
+.eq('ods','ODS 16')
+
+await client.from('queimadas_ods')
+.update({
+peso:peso11,
+resultado:peso11,
+origem:'IPT AVANÇADO'
+})
+.eq('ods','ODS 11')
+
+await client.from('queimadas_ods')
+.update({
+peso:peso17,
+resultado:peso17,
+origem:'IPT AVANÇADO'
+})
+.eq('ods','ODS 17')
+
 }
 /*=========================================================
 024 QUEIMADAS FUNCTION RENDERODSEVIDENCIAS
@@ -2065,7 +2231,7 @@ ${listaSemResposta.length?listaSemResposta.map(i=>`<div class="linha-ranking">${
 </div>`
 }
 
-if(typeof renderTopIAChap==='function')await renderTopIAChap()
+if(typeof renderTopIAIPT==='function')await renderTopIAIPT()
 if(typeof renderSalaSituacaoEstadual==='function')await renderSalaSituacaoEstadual()
 if(typeof renderIndicadoresGovernanca==='function')await renderIndicadoresGovernanca()
 }
