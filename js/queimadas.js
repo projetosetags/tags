@@ -4893,34 +4893,61 @@ headStyles:{fillColor:[5,56,139],textColor:[255,255,255],fontStyle:'bold',fontSi
 alternateRowStyles:{fillColor:[248,250,252]},
 columnStyles:{0:{cellWidth:38},1:{cellWidth:28},2:{cellWidth:48},3:{cellWidth:29}}
 })
-/*---------------------------------------------------------
-075.25 CONCLUSÃO EXECUTIVA MUNICIPAL
----------------------------------------------------------*/
+let finalTabelaMaiores=doc.lastAutoTable?.finalY||178
+/*---------------------------------------------------------*
+*075.25 CONCLUSÃO EXECUTIVA MUNICIPAL*
+*---------------------------------------------------------*/
+let yConclusao=Math.max(finalTabelaMaiores,finalTabelaRecentes)+5
+if(yConclusao<181)yConclusao=181
+let faixaIRIQ=faixaMunicipal(iriq)
+let corIRIQ=faixaIRIQ==='CRÍTICO'?[185,28,28]:faixaIRIQ==='ALTO'?[234,88,12]:faixaIRIQ==='MODERADO'?[202,138,4]:[21,128,61]
+let corRisco=classificacao==='CRÍTICO'?[185,28,28]:classificacao==='ALTO'?[234,88,12]:classificacao==='MODERADO'?[202,138,4]:[21,128,61]
+let alturaConclusao=36
 doc.setFillColor(5,56,139)
-doc.roundedRect(6,181,285,25,2.5,2.5,'F')
+doc.roundedRect(6,yConclusao,285,alturaConclusao,2.5,2.5,'F')
 doc.setFont('helvetica','bold')
-doc.setFontSize(8)
+doc.setFontSize(8.5)
 doc.setTextColor(255,255,255)
-doc.text('CONCLUSÃO EXECUTIVA',13,186)
+doc.text('CONCLUSÃO EXECUTIVA',13,yConclusao+6)
+let yIndicadores=yConclusao+11
+let indicadores=[
+{titulo:'IRIQ',valor:iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),cor:corIRIQ,x:13,w:42},
+{titulo:'FAIXA',valor:faixaIRIQ,cor:corIRIQ,x:58,w:45},
+{titulo:'POSIÇÃO',valor:`${posicao}ª`,cor:[37,99,235],x:106,w:38},
+{titulo:'RISCO',valor:risco.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),cor:corRisco,x:147,w:42},
+{titulo:'CLASSIFICAÇÃO',valor:classificacao,cor:corRisco,x:192,w:48},
+{titulo:'FOCOS '+ano,valor:totalFocos.toLocaleString('pt-BR'),cor:[220,38,38],x:243,w:41}
+]
+indicadores.forEach(item=>{
+doc.setFillColor(255,255,255)
+doc.roundedRect(item.x,yIndicadores,item.w,9,1.5,1.5,'F')
+doc.setFont('helvetica','bold')
+doc.setFontSize(4.7)
+doc.setTextColor(71,85,105)
+doc.text(item.titulo,item.x+2,yIndicadores+3)
+doc.setFontSize(7)
+doc.setTextColor(...item.cor)
+doc.text(String(item.valor),item.x+2,yIndicadores+7.2)
+})
+let conclusao=`O Município de ${municipio} apresenta IRIQ de ${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, enquadrado na faixa ${faixaIRIQ}, ocupando a ${posicao}ª posição no ranking estadual. O IRIQ sintetiza os fatores considerados no modelo de avaliação e permite comparar a pressão relativa entre os municípios, apoiando a definição de prioridades de acompanhamento, prevenção e resposta. O Risco Municipal alcança ${risco.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, com classificação ${classificacao}, refletindo a criticidade específica do território. IRIQ e Risco Municipal são indicadores complementares: o primeiro proporciona leitura comparativa da posição do município no Estado, enquanto o segundo evidencia a intensidade dos fatores de risco locais. Em ${ano}, foram registrados ${totalFocos.toLocaleString('pt-BR')} focos de calor, correspondentes a ${participacao.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}% dos registros estaduais. A avaliação técnica deve considerar conjuntamente IRIQ, Risco Municipal, posição no ranking, quantidade e evolução temporal dos focos e capacidade de resposta local, orientando a priorização e a atuação preventiva e concomitante do TCE-RO e dos demais órgãos responsáveis.`
 doc.setFont('helvetica','normal')
-doc.setFontSize(5.2)
-let conclusao=`O Município de ${municipio} apresenta IRIQ de ${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, enquadrado na faixa ${faixaMunicipal(iriq)}, ocupando a ${posicao}ª posição no ranking estadual. O IRIQ — Índice de Risco Integrado de Queimadas — constitui indicador sintético destinado à comparação territorial e à priorização dos municípios, consolidando, em escala padronizada, os fatores considerados no modelo de avaliação. Quanto maior o índice, maior a necessidade relativa de atenção, acompanhamento e adoção de medidas preventivas. Sua finalidade é apoiar a decisão e a hierarquização territorial, não devendo ser interpretado isoladamente como medida absoluta da ocorrência de incêndios. O Risco Municipal alcança ${risco.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}, correspondendo à classificação ${classificacao}, e expressa a criticidade territorial identificada a partir dos fatores de risco considerados no modelo, subsidiando o dimensionamento do monitoramento, prevenção, fiscalização, preparação e resposta. A coexistência de IRIQ ${faixaMunicipal(iriq)} e Risco Municipal ${classificacao} não constitui divergência: os indicadores são complementares. O IRIQ proporciona leitura integrada e comparativa da posição municipal no Estado, enquanto o Risco Municipal evidencia a intensidade da criticidade específica do território. Foram registrados ${totalFocos.toLocaleString('pt-BR')} focos de calor em ${ano}, equivalentes a ${participacao.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}% dos registros estaduais. A avaliação técnica deve considerar conjuntamente IRIQ, Risco Municipal, ranking estadual, quantidade e evolução temporal dos focos e capacidade de resposta local, permitindo estabelecer prioridades e orientar a atuação preventiva e concomitante do TCE-RO e dos demais órgãos responsáveis.`
-doc.text(
-doc.splitTextToSize(conclusao,268),
-13,
-191,
-{lineHeightFactor:1.05}
-)
-/*---------------------------------------------------------
-075.26 RODAPÉ E SALVAMENTO
----------------------------------------------------------*/
+doc.setFontSize(5.5)
+doc.setTextColor(255,255,255)
+let linhasConclusao=doc.splitTextToSize(conclusao,270)
+doc.text(linhasConclusao,13,yIndicadores+14,{lineHeightFactor:1.18})
+/*---------------------------------------------------------*
+*075.26 RODAPÉ E SALVAMENTO*
+*---------------------------------------------------------*/
+doc.setDrawColor(203,213,225)
+doc.setLineWidth(0.3)
+doc.line(7,209,290,209)
 doc.setFont('helvetica','normal')
 doc.setFontSize(5.8)
 textoPreto()
-doc.text('Fontes: INPE • IRIQ • Heatmap Estadual • Municípios de Rondônia • TCE-RO',7,208)
+doc.text('Fontes: INPE • IRIQ • Heatmap Estadual • Municípios de Rondônia • TCE-RO',7,213)
 doc.setFont('helvetica','bold')
 doc.setFontSize(5.8)
-doc.text('PÁGINA 1 DE 1',290,207,{align:'right'})
+doc.text('PÁGINA 1 DE 1',290,213,{align:'right'})
 doc.save(`Sumario_Executivo_Municipal_${municipio.replace(/\s+/g,'_')}_${ano}.pdf`)
 }
 /*=========================================================
