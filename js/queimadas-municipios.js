@@ -49,22 +49,26 @@ ${i.risco||'-'} - Nível ${i.nivel_risco||0}
 </div>`
 }
 /*=========================================================
-102 QUEIMADAS FUNCTION RENDERTOPIACHAP
+102 QUEIMADAS FUNCTION RENDERTOPIAIPT
 =========================================================*/
-async function renderTopIAChap(){
+async function renderTopIAIPT(){
 let box=document.getElementById('painelTopIAChap')
 if(!box)return
-let{data=[]}=await client
+let{data=[],error}=await client
 .from('queimadas_ipt')
-.select('*')
-.order('resultado',{ascending:false})
+.select('municipio,indice_ipt')
+.order('indice_ipt',{ascending:false})
 .limit(10)
+if(error){
+box.innerHTML='<div class="alerta-vermelho">Erro ao carregar o ranking IPT.</div>'
+return
+}
 box.innerHTML=`
 <div class="cardExecutivo">
-<h2>🤖 TOP IA-CHAP</h2>
-${data.map(i=>`
+<h2>📊 TOP IPT</h2>
+${data.map((i,idx)=>`
 <div class="linha-queimadas">
-${i.municipio||'-'} • Score ${Number(i.resultado||0).toFixed(2)}
+<b>${idx+1}º — ${i.municipio||'-'}</b> • IPT ${Number(i.indice_ipt||0).toFixed(2).replace('.',',')}
 </div>
 `).join('')}
 </div>`
