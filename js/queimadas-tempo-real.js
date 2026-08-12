@@ -378,10 +378,8 @@ let select=document.getElementById('selectMunicipioTempoReal')
 if(!select)return
 
 const {data,error}=await client
-.schema('queimadas')
-.from('queimadas_focos_inpe')
+.from('vw_queimadas_municipios_resposta')
 .select('municipio')
-.eq('uf','RO')
 
 if(error){
 console.error('Erro municípios tempo real:',error)
@@ -390,13 +388,15 @@ return
 
 let municipios=[...new Set(
 (data||[])
-.map(i=>i.municipio)
+.map(i=>String(i.municipio||'').trim())
 .filter(Boolean)
 )]
 
 municipios.sort((a,b)=>
 a.localeCompare(b,'pt-BR')
 )
+
+console.log('TOTAL DE MUNICÍPIOS:',municipios.length)
 
 select.innerHTML=`
 <option value="">Selecione um município...</option>
@@ -420,9 +420,9 @@ RENDER TEMPO REAL MUNICÍPIO
 =========================================================*/
 async function renderTempoRealMunicipio(municipio){
 if(!municipio)return
-const ano=2026
+const ano=new Date().getFullYear()
 let inicioAno=`${ano}-01-01`
-let fimAno=`${ano}-12-31`
+let fimAno=formatarDataTempoReal(new Date())
 const{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').eq('municipio',municipio).gte('data_foco',inicioAno).lte('data_foco',fimAno).order('data_hora',{ascending:false})
 if(error){
 console.error('Erro tempo real municipal:',error)
