@@ -49,28 +49,36 @@ ${i.risco||'-'} - Nível ${i.nivel_risco||0}
 </div>`
 }
 /*=========================================================
-102 QUEIMADAS FUNCTION RENDERTOPIAIPT
+102 QUEIMADAS FUNCTION RENDERTOPIPT
 =========================================================*/
-async function renderTopIAIPT(){
-let box=document.getElementById('painelTopIAChap')
+async function renderTopIPT(){
+let box=document.getElementById('painelTopIPT')
 if(!box)return
+
 let{data=[],error}=await client
 .from('queimadas_ipt')
 .select('municipio,indice_ipt')
 .order('indice_ipt',{ascending:false})
 .limit(10)
+
 if(error){
+console.error('Erro ao carregar ranking IPT:',error)
 box.innerHTML='<div class="alerta-vermelho">Erro ao carregar o ranking IPT.</div>'
 return
 }
+
 box.innerHTML=`
 <div class="cardExecutivo">
-<h2>📊 TOP IPT</h2>
-${data.map((i,idx)=>`
+<h2>📊 TOP 10 — IPT</h2>
+${data.length?data.map((i,idx)=>`
 <div class="linha-queimadas">
-<b>${idx+1}º — ${i.municipio||'-'}</b> • IPT ${Number(i.indice_ipt||0).toFixed(2).replace('.',',')}
+<b>${idx+1}º — ${i.municipio||'-'}</b>
+<span> • IPT ${Number(i.indice_ipt||0).toFixed(2).replace('.',',')}</span>
 </div>
-`).join('')}
+`).join(''):'<div class="situacaoSemDados">Nenhum dado de IPT disponível.</div>'}
+<div class="fonte-card">
+Fonte: Índice de Priorização Territorial — IPT • TCE-RO
+</div>
 </div>`
 }
 /*=========================================================
@@ -125,15 +133,15 @@ Fonte: MAPBIOMAS (2021-2025) • PRODES (2021-2025) • Atualizado em ${hoje}
 104 QUEIMADAS FUNCTION CALCULARIRIQMUNICIPAL
 =========================================================*/
 async function calcularIRIQMunicipal(){
-let{data:ranking=[]}=await client
+let{data:ranking=[],error}=await client
 .from('vw_queimadas_ranking_estadual')
 .select('*')
-let maiorArea=Math.max(...ranking.map(i=>
-Number(i.area_queimada_hectares||i.area_queimada_ha||i.area_queimada||0)
-),1)
-let maiorDesmatamento=Math.max(...ranking.map(i=>
-Number(i.desmatamento_hectares||i.desmatamento_ha||i.area_desmatada||0)
-),1)
+
+if(error){
+console.error('Erro ao carregar ranking estadual para consolidação do IRIQ:',error)
+return
+}
+
 for(let m of ranking){
 let areaQueimada=Number(
 m.area_queimada_hectares||
@@ -141,23 +149,19 @@ m.area_queimada_ha||
 m.area_queimada||
 0
 )
+
 let desmatamento=Number(
 m.desmatamento_hectares||
 m.desmatamento_ha||
 m.area_desmatada||
 0
 )
-let chap=Number(m.chap_score||50)
-let risco=Number(m.risco_score||50)
-let scoreQueimada=(areaQueimada/maiorArea)*100
-let scoreDesmatamento=(desmatamento/maiorDesmatamento)*100
-let indice=
-(risco*0.30)+
-(chap*0.10)+
-(scoreQueimada*0.35)+
-(scoreDesmatamento*0.25)
+
+let indice=Number(m.indice_final||m.iriq||0)
+
 let classificacao='BAIXO'
 let semaforo='🟢'
+
 if(indice>=75){
 classificacao='CRÍTICO'
 semaforo='🔴'
@@ -168,6 +172,7 @@ semaforo='🟠'
 classificacao='MODERADO'
 semaforo='🟡'
 }
+
 await client
 .from('queimadas_heatmap')
 .upsert([{
@@ -176,8 +181,6 @@ area_queimada_hectares:areaQueimada,
 desmatamento_hectares:desmatamento,
 area_queimada_ha:areaQueimada,
 desmatamento_ha:desmatamento,
-score_queimada:Number(scoreQueimada.toFixed(2)),
-score_desmatamento:Number(scoreDesmatamento.toFixed(2)),
 indice_final:Number(indice.toFixed(2)),
 classificacao,
 semaforo
@@ -246,13 +249,15 @@ box.innerHTML=`
 async function renderRankingIRIQ(){
 let box=document.getElementById('painelTopMunicipios')
 if(!box)return
+
 let{data=[]}=await client
 .from('vw_queimadas_ranking_estadual')
 .select('*')
 .order('indice_final',{ascending:false})
+
 box.innerHTML=`
 <div class="fonte-card">
-Ranking Estadual IRIQ • TCERO • MAPBIOMAS • PRODES • CHAP
+Ranking Estadual IRIQ • TCE-RO • MAPBIOMAS • PRODES • CHAPT
 </div>
 ${data.map((m,i)=>`
 <div class="linha-ranking">
@@ -267,7 +272,7 @@ ${m.classificacao||'BAIXO'}
 </div>
 `).join('')}
 <div class="fonte-card">
-Fonte: IRIQ Ambiental • MAPBIOMAS • PRODES • CHAP
+Fonte: IRIQ Ambiental • MAPBIOMAS • PRODES • CHAPT
 </div>`
 }
 /*=========================================================
@@ -1221,7 +1226,7 @@ document.getElementById('painelGovernancaEstadual').innerHTML=`
 
 document.getElementById('painelRecomendacaoExecutiva').innerHTML=`
 <div style="padding:10px;line-height:1.6">
-A análise integrada dos dados do INPE, MAPBIOMAS, PRODES, CHAP e IRIQ indica prioridade máxima para os municípios de
+A análise integrada dos dados do INPE, MAPBIOMAS, PRODES, CHAPT e IRIQ indica prioridade máxima para os municípios de
 <b>${ranking.slice(0,3).map(i=>i.municipio).join(', ')}</b>,
 em razão da concentração de focos de calor, áreas queimadas, desmatamento acumulado e risco ambiental elevado.
 </div>
