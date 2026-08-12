@@ -329,60 +329,40 @@ if(iriq<0)iriq=0
 return iriq.toFixed(2)
 }
 /*=========================================================
+110.1 QUEIMADAS CLASSIFICAÇÃO MUNICIPAL ATUAL
+=========================================================*/
+function classificarMunicipioAtual(i){
+let obs=String(i?.observacao||i?.observacoes||'').trim()
+let texto=obs.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()
+let data1=i?.ldatarecebimentodoc||i?.data_recebimento1||''
+let data2=i?.lldatarecebimentodoc||i?.ldatarecebimentodoc2||i?.data_recebimento2||''
+let doc1=i?.lnumerodocenviado||i?.numero_documento||''
+let doc2=i?.llnumerodocenviado||i?.lnumerodocenviado2||i?.llnumerodocenviado2||i?.numero_documento2||''
+let possuiPlano=texto.includes('PLACOM')||texto.includes('PLANO DE ACAO')||texto.includes('PLANO MUNICIPAL')||texto.includes('PLANO DE CONTINGENCIA')||texto.includes('PLANO ANUAL')||texto.includes('PIMF')
+let possuiDilacao=texto.includes('DILACAO')||texto.includes('PRORROGACAO')||texto.includes('SOLICITACAO DE PRAZO')
+let possuiRecebimento=Boolean((data1&&doc1)||(data2&&doc2))
+let situacao='SEM RESPOSTA',cor='VERMELHO'
+if(possuiRecebimento&&possuiPlano){situacao='PLANO DE AÇÃO';cor='VERDE'}
+else if(possuiRecebimento&&possuiDilacao){situacao='DILAÇÃO DE PRAZO';cor='AMARELO'}
+else if(possuiRecebimento){situacao='PLANO DE AÇÃO';cor='VERDE'}
+return{...i,situacaoAtual:situacao,classificacaoAtual:cor,documentoAtual:String(doc2||doc1||'-').trim(),recebimentoAtual:data2||data1||''}
+}
+/*=========================================================
 111 QUEIMADAS FUNCTION RENDERPLANOSMUNICIPAIS
 =========================================================*/
 async function renderPlanosMunicipais(){
 let box=document.getElementById('painelPlanosMunicipais')
 if(!box)return
-let{data=[]}=await client.from('vw_queimadas_municipios_resposta').select('*').order('municipio')
+let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*').order('municipio')
+if(error)return
 let{data:ranking=[]}=await client.from('vw_queimadas_ranking_estadual').select('*').order('indice_final',{ascending:false})
-let comPlano=data.filter(i=>String(i.classificacao_cor||'').toUpperCase()==='VERDE')
-let dilacao=data.filter(i=>String(i.classificacao_cor||'').toUpperCase()==='AMARELO')
-let semPlano=data.filter(i=>String(i.classificacao_cor||'').toUpperCase()==='VERMELHO')
+let lista=(data||[]).map(classificarMunicipioAtual)
+let comPlano=lista.filter(i=>i.classificacaoAtual==='VERDE')
+let dilacao=lista.filter(i=>i.classificacaoAtual==='AMARELO')
+let semPlano=lista.filter(i=>i.classificacaoAtual==='VERMELHO')
 let rankingHTML=''
-ranking.slice(0,6).forEach((m,i)=>{
-rankingHTML+=`
-<div style="margin:4px 0">
-<b>${i+1}º ${m.municipio}</b>
-&nbsp;|&nbsp;
-IRIQ: <b>${Number(m.indice_final||m.iriq||0).toFixed(2)}</b>
-&nbsp;|&nbsp;
-Área Queimada: <b>${Number(m.area_queimada_ha||0).toLocaleString('pt-BR')}</b>
-&nbsp;|&nbsp;
-Desmatamento: <b>${Number(m.desmatamento_ha||0).toLocaleString('pt-BR')}</b>
-</div>`
-})
-box.innerHTML=`
-<div class="chap-grid">
-<div class="chap-card">
-<div class="chap-num" style="color:#16a34a">${comPlano.length}</div>
-<div class="chap-label">COM PLANO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num" style="color:#facc15">${dilacao.length}</div>
-<div class="chap-label">DILAÇÃO DE PRAZO</div>
-</div>
-<div class="chap-card">
-<div class="chap-num" style="color:#dc2626">${semPlano.length}</div>
-<div class="chap-label">SEM PLANO</div>
-</div>
-</div>
-<div style="margin-top:15px;padding:12px;border-radius:10px;background:#fef2f2;border:2px solid #dc2626">
-<div style="font-size:16px;font-weight:900;margin-bottom:8px;color:#991b1b">
-🔥 TOP MUNICÍPIOS PRIORITÁRIOS
-</div>
-${rankingHTML}
-</div>
-<div style="margin-top:15px">
-<h3 style="color:#15803d">✅ MUNICÍPIOS COM PLANO</h3>
-${comPlano.map(i=>i.municipio).join(' • ')}
-<hr style="margin:15px 0">
-<h3 style="color:#ca8a04">🟡 MUNICÍPIOS COM DILAÇÃO DE PRAZO</h3>
-${dilacao.map(i=>i.municipio).join(' • ')}
-<hr style="margin:15px 0">
-<h3 style="color:#dc2626">🚨 MUNICÍPIOS SEM PLANO</h3>
-${semPlano.map(i=>i.municipio).join(' • ')}
-</div>`
+ranking.slice(0,6).forEach((m,i)=>{rankingHTML+=`<div style="margin:4px 0"><b>${i+1}º ${m.municipio}</b>&nbsp;|&nbsp;IRIQ: <b>${Number(m.indice_final||m.iriq||0).toFixed(2)}</b>&nbsp;|&nbsp;Área Queimada: <b>${Number(m.area_queimada_ha||0).toLocaleString('pt-BR')}</b>&nbsp;|&nbsp;Desmatamento: <b>${Number(m.desmatamento_ha||0).toLocaleString('pt-BR')}</b></div>`})
+box.innerHTML=`<div class="chap-grid"><div class="chap-card"><div class="chap-num" style="color:#16a34a">${comPlano.length}</div><div class="chap-label">COM PLANO</div></div><div class="chap-card"><div class="chap-num" style="color:#facc15">${dilacao.length}</div><div class="chap-label">DILAÇÃO DE PRAZO</div></div><div class="chap-card"><div class="chap-num" style="color:#dc2626">${semPlano.length}</div><div class="chap-label">SEM PLANO</div></div></div><div style="margin-top:15px;padding:12px;border-radius:10px;background:#fef2f2;border:2px solid #dc2626"><div style="font-size:16px;font-weight:900;margin-bottom:8px;color:#991b1b">🔥 TOP MUNICÍPIOS PRIORITÁRIOS</div>${rankingHTML}</div><div style="margin-top:15px"><h3 style="color:#15803d">✅ MUNICÍPIOS COM PLANO</h3>${comPlano.map(i=>i.municipio).join(' • ')}<hr style="margin:15px 0"><h3 style="color:#ca8a04">🟡 MUNICÍPIOS COM DILAÇÃO DE PRAZO</h3>${dilacao.map(i=>i.municipio).join(' • ')}<hr style="margin:15px 0"><h3 style="color:#dc2626">🚨 MUNICÍPIOS SEM PLANO</h3>${semPlano.map(i=>i.municipio).join(' • ')}</div>`
 }
 /*=========================================================
 112 QUEIMADAS FUNCTION RENDERGEOJSONRO
@@ -1008,83 +988,22 @@ box.innerHTML=`
 async function renderMunicipiosSemResposta(){
 let box=document.getElementById('painelMunicipiosSemResposta')
 if(!box)return
-
-let {data,error}=await client
-.from('vw_queimadas_municipios_resposta')
-.select('*')
-.eq('classificacao_cor','VERMELHO')
-.order('municipio')
-
+let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*').order('municipio')
 if(error)return
-
-let html='<div class="heatmap-grid">'
-
-;(data||[]).forEach(i=>{
-html+=`
-<div class="heat-vermelho">
-<div class="heat-municipio">${i.municipio||'-'}</div>
-<div class="heat-info">
-Situação: SEM RESPOSTA<br>
-Ofício: ${i.nroficioenviadotcero||'-'}<br>
-Envio: ${formatarDataBR(i.dataenviodoc)}
-</div>
-<div class="fonte-card">
-Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
-</div>
-</div>
-`
-})
-
-html+='</div>'
-
-box.innerHTML=html
+let lista=data.map(classificarMunicipioAtual).filter(i=>i.classificacaoAtual==='VERMELHO')
+box.innerHTML='<div class="heatmap-grid">'+lista.map(i=>`<div class="heat-vermelho"><div class="heat-municipio">${i.municipio||'-'}</div><div class="heat-info">Situação: SEM RESPOSTA<br>Ofício: ${i.nroficioenviadotcero||'-'}<br>Envio: ${formatarDataBR(i.dataenviodoc)}</div><div class="fonte-card">Fonte: Ofício Circular n.16/2026/GABPRES/TCERO</div></div>`).join('')+'</div>'
 }
-
 /*=========================================================
 127 QUEIMADAS FUNCTION RENDERKPISMUNICIPAIS
 =========================================================*/
 async function renderKPIsMunicipais(){
 let box=document.getElementById('painelKPIsMunicipais')
 if(!box)return
-
-let {data,error}=await client
-.from('vw_queimadas_kpis_resposta')
-.select('*')
-.limit(1)
-
+let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*')
 if(error)return
-
-let k=data?.[0]||{}
-
-box.innerHTML=`
-<div class="chap-grid">
-
-<div class="chap-card">
-<div class="chap-num">${k.total_municipios||52}</div>
-<div class="chap-label">MUNICÍPIOS OFICIADOS</div>
-<div class="fonte-card">Fonte: Ofício Circular n.16/2026/GABPRES/TCERO</div>
-</div>
-
-<div class="chap-card">
-<div class="chap-num" style="color:#16a34a">${k.planos_apresentados||0}</div>
-<div class="chap-label">PLANO APRESENTADO</div>
-<div class="fonte-card">Classificação Verde</div>
-</div>
-
-<div class="chap-card">
-<div class="chap-num" style="color:#facc15">${k.dilacao_prazo||0}</div>
-<div class="chap-label">DILAÇÃO DE PRAZO</div>
-<div class="fonte-card">Classificação Amarela</div>
-</div>
-
-<div class="chap-card">
-<div class="chap-num" style="color:#dc2626">${k.sem_resposta||0}</div>
-<div class="chap-label">SEM RESPOSTA</div>
-<div class="fonte-card">Classificação Vermelha</div>
-</div>
-
-</div>
-`
+let lista=data.map(classificarMunicipioAtual)
+let total=lista.length,planos=lista.filter(i=>i.classificacaoAtual==='VERDE').length,dilacoes=lista.filter(i=>i.classificacaoAtual==='AMARELO').length,semResposta=lista.filter(i=>i.classificacaoAtual==='VERMELHO').length
+box.innerHTML=`<div class="chap-grid"><div class="chap-card"><div class="chap-num">${total}</div><div class="chap-label">MUNICÍPIOS OFICIADOS</div><div class="fonte-card">Fonte: Ofício Circular n.16/2026/GABPRES/TCERO</div></div><div class="chap-card"><div class="chap-num" style="color:#16a34a">${planos}</div><div class="chap-label">PLANO APRESENTADO</div><div class="fonte-card">Classificação Verde</div></div><div class="chap-card"><div class="chap-num" style="color:#facc15">${dilacoes}</div><div class="chap-label">DILAÇÃO DE PRAZO</div><div class="fonte-card">Classificação Amarela</div></div><div class="chap-card"><div class="chap-num" style="color:#dc2626">${semResposta}</div><div class="chap-label">SEM RESPOSTA</div><div class="fonte-card">Classificação Vermelha</div></div></div>`
 }
 /*=========================================================
 128 QUEIMADAS FUNCTION RENDERPLANOSAPRESENTADOS
@@ -1092,38 +1011,21 @@ box.innerHTML=`
 async function renderPlanosApresentados(){
 let box=document.getElementById('painelPlanosApresentados')
 if(!box)return
-let {data,error}=await client
-.from('vw_queimadas_municipios_resposta')
-.select('*')
-.eq('classificacao_cor','VERDE')
-.order('municipio')
+let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*').order('municipio')
 if(error)return
-let html='<table class="tabelaMiniMunicipios"><tr><th>Município</th><th>Recebimento</th></tr>'
-;(data||[]).forEach(i=>{
-html+=`<tr><td>${i.municipio||'-'}</td><td>${formatarDataBR(i.ldatarecebimentodoc)}</td></tr>`
-})
-html+='</table>'
-box.innerHTML=html
+let lista=data.map(classificarMunicipioAtual).filter(i=>i.classificacaoAtual==='VERDE')
+box.innerHTML='<table class="tabelaMiniMunicipios"><tr><th>Município</th><th>Recebimento</th></tr>'+lista.map(i=>`<tr><td>${i.municipio||'-'}</td><td>${i.recebimentoAtual?formatarDataBR(i.recebimentoAtual):'-'}</td></tr>`).join('')+'</table>'
 }
-
 /*=========================================================
 129 QUEIMADAS FUNCTION RENDERDILACOESPRAZO
 =========================================================*/
 async function renderDilacoesPrazo(){
 let box=document.getElementById('painelDilacoesPrazo')
 if(!box)return
-let {data,error}=await client
-.from('vw_queimadas_municipios_resposta')
-.select('*')
-.eq('classificacao_cor','AMARELO')
-.order('municipio')
+let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*').order('municipio')
 if(error)return
-let html='<table class="tabelaMiniMunicipios"><tr><th>Município</th><th>Recebimento</th></tr>'
-;(data||[]).forEach(i=>{
-html+=`<tr><td>${i.municipio||'-'}</td><td>${formatarDataBR(i.ldatarecebimentodoc)}</td></tr>`
-})
-html+='</table>'
-box.innerHTML=html
+let lista=data.map(classificarMunicipioAtual).filter(i=>i.classificacaoAtual==='AMARELO')
+box.innerHTML='<table class="tabelaMiniMunicipios"><tr><th>Município</th><th>Recebimento</th></tr>'+lista.map(i=>`<tr><td>${i.municipio||'-'}</td><td>${i.recebimentoAtual?formatarDataBR(i.recebimentoAtual):'-'}</td></tr>`).join('')+'</table>'
 }
 /*=========================================================
 130 QUEIMADAS FUNCTION RENDERDASHBOARDPRESIDENTE
@@ -1298,70 +1200,19 @@ formatter:v=>v
 async function renderTabelaMunicipios(){
 let box=document.getElementById('painelTabelaMunicipios')
 if(!box)return
-
 let filtro=document.getElementById('filtroMunicipioSituacao')?.value||''
 let busca=(document.getElementById('buscaMunicipio')?.value||'').toUpperCase()
-
-let query=client
-.from('vw_queimadas_municipios_resposta')
-.select('*')
-.order('municipio')
-
-if(filtro){
-query=query.eq('classificacao_cor',filtro)
-}
-
-let {data,error}=await query
-
+let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*').order('municipio')
 if(error)return
-
-let lista=data||[]
-
-if(busca){
-lista=lista.filter(i=>
-String(i.municipio||'')
-.toUpperCase()
-.includes(busca)
-)
-}
-
-let html=`
-<div class="tabelaMunicipiosWrap">
-<table class="tabelaMunicipios tabelaMunicipiosNova">
-<thead>
-<tr>
-<th class="colMun">MUNICÍPIO</th>
-<th class="colSit">SITUAÇÃO</th>
-<th class="colDoc">DOCUMENTO</th>
-<th class="colData">RECEBIMENTO</th>
-<th class="colObs">OBSERVAÇÃO</th>
-</tr>
-</thead>
-<tbody>
-`
+let lista=data.map(classificarMunicipioAtual)
+if(filtro)lista=lista.filter(i=>i.classificacaoAtual===filtro)
+if(busca)lista=lista.filter(i=>String(i.municipio||'').toUpperCase().includes(busca))
+let html=`<div class="tabelaMunicipiosWrap"><table class="tabelaMunicipios tabelaMunicipiosNova"><thead><tr><th class="colMun">MUNICÍPIO</th><th class="colSit">SITUAÇÃO</th><th class="colDoc">DOCUMENTO</th><th class="colData">RECEBIMENTO</th><th class="colObs">OBSERVAÇÃO</th></tr></thead><tbody>`
 lista.forEach(i=>{
-let cor='#64748b'
-if(i.classificacao_cor==='VERDE')cor='#16a34a'
-if(i.classificacao_cor==='AMARELO')cor='#d4a900'
-if(i.classificacao_cor==='VERMELHO')cor='#dc2626'
-html+=`
-<tr>
-<td class="tdMunicipio">${i.municipio||'-'}</td>
-<td class="tdSituacao" style="color:${cor}">${i.classificacao_ia||'-'}</td>
-<td class="tdDocumento">${i.lnumerodocenviado||i.llnumerodocenviado||'-'}</td>
-<td class="tdRecebimento">${formatarDataBR(i.ldatarecebimentodoc)}</td>
-<td class="tdObservacao">${i.observacao||'-'}</td>
-</tr>
-`
+let cor=i.classificacaoAtual==='VERDE'?'#16a34a':i.classificacaoAtual==='AMARELO'?'#d4a900':i.classificacaoAtual==='VERMELHO'?'#dc2626':'#64748b'
+html+=`<tr><td class="tdMunicipio">${i.municipio||'-'}</td><td class="tdSituacao" style="color:${cor}">${i.situacaoAtual}</td><td class="tdDocumento">${i.documentoAtual}</td><td class="tdRecebimento">${i.recebimentoAtual?formatarDataBR(i.recebimentoAtual):'-'}</td><td class="tdObservacao">${i.observacao||'-'}</td></tr>`
 })
-html+=`
-</tbody>
-</table>
-<div class="fonte-card fonteTabelaMunicipios">
-Fonte: Ofício Circular n.16/2026/GABPRES/TCERO
-</div>
-</div>
-`
+html+=`</tbody></table><div class="fonte-card fonteTabelaMunicipios">Fonte: Ofício Circular n.16/2026/GABPRES/TCERO</div></div>`
 box.innerHTML=html
 }
 /*=========================================================
@@ -1476,44 +1327,17 @@ l.setStyle({fillOpacity:.10,weight:1})
 async function renderEstatisticasMunicipais(){
 let box=document.getElementById('painelEstatisticasMunicipais')
 if(!box)return
-let {data,error}=await client
-.from('vw_queimadas_kpis_resposta')
-.select('*')
-.limit(1)
-if(error){
-console.log(error)
-return
-}
-let k=(data&&data.length)?data[0]:{}
-let total=Number(k.total_municipios||0)
-let planos=Number(k.planos_apresentados||0)
-let dilacoes=Number(k.dilacao_prazo||0)
-let semResposta=Number(k.sem_resposta||0)
-let pPlanos=total?((planos/total)*100).toFixed(1):0
-let pDilacoes=total?((dilacoes/total)*100).toFixed(1):0
-let pSemResposta=total?((semResposta/total)*100).toFixed(1):0
-box.innerHTML=`
-<div class="chap-grid">
-<div class="chap-card">
-<div class="chap-num" style="color:#16a34a">${pPlanos}%</div>
-<div class="chap-label">PLANO APRESENTADO</div>
-<div class="fonte-card">${planos} de ${total} municípios</div>
-</div>
-<div class="chap-card">
-<div class="chap-num" style="color:#ca8a04">${pDilacoes}%</div>
-<div class="chap-label">DILAÇÃO DE PRAZO</div>
-<div class="fonte-card">${dilacoes} de ${total} municípios</div>
-</div>
-<div class="chap-card">
-<div class="chap-num" style="color:#dc2626">${pSemResposta}%</div>
-<div class="chap-label">SEM RESPOSTA</div>
-<div class="fonte-card">${semResposta} de ${total} municípios</div>
-</div>
-</div>
-<div class="fonte-card">
-Fonte: Ofício Circular n.16/2026/GABPRES/TCERO • Respostas dos Municípios
-</div>
-`
+let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*')
+if(error)return
+let lista=data.map(classificarMunicipioAtual)
+let total=lista.length
+let planos=lista.filter(i=>i.classificacaoAtual==='VERDE').length
+let dilacoes=lista.filter(i=>i.classificacaoAtual==='AMARELO').length
+let semResposta=lista.filter(i=>i.classificacaoAtual==='VERMELHO').length
+let pPlanos=total?((planos/total)*100).toFixed(1):'0.0'
+let pDilacoes=total?((dilacoes/total)*100).toFixed(1):'0.0'
+let pSemResposta=total?((semResposta/total)*100).toFixed(1):'0.0'
+box.innerHTML=`<div class="chap-grid"><div class="chap-card"><div class="chap-num" style="color:#16a34a">${pPlanos}%</div><div class="chap-label">PLANO APRESENTADO</div><div class="fonte-card">${planos} de ${total} municípios</div></div><div class="chap-card"><div class="chap-num" style="color:#ca8a04">${pDilacoes}%</div><div class="chap-label">DILAÇÃO DE PRAZO</div><div class="fonte-card">${dilacoes} de ${total} municípios</div></div><div class="chap-card"><div class="chap-num" style="color:#dc2626">${pSemResposta}%</div><div class="chap-label">SEM RESPOSTA</div><div class="fonte-card">${semResposta} de ${total} municípios</div></div></div><div class="fonte-card">Fonte: Ofício Circular n.16/2026/GABPRES/TCERO • Respostas dos Municípios</div>`
 }
 
 /*=========================================================
