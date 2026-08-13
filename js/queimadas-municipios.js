@@ -1051,17 +1051,30 @@ async function renderTabelaMunicipios(){
 let box=document.getElementById('painelTabelaMunicipios')
 if(!box)return
 let filtro=document.getElementById('filtroMunicipioSituacao')?.value||''
-let busca=(document.getElementById('buscaMunicipio')?.value||'').toUpperCase()
+let busca=(document.getElementById('buscaMunicipio')?.value||'').trim().toUpperCase()
 let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*').order('municipio')
-if(error)return
-let lista=data.map(classificarMunicipioAtual)
+if(error){
+console.error('Erro ao carregar tabela municipal:',error)
+box.innerHTML='<div class="alerta-vermelho">Erro ao carregar os municípios.</div>'
+return
+}
+let lista=(data||[]).map(classificarMunicipioAtual)
 if(filtro)lista=lista.filter(i=>i.classificacaoAtual===filtro)
 if(busca)lista=lista.filter(i=>String(i.municipio||'').toUpperCase().includes(busca))
 let html=`<div class="tabelaMunicipiosWrap"><table class="tabelaMunicipios tabelaMunicipiosNova"><thead><tr><th class="colMun">MUNICÍPIO</th><th class="colSit">SITUAÇÃO</th><th class="colDoc">DOCUMENTO</th><th class="colData">RECEBIMENTO</th><th class="colObs">OBSERVAÇÃO</th></tr></thead><tbody>`
 lista.forEach(i=>{
-let cor=i.classificacaoAtual==='VERDE'?'#16a34a':i.classificacaoAtual==='AMARELO'?'#d4a900':i.classificacaoAtual==='VERMELHO'?'#dc2626':'#64748b'
-html+=`<tr><td class="tdMunicipio">${i.municipio||'-'}</td><td class="tdSituacao" style="color:${cor}">${i.situacaoAtual}</td><td class="tdDocumento">${i.documentoAtual}</td><td class="tdRecebimento">${i.recebimentoAtual?formatarDataBR(i.recebimentoAtual):'-'}</td><td class="tdObservacao">${i.observacao||'-'}</td></tr>`
+let situacao='🔴 SEM RESPOSTA'
+let cor='#dc2626'
+if(i.classificacaoAtual==='VERDE'){
+situacao='🟢 PLANO DE AÇÃO'
+cor='#16a34a'
+}else if(i.classificacaoAtual==='AMARELO'){
+situacao='🟡 DILAÇÃO DE PRAZO'
+cor='#d4a900'
+}
+html+=`<tr><td class="tdMunicipio">${i.municipio||'-'}</td><td class="tdSituacao" style="color:${cor};font-weight:800">${situacao}</td><td class="tdDocumento">${i.documentoAtual||'-'}</td><td class="tdRecebimento">${i.recebimentoAtual?formatarDataBR(i.recebimentoAtual):'-'}</td><td class="tdObservacao">${i.observacao||'-'}</td></tr>`
 })
+if(!lista.length)html+=`<tr><td colspan="5" style="text-align:center;padding:25px;font-weight:700;color:#64748b">Nenhum município encontrado.</td></tr>`
 html+=`</tbody></table><div class="fonte-card fonteTabelaMunicipios">Fonte: Ofício Circular n.16/2026/GABPRES/TCERO</div></div>`
 box.innerHTML=html
 }
