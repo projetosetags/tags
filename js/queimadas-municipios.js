@@ -1058,21 +1058,21 @@ console.error('Erro ao carregar tabela municipal:',error)
 box.innerHTML='<div class="alerta-vermelho">Erro ao carregar os municípios.</div>'
 return
 }
-let lista=(data||[]).map(classificarMunicipioAtual)
+let lista=(data||[]).map(i=>{
+let plano=i.plano_acao===true||i.plano_acao==='true'||i.plano_acao===1||i.plano_acao==='1'
+let dilacao=i.dilacao_prazo===true||i.dilacao_prazo==='true'||i.dilacao_prazo===1||i.dilacao_prazo==='1'
+let classificacaoAtual=plano?'VERDE':dilacao?'AMARELO':'VERMELHO'
+let situacaoTexto=plano?'🟢 PLANO DE AÇÃO':dilacao?'🟡 DILAÇÃO DE PRAZO':'🔴 SEM RESPOSTA'
+let documentoAtual=i.llnumerodocenviado||i.lnumerodocenviado||'-'
+let recebimentoAtual=i.lldatarecebimentodoc||i.ldatarecebimentodoc||''
+return{...i,classificacaoAtual,situacaoTexto,documentoAtual,recebimentoAtual}
+})
 if(filtro)lista=lista.filter(i=>i.classificacaoAtual===filtro)
 if(busca)lista=lista.filter(i=>String(i.municipio||'').toUpperCase().includes(busca))
 let html=`<div class="tabelaMunicipiosWrap"><table class="tabelaMunicipios tabelaMunicipiosNova"><thead><tr><th class="colMun">MUNICÍPIO</th><th class="colSit">SITUAÇÃO</th><th class="colDoc">DOCUMENTO</th><th class="colData">RECEBIMENTO</th><th class="colObs">OBSERVAÇÃO</th></tr></thead><tbody>`
 lista.forEach(i=>{
-let situacao='🔴 SEM RESPOSTA'
-let cor='#dc2626'
-if(i.classificacaoAtual==='VERDE'){
-situacao='🟢 PLANO DE AÇÃO'
-cor='#16a34a'
-}else if(i.classificacaoAtual==='AMARELO'){
-situacao='🟡 DILAÇÃO DE PRAZO'
-cor='#d4a900'
-}
-html+=`<tr><td class="tdMunicipio">${i.municipio||'-'}</td><td class="tdSituacao" style="color:${cor};font-weight:800">${situacao}</td><td class="tdDocumento">${i.documentoAtual||'-'}</td><td class="tdRecebimento">${i.recebimentoAtual?formatarDataBR(i.recebimentoAtual):'-'}</td><td class="tdObservacao">${i.observacao||'-'}</td></tr>`
+let cor=i.classificacaoAtual==='VERDE'?'#16a34a':i.classificacaoAtual==='AMARELO'?'#d4a900':'#dc2626'
+html+=`<tr><td class="tdMunicipio">${i.municipio||'-'}</td><td class="tdSituacao" style="color:${cor};font-weight:800">${i.situacaoTexto}</td><td class="tdDocumento">${i.documentoAtual||'-'}</td><td class="tdRecebimento">${i.recebimentoAtual?formatarDataBR(i.recebimentoAtual):'-'}</td><td class="tdObservacao">${i.observacao||'-'}</td></tr>`
 })
 if(!lista.length)html+=`<tr><td colspan="5" style="text-align:center;padding:25px;font-weight:700;color:#64748b">Nenhum município encontrado.</td></tr>`
 html+=`</tbody></table><div class="fonte-card fonteTabelaMunicipios">Fonte: Ofício Circular n.16/2026/GABPRES/TCERO</div></div>`
