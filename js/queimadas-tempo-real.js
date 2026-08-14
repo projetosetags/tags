@@ -412,19 +412,28 @@ limparTempoRealMunicipio()
 }
 
 /*=========================================================
-RENDER TEMPO REAL MUNICÍPIO
+015 TEMPO REAL FUNCTION RENDERTEMPOREALMUNICIPIO
 =========================================================*/
 async function renderTempoRealMunicipio(municipio){
 if(!municipio)return
 const ano=new Date().getFullYear()
 let inicioAno=`${ano}-01-01`
 let fimAno=formatarDataTempoReal(new Date())
-const{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').ilike('municipio',municipio).gte('data_foco',inicioAno).lte('data_foco',fimAno).order('data_hora',{ascending:false})
+let registros=[]
+let inicio=0
+let limite=1000
+while(true){
+let{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').ilike('municipio',municipio).gte('data_foco',inicioAno).lte('data_foco',fimAno).order('data_hora',{ascending:false}).range(inicio,inicio+limite-1)
 if(error){
 console.error('Erro tempo real municipal:',error)
 return
 }
-let registros=data||[]
+let pagina=data||[]
+registros.push(...pagina)
+if(pagina.length<limite)break
+inicio+=limite
+}
+console.log('TOTAL FOCOS MUNICÍPIO:',municipio,registros.length)
 let hoje=new Date()
 let hojeISO=[hoje.getFullYear(),String(hoje.getMonth()+1).padStart(2,'0'),String(hoje.getDate()).padStart(2,'0')].join('-')
 let focosAno=registros.length
