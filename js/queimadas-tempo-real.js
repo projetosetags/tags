@@ -438,7 +438,10 @@ let hoje=new Date()
 let hojeISO=[hoje.getFullYear(),String(hoje.getMonth()+1).padStart(2,'0'),String(hoje.getDate()).padStart(2,'0')].join('-')
 let focosAno=registros.length
 let focosHoje=registros.filter(i=>String(i.data_foco||'').slice(0,10)===hojeISO).length
-let ultimaData=registros.length?registros[0].data_foco:null
+let ultimaData=registros.reduce((maior,i)=>{
+let data=String(i.data_foco||'').slice(0,10)
+return data>maior?data:maior
+},'')
 let elFocosAno=document.getElementById('trmFocosAno')
 let elFocosHoje=document.getElementById('trmFocosHoje')
 let elUltimaData=document.getElementById('trmUltimaData')
