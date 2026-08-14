@@ -3269,6 +3269,7 @@ mapa:'btnAbaMapa',
 planejamento:'btnAbaPlanejamento',
 monitoramento:'btnAbaMonitoramento',
 temporeal:'btnAbaTempoReal',
+riomadeira:'btnAbaRioMadeira',
 temporealmunicipio:'btnAbaTempoRealMunicipio',
 analise:'btnAbaAnalise',
 situacao:'btnAbaSituacao',
@@ -3350,6 +3351,12 @@ if(nome==='temporeal'){
 document.getElementById('abaTempoReal')?.classList.remove('hidden')
 if(typeof renderTempoReal==='function')await renderTempoReal()
 if(typeof renderGraficoTempoReal==='function')await renderGraficoTempoReal()
+}
+if(nome==='riomadeira'){
+document.getElementById('abaRioMadeira')?.classList.remove('hidden')
+if(typeof carregarRioMadeira==='function'){
+await carregarRioMadeira()
+}
 }
 if(nome==='temporealmunicipio'){
 document.getElementById('abaTempoRealMunicipio')?.classList.remove('hidden')
