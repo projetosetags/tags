@@ -710,3 +710,356 @@ font-size:10px;
 font-weight:700;
 margin-top:3px;
 }
+/*=========================================================
+035 RIO MADEIRA - MONITORAMENTO HIDROLÓGICO
+=========================================================*/
+#abaRioMadeira{
+font-family:Segoe UI,Tahoma,Arial,sans-serif;
+color:#0f172a;
+}
+#abaRioMadeira .painelTitulo{
+border-left-color:#0284c7;
+background:linear-gradient(90deg,#e0f2fe,#fff);
+}
+.rioMadeiraFiltros{
+display:flex;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+margin:12px 0 18px;
+padding:14px;
+background:#f8fafc;
+border:1px solid #dbe4ef;
+border-radius:14px;
+}
+.rioMadeiraFiltros select,
+.rioMadeiraFiltros input{
+height:42px;
+padding:0 13px;
+border:1px solid #cbd5e1;
+border-radius:9px;
+background:#fff;
+color:#0f172a;
+font-size:12px;
+font-weight:800;
+outline:none;
+}
+.rioMadeiraFiltros select:focus,
+.rioMadeiraFiltros input:focus{
+border-color:#0284c7;
+box-shadow:0 0 0 3px rgba(2,132,199,.10);
+}
+/* KPIs */
+.rioMadeiraKPIGrid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:14px;
+margin:14px 0 18px;
+}
+.rioMadeiraKPI{
+min-height:125px;
+padding:20px 14px;
+background:linear-gradient(135deg,#fff,#f8fafc);
+border:1px solid #dbe4ef;
+border-left:6px solid #0284c7;
+border-radius:16px;
+box-shadow:0 5px 14px rgba(15,23,42,.07);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+transition:.2s;
+}
+.rioMadeiraKPI:hover{
+transform:translateY(-3px);
+box-shadow:0 9px 20px rgba(15,23,42,.12);
+}
+.rioMadeiraKPIValor{
+font-size:30px;
+font-weight:950;
+line-height:1.05;
+color:#082f49;
+}
+.rioMadeiraKPITitulo{
+margin-top:9px;
+font-size:10px;
+font-weight:900;
+letter-spacing:.7px;
+color:#64748b;
+text-transform:uppercase;
+}
+.rmKpiData{
+display:block;
+margin-top:7px;
+font-size:10px;
+font-weight:700;
+color:#64748b;
+}
+.rmSubindo{
+color:#dc2626!important;
+}
+.rmDescendo{
+color:#0284c7!important;
+}
+/* SITUAÇÃO HIDROLÓGICA */
+.rmSituacao{
+padding:24px;
+border-radius:16px;
+text-align:center;
+border:1px solid #dbe4ef;
+margin-bottom:14px;
+}
+.rmSituacaoTitulo{
+font-size:12px;
+font-weight:950;
+letter-spacing:.8px;
+text-transform:uppercase;
+}
+.rmSituacaoNivel{
+margin-top:8px;
+font-size:42px;
+font-weight:950;
+line-height:1;
+}
+.rmSituacaoData{
+margin-top:9px;
+font-size:11px;
+font-weight:800;
+opacity:.8;
+}
+.rmNormal{
+background:linear-gradient(135deg,#dcfce7,#f0fdf4);
+color:#166534;
+border-color:#86efac;
+}
+.rmAtencao{
+background:linear-gradient(135deg,#fef9c3,#fffbeb);
+color:#854d0e;
+border-color:#fde047;
+}
+.rmSeca{
+background:linear-gradient(135deg,#ffedd5,#fff7ed);
+color:#9a3412;
+border-color:#fdba74;
+}
+.rmCheia{
+background:linear-gradient(135deg,#dbeafe,#eff6ff);
+color:#1e3a8a;
+border-color:#93c5fd;
+}
+.rmNeutro{
+background:#f1f5f9;
+color:#475569;
+}
+.rmResumoGrid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+}
+.rmResumoGrid>div{
+padding:14px;
+background:#f8fafc;
+border:1px solid #e2e8f0;
+border-radius:12px;
+display:flex;
+flex-direction:column;
+text-align:center;
+}
+.rmResumoGrid span{
+font-size:9px;
+font-weight:900;
+color:#64748b;
+text-transform:uppercase;
+letter-spacing:.4px;
+}
+.rmResumoGrid b{
+margin-top:6px;
+font-size:18px;
+font-weight:950;
+color:#0f172a;
+}
+/* EXTREMOS HISTÓRICOS */
+.rmExtremosGrid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px;
+}
+.rmExtremoCard{
+min-height:120px;
+padding:17px;
+border:1px solid #dbe4ef;
+border-radius:14px;
+background:linear-gradient(135deg,#fff,#f8fafc);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+}
+.rmExtremoCard span{
+font-size:10px;
+font-weight:900;
+color:#64748b;
+letter-spacing:.5px;
+}
+.rmExtremoCard strong{
+margin:7px 0;
+font-size:25px;
+font-weight:950;
+color:#0c4a6e;
+}
+.rmExtremoCard small{
+font-size:10px;
+font-weight:700;
+color:#64748b;
+}
+/* GRÁFICOS */
+.rioMadeiraGraficoBox{
+position:relative;
+width:100%;
+height:430px;
+min-height:430px;
+overflow:hidden;
+}
+.rioMadeiraGraficoBox canvas{
+width:100%!important;
+height:430px!important;
+max-height:430px!important;
+}
+/* TOP CHEIAS E SECAS */
+.rioMadeiraRankingGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+}
+#painelRioMadeiraCheias,
+#painelRioMadeiraSecas{
+width:100%;
+overflow-x:auto;
+}
+#abaRioMadeira .tabelaMunicipios{
+width:100%;
+border-collapse:collapse;
+font-size:12px;
+background:#fff;
+}
+#abaRioMadeira .tabelaMunicipios th{
+padding:10px 8px;
+background:linear-gradient(135deg,#0c4a6e,#075985);
+color:#fff;
+font-size:10px;
+font-weight:900;
+text-align:center;
+white-space:nowrap;
+}
+#abaRioMadeira .tabelaMunicipios td{
+padding:9px 8px;
+border-bottom:1px solid #e2e8f0;
+text-align:center;
+white-space:nowrap;
+}
+#abaRioMadeira .tabelaMunicipios tbody tr:nth-child(even){
+background:#f8fafc;
+}
+#abaRioMadeira .tabelaMunicipios tbody tr:hover{
+background:#e0f2fe;
+}
+/* TABELA HISTÓRICA */
+.rioMadeiraBarraTabela{
+display:flex;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+margin:10px 0 15px;
+}
+.rioMadeiraBarraTabela select,
+.rioMadeiraBarraTabela input{
+height:40px;
+padding:0 12px;
+border:1px solid #cbd5e1;
+border-radius:8px;
+background:#fff;
+font-size:12px;
+font-weight:800;
+}
+#painelTabelaRioMadeira{
+width:100%;
+max-height:600px;
+overflow:auto;
+border-radius:10px;
+}
+#painelTabelaRioMadeira .tabelaMunicipios thead th{
+position:sticky;
+top:0;
+z-index:5;
+}
+/* AGUARDANDO */
+.rioMadeiraAguardando{
+padding:30px;
+text-align:center;
+font-size:13px;
+font-weight:800;
+color:#64748b;
+background:#f8fafc;
+border:1px dashed #cbd5e1;
+border-radius:14px;
+}
+/* DESTAQUES */
+.rioMadeiraCheia{
+border-left:6px solid #2563eb;
+}
+.rioMadeiraSeca{
+border-left:6px solid #f97316;
+}
+.rioMadeiraHistorico{
+border-left:6px solid #0284c7;
+}
+/* FONTE */
+.rioMadeiraFonte{
+margin-top:10px;
+padding-top:8px;
+border-top:1px solid #e5e7eb;
+font-size:9px;
+line-height:1.4;
+font-style:italic;
+color:#94a3b8;
+}
+/* RESPONSIVIDADE */
+@media(max-width:1200px){
+.rioMadeiraKPIGrid{
+grid-template-columns:repeat(3,1fr);
+}
+.rmExtremosGrid{
+grid-template-columns:repeat(2,1fr);
+}
+}
+@media(max-width:900px){
+.rioMadeiraKPIGrid{
+grid-template-columns:repeat(2,1fr);
+}
+.rioMadeiraRankingGrid{
+grid-template-columns:1fr;
+}
+.rmResumoGrid{
+grid-template-columns:repeat(2,1fr);
+}
+}
+@media(max-width:600px){
+.rioMadeiraKPIGrid,
+.rmResumoGrid,
+.rmExtremosGrid{
+grid-template-columns:1fr;
+}
+.rioMadeiraGraficoBox{
+height:340px;
+min-height:340px;
+}
+.rioMadeiraGraficoBox canvas{
+height:340px!important;
+max-height:340px!important;
+}
+.rmSituacaoNivel{
+font-size:34px;
+}
+}
