@@ -523,105 +523,216 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 005.3 RIO MADEIRA
 =========================================================-->
 <section id="abaRioMadeira" class="abaQueimadas hidden">
-<div class="painelTitulo">🌊 RIO MADEIRA • MONITORAMENTO HIDROLÓGICO</div>
-<div id="rioMadeiraKPIs" class="kpi-grid">
-<div class="kpi-card">
-<div id="rmNivelAtual" class="kpi-num">—</div>
-<div class="kpi-label">NÍVEL MAIS RECENTE</div>
+
+<div class="painelTitulo">
+🌊 RIO MADEIRA • MONITORAMENTO HIDROLÓGICO
 </div>
-<div class="kpi-card">
-<div id="rmVariacao24h" class="kpi-num">—</div>
-<div class="kpi-label">VARIAÇÃO 24H</div>
+
+<!-- KPIs PRINCIPAIS -->
+<div id="rioMadeiraKPIs" class="rioMadeiraKPIGrid">
+
+<div class="rioMadeiraKPI">
+<div id="rmNivelAtual" class="rioMadeiraKPIValor">—</div>
+<div class="rioMadeiraKPITitulo">NÍVEL MAIS RECENTE</div>
 </div>
-<div class="kpi-card">
-<div id="rmCheiaHistorica" class="kpi-num">—</div>
-<div class="kpi-label">CHEIA RECORDE</div>
+
+<div class="rioMadeiraKPI">
+<div id="rmVariacao24h" class="rioMadeiraKPIValor">—</div>
+<div class="rioMadeiraKPITitulo">VARIAÇÃO 24H</div>
 </div>
-<div class="kpi-card">
-<div id="rmSecaHistorica" class="kpi-num">—</div>
-<div class="kpi-label">SECA RECORDE</div>
+
+<div class="rioMadeiraKPI rioMadeiraCheia">
+<div id="rmCheiaHistorica" class="rioMadeiraKPIValor">—</div>
+<div class="rioMadeiraKPITitulo">CHEIA RECORDE</div>
 </div>
-<div class="kpi-card">
-<div id="rmCiclosHistoricos" class="kpi-num">—</div>
-<div class="kpi-label">CICLOS HISTÓRICOS</div>
+
+<div class="rioMadeiraKPI rioMadeiraSeca">
+<div id="rmSecaHistorica" class="rioMadeiraKPIValor">—</div>
+<div class="rioMadeiraKPITitulo">SECA RECORDE</div>
 </div>
+
+<div class="rioMadeiraKPI rioMadeiraHistorico">
+<div id="rmCiclosHistoricos" class="rioMadeiraKPIValor">—</div>
+<div class="rioMadeiraKPITitulo">CICLOS HISTÓRICOS</div>
 </div>
+
+</div>
+
+<!-- GRÁFICO PRINCIPAL -->
 <div class="cardExecutivo">
+
 <div class="rioMadeiraCabecalho">
+
 <div>
 <h2>📈 CICLO HIDROLÓGICO ATUAL × HISTÓRICO</h2>
-<div class="rioMadeiraSubtitulo">Comparação diária do nível do Rio Madeira em Porto Velho</div>
+<div class="rioMadeiraSubtitulo">
+Comparação diária do nível do Rio Madeira em Porto Velho
 </div>
+</div>
+
 <div class="rioMadeiraFiltros">
-<select id="rmCicloAtual" onchange="carregarRioMadeira()"></select>
+
+<select id="rmCicloAtual" onchange="carregarRioMadeira()">
+</select>
+
 <select id="rmCicloComparacao" onchange="renderGraficoRioMadeiraComparacao()">
 <option value="">COMPARAR COM...</option>
 </select>
+
 </div>
+
 </div>
-<div class="rioMadeiraGraficoPrincipal">
+
+<div class="rioMadeiraGraficoBox">
 <canvas id="graficoRioMadeiraHistorico"></canvas>
 </div>
-<div class="fonte-card">Fonte: ANA • CPRM/SGB • Série histórica Estação 15400000 Porto Velho</div>
+
+<div class="rioMadeiraFonte">
+Fonte: ANA • SGB/CPRM • Série histórica da Estação 15400000 • Porto Velho
 </div>
-<div class="exec-duplo">
+
+</div>
+
+<!-- RANKINGS -->
+<div class="rioMadeiraRankingGrid">
+
 <div class="cardExecutivo">
 <h2>🌊 MAIORES CHEIAS DA SÉRIE</h2>
 <div id="painelRioMadeiraCheias"></div>
 </div>
+
 <div class="cardExecutivo">
 <h2>🏜️ MAIORES SECAS DA SÉRIE</h2>
 <div id="painelRioMadeiraSecas"></div>
 </div>
+
 </div>
+
+<!-- SITUAÇÃO E EXTREMOS -->
 <div class="exec-duplo">
+
 <div class="cardExecutivo">
 <h2>📊 SITUAÇÃO DO CICLO</h2>
 <div id="painelRioMadeiraSituacao"></div>
 </div>
+
 <div class="cardExecutivo">
 <h2>🧭 EXTREMOS HISTÓRICOS</h2>
 <div id="painelRioMadeiraExtremos"></div>
 </div>
+
 </div>
+
+<!-- EVOLUÇÃO HISTÓRICA -->
 <div class="cardExecutivo">
+
 <h2>📉 EVOLUÇÃO DAS CHEIAS E SECAS • 1967–2026</h2>
-<div class="rioMadeiraGraficoSecundario">
+
+<div class="rioMadeiraGraficoBox">
 <canvas id="graficoRioMadeiraExtremos"></canvas>
 </div>
-<div class="fonte-card">Máximo e mínimo registrados em cada ciclo hidrológico</div>
+
+<div class="rioMadeiraFonte">
+Máximo e mínimo registrados em cada ciclo hidrológico.
 </div>
+
+</div>
+
+<!-- SÉRIE HISTÓRICA -->
 <div class="cardExecutivo">
+
 <h2>📋 SÉRIE HISTÓRICA POR CICLO</h2>
-<div class="barraTabelaMunicipios">
-<select id="rmFiltroCicloTabela" onchange="renderTabelaRioMadeira()"></select>
-<input type="text" id="rmBuscaTabela" placeholder="🔎 Pesquisar data..." onkeyup="renderTabelaRioMadeira()">
+
+<div class="rioMadeiraBarraTabela">
+
+<select
+id="rmFiltroCicloTabela"
+onchange="renderTabelaRioMadeira()">
+</select>
+
+<input
+type="text"
+id="rmBuscaTabela"
+placeholder="🔎 Pesquisar data..."
+onkeyup="renderTabelaRioMadeira()">
+
 </div>
+
 <div id="painelTabelaRioMadeira"></div>
+
+<div class="rioMadeiraFonte">
+Série histórica de níveis do Rio Madeira em Porto Velho.
 </div>
+
+</div>
+
+<!-- PRECIPITAÇÃO -->
 <div class="cardExecutivo">
+
 <h2>🌧️ PRECIPITAÇÃO NA BACIA</h2>
+
 <div id="painelRioMadeiraPrecipitacao">
-<div class="rioMadeiraAguardando">Base preparada para integração dos dados de precipitação GPM/NASA • Beni • Mamoré • Guaporé • Abunã</div>
+
+<div class="rioMadeiraAguardando">
+Base preparada para integração dos dados de precipitação GPM/NASA • Beni • Mamoré • Guaporé • Abunã
 </div>
+
 </div>
+
+</div>
+
+<!-- INTEGRAÇÃO HIDROCLIMÁTICA -->
 <div class="cardExecutivo cardDestaque">
+
 <h2>🔥🌊 INTEGRAÇÃO HIDROCLIMÁTICA</h2>
+
 <div id="painelRioMadeiraIntegracao">
+
 <div class="rioMadeiraIntegracaoFluxo">
-<div><strong>PRECIPITAÇÃO</strong><span>🌧️</span></div>
-<div class="rioMadeiraSeta">→</div>
-<div><strong>RIO MADEIRA</strong><span>🌊</span></div>
-<div class="rioMadeiraSeta">→</div>
-<div><strong>ESTIAGEM</strong><span>☀️</span></div>
-<div class="rioMadeiraSeta">→</div>
-<div><strong>QUEIMADAS</strong><span>🔥</span></div>
-<div class="rioMadeiraSeta">→</div>
-<div><strong>RISCO</strong><span>🚨</span></div>
+
+<div>
+<strong>PRECIPITAÇÃO</strong>
+<span>🌧️</span>
 </div>
+
+<div class="rioMadeiraSeta">→</div>
+
+<div>
+<strong>RIO MADEIRA</strong>
+<span>🌊</span>
 </div>
-<div class="fonte-card">Integração: ANA • SGB/CPRM • GPM/NASA • INPE • TCE-RO</div>
+
+<div class="rioMadeiraSeta">→</div>
+
+<div>
+<strong>ESTIAGEM</strong>
+<span>☀️</span>
 </div>
+
+<div class="rioMadeiraSeta">→</div>
+
+<div>
+<strong>QUEIMADAS</strong>
+<span>🔥</span>
+</div>
+
+<div class="rioMadeiraSeta">→</div>
+
+<div>
+<strong>RISCO</strong>
+<span>🚨</span>
+</div>
+
+</div>
+
+</div>
+
+<div class="rioMadeiraFonte">
+Integração: ANA • SGB/CPRM • GPM/NASA • INPE • TCE-RO
+</div>
+
+</div>
+
 </section>
 <!--=========================================================
 006 RISCOS sugestões IA
