@@ -25,6 +25,7 @@
 <script src="../js/queimadas-municipios.js?v=20260807-2"></script>
 <script src="../js/queimadas-mapas.js?v=20260730"></script>
 <script src="../js/queimadas-tempo-real.js?v=20260811-1"></script>
+<script src="../js/queimadas-rio-madeira.js?v=20260813-1"></script>
 </head>
 <body>
 <div id="login-queimadas" class="loginQueimadasOverlay">
@@ -64,6 +65,7 @@
 <button id="btnAbaMonitoramento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('monitoramento')">🔥 MONITORAMENTO</button>
 <button id="btnAbaTempoReal" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('temporeal')">🛰️ TEMPO REAL RO</button>
 <button id="btnAbaTempoRealMunicipio" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('temporealmunicipio')">🏙️ TEMPO REAL MUNICÍPIO</button>
+<button id="btnAbaRioMadeira" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('riomadeira')">🌊 RIO MADEIRA</button>
 <button id="btnAbaAnalise" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('analise')">🤖 RISCOS IA</button>
 <button id="btnAbaAuditor" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('auditor')">📑 AUDITORIA</button>
 <button id="btnImprimirPainel" class="btnAbaQueimadas btnPdfQueimadas" onclick="imprimirAbaAtualQueimadas()">🖨️ PDF ABA</button>
@@ -515,6 +517,110 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 <div id="trmMaioresFocos"></div>
 <div class="fonte-card">Critério: maiores valores de FRP registrados em 2026 • Fonte: INPE • TCE-RO</div>
 </div>
+</div>
+</section>
+<!--=========================================================
+005.3 RIO MADEIRA
+=========================================================-->
+<section id="abaRioMadeira" class="abaQueimadas hidden">
+<div class="painelTitulo">🌊 RIO MADEIRA • MONITORAMENTO HIDROLÓGICO</div>
+<div id="rioMadeiraKPIs" class="kpi-grid">
+<div class="kpi-card">
+<div id="rmNivelAtual" class="kpi-num">—</div>
+<div class="kpi-label">NÍVEL MAIS RECENTE</div>
+</div>
+<div class="kpi-card">
+<div id="rmVariacao24h" class="kpi-num">—</div>
+<div class="kpi-label">VARIAÇÃO 24H</div>
+</div>
+<div class="kpi-card">
+<div id="rmCheiaHistorica" class="kpi-num">—</div>
+<div class="kpi-label">CHEIA RECORDE</div>
+</div>
+<div class="kpi-card">
+<div id="rmSecaHistorica" class="kpi-num">—</div>
+<div class="kpi-label">SECA RECORDE</div>
+</div>
+<div class="kpi-card">
+<div id="rmCiclosHistoricos" class="kpi-num">—</div>
+<div class="kpi-label">CICLOS HISTÓRICOS</div>
+</div>
+</div>
+<div class="cardExecutivo">
+<div class="rioMadeiraCabecalho">
+<div>
+<h2>📈 CICLO HIDROLÓGICO ATUAL × HISTÓRICO</h2>
+<div class="rioMadeiraSubtitulo">Comparação diária do nível do Rio Madeira em Porto Velho</div>
+</div>
+<div class="rioMadeiraFiltros">
+<select id="rmCicloAtual" onchange="carregarRioMadeira()"></select>
+<select id="rmCicloComparacao" onchange="renderGraficoRioMadeiraComparacao()">
+<option value="">COMPARAR COM...</option>
+</select>
+</div>
+</div>
+<div class="rioMadeiraGraficoPrincipal">
+<canvas id="graficoRioMadeiraHistorico"></canvas>
+</div>
+<div class="fonte-card">Fonte: ANA • CPRM/SGB • Série histórica Estação 15400000 Porto Velho</div>
+</div>
+<div class="exec-duplo">
+<div class="cardExecutivo">
+<h2>🌊 MAIORES CHEIAS DA SÉRIE</h2>
+<div id="painelRioMadeiraCheias"></div>
+</div>
+<div class="cardExecutivo">
+<h2>🏜️ MAIORES SECAS DA SÉRIE</h2>
+<div id="painelRioMadeiraSecas"></div>
+</div>
+</div>
+<div class="exec-duplo">
+<div class="cardExecutivo">
+<h2>📊 SITUAÇÃO DO CICLO</h2>
+<div id="painelRioMadeiraSituacao"></div>
+</div>
+<div class="cardExecutivo">
+<h2>🧭 EXTREMOS HISTÓRICOS</h2>
+<div id="painelRioMadeiraExtremos"></div>
+</div>
+</div>
+<div class="cardExecutivo">
+<h2>📉 EVOLUÇÃO DAS CHEIAS E SECAS • 1967–2026</h2>
+<div class="rioMadeiraGraficoSecundario">
+<canvas id="graficoRioMadeiraExtremos"></canvas>
+</div>
+<div class="fonte-card">Máximo e mínimo registrados em cada ciclo hidrológico</div>
+</div>
+<div class="cardExecutivo">
+<h2>📋 SÉRIE HISTÓRICA POR CICLO</h2>
+<div class="barraTabelaMunicipios">
+<select id="rmFiltroCicloTabela" onchange="renderTabelaRioMadeira()"></select>
+<input type="text" id="rmBuscaTabela" placeholder="🔎 Pesquisar data..." onkeyup="renderTabelaRioMadeira()">
+</div>
+<div id="painelTabelaRioMadeira"></div>
+</div>
+<div class="cardExecutivo">
+<h2>🌧️ PRECIPITAÇÃO NA BACIA</h2>
+<div id="painelRioMadeiraPrecipitacao">
+<div class="rioMadeiraAguardando">Base preparada para integração dos dados de precipitação GPM/NASA • Beni • Mamoré • Guaporé • Abunã</div>
+</div>
+</div>
+<div class="cardExecutivo cardDestaque">
+<h2>🔥🌊 INTEGRAÇÃO HIDROCLIMÁTICA</h2>
+<div id="painelRioMadeiraIntegracao">
+<div class="rioMadeiraIntegracaoFluxo">
+<div><strong>PRECIPITAÇÃO</strong><span>🌧️</span></div>
+<div class="rioMadeiraSeta">→</div>
+<div><strong>RIO MADEIRA</strong><span>🌊</span></div>
+<div class="rioMadeiraSeta">→</div>
+<div><strong>ESTIAGEM</strong><span>☀️</span></div>
+<div class="rioMadeiraSeta">→</div>
+<div><strong>QUEIMADAS</strong><span>🔥</span></div>
+<div class="rioMadeiraSeta">→</div>
+<div><strong>RISCO</strong><span>🚨</span></div>
+</div>
+</div>
+<div class="fonte-card">Integração: ANA • SGB/CPRM • GPM/NASA • INPE • TCE-RO</div>
 </div>
 </section>
 <!--=========================================================
