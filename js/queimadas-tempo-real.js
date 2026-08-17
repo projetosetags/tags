@@ -297,6 +297,42 @@ box.style.position='relative'
 }
 }
 /*=========================================================
+PADRÃO GLOBAL DE DATA DO SISTEMA
+=========================================================*/
+function dataPadraoSistema(valor){
+if(!valor)return'—'
+let texto=String(valor).trim()
+let dataISO=texto.slice(0,10)
+if(/^\d{4}-\d{2}-\d{2}$/.test(dataISO)){
+let[a,m,d]=dataISO.split('-')
+return`${d}/${m}/${a}`
+}
+let data=new Date(valor)
+if(Number.isNaN(data.getTime()))return'—'
+return data.toLocaleDateString('pt-BR',{
+day:'2-digit',
+month:'2-digit',
+year:'numeric'
+})
+}
+
+function dataHoraPadraoSistema(valor){
+if(!valor)return'—'
+let data=new Date(valor)
+if(Number.isNaN(data.getTime()))return'—'
+return data.toLocaleString('pt-BR',{
+day:'2-digit',
+month:'2-digit',
+year:'numeric',
+hour:'2-digit',
+minute:'2-digit'
+}).replace(',','')
+}
+
+function hojePadraoSistema(){
+return dataPadraoSistema(new Date())
+}
+/*=========================================================
 008 TEMPO REAL FUNCTION FORMATARDATATEMPOREAL
 =========================================================*/
 function formatarDataTempoReal(data){
@@ -305,14 +341,12 @@ let mes=String(data.getMonth()+1).padStart(2,'0')
 let dia=String(data.getDate()).padStart(2,'0')
 return`${ano}-${mes}-${dia}`
 }
+
 /*=========================================================
 009 TEMPO REAL FUNCTION FORMATARDATATEMPOREALBR
 =========================================================*/
 function formatarDataTempoRealBR(data){
-if(!data)return'--'
-let partes=String(data).slice(0,10).split('-')
-if(partes.length!==3)return String(data)
-return`${partes[2]}/${partes[1]}/${partes[0]}`
+return dataPadraoSistema(data)
 }
 /*=========================================================
 010 TEMPO REAL FUNCTION RENDERRANKINGIRIQTEMPOREAL
