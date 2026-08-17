@@ -4,31 +4,163 @@ let intervaloTempoReal=null
 001 TEMPO REAL FUNCTION RENDERTEMPOREAL
 =========================================================*/
 async function renderTempoReal(){
+
 let box=document.getElementById('painelTempoRealKPIs')
 if(!box)return
+
 let hoje=new Date()
 let ano=hoje.getFullYear()
 let dataInicial=`${ano}-01-01`
-let dataFinal=formatarDataTempoReal(hoje)
-box.innerHTML='<div class="tempoGrid"><div class="kpiTempo"><div class="kpiTempoNumero">...</div><div class="kpiTempoTitulo">CARREGANDO</div></div></div>'
-let resultadoFocos=await buscarFocosTempoReal(dataInicial,dataFinal)
+
+/*---------------------------------------------------------
+001.1 BUSCAR ÚLTIMA DATA REAL DISPONÍVEL NO BANCO
+---------------------------------------------------------*/
+let{data:ultimoFoco,error:erroUltimoFoco}=await client
+.schema('queimadas')
+.from('queimadas_focos_inpe')
+.select('data_foco')
+.eq('uf','RO')
+.gte('data_foco',dataInicial)
+.order('data_foco',{ascending:false})
+.limit(1)
+.maybeSingle()
+
+if(erroUltimoFoco){
+console.error('001 Erro ao buscar última data do INPE:',erroUltimoFoco)
+}
+
+/*---------------------------------------------------------
+001.2 DEFINIR PERÍODO REAL DISPONÍVEL
+---------------------------------------------------------*/
+let dataFinal=ultimoFoco?.data_foco
+?String(ultimoFoco.data_foco).slice(0,10)
+:formatarDataTempoReal(hoje)
+
+/*---------------------------------------------------------
+001.3 EXIBIR CARREGAMENTO
+---------------------------------------------------------*/
+box.innerHTML=`
+<div class="tempoGrid">
+<div class="kpiTempo">
+<div class="kpiTempoNumero">...</div>
+<div class="kpiTempoTitulo">CARREGANDO</div>
+</div>
+</div>
+`
+
+/*---------------------------------------------------------
+001.4 BUSCAR FOCOS ATÉ A ÚLTIMA DATA REAL DO INPE
+---------------------------------------------------------*/
+let resultadoFocos=await buscarFocosTempoReal(
+dataInicial,
+dataFinal
+)
+
 if(resultadoFocos.error){
-console.error('Erro ao carregar focos:',resultadoFocos.error)
-box.innerHTML='<div class="alerta-vermelho">Erro ao carregar os dados de focos do INPE.</div>'
+
+console.error(
+'Erro ao carregar focos:',
+resultadoFocos.error
+)
+
+box.innerHTML=`
+<div class="alerta-vermelho">
+Erro ao carregar os dados de focos do INPE.
+</div>
+`
+
 return
 }
+
 let focos=resultadoFocos.data||[]
-let resultadoExecutivo=await client.from('vw_queimadas_executivo').select('*').maybeSingle()
+
+/*---------------------------------------------------------
+001.5 CARREGAR INDICADORES EXECUTIVOS
+---------------------------------------------------------*/
+let resultadoExecutivo=await client
+.from('vw_queimadas_executivo')
+.select('*')
+.maybeSingle()
+
 let executivo=resultadoExecutivo.data||{}
-let resumo=calcularResumoTempoReal(focos,dataFinal)
-box.innerHTML=`<div class="tempoGrid"><div class="kpiTempo"><div class="kpiTempoNumero">${resumo.total.toLocaleString('pt-BR')}</div><div class="kpiTempoTitulo">FOCOS EM ${ano}</div></div><div class="kpiTempo"><div class="kpiTempoNumero">${resumo.focosHoje.toLocaleString('pt-BR')}</div><div class="kpiTempoTitulo">FOCOS HOJE</div></div><div class="kpiTempo"><div class="kpiTempoNumero">${resumo.municipios}</div><div class="kpiTempoTitulo">MUNICÍPIOS ATINGIDOS</div></div><div class="kpiTempo"><div class="kpiTempoNumero">${resumo.ultimaData?formatarDataTempoRealBR(resumo.ultimaData):'--'}</div><div class="kpiTempoTitulo">ÚLTIMA DATA INPE</div></div></div>`
-renderRankingTempoReal(resumo.ranking,resumo.total)
-renderResumoTempoReal(resumo,executivo)
-renderAtualizacaoTempoReal(resumo)
+
+/*---------------------------------------------------------
+001.6 CALCULAR RESUMO COM BASE NA ÚLTIMA DATA DO INPE
+---------------------------------------------------------*/
+let resumo=calcularResumoTempoReal(
+focos,
+dataFinal
+)
+
+/*---------------------------------------------------------
+001.7 RENDERIZAR KPIs
+---------------------------------------------------------*/
+box.innerHTML=`
+<div class="tempoGrid">
+
+<div class="kpiTempo">
+<div class="kpiTempoNumero">
+${resumo.total.toLocaleString('pt-BR')}
+</div>
+<div class="kpiTempoTitulo">
+FOCOS EM ${ano}
+</div>
+</div>
+
+<div class="kpiTempo">
+<div class="kpiTempoNumero">
+${resumo.focosHoje.toLocaleString('pt-BR')}
+</div>
+<div class="kpiTempoTitulo">
+FOCOS NA ÚLTIMA DATA INPE
+</div>
+</div>
+
+<div class="kpiTempo">
+<div class="kpiTempoNumero">
+${resumo.municipios}
+</div>
+<div class="kpiTempoTitulo">
+MUNICÍPIOS ATINGIDOS
+</div>
+</div>
+
+<div class="kpiTempo">
+<div class="kpiTempoNumero">
+${resumo.ultimaData
+?formatarDataTempoRealBR(resumo.ultimaData)
+:'--'}
+</div>
+<div class="kpiTempoTitulo">
+ÚLTIMA DATA INPE
+</div>
+</div>
+
+</div>
+`
+
+/*---------------------------------------------------------
+001.8 RENDERIZAR DEMAIS COMPONENTES
+---------------------------------------------------------*/
+renderRankingTempoReal(
+resumo.ranking,
+resumo.total
+)
+
+renderResumoTempoReal(
+resumo,
+executivo
+)
+
+renderAtualizacaoTempoReal(
+resumo
+)
+
 await Promise.all([
 renderGraficoTempoReal(),
 renderRankingIRIQTempoReal()
 ])
+
 }
 /*=========================================================
 002 TEMPO REAL — BUSCAR FOCOS DE CALOR
@@ -55,36 +187,113 @@ return{data:todos,error:null}
 003 TEMPO REAL FUNCTION CALCULARRESUMOTEMPOREAL
 =========================================================*/
 function calcularResumoTempoReal(focos,dataHoje){
+
 let agrupado={}
 let meses=Array(12).fill(0)
 let satelites=new Set()
+
 let ultimaData=''
 let ultimaImportacao=''
-let focosHoje=0
+
+/*---------------------------------------------------------
+003.1 IDENTIFICAR ÚLTIMA DATA DISPONÍVEL
+---------------------------------------------------------*/
 focos.forEach(item=>{
-let municipio=String(item.municipio||'NÃO INFORMADO').trim()
-agrupado[municipio]=(agrupado[municipio]||0)+1
-let dataFoco=String(item.data_foco||'')
-if(dataFoco===dataHoje)focosHoje++
-if(dataFoco>ultimaData)ultimaData=dataFoco
+
+let dataFoco=String(item.data_foco||'').slice(0,10)
+
+if(dataFoco&&dataFoco>ultimaData){
+ultimaData=dataFoco
+}
+
 let dataImportacao=String(item.created_at||'')
-if(dataImportacao>ultimaImportacao)ultimaImportacao=dataImportacao
-let mes=Number(dataFoco.slice(5,7))
-if(mes>=1&&mes<=12)meses[mes-1]++
-let satelite=String(item.satelite||'').trim()
-if(satelite)satelites.add(satelite)
+
+if(dataImportacao&&dataImportacao>ultimaImportacao){
+ultimaImportacao=dataImportacao
+}
+
 })
-let ranking=Object.entries(agrupado).map(([municipio,focos])=>({municipio,focos:Number(focos||0)})).sort((a,b)=>b.focos-a.focos)
+
+/*---------------------------------------------------------
+003.2 CALCULAR INDICADORES
+---------------------------------------------------------*/
+let focosHoje=0
+
+focos.forEach(item=>{
+
+let municipio=String(
+item.municipio||
+'NÃO INFORMADO'
+).trim()
+
+agrupado[municipio]=(agrupado[municipio]||0)+1
+
+let dataFoco=String(item.data_foco||'').slice(0,10)
+
+/*---------------------------------------------------------
+FOCOS DA ÚLTIMA DATA OFICIAL DISPONÍVEL
+---------------------------------------------------------*/
+if(dataFoco===ultimaData){
+focosHoje++
+}
+
+/*---------------------------------------------------------
+EVOLUÇÃO MENSAL
+---------------------------------------------------------*/
+let mes=Number(dataFoco.slice(5,7))
+
+if(mes>=1&&mes<=12){
+meses[mes-1]++
+}
+
+/*---------------------------------------------------------
+SATÉLITES
+---------------------------------------------------------*/
+let satelite=String(item.satelite||'').trim()
+
+if(satelite){
+satelites.add(satelite)
+}
+
+})
+
+/*---------------------------------------------------------
+003.3 RANKING MUNICIPAL
+---------------------------------------------------------*/
+let ranking=Object.entries(agrupado)
+.map(([municipio,focos])=>({
+municipio,
+focos:Number(focos||0)
+}))
+.sort((a,b)=>b.focos-a.focos)
+
+/*---------------------------------------------------------
+003.4 RETORNO
+---------------------------------------------------------*/
 return{
 total:focos.length,
+
+/*
+Mantemos o nome focosHoje para não quebrar
+as demais funções do sistema.
+Agora representa os focos da última data
+oficial disponível.
+*/
 focosHoje,
+
 municipios:ranking.length,
 ranking,
 porMes:meses,
 satelites:Array.from(satelites).sort(),
 ultimaData,
-ultimaImportacao
+ultimaImportacao,
+
+/*
+Data da consulta do painel.
+*/
+dataConsulta:dataHoje
 }
+
 }
 /*=========================================================
 004 TEMPO REAL FUNCTION RENDERRANKINGTEMPOREAL
