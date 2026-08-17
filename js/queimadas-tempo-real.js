@@ -344,9 +344,28 @@ return`${ano}-${mes}-${dia}`
 
 /*=========================================================
 009 TEMPO REAL FUNCTION FORMATARDATATEMPOREALBR
+PADRÃO GLOBAL: DD/MM/AAAA
 =========================================================*/
 function formatarDataTempoRealBR(data){
-return dataPadraoSistema(data)
+if(!data)return'—'
+
+let texto=String(data).trim()
+let dataISO=texto.slice(0,10)
+
+if(/^\d{4}-\d{2}-\d{2}$/.test(dataISO)){
+let[ano,mes,dia]=dataISO.split('-')
+return`${dia}/${mes}/${ano}`
+}
+
+let dt=new Date(data)
+
+if(Number.isNaN(dt.getTime()))return'—'
+
+return dt.toLocaleDateString('pt-BR',{
+day:'2-digit',
+month:'2-digit',
+year:'numeric'
+})
 }
 /*=========================================================
 010 TEMPO REAL FUNCTION RENDERRANKINGIRIQTEMPOREAL
