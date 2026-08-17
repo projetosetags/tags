@@ -743,49 +743,163 @@ Theory of Change (UNDP); OECD Public Governance; Banco Mundial; Referencial de A
 009 QUEIMADAS FUNCTION CARREGARKPISEXECUTIVOS
 =========================================================*/
 async function carregarKPIsExecutivos(){
-let hoje=new Date()
-let dataFinal=`${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`
-let dataFinalBR=hoje.toLocaleDateString('pt-BR')
-let[{data:exec},{data:mapbiomas=[]},{data:prodes=[]},{count:totalFocosINPE,error:erroFocosINPE}]=await Promise.all([
-client.from('vw_queimadas_executivo').select('*').single(),
-client.from('queimadas_mapbiomas').select('*'),
-client.from('queimadas_prodes').select('*'),
-client.from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).gte('data_foco','2026-01-01').lte('data_foco',dataFinal)
+
+let ano=new Date().getFullYear()
+let dataInicial=`${ano}-01-01`
+
+/*---------------------------------------------------------
+BUSCAR A ÚLTIMA DATA REAL DISPONÍVEL NO INPE
+---------------------------------------------------------*/
+let{data:ultimoFoco,error:erroUltimoFoco}=await client
+.from('queimadas_focos_inpe')
+.select('data_foco')
+.eq('uf','RO')
+.gte('data_foco',dataInicial)
+.order('data_foco',{ascending:false})
+.limit(1)
+.maybeSingle()
+
+if(erroUltimoFoco){
+console.error('Erro ao buscar última data do INPE:',erroUltimoFoco)
+}
+
+let dataFinal=ultimoFoco?.data_foco
+?String(ultimoFoco.data_foco).slice(0,10)
+:dataInicial
+
+let dataFinalBR=formatarDataTempoRealBR(dataFinal)
+
+/*---------------------------------------------------------
+CARREGAR INDICADORES
+---------------------------------------------------------*/
+let[
+{data:exec},
+{data:mapbiomas=[]},
+{data:prodes=[]},
+{count:totalFocosINPE,error:erroFocosINPE}
+]=await Promise.all([
+
+client
+.from('vw_queimadas_executivo')
+.select('*')
+.single(),
+
+client
+.from('queimadas_mapbiomas')
+.select('*'),
+
+client
+.from('queimadas_prodes')
+.select('*'),
+
+client
+.from('queimadas_focos_inpe')
+.select('id',{count:'exact',head:true})
+.eq('uf','RO')
+.gte('data_foco',dataInicial)
+.lte('data_foco',dataFinal)
+
 ])
+
 if(!exec)return
+
 if(erroFocosINPE){
 console.error('Erro ao calcular focos do INPE:',erroFocosINPE)
 totalFocosINPE=0
 }
-let areaQueimada=mapbiomas.reduce((s,i)=>s+Number(i.area_queimada_hectares||i.area_queimada||i.area||0),0)
-let areaDesmatada=prodes.reduce((s,i)=>s+Number(i.desmatamento_hectares||i.area_desmatada||i.area||0),0)
+
+/*---------------------------------------------------------
+ÁREA QUEIMADA E DESMATAMENTO
+---------------------------------------------------------*/
+let areaQueimada=mapbiomas.reduce(
+(s,i)=>s+Number(
+i.area_queimada_hectares||
+i.area_queimada||
+i.area||
+0
+),0
+)
+
+let areaDesmatada=prodes.reduce(
+(s,i)=>s+Number(
+i.desmatamento_hectares||
+i.area_desmatada||
+i.area||
+0
+),0
+)
+
+/*---------------------------------------------------------
+RENDERIZAÇÃO
+---------------------------------------------------------*/
 document.getElementById('painelKPIs').innerHTML=`
 <div class="kpiGrid">
+
 <div class="kpiCard">
-<div class="kpiNumero">${Number(totalFocosINPE||0).toLocaleString('pt-BR')}</div>
-<div class="kpiTitulo">🔥 FOCOS DE CALOR</div>
-<div style="margin-top:6px;font-size:11px;font-weight:800;color:#64748b">01/01/2026 até ${dataFinalBR}</div>
+<div class="kpiNumero">
+${Number(totalFocosINPE||0).toLocaleString('pt-BR')}
 </div>
+
+<div class="kpiTitulo">
+🔥 FOCOS DE CALOR
+</div>
+
+<div style="margin-top:6px;font-size:11px;font-weight:800;color:#64748b">
+01/01/${ano} até ${dataFinalBR}
+</div>
+</div>
+
 <div class="kpiCard">
-<div class="kpiNumero">${areaDesmatada.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-<div class="kpiTitulo">🌳 DESMATAMENTO 2021-2025 (ha)</div>
+<div class="kpiNumero">
+${areaDesmatada.toLocaleString('pt-BR',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+})}
 </div>
+<div class="kpiTitulo">
+🌳 DESMATAMENTO 2021-2025 (ha)
+</div>
+</div>
+
 <div class="kpiCard">
-<div class="kpiNumero">${areaQueimada.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-<div class="kpiTitulo">🔥 ÁREA QUEIMADA 2021-2025 (ha)</div>
+<div class="kpiNumero">
+${areaQueimada.toLocaleString('pt-BR',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+})}
 </div>
+<div class="kpiTitulo">
+🔥 ÁREA QUEIMADA 2021-2025 (ha)
+</div>
+</div>
+
 <div class="kpiCard kpiCardPequeno">
-<div class="kpiNumero">${exec.municipios_criticos||0}</div>
-<div class="kpiTitulo">🚨 CRÍTICOS</div>
+<div class="kpiNumero">
+${exec.municipios_criticos||0}
 </div>
+<div class="kpiTitulo">
+🚨 CRÍTICOS
+</div>
+</div>
+
 <div class="kpiCard kpiCardPequeno">
-<div class="kpiNumero">${exec.municipios_prioritarios||0}</div>
-<div class="kpiTitulo">⚠️ PRIORITÁRIOS</div>
+<div class="kpiNumero">
+${exec.municipios_prioritarios||0}
 </div>
+<div class="kpiTitulo">
+⚠️ PRIORITÁRIOS
+</div>
+</div>
+
 <div class="kpiCard kpiCardPequeno">
-<div class="kpiNumero">${Number(exec.iriq_estadual||0).toFixed(2)}</div>
-<div class="kpiTitulo">🤖 IRIQ ESTADUAL</div>
+<div class="kpiNumero">
+${Number(exec.iriq_estadual||0).toFixed(2)}
 </div>
+<div class="kpiTitulo">
+🤖 IRIQ ESTADUAL
+</div>
+</div>
+
 </div>`
 }
 /*=========================================================
@@ -4415,7 +4529,7 @@ doc.text(doc.splitTextToSize(apresentacao,185),105,59,{align:'center'})
 let ky=70
 let gap=1
 let kw=(200-gap*5)/6
-kpi(5,ky,kw,'FOCOS DE CALOR EM RONDÔNIA '+ano,focos.toLocaleString('pt-BR'),[220,38,38],`01/01 a ${hoje.toLocaleDateString('pt-BR')}`)
+kpi(5,ky,kw,'FOCOS DE CALOR EM RONDÔNIA '+ano,focos.toLocaleString('pt-BR'),[220,38,38],`01/01/${ano} até ${hoje.toLocaleDateString('pt-BR')}`)
 kpi(5+(kw+gap),ky,kw,'MUNICÍPIOS COM PLANO DE AÇÃO',comPlano,[22,128,61],`${((comPlano/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
 kpi(5+(kw+gap)*2,ky,kw,'MUNICÍPIOS EM DILAÇÃO',dilacao,[234,88,12],`${((dilacao/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
 kpi(5+(kw+gap)*3,ky,kw,'MUNICÍPIOS SEM RESPOSTA',semResposta,[220,38,38],`${((semResposta/totalMunicipios)*100).toFixed(1).replace('.',',')}% do total`)
@@ -4541,7 +4655,11 @@ doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
 async function gerarPDFSumarioExecutivoMunicipal(municipio){
 const{jsPDF}=window.jspdf
 let doc=new jsPDF('p','mm','a4',true)
-let hoje=new Date(),ano=hoje.getFullYear(),dataInicial=`${ano}-01-01`,dataFinal=`${ano}-12-31`,municipioNormalizado=normalizarMunicipio(municipio)
+let hoje=new Date()
+let ano=hoje.getFullYear()
+let dataInicial=`${ano}-01-01`
+let dataFinal=formatarDataISOFocos(hoje)
+let municipioNormalizado=normalizarMunicipio(municipio)
 let imgLogo=await toDataURL('assets/geojson/logotcero.png').catch(()=>null)
 let imgQueimadasOriginal=await toDataURL('assets/geojson/queimadas.png').catch(()=>null)
 let resultadoFocos=await buscarFocosTempoReal(dataInicial,dataFinal)
