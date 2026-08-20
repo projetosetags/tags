@@ -950,346 +950,139 @@ g.quantidade
 
 }
 
-function renderMapaExecutivo(dados){
-
-let mapa =
-iniciarMapa(
-'mapaExecutivo',
-[-10.9,-63.3],
-6
-)
-
+/*=========================================================
+FUNCTION RENDERMAPAEXECUTIVO
+=========================================================*/
+function renderMapaExecutivo(dados,eventos=[]){
+let mapa=iniciarMapa('mapaExecutivo',[-10.9,-63.3],6)
 limparCamadas(mapa)
-
-/*
-ENQUADRAMENTO FIXO
-DO ESTADO DE RONDÔNIA
-*/
-
-mapa.fitBounds(
-[
-[-13.75,-66.95],
-[-7.85,-59.65]
-],
-{
-padding:[12,12]
-}
-)
-
-let grupos =
-agruparFocosMunicipio(
-dados
-)
-
-grupos.forEach(
-grupo => {
-
-let tamanho =
-tamanhoCluster(
-grupo.quantidade
-)
-
-let icone =
-L.divIcon({
-
+mapa.fitBounds([[-13.75,-66.95],[-7.85,-59.65]],{padding:[12,12]})
+let grupos=agruparFocosMunicipio(dados)
+grupos.forEach(grupo=>{
+let tamanho=tamanhoCluster(grupo.quantidade)
+let icone=L.divIcon({
 className:'clusterFocoWrapper',
-
-html:`
-<div
-class="${classeQuantidadeFocos(
-grupo.quantidade
-)}"
-style="
-width:${tamanho}px;
-height:${tamanho}px
-">
-
-${grupo.quantidade}
-
-</div>
-`,
-
-iconSize:[
-tamanho,
-tamanho
-],
-
-iconAnchor:[
-tamanho/2,
-tamanho/2
-]
-
+html:`<div class="${classeQuantidadeFocos(grupo.quantidade)}" style="width:${tamanho}px;height:${tamanho}px">${grupo.quantidade}</div>`,
+iconSize:[tamanho,tamanho],
+iconAnchor:[tamanho/2,tamanho/2]
 })
-
-L.marker(
-[
-grupo.latitude,
-grupo.longitude
-],
-{
-icon:icone
-}
-)
-.bindPopup(
-`
-<div class="popupExecutivo">
-
-<strong>
-${grupo.municipio}
-</strong>
-
-<br>
-
-Focos nas últimas 24h:
-<strong>
-${fmt(
-grupo.quantidade
-)}
-</strong>
-
-<br>
-
-FRP máximo:
-<strong>
-${numeroBR(
-grupo.frpMaximo,
-1
-)}
-</strong>
-
-<br>
-
-Última detecção:
-${dataBR(
-grupo.ultima
-)}
-
-</div>
-`
-)
+L.marker([grupo.latitude,grupo.longitude],{icon:icone})
+.bindPopup(`<div class="popupExecutivo"><strong>${grupo.municipio}</strong><br>Focos nas últimas 24h: <strong>${fmt(grupo.quantidade)}</strong><br>FRP máximo: <strong>${numeroBR(grupo.frpMaximo,1)}</strong><br>Última detecção: ${dataBR(grupo.ultima)}</div>`)
 .addTo(mapa)
-
+})
+renderEventosOperacionaisMapa(mapa,dados,eventos)
+adicionarLegendaExecutivo(mapa)
+setTimeout(()=>mapa.invalidateSize(),150)
 }
-)
-
-adicionarLegendaExecutivo(
-mapa
-)
-
-setTimeout(
-() => mapa.invalidateSize(),
-150
-)
-
+/*=========================================================
+FUNCTION RENDEREVENTOSOPERACIONAISMAPA
+=========================================================*/
+function renderEventosOperacionaisMapa(mapa,dados,eventos){
+if(!Array.isArray(eventos)||!eventos.length)return
+let statusPorEvento={}
+eventos.forEach(e=>{
+if(e.event_id){
+statusPorEvento[e.event_id]=e.status_operacional||'sem_status'
 }
-async function carregarMapaRO(
-days=7
-){
+})
+let agrupados={}
+dados.forEach(foco=>{
+if(!foco.event_id)return
+let status=statusPorEvento[foco.event_id]
+if(!['em_combate','em_analise','monitorando'].includes(status))return
+let lat=Number(foco.latitude)
+let lng=Number(foco.longitude)
+if(!Number.isFinite(lat)||!Number.isFinite(lng))return
+if(!agrupados[foco.event_id]){
+agrupados[foco.event_id]={
+event_id:foco.event_id,
+status,
+municipio:foco.municipality||'Município não informado',
+latTotal:0,
+lngTotal:0,
+quantidade:0,
+frpMaximo:0,
+ultima:null
+}
+}
+let g=agrupados[foco.event_id]
+g.latTotal+=lat
+g.lngTotal+=lng
+g.quantidade++
+let frp=Number(foco.frp||0)
+if(Number.isFinite(frp)&&frp>g.frpMaximo)g.frpMaximo=frp
+if(!g.ultima||new Date(foco.detected_at)>new Date(g.ultima))g.ultima=foco.detected_at
+})
+Object.values(agrupados).forEach(g=>{
+let latitude=g.latTotal/g.quantidade
+let longitude=g.lngTotal/g.quantidade
+let configuracao=getConfiguracaoStatusEvento(g.status)
+let icone=L.divIcon({
+className:'eventoOperacionalWrapper',
+html:`<div class="eventoOperacional ${configuracao.classe}"><span>${configuracao.icone}</span></div>`,
+iconSize:[38,38],
+iconAnchor:[19,19]
+})
+L.marker([latitude,longitude],{icon:icone,zIndexOffset:1000})
+.bindPopup(`<div class="popupExecutivo"><strong>${configuracao.titulo}</strong><br><strong>${g.municipio}</strong><br>Detecções associadas: ${fmt(g.quantidade)}<br>FRP máximo: ${numeroBR(g.frpMaximo,1)}<br>Última detecção: ${dataBR(g.ultima)}<br><span style="font-size:9px;color:#64748b">Evento: ${g.event_id}</span></div>`)
+.addTo(mapa)
+})
+}
+/*=========================================================
+FUNCTION GETCONFIGURACAOSTATUSEVENTO
+=========================================================*/
+function getConfiguracaoStatusEvento(status){
+if(status==='em_combate'){
+return{icone:'🔥',titulo:'EM COMBATE',classe:'eventoEmCombate'}
+}
+if(status==='monitorando'){
+return{icone:'👁',titulo:'MONITORANDO',classe:'eventoMonitorandoMapa'}
+}
+if(status==='em_analise'){
+return{icone:'🔎',titulo:'EM ANÁLISE',classe:'eventoEmAnalise'}
+}
+return{icone:'•',titulo:'EVENTO',classe:'eventoSemClassificacao'}
+}
 
+
+/*=========================================================
+FUNCTION CARREGARMAPARO
+=========================================================*/
+async function carregarMapaRO(days=7){
 try{
-
-/*
-MAPA DETALHADO
-+ MAPA EXECUTIVO 24H
-*/
-
-let [
-resultadoPeriodo,
-resultado24h
-] =
-await Promise.all([
-
-api(
-'focos',
-{
-scope:'RO',
-days,
-limit:10000
-}
-),
-
-api(
-'focos',
-{
-scope:'RO',
-days:1,
-limit:10000
-}
-)
-
+let[resultPeriodo,result24h,resultEventos]=await Promise.all([
+api('focos',{scope:'RO',days,limit:10000}),
+api('focos',{scope:'RO',days:1,limit:10000}),
+api('eventos')
 ])
-
-let dados =
-resultadoPeriodo.data || []
-
-let dados24h =
-resultado24h.data || []
-
-/* =====================================================
-MAPA EXECUTIVO
-===================================================== */
-
-renderMapaExecutivo(
-dados24h
-)
-
-/* =====================================================
-MAPA RONDÔNIA • FOCOS INDIVIDUAIS
-===================================================== */
-
-let mapa =
-iniciarMapa(
-'mapaRO',
-[-10.9,-63.3],
-6
-)
-
-limparCamadas(
-mapa
-)
-
-mapa.fitBounds(
-[
-[-13.75,-66.95],
-[-7.85,-59.65]
-],
-{
-padding:[12,12]
-}
-)
-
-dados.forEach(
-foco => {
-
-let latitude =
-Number(
-foco.latitude
-)
-
-let longitude =
-Number(
-foco.longitude
-)
-
-if(
-!Number.isFinite(latitude) ||
-!Number.isFinite(longitude)
-){
-return
-}
-
-let frp =
-Number(
-foco.frp || 0
-)
-
-let marcador =
-L.circleMarker(
-[
-latitude,
-longitude
-],
-{
-
-radius:
-tamanhoFoco(frp),
-
-color:
-corFoco(frp),
-
+let dados=resultPeriodo.data||[]
+let dados24h=result24h.data||[]
+let eventos=resultEventos.data||[]
+renderMapaExecutivo(dados24h,eventos)
+let mapa=iniciarMapa('mapaRO',[-10.9,-63.3],6)
+limparCamadas(mapa)
+mapa.fitBounds([[-13.75,-66.95],[-7.85,-59.65]],{padding:[12,12]})
+dados.forEach(foco=>{
+let latitude=Number(foco.latitude)
+let longitude=Number(foco.longitude)
+if(!Number.isFinite(latitude)||!Number.isFinite(longitude))return
+let frp=Number(foco.frp||0)
+let marcador=L.circleMarker([latitude,longitude],{
+radius:tamanhoFoco(frp),
+color:corFoco(frp),
 weight:1,
-
-fillColor:
-corFoco(frp),
-
+fillColor:corFoco(frp),
 fillOpacity:.75
-
-}
-)
-
-marcador.bindPopup(
-`
-
-<div class="popupExecutivo">
-
-<strong>
-${foco.municipality ||
-'Município não informado'}
-</strong>
-
-<br>
-
-${dataBR(
-foco.detected_at
-)}
-
-<br>
-
-Satélite:
-<strong>
-${foco.satellite || '—'}
-</strong>
-
-<br>
-
-FRP:
-<strong>
-${numeroBR(
-foco.frp,
-1
-)}
-</strong>
-
-<br>
-
-Confiança:
-${foco.confidence || '—'}
-
-<br>
-
-Coordenadas:
-${latitude.toFixed(4)},
-${longitude.toFixed(4)}
-
-</div>
-
-`
-)
-
-marcador.addTo(
-mapa
-)
-
-}
-)
-
-/* =====================================================
-TEMPO REAL
-===================================================== */
-
-renderTempoReal(
-dados24h.slice(
-0,
-100
-)
-)
-
-setTimeout(
-() => mapa.invalidateSize(),
-150
-)
-
+})
+marcador.bindPopup(`<div class="popupExecutivo"><strong>${foco.municipality||'Município não informado'}</strong><br>${dataBR(foco.detected_at)}<br>Satélite: <strong>${foco.satellite||'—'}</strong><br>FRP: <strong>${numeroBR(foco.frp,1)}</strong><br>Confiança: ${foco.confidence||'—'}<br>Coordenadas: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}</div>`)
+marcador.addTo(mapa)
+})
+renderTempoReal(dados24h.slice(0,100))
+setTimeout(()=>mapa.invalidateSize(),150)
 }catch(erro){
-
-console.error(
-'Erro mapa RO:',
-erro
-)
-
+console.error('Erro mapa RO:',erro)
 renderTempoReal([])
-
 }
-
 }
 
 async function carregarAmerica(){
