@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5,user-scalable=yes">
+
+<meta name="theme-color" content="#0f172a">
+
+<title>
+Rondônia Focos de Calor | TCE-RO
+</title>
+
+<link
+rel="icon"
+href="data:,">
+
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<link
+rel="stylesheet"
+href="css/rondonia-focos-calor.css?v=20260820-1">
+
+<script
+src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js">
+</script>
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- =====================================================
+CABEÇALHO
+===================================================== -->
+
+<header class="topo">
+
+<div class="marca">
+
+<div class="icone">
+🔥
+</div>
+
+<div>
+
+<h1>
+RONDÔNIA FOCOS DE CALOR
+</h1>
+
+<p>
+Inteligência territorial • PROTEGE/SEDAM • TCE-RO
+</p>
+
+</div>
+
+</div>
+
+<div class="statusTopo">
+
+<span
+id="statusFonte"
+class="status statusAguardando">
+AGUARDANDO DADOS
+</span>
+
+<span id="ultimaAtualizacao">
+—
+</span>
+
+</div>
+
+</header>
+
+
+<!-- =====================================================
+MENU PRINCIPAL
+===================================================== -->
+
+<nav class="menu">
+
+<button
+class="abaBtn ativa"
+data-aba="executivo">
+📊 EXECUTIVO RO
+</button>
+
+<button
+class="abaBtn"
+data-aba="mapa">
+🗺️ MAPA RONDÔNIA
+</button>
+
+<button
+class="abaBtn"
+data-aba="municipios">
+🏙️ MUNICÍPIOS
+</button>
+
+<button
+class="abaBtn"
+data-aba="tempo">
+🛰️ TEMPO REAL
+</button>
+
+<button
+class="abaBtn"
+data-aba="eventos">
+🔥 EVENTOS
+</button>
+
+<button
+class="abaBtn"
+data-aba="satelites">
+📡 SATÉLITES
+</button>
+
+<button
+class="abaBtn"
+data-aba="america">
+🌎 AMÉRICA DO SUL
+</button>
+
+<button
+class="abaBtn"
+data-aba="fonte">
+🧭 PROTEGE
+</button>
+
+</nav>
+
+
+<main>
+
+
+<!-- =====================================================
+001 EXECUTIVO
+===================================================== -->
+
+<section
+id="aba-executivo"
+class="aba ativa">
+
+<div class="tituloBloco">
+
+<h2>
+Dashboard Executivo • Rondônia
+</h2>
+
+<p>
+Monitoramento dos focos de calor e inteligência territorial
+para apoio à prevenção, fiscalização e tomada de decisão.
+</p>
+
+</div>
+
+
+<div
+id="kpis"
+class="kpis">
+</div>
+
+
+<div class="grid2">
+
+<div class="card">
+
+<div class="cardTitulo">
+EVOLUÇÃO DOS ÚLTIMOS 30 DIAS
+</div>
+
+<div class="graficoBox">
+
+<canvas id="graficoEvolucao">
+</canvas>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="cardTitulo">
+TOP 10 MUNICÍPIOS
+</div>
+
+<div class="graficoBox">
+
+<canvas id="graficoRanking">
+</canvas>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="cardTitulo">
+MAPA EXECUTIVO DE RONDÔNIA
+</div>
+
+<div
+id="mapaExecutivo"
+class="mapa">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+002 MAPA RONDÔNIA
+===================================================== -->
+
+<section
+id="aba-mapa"
+class="aba">
+
+<div class="tituloBloco">
+
+<h2>
+Mapa de Focos • Rondônia
+</h2>
+
+<p>
+Visualização georreferenciada das detecções,
+intensidade e distribuição territorial.
+</p>
+
+</div>
+
+
+<div class="filtros">
+
+<select id="periodoMapa">
+
+<option value="1">
+Hoje
+</option>
+
+<option
+value="7"
+selected>
+Últimos 7 dias
+</option>
+
+<option value="30">
+Últimos 30 dias
+</option>
+
+<option value="365">
+Últimos 12 meses
+</option>
+
+</select>
+
+
+<button id="btnAtualizarMapa">
+ATUALIZAR MAPA
+</button>
+
+</div>
+
+
+<div
+id="mapaRO"
+class="mapa mapaGrande">
+</div>
+
+</section>
+
+
+<!-- =====================================================
+003 MUNICÍPIOS
+===================================================== -->
+
+<section
+id="aba-municipios"
+class="aba">
+
+<div class="tituloBloco">
+
+<h2>
+Ranking Municipal
+</h2>
+
+<p>
+Municípios de Rondônia ordenados pela concentração
+de focos registrados.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<input
+id="buscaMunicipio"
+class="busca"
+placeholder="🔎 Pesquisar município">
+
+<div id="tabelaMunicipios">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+004 TEMPO REAL
+===================================================== -->
+
+<section
+id="aba-tempo"
+class="aba">
+
+<div class="tituloBloco">
+
+<h2>
+Tempo Real
+</h2>
+
+<p>
+Últimas detecções disponíveis no banco
+Rondônia Focos de Calor.
+</p>
+
+</div>
+
+
+<div
+id="tempoRealCards"
+class="kpis">
+</div>
+
+
+<div class="card">
+
+<div class="cardTitulo">
+ÚLTIMAS DETECÇÕES
+</div>
+
+<div id="listaTempoReal">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+005 EVENTOS
+===================================================== -->
+
+<section
+id="aba-eventos"
+class="aba">
+
+<div class="tituloBloco">
+
+<h2>
+Eventos de Fogo
+</h2>
+
+<p>
+Agrupamento das detecções por evento,
+quando essa informação estiver disponível na fonte.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div id="listaEventos">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+006 SATÉLITES
+===================================================== -->
+
+<section
+id="aba-satelites"
+class="aba">
+
+<div class="tituloBloco">
+
+<h2>
+Satélites e Sensores
+</h2>
+
+<p>
+Participação das plataformas responsáveis
+pelas detecções.
+</p>
+
+</div>
+
+
+<div class="grid2">
+
+<div class="card">
+
+<div class="cardTitulo">
+DISTRIBUIÇÃO DAS DETECÇÕES
+</div>
+
+<div class="graficoBox">
+
+<canvas id="graficoSatelites">
+</canvas>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="cardTitulo">
+SENSORES
+</div>
+
+<div id="listaSatelites">
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+007 AMÉRICA DO SUL
+===================================================== -->
+
+<section
+id="aba-america"
+class="aba">
+
+<div class="tituloBloco">
+
+<h2>
+América do Sul
+</h2>
+
+<p>
+Visão continental dos focos de calor disponibilizados
+pela integração PROTEGE/SEDAM.
+</p>
+
+</div>
+
+
+<div
+id="mapaAmerica"
+class="mapa mapaGrande">
+</div>
+
+</section>
+
+
+<!-- =====================================================
+008 PROTEGE
+===================================================== -->
+
+<section
+id="aba-fonte"
+class="aba">
+
+<div class="tituloBloco">
+
+<h2>
+PROTEGE • SEDAM
+</h2>
+
+<p>
+Origem, integridade, atualização e rastreabilidade
+dos dados utilizados pelo painel.
+</p>
+
+</div>
+
+
+<div class="grid2">
+
+<div class="card">
+
+<div class="cardTitulo">
+FONTE OPERACIONAL
+</div>
+
+<div id="fonteInfo">
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="cardTitulo">
+HISTÓRICO DE SINCRONIZAÇÃO
+</div>
+
+<div id="syncInfo">
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card aviso">
+
+<strong>
+NOTA DE INTEGRIDADE:
+</strong>
+
+Este painel não utiliza dados simulados para preencher
+indicadores operacionais.
+
+Os valores serão apresentados somente após a ingestão
+válida e rastreável das informações provenientes das
+fontes integradas.
+
+</div>
+
+</section>
+
+
+</main>
+
+
+<!-- =====================================================
+RODAPÉ
+===================================================== -->
+
+<footer>
+
+Tribunal de Contas do Estado de Rondônia
+•
+Projeto RondoniaFocosdeCalor
+•
+Fonte operacional: PROTEGE/SEDAM
+
+</footer>
+
+
+</div>
+
+
+<script
+src="js/rondonia-focos-calor.js?v=20260820-1">
+</script>
+
+
+</body>
+</html>
