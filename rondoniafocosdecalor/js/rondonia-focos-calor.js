@@ -1198,9 +1198,8 @@ box.innerHTML =
 `
 <div class="vazio">
 
-A fonte ainda não forneceu
-eventos identificados
-para este banco.
+Nenhum evento de fogo
+identificado no período.
 
 </div>
 `
@@ -1209,9 +1208,307 @@ return
 
 }
 
-box.innerHTML =
+/* =====================================================
+RESUMO DOS STATUS
+===================================================== */
+
+let combate =
+dados.filter(
+x =>
+x.status_operacional ===
+'em_combate'
+)
+
+let monitorando =
+dados.filter(
+x =>
+x.status_operacional ===
+'monitorando'
+)
+
+let analise =
+dados.filter(
+x =>
+x.status_operacional ===
+'em_analise'
+)
+
+let resolvido =
+dados.filter(
+x =>
+x.status_operacional ===
+'resolvido'
+)
+
+let semStatus =
+dados.filter(
+x =>
+!x.status_operacional ||
+x.status_operacional ===
+'sem_status'
+)
+
+/* =====================================================
+PRIORIDADE
+===================================================== */
+
+const prioridade = {
+
+em_combate:1,
+monitorando:2,
+em_analise:3,
+sem_status:4,
+resolvido:5
+
+}
+
+dados.sort(
+(a,b) => {
+
+let pa =
+prioridade[
+a.status_operacional ||
+'sem_status'
+] || 9
+
+let pb =
+prioridade[
+b.status_operacional ||
+'sem_status'
+] || 9
+
+if(pa !== pb){
+return pa - pb
+}
+
+return new Date(
+b.ultima_deteccao
+) -
+new Date(
+a.ultima_deteccao
+)
+
+}
+)
+
+/* =====================================================
+CARDS
+===================================================== */
+
+let cards =
 `
-<div style="overflow:auto">
+<div class="kpis">
+
+<div class="kpi">
+
+<div class="rotulo">
+🔥 EM COMBATE
+</div>
+
+<div class="valor">
+${combate.length}
+</div>
+
+<div class="nota">
+Eventos com atuação operacional
+</div>
+
+</div>
+
+
+<div class="kpi">
+
+<div class="rotulo">
+👁 MONITORANDO
+</div>
+
+<div class="valor">
+${monitorando.length}
+</div>
+
+<div class="nota">
+Eventos sob acompanhamento
+</div>
+
+</div>
+
+
+<div class="kpi">
+
+<div class="rotulo">
+🔎 EM ANÁLISE
+</div>
+
+<div class="valor">
+${analise.length}
+</div>
+
+<div class="nota">
+Eventos em avaliação
+</div>
+
+</div>
+
+
+<div class="kpi">
+
+<div class="rotulo">
+✅ RESOLVIDOS
+</div>
+
+<div class="valor">
+${resolvido.length}
+</div>
+
+<div class="nota">
+Eventos classificados como resolvidos
+</div>
+
+</div>
+
+
+<div class="kpi">
+
+<div class="rotulo">
+⚪ SEM STATUS
+</div>
+
+<div class="valor">
+${semStatus.length}
+</div>
+
+<div class="nota">
+Sem classificação operacional
+</div>
+
+</div>
+
+</div>
+`
+
+/* =====================================================
+BADGE STATUS
+===================================================== */
+
+function badgeStatus(status){
+
+if(
+status ===
+'em_combate'
+){
+
+return `
+<span
+style="
+background:#991b1b;
+color:white;
+padding:5px 8px;
+border-radius:999px;
+font-size:10px;
+font-weight:900
+">
+🔥 EM COMBATE
+</span>
+`
+
+}
+
+if(
+status ===
+'monitorando'
+){
+
+return `
+<span
+style="
+background:#1d4ed8;
+color:white;
+padding:5px 8px;
+border-radius:999px;
+font-size:10px;
+font-weight:900
+">
+👁 MONITORANDO
+</span>
+`
+
+}
+
+if(
+status ===
+'em_analise'
+){
+
+return `
+<span
+style="
+background:#d97706;
+color:white;
+padding:5px 8px;
+border-radius:999px;
+font-size:10px;
+font-weight:900
+">
+🔎 EM ANÁLISE
+</span>
+`
+
+}
+
+if(
+status ===
+'resolvido'
+){
+
+return `
+<span
+style="
+background:#15803d;
+color:white;
+padding:5px 8px;
+border-radius:999px;
+font-size:10px;
+font-weight:900
+">
+✓ RESOLVIDO
+</span>
+`
+
+}
+
+return `
+<span
+style="
+background:#64748b;
+color:white;
+padding:5px 8px;
+border-radius:999px;
+font-size:10px;
+font-weight:900
+">
+SEM STATUS
+</span>
+`
+
+}
+
+/* =====================================================
+TABELA
+===================================================== */
+
+let tabela =
+`
+<div class="cardTitulo">
+
+EVENTOS IDENTIFICADOS PELO PROTEGE
+
+</div>
+
+<div
+style="
+overflow:auto;
+max-height:650px
+">
 
 <table class="tabela">
 
@@ -1220,27 +1517,35 @@ box.innerHTML =
 <tr>
 
 <th>
-Evento
+PRIORIDADE
 </th>
 
 <th>
-Detecções
+STATUS
 </th>
 
 <th>
-Início
+MUNICÍPIO
 </th>
 
 <th>
-Última
+DETECÇÕES
 </th>
 
 <th>
-Municípios
+INÍCIO
 </th>
 
 <th>
-FRP máximo
+ÚLTIMA DETECÇÃO
+</th>
+
+<th>
+FRP MÁX.
+</th>
+
+<th>
+EVENTO
 </th>
 
 </tr>
@@ -1252,44 +1557,123 @@ FRP máximo
 ${
 
 dados.map(
-x => `
+x => {
+
+let status =
+x.status_operacional ||
+'sem_status'
+
+let prioridadeTexto =
+'NORMAL'
+
+if(
+status ===
+'em_combate'
+){
+
+prioridadeTexto =
+'CRÍTICA'
+
+}else if(
+status ===
+'monitorando'
+){
+
+prioridadeTexto =
+'ALTA'
+
+}else if(
+status ===
+'em_analise'
+){
+
+prioridadeTexto =
+'ATENÇÃO'
+
+}else if(
+status ===
+'resolvido'
+){
+
+prioridadeTexto =
+'ENCERRADO'
+
+}
+
+return `
 <tr>
 
 <td>
-${x.event_id}
+
+<strong>
+${prioridadeTexto}
+</strong>
+
 </td>
 
 <td>
+
+${badgeStatus(
+status
+)}
+
+</td>
+
+<td>
+
+<strong>
+${x.municipios || '—'}
+</strong>
+
+</td>
+
+<td>
+
 ${fmt(
 x.deteccoes
 )}
+
 </td>
 
 <td>
+
 ${dataBR(
-x.primeira_deteccao
+x.inicio
 )}
+
 </td>
 
 <td>
+
 ${dataBR(
 x.ultima_deteccao
 )}
+
 </td>
 
 <td>
-${x.municipios || '—'}
-</td>
 
-<td>
 ${numeroBR(
 x.frp_maximo,
 1
 )}
+
+</td>
+
+<td
+style="
+font-size:9px;
+color:#64748b
+">
+
+${x.event_id}
+
 </td>
 
 </tr>
 `
+
+}
 )
 .join('')
 
@@ -1302,12 +1686,30 @@ x.frp_maximo,
 </div>
 `
 
+box.innerHTML =
+cards +
+tabela
+
 }catch(erro){
 
 console.error(
 'Erro eventos:',
 erro
 )
+
+document
+.getElementById(
+'listaEventos'
+)
+.innerHTML =
+`
+<div class="vazio">
+
+Erro ao carregar
+os eventos de fogo.
+
+</div>
+`
 
 }
 
