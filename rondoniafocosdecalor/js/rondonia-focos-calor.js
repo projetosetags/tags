@@ -710,44 +710,452 @@ erro
 }
 
 }
+/* =====================================================
+MAPA EXECUTIVO • FUNÇÕES AUXILIARES
+===================================================== */
 
+function corQuantidadeFocos(q){
+
+if(q > 50){
+return '#dc2626'
+}
+
+if(q >= 31){
+return '#ef4444'
+}
+
+if(q >= 16){
+return '#f97316'
+}
+
+if(q >= 6){
+return '#f59e0b'
+}
+
+return '#facc15'
+
+}
+
+function classeQuantidadeFocos(q){
+
+if(q > 50){
+return 'clusterFoco clusterCritico'
+}
+
+if(q >= 31){
+return 'clusterFoco clusterMuitoAlto'
+}
+
+if(q >= 16){
+return 'clusterFoco clusterAlto'
+}
+
+if(q >= 6){
+return 'clusterFoco clusterMedio'
+}
+
+return 'clusterFoco clusterBaixo'
+
+}
+
+function tamanhoCluster(q){
+
+if(q > 50){
+return 52
+}
+
+if(q >= 31){
+return 46
+}
+
+if(q >= 16){
+return 40
+}
+
+if(q >= 6){
+return 34
+}
+
+return 28
+
+}
+
+function adicionarLegendaExecutivo(mapa){
+
+if(mapa._legendaRFC){
+return
+}
+
+let legenda =
+L.control({
+position:'bottomleft'
+})
+
+legenda.onAdd = function(){
+
+let div =
+L.DomUtil.create(
+'div',
+'legendaFocos'
+)
+
+div.innerHTML = `
+
+<div class="legendaTitulo">
+Focos • Últimas 24h
+</div>
+
+<div>
+<span
+class="legendaBolinha"
+style="background:#facc15">
+</span>
+1 – 5
+</div>
+
+<div>
+<span
+class="legendaBolinha"
+style="background:#f59e0b">
+</span>
+6 – 15
+</div>
+
+<div>
+<span
+class="legendaBolinha"
+style="background:#f97316">
+</span>
+16 – 30
+</div>
+
+<div>
+<span
+class="legendaBolinha"
+style="background:#ef4444">
+</span>
+31 – 50
+</div>
+
+<div>
+<span
+class="legendaBolinha"
+style="background:#dc2626">
+</span>
++50
+</div>
+
+`
+
+return div
+
+}
+
+legenda.addTo(mapa)
+
+mapa._legendaRFC = legenda
+
+}
+
+function agruparFocosMunicipio(dados){
+
+let grupos = {}
+
+dados.forEach(
+foco => {
+
+let municipio =
+foco.municipality ||
+'Não identificado'
+
+let lat =
+Number(foco.latitude)
+
+let lng =
+Number(foco.longitude)
+
+if(
+!Number.isFinite(lat) ||
+!Number.isFinite(lng)
+){
+return
+}
+
+if(!grupos[municipio]){
+
+grupos[municipio] = {
+
+municipio,
+quantidade:0,
+latTotal:0,
+lngTotal:0,
+frpMaximo:0,
+ultima:null
+
+}
+
+}
+
+let g =
+grupos[municipio]
+
+g.quantidade++
+
+g.latTotal += lat
+g.lngTotal += lng
+
+let frp =
+Number(foco.frp || 0)
+
+if(
+Number.isFinite(frp) &&
+frp > g.frpMaximo
+){
+
+g.frpMaximo = frp
+
+}
+
+if(
+!g.ultima ||
+new Date(foco.detected_at) >
+new Date(g.ultima)
+){
+
+g.ultima =
+foco.detected_at
+
+}
+
+}
+)
+
+return Object
+.values(grupos)
+.map(
+g => ({
+
+...g,
+
+latitude:
+g.latTotal /
+g.quantidade,
+
+longitude:
+g.lngTotal /
+g.quantidade
+
+})
+)
+
+}
+
+function renderMapaExecutivo(dados){
+
+let mapa =
+iniciarMapa(
+'mapaExecutivo',
+[-10.9,-63.3],
+6
+)
+
+limparCamadas(mapa)
+
+/*
+ENQUADRAMENTO FIXO
+DO ESTADO DE RONDÔNIA
+*/
+
+mapa.fitBounds(
+[
+[-13.75,-66.95],
+[-7.85,-59.65]
+],
+{
+padding:[12,12]
+}
+)
+
+let grupos =
+agruparFocosMunicipio(
+dados
+)
+
+grupos.forEach(
+grupo => {
+
+let tamanho =
+tamanhoCluster(
+grupo.quantidade
+)
+
+let icone =
+L.divIcon({
+
+className:'clusterFocoWrapper',
+
+html:`
+<div
+class="${classeQuantidadeFocos(
+grupo.quantidade
+)}"
+style="
+width:${tamanho}px;
+height:${tamanho}px
+">
+
+${grupo.quantidade}
+
+</div>
+`,
+
+iconSize:[
+tamanho,
+tamanho
+],
+
+iconAnchor:[
+tamanho/2,
+tamanho/2
+]
+
+})
+
+L.marker(
+[
+grupo.latitude,
+grupo.longitude
+],
+{
+icon:icone
+}
+)
+.bindPopup(
+`
+<div class="popupExecutivo">
+
+<strong>
+${grupo.municipio}
+</strong>
+
+<br>
+
+Focos nas últimas 24h:
+<strong>
+${fmt(
+grupo.quantidade
+)}
+</strong>
+
+<br>
+
+FRP máximo:
+<strong>
+${numeroBR(
+grupo.frpMaximo,
+1
+)}
+</strong>
+
+<br>
+
+Última detecção:
+${dataBR(
+grupo.ultima
+)}
+
+</div>
+`
+)
+.addTo(mapa)
+
+}
+)
+
+adicionarLegendaExecutivo(
+mapa
+)
+
+setTimeout(
+() => mapa.invalidateSize(),
+150
+)
+
+}
 async function carregarMapaRO(
 days=7
 ){
 
 try{
 
-let resultado =
-await api(
+/*
+MAPA DETALHADO
++ MAPA EXECUTIVO 24H
+*/
+
+let [
+resultadoPeriodo,
+resultado24h
+] =
+await Promise.all([
+
+api(
 'focos',
 {
 scope:'RO',
 days,
 limit:10000
 }
+),
+
+api(
+'focos',
+{
+scope:'RO',
+days:1,
+limit:10000
+}
 )
 
-let dados =
-resultado.data || []
+])
 
-for(
-let id
-of
-[
-'mapaRO',
-'mapaExecutivo'
-]
-){
+let dados =
+resultadoPeriodo.data || []
+
+let dados24h =
+resultado24h.data || []
+
+/* =====================================================
+MAPA EXECUTIVO
+===================================================== */
+
+renderMapaExecutivo(
+dados24h
+)
+
+/* =====================================================
+MAPA RONDÔNIA • FOCOS INDIVIDUAIS
+===================================================== */
 
 let mapa =
 iniciarMapa(
-id,
-[-10.8,-63.3],
+'mapaRO',
+[-10.9,-63.3],
 6
 )
 
 limparCamadas(
 mapa
+)
+
+mapa.fitBounds(
+[
+[-13.75,-66.95],
+[-7.85,-59.65]
+],
+{
+padding:[12,12]
+}
 )
 
 dados.forEach(
@@ -782,6 +1190,7 @@ latitude,
 longitude
 ],
 {
+
 radius:
 tamanhoFoco(frp),
 
@@ -793,18 +1202,19 @@ weight:1,
 fillColor:
 corFoco(frp),
 
-fillOpacity:.72
+fillOpacity:.75
+
 }
 )
 
-let municipio =
-foco.municipality ||
-'Município não informado'
-
-let popup =
+marcador.bindPopup(
 `
+
+<div class="popupExecutivo">
+
 <strong>
-${municipio}
+${foco.municipality ||
+'Município não informado'}
 </strong>
 
 <br>
@@ -816,43 +1226,57 @@ foco.detected_at
 <br>
 
 Satélite:
+<strong>
 ${foco.satellite || '—'}
+</strong>
 
 <br>
 
 FRP:
+<strong>
 ${numeroBR(
 foco.frp,
 1
 )}
+</strong>
 
 <br>
 
-Latitude:
-${latitude.toFixed(4)}
+Confiança:
+${foco.confidence || '—'}
 
 <br>
 
-Longitude:
+Coordenadas:
+${latitude.toFixed(4)},
 ${longitude.toFixed(4)}
-`
 
-marcador
-.bindPopup(popup)
-.addTo(mapa)
+</div>
+
+`
+)
+
+marcador.addTo(
+mapa
+)
 
 }
+)
+
+/* =====================================================
+TEMPO REAL
+===================================================== */
+
+renderTempoReal(
+dados24h.slice(
+0,
+100
+)
 )
 
 setTimeout(
 () => mapa.invalidateSize(),
-100
-)
-
-}
-
-renderTempoReal(
-dados.slice(0,100)
+150
 )
 
 }catch(erro){
