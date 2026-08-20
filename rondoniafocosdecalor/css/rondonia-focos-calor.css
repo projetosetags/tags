@@ -1,0 +1,373 @@
+*{
+box-sizing:border-box
+}
+
+html,body{
+margin:0;
+background:#eef2f7;
+color:#0f172a;
+font-family:Inter,Arial,sans-serif
+}
+
+.app{
+min-height:100vh
+}
+
+.topo{
+background:#0f172a;
+color:#fff;
+padding:16px 22px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:15px;
+position:sticky;
+top:0;
+z-index:1000;
+box-shadow:0 3px 14px #0003
+}
+
+.marca{
+display:flex;
+align-items:center;
+gap:13px
+}
+
+.marca .icone{
+font-size:36px
+}
+
+.marca h1{
+font-size:21px;
+margin:0;
+font-weight:900;
+letter-spacing:.5px
+}
+
+.marca p{
+margin:4px 0 0;
+color:#cbd5e1;
+font-size:12px
+}
+
+.statusTopo{
+display:flex;
+align-items:center;
+gap:12px;
+font-size:11px
+}
+
+.status{
+padding:7px 10px;
+border-radius:999px;
+font-weight:900
+}
+
+.statusOk{
+background:#166534
+}
+
+.statusAguardando{
+background:#92400e
+}
+
+.statusErro{
+background:#991b1b
+}
+
+.menu{
+display:flex;
+gap:7px;
+padding:10px 14px;
+background:#fff;
+border-bottom:1px solid #dce4ed;
+overflow:auto;
+position:sticky;
+top:76px;
+z-index:900
+}
+
+.abaBtn{
+border:0;
+background:#e9eef5;
+color:#334155;
+border-radius:9px;
+padding:10px 13px;
+font-size:11px;
+font-weight:900;
+white-space:nowrap;
+cursor:pointer;
+transition:.2s
+}
+
+.abaBtn.ativa{
+background:#0f172a;
+color:#fff
+}
+
+.abaBtn:hover{
+transform:translateY(-1px)
+}
+
+main{
+padding:18px;
+max-width:1600px;
+margin:auto
+}
+
+.aba{
+display:none
+}
+
+.aba.ativa{
+display:block
+}
+
+.tituloBloco{
+margin:3px 0 14px
+}
+
+.tituloBloco h2{
+margin:0;
+font-size:24px
+}
+
+.tituloBloco p{
+color:#64748b;
+margin:5px 0
+}
+
+.kpis{
+display:grid;
+grid-template-columns:repeat(5,minmax(150px,1fr));
+gap:12px;
+margin-bottom:14px
+}
+
+.kpi{
+background:#fff;
+border:1px solid #dbe3ec;
+border-radius:14px;
+padding:15px;
+box-shadow:0 3px 12px #0f172a0c
+}
+
+.kpi .rotulo{
+font-size:10px;
+font-weight:900;
+color:#64748b;
+text-transform:uppercase
+}
+
+.kpi .valor{
+font-size:28px;
+font-weight:900;
+margin-top:6px
+}
+
+.kpi .nota{
+font-size:10px;
+color:#64748b;
+margin-top:5px
+}
+
+.grid2{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+margin-bottom:14px
+}
+
+.card{
+background:#fff;
+border:1px solid #dbe3ec;
+border-radius:14px;
+padding:14px;
+box-shadow:0 3px 12px #0f172a0c;
+margin-bottom:14px
+}
+
+.cardTitulo{
+font-size:13px;
+font-weight:900;
+margin-bottom:10px
+}
+
+.graficoBox{
+height:310px
+}
+
+.mapa{
+height:480px;
+border-radius:12px;
+overflow:hidden;
+background:#dbe5ef
+}
+
+.mapaGrande{
+height:650px
+}
+
+.filtros{
+display:flex;
+gap:8px;
+margin-bottom:12px
+}
+
+.filtros select,
+.filtros button,
+.busca{
+height:38px;
+border:1px solid #cbd5e1;
+border-radius:9px;
+padding:0 12px;
+background:#fff
+}
+
+.filtros button{
+background:#0f172a;
+color:#fff;
+font-weight:800;
+cursor:pointer
+}
+
+.busca{
+width:100%;
+margin-bottom:10px
+}
+
+.tabela{
+width:100%;
+border-collapse:collapse;
+font-size:12px
+}
+
+.tabela th{
+background:#0f172a;
+color:#fff;
+text-align:left;
+padding:9px;
+position:sticky;
+top:0
+}
+
+.tabela td{
+border-bottom:1px solid #e2e8f0;
+padding:9px
+}
+
+.tabela tr:hover td{
+background:#f8fafc
+}
+
+.vazio{
+padding:28px;
+text-align:center;
+color:#64748b
+}
+
+.aviso{
+border-left:5px solid #f59e0b;
+background:#fffbeb
+}
+
+.linhaTempo{
+display:grid;
+grid-template-columns:150px 1fr 110px 100px 100px;
+gap:8px;
+padding:9px;
+border-bottom:1px solid #e2e8f0;
+font-size:11px
+}
+
+.linhaTempo strong{
+font-size:12px
+}
+
+.fonteLinha{
+padding:8px;
+border-bottom:1px solid #e2e8f0;
+font-size:12px
+}
+
+footer{
+background:#0f172a;
+color:#cbd5e1;
+text-align:center;
+padding:14px;
+font-size:10px;
+margin-top:20px
+}
+
+@media(max-width:950px){
+
+.kpis{
+grid-template-columns:repeat(2,1fr)
+}
+
+.grid2{
+grid-template-columns:1fr
+}
+
+.topo{
+position:relative
+}
+
+.menu{
+top:0
+}
+
+.statusTopo{
+display:none
+}
+
+.mapaGrande{
+height:500px
+}
+
+.linhaTempo{
+grid-template-columns:1fr 1fr
+}
+
+}
+
+@media(max-width:600px){
+
+main{
+padding:10px
+}
+
+.kpis{
+grid-template-columns:1fr
+}
+
+.marca h1{
+font-size:16px
+}
+
+.marca p{
+font-size:10px
+}
+
+.marca .icone{
+font-size:28px
+}
+
+.tituloBloco h2{
+font-size:20px
+}
+
+.mapa{
+height:420px
+}
+
+.mapaGrande{
+height:480px
+}
+
+.abaBtn{
+font-size:10px;
+padding:9px 10px
+}
+
+}
