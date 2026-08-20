@@ -460,3 +460,97 @@ grid-template-columns:1fr
 }
 
 }
+
+/* =====================================================
+MAPA EXECUTIVO • CLUSTERS
+===================================================== */
+
+.clusterFocoWrapper{
+background:transparent;
+border:0
+}
+
+.clusterFoco{
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:50%;
+font-size:12px;
+font-weight:900;
+color:#172033;
+border:5px solid rgba(255,255,255,.38);
+box-shadow:
+0 2px 8px rgba(15,23,42,.32),
+0 0 0 5px rgba(255,193,7,.20)
+}
+
+.clusterBaixo{
+background:#facc15
+}
+
+.clusterMedio{
+background:#f59e0b
+}
+
+.clusterAlto{
+background:#f97316;
+color:white
+}
+
+.clusterMuitoAlto{
+background:#ef4444;
+color:white
+}
+
+.clusterCritico{
+background:#dc2626;
+color:white
+}
+
+/* =====================================================
+LEGENDA
+===================================================== */
+
+.legendaFocos{
+background:rgba(255,255,255,.96);
+padding:10px 12px;
+border-radius:9px;
+box-shadow:0 2px 12px rgba(15,23,42,.25);
+font-size:11px;
+line-height:1.8;
+color:#172033
+}
+
+.legendaTitulo{
+font-size:11px;
+font-weight:900;
+margin-bottom:4px;
+border-bottom:1px solid #e2e8f0;
+padding-bottom:4px
+}
+
+.legendaBolinha{
+display:inline-block;
+width:12px;
+height:12px;
+border-radius:50%;
+margin-right:7px;
+vertical-align:-1px
+}
+
+.popupExecutivo{
+font-size:12px;
+line-height:1.7;
+min-width:170px
+}
+
+.popupExecutivo strong{
+font-weight:900
+}
+
+/* MAPA EXECUTIVO UM POUCO MAIS AMPLO */
+
+#mapaExecutivo{
+height:540px
+}
+
