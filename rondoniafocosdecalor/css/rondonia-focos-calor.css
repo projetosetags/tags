@@ -371,3 +371,92 @@ padding:9px 10px
 }
 
 }
+#eventosExecutivo{
+grid-template-columns:repeat(5,1fr);
+gap:18px;
+margin-bottom:0
+}
+
+#eventosExecutivo .kpi{
+text-align:center;
+min-height:128px;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+box-shadow:none
+}
+
+#eventosExecutivo .rotulo{
+font-size:12px
+}
+
+#eventosExecutivo .valor{
+font-size:30px
+}
+
+#eventosExecutivo .nota{
+font-size:11px;
+max-width:170px
+}
+
+.eventoCombate{
+background:#fff8f7;
+border-color:#fca5a5
+}
+
+.eventoCombate .rotulo{
+color:#dc2626
+}
+
+.eventoMonitorando{
+background:#f8fbff;
+border-color:#93c5fd
+}
+
+.eventoMonitorando .rotulo{
+color:#1d4ed8
+}
+
+.eventoAnalise{
+background:#fffbf5;
+border-color:#fdba74
+}
+
+.eventoAnalise .rotulo{
+color:#ea580c
+}
+
+.eventoResolvido{
+background:#f7fff8;
+border-color:#86efac
+}
+
+.eventoResolvido .rotulo{
+color:#15803d
+}
+
+.eventoSemStatus{
+background:#fafafa;
+border-color:#d1d5db
+}
+
+.eventoSemStatus .rotulo{
+color:#4b5563
+}
+
+@media(max-width:950px){
+
+#eventosExecutivo{
+grid-template-columns:repeat(2,1fr)
+}
+
+}
+
+@media(max-width:600px){
+
+#eventosExecutivo{
+grid-template-columns:1fr
+}
+
+}
