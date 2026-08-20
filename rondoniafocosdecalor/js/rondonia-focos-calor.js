@@ -214,7 +214,22 @@ attribution:
 }
 )
 .addTo(mapa)
+if(
+id === 'mapaExecutivo' ||
+id === 'mapaRO'
+){
 
+mapa.fitBounds(
+[
+[-13.70,-66.90],
+[-7.90,-59.70]
+],
+{
+padding:[15,15]
+}
+)
+
+}
 mapas[id] = mapa
 
 return mapa
@@ -458,8 +473,77 @@ return
 }
 
 if(charts[id]){
-
 charts[id].destroy()
+}
+
+const cores = [
+'#ef4444',
+'#2563eb',
+'#22c55e',
+'#f97316',
+'#7c3aed',
+'#b45309',
+'#ec4899',
+'#64748b',
+'#eab308',
+'#38bdf8'
+]
+
+let dataset = {
+label:rotulo,
+data:dados
+}
+
+if(tipo === 'bar'){
+
+dataset.backgroundColor =
+dados.map(
+(_,i) => cores[i % cores.length]
+)
+
+dataset.borderColor =
+dados.map(
+(_,i) => cores[i % cores.length]
+)
+
+dataset.borderWidth = 1
+
+}
+
+if(tipo === 'line'){
+
+dataset.borderColor =
+'#ef3b2d'
+
+dataset.backgroundColor =
+'rgba(239,59,45,.14)'
+
+dataset.pointBackgroundColor =
+'#ef3b2d'
+
+dataset.pointBorderColor =
+'#ffffff'
+
+dataset.pointRadius = 3
+
+dataset.pointHoverRadius = 5
+
+dataset.borderWidth = 2
+
+dataset.tension = .28
+
+dataset.fill = true
+
+}
+
+if(tipo === 'doughnut'){
+
+dataset.backgroundColor =
+dados.map(
+(_,i) => cores[i % cores.length]
+)
+
+dataset.borderWidth = 2
 
 }
 
@@ -471,13 +555,7 @@ type:tipo,
 
 data:{
 labels,
-
-datasets:[
-{
-label:rotulo,
-data:dados
-}
-]
+datasets:[dataset]
 },
 
 options:{
@@ -486,7 +564,12 @@ maintainAspectRatio:false,
 
 plugins:{
 legend:{
-display:false
+display:
+tipo === 'doughnut'
+},
+
+tooltip:{
+enabled:true
 }
 },
 
@@ -497,7 +580,16 @@ tipo === 'doughnut'
 :
 {
 y:{
-beginAtZero:true
+beginAtZero:true,
+grid:{
+color:'#e5e7eb'
+}
+},
+
+x:{
+grid:{
+display:false
+}
 }
 }
 
@@ -506,7 +598,6 @@ beginAtZero:true
 )
 
 }
-
 async function carregarRanking(){
 
 try{
@@ -1247,7 +1338,102 @@ x =>
 x.status_operacional ===
 'sem_status'
 )
+let executivo =
+document.getElementById(
+'eventosExecutivo'
+)
 
+if(executivo){
+
+executivo.innerHTML = `
+
+<div class="kpi eventoCombate">
+
+<div class="rotulo">
+🔥 EM COMBATE
+</div>
+
+<div class="valor">
+${combate.length}
+</div>
+
+<div class="nota">
+Eventos em atuação operacional
+</div>
+
+</div>
+
+
+<div class="kpi eventoMonitorando">
+
+<div class="rotulo">
+👁 MONITORANDO
+</div>
+
+<div class="valor">
+${monitorando.length}
+</div>
+
+<div class="nota">
+Eventos sob acompanhamento
+</div>
+
+</div>
+
+
+<div class="kpi eventoAnalise">
+
+<div class="rotulo">
+🔎 EM ANÁLISE
+</div>
+
+<div class="valor">
+${analise.length}
+</div>
+
+<div class="nota">
+Eventos em avaliação
+</div>
+
+</div>
+
+
+<div class="kpi eventoResolvido">
+
+<div class="rotulo">
+✅ RESOLVIDOS
+</div>
+
+<div class="valor">
+${resolvido.length}
+</div>
+
+<div class="nota">
+Eventos encerrados
+</div>
+
+</div>
+
+
+<div class="kpi eventoSemStatus">
+
+<div class="rotulo">
+⚪ SEM CLASSIFICAÇÃO
+</div>
+
+<div class="valor">
+${semStatus.length}
+</div>
+
+<div class="nota">
+Eventos sem status operacional
+</div>
+
+</div>
+
+`
+
+}
 /* =====================================================
 PRIORIDADE
 ===================================================== */
