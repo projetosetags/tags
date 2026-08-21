@@ -329,46 +329,46 @@ class="mapa mapaGrande">
 </button>
 </div>
 </section>
-  <!--=======================================================
-501 ABA OPERAÇÃO
+<!--=======================================================
+600 ABA OPERAÇÃO
 ========================================================-->
 <section id="aba-operacao" class="aba">
 <div class="tituloBloco">
-<div class="rfcTituloEtiqueta">CENTRAL OPERACIONAL</div>
+<div class="rfcTituloEtiqueta">CENTRAL OPERACIONAL • RONDÔNIA</div>
 <h2>🔥 Operação</h2>
-<p>Acompanhamento das ocorrências, eventos de fogo e detecções em tempo real.</p>
+<p>Monitoramento integrado dos focos de calor, eventos de fogo e situação operacional em Rondônia.</p>
 </div>
-<div class="rfcHubGrid rfcHubGrid3">
-<button type="button" class="rfcHubCard rfcHubVermelho" data-rfc-destino="situacao">
-<div class="rfcHubIcone">🚨</div>
-<div class="rfcHubConteudo"><strong>SITUAÇÃO</strong><span>Visão operacional consolidada</span></div>
-<div class="rfcHubSeta">›</div>
+<div id="rfcOperacaoResumo" class="rfcOperacaoResumo">
+<div class="vazio">Carregando informações operacionais...</div>
+</div>
+<div class="rfcOperacaoMenu">
+<button type="button" class="rfcOperacaoCard ativa" data-rfc-operacao="situacao">
+<span class="rfcOperacaoIcone">🚨</span>
+<div><strong>SITUAÇÃO</strong><small>Visão operacional</small></div>
 </button>
-<button type="button" class="rfcHubCard rfcHubLaranja" data-rfc-destino="monitoramento">
-<div class="rfcHubIcone">🔥</div>
-<div class="rfcHubConteudo"><strong>MONITORAMENTO</strong><span>Acompanhamento das ocorrências</span></div>
-<div class="rfcHubSeta">›</div>
+<button type="button" class="rfcOperacaoCard" data-rfc-operacao="monitoramento">
+<span class="rfcOperacaoIcone">🔥</span>
+<div><strong>MONITORAMENTO</strong><small>Acompanhamento</small></div>
 </button>
-<button type="button" class="rfcHubCard rfcHubAzul" data-rfc-destino="tempo">
-<div class="rfcHubIcone">🛰️</div>
-<div class="rfcHubConteudo"><strong>TEMPO REAL RO</strong><span>Detecções mais recentes</span></div>
-<div class="rfcHubSeta">›</div>
+<button type="button" class="rfcOperacaoCard" data-rfc-operacao="tempo">
+<span class="rfcOperacaoIcone">🛰️</span>
+<div><strong>TEMPO REAL RO</strong><small>Últimas detecções</small></div>
 </button>
-<button type="button" class="rfcHubCard rfcHubAzul" data-rfc-destino="tempomunicipio">
-<div class="rfcHubIcone">🏙️</div>
-<div class="rfcHubConteudo"><strong>TEMPO REAL MUNICÍPIO</strong><span>Consulta municipal detalhada</span></div>
-<div class="rfcHubSeta">›</div>
+<button type="button" class="rfcOperacaoCard" data-rfc-operacao="municipio">
+<span class="rfcOperacaoIcone">🏙️</span>
+<div><strong>POR MUNICÍPIO</strong><small>Consulta individual</small></div>
 </button>
-<button type="button" class="rfcHubCard rfcHubVermelho" data-rfc-destino="eventos">
-<div class="rfcHubIcone">🔥</div>
-<div class="rfcHubConteudo"><strong>EVENTOS DE FOGO</strong><span>Em combate • análise • monitoramento</span></div>
-<div class="rfcHubSeta">›</div>
+<button type="button" class="rfcOperacaoCard" data-rfc-operacao="eventos">
+<span class="rfcOperacaoIcone">🔥</span>
+<div><strong>EVENTOS</strong><small>Eventos de fogo</small></div>
 </button>
-<button type="button" class="rfcHubCard rfcHubRoxo" data-rfc-destino="satelites">
-<div class="rfcHubIcone">📡</div>
-<div class="rfcHubConteudo"><strong>SATÉLITES</strong><span>NOAA-20 • NOAA-21 • SNPP</span></div>
-<div class="rfcHubSeta">›</div>
+<button type="button" class="rfcOperacaoCard" data-rfc-operacao="satelites">
+<span class="rfcOperacaoIcone">📡</span>
+<div><strong>SATÉLITES</strong><small>Origem das detecções</small></div>
 </button>
+</div>
+<div id="rfcOperacaoConteudo" class="card rfcOperacaoConteudo">
+<div class="vazio">Selecione uma opção operacional.</div>
 </div>
 </section>
   <!--=======================================================
@@ -854,8 +854,8 @@ Fonte operacional: PROTEGE/SEDAM
 </div>
 
 
-<script src="js/rondonia-focos-calor.js?v=20260820-1"></script>
 <script src="js/rfc-legado.js?v=20260821-1"></script>
+<script src="js/rondonia-focos-calor.js?v=20260820-1"></script>
 
 
 </body>
