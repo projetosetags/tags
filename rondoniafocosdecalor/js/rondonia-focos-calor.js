@@ -4,6 +4,66 @@ const API =
 let mapas = {}
 let charts = {}
 let rankingMunicipios = []
+/*=========================================================
+VARIAVEIS ATUALIZACAO AUTOMATICA
+=========================================================*/
+let intervaloAtualizacao=null
+let intervaloContador=null
+let segundosParaAtualizar=300
+
+/*=========================================================
+FUNCTION FORMATARCONTADOR
+=========================================================*/
+function formatarContador(segundos){
+let min=Math.floor(segundos/60)
+let seg=segundos%60
+return `${String(min).padStart(2,'0')}:${String(seg).padStart(2,'0')}`
+}
+/*=========================================================
+FUNCTION ATUALIZARCONTADOR
+=========================================================*/
+function atualizarContador(){
+let box=document.getElementById('proximaAtualizacao')
+if(!box)return
+box.textContent=`PRÓXIMA ATUALIZAÇÃO: ${formatarContador(segundosParaAtualizar)}`
+segundosParaAtualizar--
+if(segundosParaAtualizar<0)segundosParaAtualizar=300
+}
+/*=========================================================
+FUNCTION INICIARCONTADORATUALIZACAO
+=========================================================*/
+function iniciarContadorAtualizacao(){
+if(intervaloContador)clearInterval(intervaloContador)
+segundosParaAtualizar=300
+atualizarContador()
+intervaloContador=setInterval(atualizarContador,1000)
+}
+/*=========================================================
+FUNCTION ATUALIZARPAINELAUTOMATICAMENTE
+=========================================================*/
+async function atualizarPainelAutomaticamente(){
+try{
+segundosParaAtualizar=300
+await Promise.allSettled([
+carregarStatus(),
+carregarRanking(),
+carregarEvolucao(),
+carregarMapaRO(7),
+carregarSatelites(),
+carregarEventos()
+])
+}catch(erro){
+console.error('Erro atualização automática:',erro)
+}
+}
+/*=========================================================
+FUNCTION INICIARATUALIZACAOAUTOMATICA
+=========================================================*/
+function iniciarAtualizacaoAutomatica(){
+if(intervaloAtualizacao)clearInterval(intervaloAtualizacao)
+iniciarContadorAtualizacao()
+intervaloAtualizacao=setInterval(atualizarPainelAutomaticamente,300000)
+}
 
 function fmt(v){
 return Number(v || 0)
@@ -1412,7 +1472,11 @@ await api(
 
 let dados =
 resultado.data || []
-
+let ultimoSatelite=document.getElementById('ultimoSatelite')
+if(ultimoSatelite){
+let principal=dados.length?dados[0]:null
+ultimoSatelite.textContent=principal?`SATÉLITE: ${principal.satellite}`:'SATÉLITE: —'
+}
 criarGrafico(
 'graficoSatelites',
 'doughnut',
@@ -2304,21 +2368,18 @@ periodo
 
 }
 
+/*=========================================================
+FUNCTION INICIAR
+=========================================================*/
 async function iniciar(){
-
 await carregarStatus()
-
-await Promise.allSettled(
-[
+await Promise.allSettled([
 carregarRanking(),
 carregarEvolucao(),
 carregarMapaRO(7),
 carregarSatelites(),
 carregarEventos(),
 carregarAmerica()
-]
-)
-
+])
+iniciarAtualizacaoAutomatica()
 }
-
-iniciar()
