@@ -702,6 +702,7 @@ carregarSatelites(),
 carregarEventos(),
 carregarAmerica(),
 rfcRenderResumoOperacao()
+rfcRenderResumoTerritorio()
 ])
 iniciarAtualizacaoAutomatica()
 }
