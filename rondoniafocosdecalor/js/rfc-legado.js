@@ -877,3 +877,61 @@ console.error('Erro resumo operação:',erro)
 box.innerHTML='<div class="vazio">Não foi possível carregar o resumo operacional.</div>'
 }
 }
+/*=========================================================
+700 FUNCTION RFCABRIRTERRITORIO
+=========================================================*/
+async function rfcAbrirTerritorio(tipo){
+if(tipo==='estado'){
+trocarAba('estado')
+setTimeout(async()=>{
+let conteudo=document.getElementById('rfcMapaEstadoConteudo')
+if(conteudo&&!conteudo.classList.contains('aberto')){
+await rfcToggleMapaEstado()
+}
+document.getElementById('rfcMapaEstado')?.scrollIntoView({behavior:'smooth',block:'center'})
+},300)
+return
+}
+if(tipo==='america'){
+trocarAba('america')
+setTimeout(()=>{
+if(mapas?.mapaAmerica)mapas.mapaAmerica.invalidateSize(true)
+},200)
+return
+}
+if(tipo==='riomadeira'){
+trocarAba('riomadeira')
+setTimeout(()=>{
+Object.values(mapas||{}).forEach(m=>{
+try{m.invalidateSize(true)}catch(e){}
+})
+},200)
+}
+}
+/*=========================================================
+701 FUNCTION RFCCONFIGURARTERRITORIO
+=========================================================*/
+function rfcConfigurarTerritorio(){
+document.querySelectorAll('[data-rfc-territorio]').forEach(btn=>{
+btn.addEventListener('click',()=>{
+rfcAbrirTerritorio(btn.dataset.rfcTerritorio)
+})
+})
+}
+rfcConfigurarTerritorio()
+/*=========================================================
+702 FUNCTION RFCRENDERRESUMOTERRITORIO
+=========================================================*/
+async function rfcRenderResumoTerritorio(){
+let box=document.getElementById('rfcTerritorioResumo')
+if(!box)return
+try{
+let resultado=await api('status')
+let r=resultado.resumo||{}
+box.innerHTML=`<div class="rfcTerritorioKPI"><span>🔥 FOCOS HOJE</span><strong>${fmt(r.focos_hoje)}</strong><small>Rondônia</small></div><div class="rfcTerritorioKPI"><span>🛰️ ÚLTIMAS 24H</span><strong>${fmt(r.focos_24h)}</strong><small>Janela móvel</small></div><div class="rfcTerritorioKPI"><span>🏛️ MUNICÍPIOS ATINGIDOS</span><strong>${fmt(r.municipios_atingidos)}</strong><small>Com detecção</small></div><div class="rfcTerritorioKPI"><span>📍 TOTAL NO BANCO</span><strong>${fmt(r.focos_total)}</strong><small>Registros disponíveis</small></div><div class="rfcTerritorioKPI"><span>⏱️ ÚLTIMA DETECÇÃO</span><strong class="rfcTerritorioData">${r.ultima_deteccao?dataBR(r.ultima_deteccao):'—'}</strong><small>PROTEGE / SEDAM</small></div>`
+}catch(erro){
+console.error('Erro resumo território:',erro)
+box.innerHTML='<div class="vazio">Não foi possível carregar os indicadores territoriais.</div>'
+}
+}
+
