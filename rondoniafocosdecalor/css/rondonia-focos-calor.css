@@ -618,3 +618,162 @@ MÓDULO ESTADO
 .rfcFormGrid button:hover{background:#1e293b}
 @media(max-width:900px){.rfcFormGrid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.rfcFormGrid{grid-template-columns:1fr}}
+/*=========================================================
+MÓDULO PLANEJAMENTO • PC + MOBILE
+=========================================================*/
+.rfcTituloPlanejamento{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.rfcTituloEtiqueta{display:inline-block;padding:5px 9px;margin-bottom:7px;border-radius:6px;background:#fff7ed;color:#c2410c;font-size:9px;font-weight:900;letter-spacing:.8px}
+.rfcPlanejamentoStatus{display:flex;align-items:center;gap:8px;white-space:nowrap;padding:8px 12px;border:1px solid #bbf7d0;border-radius:999px;background:#f0fdf4;color:#166534;font-size:10px;font-weight:900}
+.rfcPulso{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 5px rgba(34,197,94,.12)}
+.rfcCardDestaque{border-top:3px solid #ea580c}
+.rfcPlanejamentoCabecalho{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:14px}
+.rfcTextoAuxiliar{font-size:10px;color:#64748b;margin-top:3px}
+.rfcAtualizacaoPlanejamento{font-size:9px;font-weight:800;color:#64748b;background:#f8fafc;padding:6px 9px;border-radius:6px}
+.rfcResumoPrincipal{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.rfcResumoIndicador{position:relative;min-height:110px;padding:16px;border:1px solid #e2e8f0;border-radius:12px;background:linear-gradient(145deg,#fff,#f8fafc);display:flex;flex-direction:column;justify-content:center}
+.rfcResumoIndicador span{font-size:9px;font-weight:900;color:#64748b;letter-spacing:.4px}
+.rfcResumoIndicador strong{font-size:27px;line-height:1.1;color:#0f172a;margin:7px 0}
+.rfcResumoIndicador small{font-size:10px;color:#64748b}
+.rfcResumoAlerta{background:linear-gradient(145deg,#fff7ed,#fff);border-color:#fed7aa}
+.rfcResumoAlerta strong{color:#c2410c}
+.rfcCicloPlanejamento{display:flex;align-items:stretch;justify-content:center;gap:6px;padding:8px 0}
+.rfcEtapaPlanejamento{position:relative;flex:1;min-width:0;padding:16px 9px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;text-align:center;display:flex;flex-direction:column;align-items:center}
+.rfcEtapaNumero{position:absolute;top:7px;left:8px;color:#94a3b8;font-size:8px;font-weight:900}
+.rfcEtapaIcone{font-size:25px;margin:5px 0 8px}
+.rfcEtapaPlanejamento strong{font-size:10px;color:#0f172a}
+.rfcEtapaPlanejamento span{font-size:9px;color:#64748b;line-height:1.35;margin-top:5px}
+.rfcSetaCiclo{display:flex;align-items:center;font-size:26px;color:#cbd5e1;font-weight:300}
+.rfcGridPlanejamento{align-items:stretch}
+.rfcGridPlanejamento>.card{height:auto}
+.rfcInstrumentos{display:flex;flex-direction:column;gap:8px}
+.rfcInstrumento{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:10px;padding:10px;border:1px solid #e2e8f0;border-radius:10px;background:#fff}
+.rfcInstrumentoIcone{width:40px;height:40px;border-radius:9px;background:#f8fafc;display:flex;align-items:center;justify-content:center;font-size:20px}
+.rfcInstrumentoTexto{display:flex;flex-direction:column;min-width:0}
+.rfcInstrumentoTexto strong{font-size:11px;color:#0f172a}
+.rfcInstrumentoTexto span{font-size:9px;color:#64748b;line-height:1.35;margin-top:3px}
+.rfcInstrumentoStatus{font-size:8px;font-weight:900;color:#0369a1;background:#f0f9ff;border:1px solid #bae6fd;border-radius:999px;padding:5px 7px;white-space:nowrap}
+.rfcSituacaoPlanejamento{display:flex;flex-direction:column;gap:17px;padding-top:5px}
+.rfcBarraSituacaoCab{display:flex;justify-content:space-between;gap:10px;font-size:11px;margin-bottom:6px}
+.rfcBarraSituacaoCab strong{font-weight:900}
+.rfcBarraFundo{height:10px;background:#f1f5f9;border-radius:999px;overflow:hidden}
+.rfcBarraValor{height:100%;border-radius:999px}
+.rfcBarraVerde{background:#16a34a}
+.rfcBarraAmarela{background:#eab308}
+.rfcBarraVermelha{background:#dc2626}
+.rfcTotalPlanejamento{margin-top:5px;padding:12px;background:#f8fafc;border-radius:9px;display:flex;justify-content:space-between;font-size:10px}
+.rfcTotalPlanejamento strong{font-weight:900;color:#0f172a}
+.rfcPeriodoPlanejamento{display:flex;gap:5px;margin:12px 0}
+.rfcPeriodoPlanejamentoBtn{border:1px solid #cbd5e1;background:#fff;border-radius:7px;padding:6px 10px;font-size:9px;font-weight:900;cursor:pointer}
+.rfcPeriodoPlanejamentoBtn.ativa{background:#0f172a;border-color:#0f172a;color:#fff}
+.rfcRankingPlanejamento{display:flex;flex-direction:column;gap:7px}
+.rfcRankingLinha{display:grid;grid-template-columns:25px 1fr 48px;align-items:center;gap:8px}
+.rfcRankingPosicao{font-size:10px;font-weight:900;color:#64748b;text-align:center}
+.rfcRankingCab{display:flex;justify-content:space-between;align-items:center;gap:7px;margin-bottom:4px}
+.rfcRankingCab strong{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rfcRankingCab span{font-size:7px;font-weight:900;padding:3px 5px;border-radius:999px;white-space:nowrap}
+.rfcRankingBarra{height:5px;background:#f1f5f9;border-radius:999px;overflow:hidden}
+.rfcRankingBarra div{height:100%;background:linear-gradient(90deg,#fb923c,#dc2626);border-radius:999px}
+.rfcRankingValor{text-align:right;display:flex;flex-direction:column}
+.rfcRankingValor strong{font-size:13px;color:#0f172a}
+.rfcRankingValor span{font-size:7px;color:#64748b}
+.rfcPressaoCritica{background:#fee2e2;color:#991b1b}
+.rfcPressaoMuitoAlta{background:#ffedd5;color:#9a3412}
+.rfcPressaoAlta{background:#fef3c7;color:#92400e}
+.rfcPressaoModerada{background:#fef9c3;color:#854d0e}
+.rfcPressaoBaixa{background:#dcfce7;color:#166534}
+.rfcNotaMetodologica{margin-top:11px;padding:8px;border-radius:7px;background:#f8fafc;color:#64748b;font-size:8px;line-height:1.4}
+.rfcMatrizLista{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.rfcMatrizItem{display:grid;grid-template-columns:25px 1fr 55px 75px;align-items:center;gap:7px;padding:8px;border-left:4px solid #cbd5e1;border-radius:7px;background:#f8fafc}
+.rfcMatrizCritica{border-left-color:#dc2626;background:#fff7f7}
+.rfcMatrizAlta{border-left-color:#f97316}
+.rfcMatrizModerada{border-left-color:#eab308}
+.rfcMatrizBaixa{border-left-color:#22c55e}
+.rfcMatrizPos{font-size:9px;font-weight:900;color:#94a3b8}
+.rfcMatrizNome{display:flex;flex-direction:column;gap:3px;min-width:0}
+.rfcMatrizNome>strong{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rfcMatrizNome .rfcBadgeStatus{width:max-content;font-size:7px;padding:2px 5px}
+.rfcMatrizFocos{text-align:right;display:flex;flex-direction:column}
+.rfcMatrizFocos strong{font-size:12px}
+.rfcMatrizFocos span{font-size:7px;color:#64748b}
+.rfcMatrizNivel{text-align:center;font-size:7px;font-weight:900;color:#475569}
+.rfcDiretrizesPlanejamento{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.rfcDiretriz{min-height:105px;padding:13px;border-radius:11px;border:1px solid #e2e8f0;display:flex;gap:9px}
+.rfcDiretrizIcone{font-size:20px}
+.rfcDiretriz div:last-child{display:flex;flex-direction:column}
+.rfcDiretriz strong{font-size:9px;margin-bottom:5px}
+.rfcDiretriz span{font-size:9px;color:#64748b;line-height:1.4}
+.rfcDiretrizVermelha{border-top:3px solid #dc2626}
+.rfcDiretrizLaranja{border-top:3px solid #f97316}
+.rfcDiretrizAmarela{border-top:3px solid #eab308}
+.rfcDiretrizVerde{border-top:3px solid #16a34a}
+.rfcRodapePlanejamento{text-align:center;padding:13px 5px;color:#94a3b8;font-size:8px;font-weight:700;letter-spacing:.4px}
+@media(max-width:1050px){.rfcResumoPrincipal{grid-template-columns:repeat(2,1fr)}.rfcDiretrizesPlanejamento{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.rfcTituloPlanejamento{align-items:flex-start;flex-direction:column}.rfcPlanejamentoStatus{align-self:flex-start}.rfcPlanejamentoCabecalho{align-items:flex-start;flex-direction:column}.rfcCicloPlanejamento{display:grid;grid-template-columns:1fr 1fr}.rfcSetaCiclo{display:none}.rfcEtapaPlanejamento:last-child{grid-column:1/-1}.rfcInstrumento{grid-template-columns:38px 1fr}.rfcInstrumentoStatus{grid-column:2}.rfcMatrizItem{grid-template-columns:24px 1fr 48px}.rfcMatrizNivel{grid-column:2/-1;text-align:left}.rfcRankingCab{align-items:flex-start;flex-direction:column}}
+@media(max-width:520px){.rfcResumoPrincipal{grid-template-columns:1fr 1fr;gap:7px}.rfcResumoIndicador{min-height:94px;padding:11px}.rfcResumoIndicador strong{font-size:21px}.rfcResumoIndicador span{font-size:8px}.rfcResumoIndicador small{font-size:8px}.rfcCicloPlanejamento{grid-template-columns:1fr}.rfcEtapaPlanejamento:last-child{grid-column:auto}.rfcDiretrizesPlanejamento{grid-template-columns:1fr}.rfcRankingLinha{grid-template-columns:21px 1fr 43px}.rfcPeriodoPlanejamentoBtn{flex:1}.rfcPeriodoPlanejamento{width:100%}}
+/*=========================================================
+MAPA ESTADUAL INTEGRADO • ESTADO
+=========================================================*/
+.rfcMapaEstadoCard{overflow:hidden}
+.rfcMapaEstadoCabecalho{display:flex;justify-content:space-between;align-items:center;gap:15px}
+.rfcBtnMapaEstado{border:0;border-radius:9px;background:#0f172a;color:#fff;padding:10px 14px;font-size:10px;font-weight:900;cursor:pointer;white-space:nowrap}
+.rfcBtnMapaEstado:hover{background:#1e293b}
+.rfcMapaEstadoConteudo{display:none;margin-top:14px}
+.rfcMapaEstadoConteudo.aberto{display:block}
+.rfcMapaEstadoToolbar{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:10px;padding:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px}
+.rfcMapaEstadoPeriodo,.rfcMapaEstadoCamadasRapidas{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rfcMapaEstadoPeriodo>span{font-size:8px;font-weight:900;color:#64748b;margin-right:3px}
+.rfcMapaEstadoPeriodo button,.rfcMapaEstadoCamadasRapidas button{min-height:34px;border:1px solid #cbd5e1;border-radius:7px;background:#fff;padding:6px 9px;font-size:8px;font-weight:900;cursor:pointer}
+.rfcMapaEstadoPeriodo button.ativa,.rfcMapaEstadoCamadasRapidas button.ativa{background:#0f172a;border-color:#0f172a;color:#fff}
+.rfcMapaEstadoKPIs{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:10px}
+.rfcMapaEstadoKPIs>div{min-width:0;padding:9px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:8px}
+.rfcMapaEstadoKPIs span{display:block;color:#64748b;font-size:7px;font-weight:900}
+.rfcMapaEstadoKPIs strong{display:block;margin-top:3px;color:#0f172a;font-size:12px;font-weight:900;overflow:hidden;text-overflow:ellipsis}
+#rfcMapaEstado{height:610px;border-radius:11px;background:#dbe5ef;overflow:hidden}
+.rfcMapaEstadoLegenda{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:9px 2px;font-size:9px;color:#475569;font-weight:700}
+.rfcMapaLegendaCor{display:inline-block;width:13px;height:11px;margin-right:5px;border:1px solid #cbd5e1;border-radius:2px;vertical-align:-1px}
+@media(max-width:900px){.rfcMapaEstadoKPIs{grid-template-columns:repeat(3,1fr)}#rfcMapaEstado{height:530px}}
+@media(max-width:650px){.rfcMapaEstadoCabecalho{align-items:flex-start;flex-direction:column}.rfcBtnMapaEstado{width:100%;min-height:44px}.rfcMapaEstadoToolbar{align-items:stretch;flex-direction:column}.rfcMapaEstadoPeriodo,.rfcMapaEstadoCamadasRapidas{width:100%}.rfcMapaEstadoPeriodo button{flex:1;min-height:42px}.rfcMapaEstadoCamadasRapidas button{flex:1 1 45%;min-height:42px}.rfcMapaEstadoKPIs{grid-template-columns:1fr 1fr}.rfcMapaEstadoKPIs>div:last-child{grid-column:1/-1}#rfcMapaEstado{height:470px}.rfcMapaEstadoLegenda{gap:8px;font-size:8px}}
+
+/*=========================================================
+HUBS PRINCIPAIS
+=========================================================*/
+.rfcHubGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.rfcHubGrid3{grid-template-columns:repeat(3,1fr)}
+.rfcHubCard{width:100%;min-height:112px;border:1px solid #e2e8f0;border-radius:13px;background:#fff;padding:15px;display:grid;grid-template-columns:50px 1fr 20px;align-items:center;gap:11px;text-align:left;cursor:pointer;transition:.18s}
+.rfcHubCard:hover{transform:translateY(-2px);box-shadow:0 5px 16px rgba(15,23,42,.08)}
+.rfcHubIcone{width:48px;height:48px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:#f8fafc;font-size:25px}
+.rfcHubConteudo{display:flex;flex-direction:column;gap:5px;min-width:0}
+.rfcHubConteudo strong{font-size:12px;font-weight:900;color:#0f172a}
+.rfcHubConteudo span{font-size:9px;color:#64748b;line-height:1.4}
+.rfcHubSeta{font-size:25px;color:#cbd5e1;text-align:right}
+.rfcHubAzul{border-top:3px solid #2563eb}
+.rfcHubVerde{border-top:3px solid #16a34a}
+.rfcHubLaranja{border-top:3px solid #f97316}
+.rfcHubVermelho{border-top:3px solid #dc2626}
+.rfcHubRoxo{border-top:3px solid #7c3aed}
+.rfcBtnVoltar{border:1px solid #cbd5e1;background:#fff;color:#475569;border-radius:8px;padding:7px 10px;margin-bottom:10px;font-size:9px;font-weight:900;cursor:pointer}
+.rfcBtnVoltar:hover{background:#f8fafc;color:#0f172a}
+@media(max-width:950px){.rfcHubGrid,.rfcHubGrid3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.rfcHubGrid,.rfcHubGrid3{grid-template-columns:1fr}.rfcHubCard{min-height:94px;grid-template-columns:44px 1fr 16px;padding:12px}.rfcHubIcone{width:42px;height:42px;font-size:21px}.rfcHubConteudo strong{font-size:11px}.rfcHubConteudo span{font-size:9px}}
+
+/*=========================================================
+ABA CONTROLE
+=========================================================*/
+.rfcControleGrid{grid-template-columns:repeat(2,1fr);margin-bottom:14px}
+.rfcControleCard{margin-top:14px}
+.rfcSumariosGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.rfcSumarioCard{min-height:110px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;padding:14px;display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;transition:.18s}
+.rfcSumarioCard:hover{transform:translateY(-2px);box-shadow:0 5px 16px rgba(15,23,42,.08)}
+.rfcSumarioIcone{width:42px;height:42px;border-radius:10px;background:#f8fafc;display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto}
+.rfcSumarioCard div:last-child{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rfcSumarioCard strong{font-size:10px;font-weight:900;color:#0f172a}
+.rfcSumarioCard span{font-size:9px;color:#64748b;line-height:1.35}
+.rfcExportacaoControle{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:14px;border:1px solid #e2e8f0;border-radius:11px;background:#f8fafc}
+.rfcExportacaoTexto{display:flex;flex-direction:column;gap:4px}
+.rfcExportacaoTexto strong{font-size:11px;font-weight:900;color:#0f172a}
+.rfcExportacaoTexto span{font-size:9px;color:#64748b}
+.rfcBtnExportarControle{border:0;border-radius:9px;background:#0f172a;color:#fff;padding:11px 14px;font-size:9px;font-weight:900;cursor:pointer;white-space:nowrap}
+.rfcBtnExportarControle:hover{background:#1e293b}
+@media(max-width:950px){.rfcSumariosGrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.rfcControleGrid{grid-template-columns:1fr}.rfcSumariosGrid{grid-template-columns:1fr}.rfcExportacaoControle{align-items:stretch;flex-direction:column}.rfcBtnExportarControle{width:100%;min-height:44px}}
+
