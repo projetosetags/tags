@@ -94,35 +94,99 @@ MENU PRINCIPAL RONDÔNIA FOCOS DE CALOR
 </nav>
 
 <main>
-
-
-<!-- =====================================================
-001 EXECUTIVO
-===================================================== -->
-
-<section
-id="aba-executivo"
-class="aba ativa">
-
-<div class="tituloBloco">
-
-<h2>
-Dashboard Executivo • Rondônia
-</h2>
-
-<p>
-Monitoramento dos focos de calor e inteligência territorial
-para apoio à prevenção, fiscalização e tomada de decisão.
-</p>
-
+<!--=======================================================
+100 PAINEL EXECUTIVO
+========================================================-->
+<section id="aba-executivo" class="aba ativa">
+<div class="tituloBloco rfcExecutivoTitulo">
+<div>
+<div class="rfcTituloEtiqueta">MONITORAMENTO INTEGRADO • RONDÔNIA</div>
+<h2>📊 Painel Executivo</h2>
+<p>Visão estratégica dos focos de calor e da situação operacional no Estado de Rondônia.</p>
 </div>
-
-
-<div
-id="kpis"
-class="kpis">
+<div class="rfcExecutivoOnline">
+<span></span>
+<strong>MONITORAMENTO ATIVO</strong>
 </div>
-
+</div>
+<!--=======================================================
+101 INDICADORES EXECUTIVOS
+========================================================-->
+<div id="rfcExecutivoKPIs" class="rfcExecutivoKPIs">
+<div class="vazio">Carregando indicadores...</div>
+</div>
+<!--=======================================================
+102 EVOLUÇÃO + TOP 10
+========================================================-->
+<div class="rfcExecutivoGraficos">
+<div class="card rfcExecutivoCard">
+<div class="rfcExecutivoCardTopo">
+<div>
+<span>COMPORTAMENTO TEMPORAL</span>
+<strong>EVOLUÇÃO • ÚLTIMOS 30 DIAS</strong>
+</div>
+<div class="rfcExecutivoBadge">30 DIAS</div>
+</div>
+<div class="rfcExecutivoGraficoBox">
+<canvas id="graficoEvolucao"></canvas>
+</div>
+</div>
+<div class="card rfcExecutivoCard">
+<div class="rfcExecutivoCardTopo">
+<div>
+<span>CONCENTRAÇÃO TERRITORIAL</span>
+<strong>TOP 10 MUNICÍPIOS</strong>
+</div>
+<div class="rfcExecutivoBadge">RANKING</div>
+</div>
+<div class="rfcExecutivoGraficoBox">
+<canvas id="graficoRanking"></canvas>
+</div>
+</div>
+</div>
+<!--=======================================================
+103 MAPA EXECUTIVO
+========================================================-->
+<div class="card rfcExecutivoMapaCard">
+<div class="rfcExecutivoCardTopo">
+<div>
+<span>DISTRIBUIÇÃO TERRITORIAL</span>
+<strong>MAPA EXECUTIVO DE RONDÔNIA</strong>
+<small>Municípios delimitados e classificados conforme a quantidade de focos.</small>
+</div>
+<div class="rfcExecutivoBadge rfcExecutivoBadgeMapa">52 MUNICÍPIOS</div>
+</div>
+<div id="mapaExecutivo" class="mapa rfcMapaExecutivo"></div>
+</div>
+<!--=======================================================
+104 FAIXA DE ATENÇÃO
+========================================================-->
+<div class="card rfcAtencaoCard">
+<div class="rfcExecutivoCardTopo">
+<div>
+<span>LEITURA OPERACIONAL</span>
+<strong>⚠️ SITUAÇÃO DE ATENÇÃO</strong>
+</div>
+<div class="rfcExecutivoBadge">TEMPO REAL</div>
+</div>
+<div id="rfcExecutivoAtencao" class="rfcExecutivoAtencao">
+<div class="vazio">Analisando situação operacional...</div>
+</div>
+</div>
+<!--=======================================================
+105 RODAPÉ EXECUTIVO
+========================================================-->
+<div class="rfcExecutivoRodape">
+<div class="rfcExecutivoFonte">
+<span>FONTE OPERACIONAL</span>
+<strong>PROTEGE / SEDAM • RONDÔNIA</strong>
+</div>
+<div class="rfcExecutivoAtualizacao">
+<span id="rfcExecutivoUltimaAtualizacao">ÚLTIMA ATUALIZAÇÃO: —</span>
+<span id="rfcExecutivoProximaAtualizacao">PRÓXIMA ATUALIZAÇÃO: 05:00</span>
+</div>
+</div>
+</section>
 <!--=======================================================
 001 SITUAÇÃO OPERACIONAL DOS EVENTOS
 ========================================================-->
@@ -294,39 +358,59 @@ class="mapa mapaGrande">
 
 </section>
 <!--=======================================================
-500 ABA GESTÃO
+900 ABA GESTÃO
 ========================================================-->
 <section id="aba-gestao" class="aba">
 <div class="tituloBloco">
-<div class="rfcTituloEtiqueta">GESTÃO INSTITUCIONAL E MUNICIPAL</div>
+<div class="rfcTituloEtiqueta">GESTÃO • PLANEJAMENTO • MUNICÍPIOS</div>
 <h2>🏛️ Gestão</h2>
-<p>Planejamento, situação administrativa dos municípios e acompanhamento das ações estaduais.</p>
+<p>Visão integrada da situação municipal, planejamento e acompanhamento estadual das ações relacionadas às queimadas.</p>
 </div>
-<div class="rfcHubGrid">
-<button type="button" class="rfcHubCard rfcHubAzul" data-rfc-destino="municipios">
-<div class="rfcHubIcone">🏛️</div>
-<div class="rfcHubConteudo">
+<div id="rfcGestaoResumo" class="rfcGestaoResumo">
+<div class="vazio">Carregando indicadores de gestão...</div>
+</div>
+<div class="rfcGestaoGrid">
+<button type="button" class="rfcGestaoCard rfcGestaoMunicipios" data-rfc-gestao="municipios">
+<div class="rfcGestaoIcone">🏛️</div>
+<div class="rfcGestaoTexto">
+<span>GESTÃO MUNICIPAL</span>
 <strong>MUNICÍPIOS</strong>
-<span>52 municípios • planos de ação • dilação • pendências • focos</span>
+<small>52 municípios • situação • focos • ranking • consulta individual</small>
 </div>
-<div class="rfcHubSeta">›</div>
+<div class="rfcGestaoSeta">›</div>
 </button>
-<button type="button" class="rfcHubCard rfcHubVerde" data-rfc-destino="estado">
-<div class="rfcHubIcone">🌎</div>
-<div class="rfcHubConteudo">
-<strong>ESTADO</strong>
-<span>Indicadores estaduais • órgãos • mapa integrado • acompanhamento</span>
+<button type="button" class="rfcGestaoCard rfcGestaoEstado" data-rfc-gestao="estado">
+<div class="rfcGestaoIcone">🌎</div>
+<div class="rfcGestaoTexto">
+<span>VISÃO CONSOLIDADA</span>
+<strong>ESTADO DE RONDÔNIA</strong>
+<small>Indicadores estaduais • mapa integrado • áreas protegidas</small>
 </div>
-<div class="rfcHubSeta">›</div>
+<div class="rfcGestaoSeta">›</div>
 </button>
-<button type="button" class="rfcHubCard rfcHubLaranja" data-rfc-destino="planejamento">
-<div class="rfcHubIcone">📋</div>
-<div class="rfcHubConteudo">
+<button type="button" class="rfcGestaoCard rfcGestaoPlanejamento" data-rfc-gestao="planejamento">
+<div class="rfcGestaoIcone">📋</div>
+<div class="rfcGestaoTexto">
+<span>PREVENÇÃO E RESPOSTA</span>
 <strong>PLANEJAMENTO</strong>
-<span>Planos • prioridades • ciclo de atuação • matriz gerencial</span>
+<small>Prioridades • ações • riscos • acompanhamento institucional</small>
 </div>
-<div class="rfcHubSeta">›</div>
+<div class="rfcGestaoSeta">›</div>
 </button>
+</div>
+<div class="grid2 rfcGestaoInferior">
+<div class="card">
+<div class="cardTitulo">🔥 TOP 5 MUNICÍPIOS • FOCOS</div>
+<div id="rfcGestaoTopMunicipios" class="rfcGestaoTopMunicipios">
+<div class="vazio">Carregando ranking...</div>
+</div>
+</div>
+<div class="card">
+<div class="cardTitulo">📌 LEITURA EXECUTIVA</div>
+<div id="rfcGestaoLeitura" class="rfcGestaoLeitura">
+<div class="vazio">Processando dados...</div>
+</div>
+</div>
 </div>
 </section>
 <!--=======================================================
@@ -476,25 +560,67 @@ class="mapa mapaGrande">
 </div>
 </section>
 <!--=======================================================
-504 ABA FONTES
+800 ABA FONTES
 ========================================================-->
 <section id="aba-fontes" class="aba">
 <div class="tituloBloco">
-<div class="rfcTituloEtiqueta">INTEGRIDADE DOS DADOS</div>
+<div class="rfcTituloEtiqueta">ORIGEM • SINCRONIZAÇÃO • INTEGRIDADE</div>
 <h2>🧭 Fontes e Dados</h2>
-<p>Origem, atualização, satélites, sincronizações e informações metodológicas do painel.</p>
+<p>Transparência sobre a origem, atualização, cobertura e integridade dos dados utilizados pelo RondoniaFocosdeCalor.</p>
 </div>
-<div class="rfcHubGrid">
-<button type="button" class="rfcHubCard rfcHubVerde" data-rfc-destino="fonte">
-<div class="rfcHubIcone">🧭</div>
-<div class="rfcHubConteudo"><strong>PROTEGE / SEDAM</strong><span>Fonte operacional principal dos focos e eventos</span></div>
-<div class="rfcHubSeta">›</div>
-</button>
-<button type="button" class="rfcHubCard rfcHubRoxo" data-rfc-destino="satelites">
-<div class="rfcHubIcone">📡</div>
-<div class="rfcHubConteudo"><strong>SATÉLITES</strong><span>Distribuição das detecções por plataforma orbital</span></div>
-<div class="rfcHubSeta">›</div>
-</button>
+<div id="rfcFontesResumo" class="rfcFontesResumo">
+<div class="vazio">Carregando informações das fontes...</div>
+</div>
+<div class="rfcFontesGrid">
+<div class="card rfcFontePrincipal">
+<div class="rfcFonteCabecalho">
+<div class="rfcFonteIcone">🧭</div>
+<div>
+<span>FONTE OPERACIONAL PRINCIPAL</span>
+<strong>PROTEGE / SEDAM</strong>
+<small>Plataforma de monitoramento ambiental do Estado de Rondônia</small>
+</div>
+</div>
+<div id="rfcFonteProtege" class="rfcFonteDetalhes"></div>
+</div>
+<div class="card">
+<div class="cardTitulo">📡 SATÉLITES</div>
+<div id="rfcFontesSatelites" class="rfcFonteDetalhes">
+<div class="vazio">Carregando satélites...</div>
+</div>
+</div>
+</div>
+<div class="grid2">
+<div class="card">
+<div class="cardTitulo">🔄 SINCRONIZAÇÕES RECENTES</div>
+<div id="rfcFontesSync" class="rfcFonteDetalhes">
+<div class="vazio">Carregando sincronizações...</div>
+</div>
+</div>
+<div class="card">
+<div class="cardTitulo">🛡️ INTEGRIDADE DOS DADOS</div>
+<div class="rfcIntegridadeGrid">
+<div><span>SIMULAÇÃO</span><strong>NÃO</strong></div>
+<div><span>FONTE</span><strong>OFICIAL</strong></div>
+<div><span>ESCOPO</span><strong>RO + LATAM</strong></div>
+<div><span>ATUALIZAÇÃO</span><strong>AUTOMÁTICA</strong></div>
+</div>
+<div class="rfcIntegridadeNota">O painel apresenta dados efetivamente recebidos e armazenados. Não são gerados registros artificiais para preenchimento visual.</div>
+</div>
+</div>
+<div class="card">
+<div class="cardTitulo">📋 FLUXO DOS DADOS</div>
+<div class="rfcFluxoDados">
+<div><span>1</span><strong>PROTEGE</strong><small>Fonte</small></div>
+<b>→</b>
+<div><span>2</span><strong>EDGE FUNCTION</strong><small>Coleta</small></div>
+<b>→</b>
+<div><span>3</span><strong>SUPABASE</strong><small>Armazenamento</small></div>
+<b>→</b>
+<div><span>4</span><strong>API RFC</strong><small>Consulta</small></div>
+<b>→</b>
+<div><span>5</span><strong>DASHBOARD</strong><small>Visualização</small></div>
+</div>
 </div>
 </section>
 <!--=======================================================
