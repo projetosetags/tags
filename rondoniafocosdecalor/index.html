@@ -167,94 +167,56 @@ id="kpis"
 class="kpis">
 </div>
 
+<!--=======================================================
+001 SITUAÇÃO OPERACIONAL DOS EVENTOS
+========================================================-->
 <div class="card">
-
-<div class="cardTitulo">
-SITUAÇÃO OPERACIONAL DOS EVENTOS DE FOGO
+<div class="cardTitulo">SITUAÇÃO OPERACIONAL DOS EVENTOS DE FOGO</div>
+<div id="eventosExecutivo" class="kpis">
+<div class="vazio">Carregando situação operacional...</div>
 </div>
-
-<div
-id="eventosExecutivo"
-class="kpis">
-
-<div class="vazio">
-Carregando situação operacional...
 </div>
-
+<!--=======================================================
+002 MUNICÍPIOS PRIORITÁRIOS
+========================================================-->
+<div class="card">
+<div class="cardTitulo">MUNICÍPIOS QUE EXIGEM MAIOR ATENÇÃO • ÚLTIMAS 24H</div>
+<div id="prioridadeMunicipios">
+<div class="vazio">Calculando prioridades...</div>
 </div>
-
 </div>
+<!--=======================================================
+003 EVOLUÇÃO E TOP 10
+========================================================-->
 <div class="grid2">
-
 <div class="card">
-
-<div class="cardTitulo">
-EVOLUÇÃO DOS ÚLTIMOS 30 DIAS
-</div>
-
+<div class="cardTitulo">EVOLUÇÃO DIÁRIA • ÚLTIMOS 30 DIAS</div>
 <div class="graficoBox">
-
-<canvas id="graficoEvolucao">
-</canvas>
-
+<canvas id="graficoEvolucao"></canvas>
 </div>
-
 </div>
-
-
 <div class="card">
-
-<div class="cardTitulo">
-TOP 10 MUNICÍPIOS
-</div>
-
+<div class="cardTitulo">TOP 10 MUNICÍPIOS • FOCOS</div>
 <div class="graficoBox">
-
-<canvas id="graficoRanking">
-</canvas>
-
+<canvas id="graficoRanking"></canvas>
 </div>
-
 </div>
-
 </div>
-
-
+<!--=======================================================
+004 MAPA EXECUTIVO
+========================================================-->
 <div class="card">
-
-<div class="cardTitulo">
-MAPA EXECUTIVO DE RONDÔNIA
+<div class="cardTitulo">MAPA EXECUTIVO DE RONDÔNIA • FOCOS POR MUNICÍPIO • ÚLTIMAS 24H</div>
+<div id="mapaExecutivo" class="mapa"></div>
 </div>
-
-<div
-id="mapaExecutivo"
-class="mapa">
-</div>
-
-</div>
-
 </section>
-
-
-<!-- =====================================================
-002 MAPA RONDÔNIA
-===================================================== -->
-
-<section
-id="aba-mapa"
-class="aba">
-
+<!--=======================================================
+005 MAPA RONDÔNIA
+========================================================-->
+<section id="aba-mapa" class="aba">
 <div class="tituloBloco">
-
-<h2>
-Mapa de Focos • Rondônia
-</h2>
-
-<p>
-Visualização georreferenciada das detecções,
-intensidade e distribuição territorial.
-</p>
-
+<h2>Mapa de Focos • Rondônia</h2>
+<p>Visualização georreferenciada das detecções, intensidade e distribuição territorial.</p>
 </div>
 
 
