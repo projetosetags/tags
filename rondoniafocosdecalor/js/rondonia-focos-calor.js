@@ -14,12 +14,14 @@ let seg=segundos%60
 return `${String(min).padStart(2,'0')}:${String(seg).padStart(2,'0')}`
 }
 /*=========================================================
-002 FUNCTION ATUALIZARCONTADOR
+FUNCTION ATUALIZARCONTADOR
 =========================================================*/
 function atualizarContador(){
+let texto=`PRÓXIMA ATUALIZAÇÃO: ${formatarContador(segundosParaAtualizar)}`
 let box=document.getElementById('proximaAtualizacao')
-if(!box)return
-box.textContent=`PRÓXIMA ATUALIZAÇÃO: ${formatarContador(segundosParaAtualizar)}`
+if(box)box.textContent=texto
+let executivo=document.getElementById('rfcExecutivoProximaAtualizacao')
+if(executivo)executivo.textContent=texto
 segundosParaAtualizar--
 if(segundosParaAtualizar<0)segundosParaAtualizar=300
 }
@@ -282,7 +284,8 @@ if(n<=100)return{rotulo:'51 – 100',cor:'#fde68a'}
 if(n<=250)return{rotulo:'101 – 250',cor:'#fdba74'}
 if(n<=500)return{rotulo:'251 – 500',cor:'#fb923c'}
 if(n<=750)return{rotulo:'501 – 750',cor:'#ef4444'}
-return{rotulo:'751 – 1000',cor:'#b91c1c'}
+if(n<=1000)return{rotulo:'751 – 1000',cor:'#b91c1c'}
+return{rotulo:'1000+',cor:'#7f1d1d'}
 }
 /*=========================================================
 024 FUNCTION AGREGARFOCOSMUNICIPIO
@@ -329,8 +332,8 @@ if(mapa._legendaFaixasRFC)return
 let legenda=L.control({position:'bottomleft'})
 legenda.onAdd=function(){
 let div=L.DomUtil.create('div','legendaFocos')
-let faixas=[getFaixaFocosMunicipio(0),getFaixaFocosMunicipio(1),getFaixaFocosMunicipio(11),getFaixaFocosMunicipio(26),getFaixaFocosMunicipio(51),getFaixaFocosMunicipio(101),getFaixaFocosMunicipio(251),getFaixaFocosMunicipio(501),getFaixaFocosMunicipio(751)]
-div.innerHTML=`<div class="legendaTitulo">FOCOS POR MUNICÍPIO</div>${faixas.map(f=>`<div><span class="legendaQuadrado" style="background:${f.cor}"></span>${f.rotulo}</div>`).join('')}<div class="legendaNota">Últimas 24h</div>`
+let faixas=[getFaixaFocosMunicipio(0),getFaixaFocosMunicipio(1),getFaixaFocosMunicipio(11),getFaixaFocosMunicipio(26),getFaixaFocosMunicipio(51),getFaixaFocosMunicipio(101),getFaixaFocosMunicipio(251),getFaixaFocosMunicipio(501),getFaixaFocosMunicipio(751),getFaixaFocosMunicipio(1001)]
+div.innerHTML=`<div class="legendaTitulo">FOCOS POR MUNICÍPIO</div>${faixas.map(f=>`<div><span class="legendaQuadrado" style="background:${f.cor}"></span>${f.rotulo}</div>`).join('')}<div class="legendaNota">Últimas 24h • PROTEGE/SEDAM</div>`
 return div
 }
 legenda.addTo(mapa)
@@ -347,8 +350,9 @@ if(!nomeOriginal)return
 let nome=normalizarNomeMunicipio(nomeOriginal)
 let qtd=resumo[nome]?.quantidade||0
 let centro=L.geoJSON(feature).getBounds().getCenter()
-let icone=L.divIcon({className:'rotuloMunicipioWrapper',html:`<div class="rotuloMunicipio"><strong>${nomeOriginal}</strong><br><b>${fmt(qtd)}</b></div>`,iconSize:[105,34],iconAnchor:[52,17]})
-L.marker(centro,{icon:icone,interactive:false}).addTo(mapa)
+let faixa=getFaixaFocosMunicipio(qtd)
+let icone=L.divIcon({className:'rotuloMunicipioWrapper',html:`<div class="rotuloMunicipio"><span>${nomeOriginal}</span><strong style="background:${faixa.cor}">${fmt(qtd)}</strong></div>`,iconSize:[112,38],iconAnchor:[56,19]})
+L.marker(centro,{icon:icone,interactive:false,zIndexOffset:500}).addTo(mapa)
 }catch(e){}
 })
 }
@@ -364,16 +368,15 @@ camada=L.geoJSON(geo,{style:feature=>{
 let nome=normalizarNomeMunicipio(obterNomeMunicipioGeoJSON(feature))
 let qtd=resumo[nome]?.quantidade||0
 let faixa=getFaixaFocosMunicipio(qtd)
-return{color:'#64748b',weight:.8,fillColor:faixa.cor,fillOpacity:.55}
+return{color:'#64748b',weight:.8,fillColor:faixa.cor,fillOpacity:.48}
 },onEachFeature:(feature,layer)=>{
 let nomeOriginal=obterNomeMunicipioGeoJSON(feature)
 let nome=normalizarNomeMunicipio(nomeOriginal)
 let info=resumo[nome]||{quantidade:0,frpMaximo:0,ultima:null}
 let faixa=getFaixaFocosMunicipio(info.quantidade)
 layer.bindPopup(`<div class="popupExecutivo"><strong>${nomeOriginal||'Município'}</strong><br>Focos nas últimas 24h: <strong>${fmt(info.quantidade)}</strong><br>Faixa: <strong>${faixa.rotulo}</strong><br>FRP máximo: <strong>${numeroBR(info.frpMaximo,1)}</strong><br>Última detecção: ${dataBR(info.ultima)}</div>`)
-layer.on({mouseover:e=>e.target.setStyle({weight:2,color:'#0f172a',fillOpacity:.72}),mouseout:e=>camada.resetStyle(e.target)})
+layer.on({mouseover:e=>{e.target.setStyle({weight:2,color:'#0f172a',fillOpacity:.68})},mouseout:e=>{camada.resetStyle(e.target)}})
 }}).addTo(mapa)
-if(camada.getBounds().isValid())mapa.fitBounds(camada.getBounds(),{padding:[12,12],maxZoom:7})
 adicionarRotulosMunicipios(mapa,geo,resumo)
 adicionarLegendaFaixasMunicipais(mapa)
 return camada
@@ -388,9 +391,14 @@ return null
 async function renderMapaExecutivo(dados,eventos=[]){
 let mapa=iniciarMapa('mapaExecutivo',[-10.9,-63.3],6)
 limparCamadas(mapa)
-await carregarPoligonosMunicipais(mapa,dados)
+let camadaMunicipios=await carregarPoligonosMunicipais(mapa,dados)
 renderEventosOperacionaisMapa(mapa,dados,eventos)
-setTimeout(()=>mapa.invalidateSize(true),150)
+if(camadaMunicipios&&camadaMunicipios.getBounds().isValid()){
+mapa.fitBounds(camadaMunicipios.getBounds(),{padding:[12,12],maxZoom:7})
+}else{
+mapa.fitBounds([[-13.75,-66.95],[-7.85,-59.65]],{padding:[12,12]})
+}
+setTimeout(()=>mapa.invalidateSize(true),180)
 }
 /*=========================================================
 031 FUNCTION RENDEREVENTOSOPERACIONAISMAPA
@@ -701,8 +709,12 @@ carregarMapaRO(7),
 carregarSatelites(),
 carregarEventos(),
 carregarAmerica(),
-rfcRenderResumoOperacao()
-rfcRenderResumoTerritorio()
+rfcRenderResumoOperacao(),
+rfcRenderResumoTerritorio(),
+rfcRenderFontes(),
+rfcRenderResumoGestao(),
+rfcRenderExecutivoKPIs(),
+rfcRenderExecutivoAtencao()
 ])
 iniciarAtualizacaoAutomatica()
 }
