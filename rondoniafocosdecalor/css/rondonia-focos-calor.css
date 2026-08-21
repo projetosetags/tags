@@ -574,14 +574,19 @@ STATUS E ATUALIZACAO DO CABECALHO
 @media(max-width:950px){.statusDetalhes{display:none}}
 
 /*=========================================================
-MAPA MUNICIPAL
+LEGENDA MUNICIPAL • MAPA EXECUTIVO
 =========================================================*/
-.legendaQuadrado{display:inline-block;width:15px;height:12px;border:1px solid #94a3b8;border-radius:2px;margin-right:7px;vertical-align:-1px}
-.legendaNota{margin-top:6px;padding-top:5px;border-top:1px solid #e2e8f0;color:#64748b;font-size:9px;font-weight:700}
+.legendaFocos{background:rgba(255,255,255,.96);padding:10px 12px;border-radius:9px;box-shadow:0 2px 12px rgba(15,23,42,.22);font-size:9px;line-height:1.75;color:#172033;max-height:290px;overflow:auto}
+.legendaTitulo{font-size:9px;font-weight:900;margin-bottom:4px;border-bottom:1px solid #e2e8f0;padding-bottom:4px}
+.legendaQuadrado{display:inline-block;width:13px;height:11px;border:1px solid #94a3b8;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.legendaNota{margin-top:5px;padding-top:5px;border-top:1px solid #e2e8f0;color:#64748b;font-size:7px;font-weight:700}
+/*=========================================================
+RÓTULOS MUNICIPAIS • MAPA EXECUTIVO
+=========================================================*/
 .rotuloMunicipioWrapper{background:transparent;border:0}
-.rotuloMunicipio{width:110px;text-align:center;color:#172033;font-size:9px;line-height:1.05;text-shadow:0 1px 2px #fff,1px 0 2px #fff,-1px 0 2px #fff;pointer-events:none}
-.rotuloMunicipio strong{font-weight:800}
-.rotuloMunicipio b{font-size:12px;font-weight:900;color:#020617}
+.rotuloMunicipio{width:112px;text-align:center;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:2px}
+.rotuloMunicipio span{max-width:108px;font-size:8px;line-height:1.05;font-weight:800;color:#0f172a;text-shadow:0 1px 2px #fff,1px 0 2px #fff,-1px 0 2px #fff;white-space:normal}
+.rotuloMunicipio strong{min-width:25px;height:22px;padding:0 5px;border:2px solid rgba(255,255,255,.95);border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#111827;box-shadow:0 2px 5px rgba(15,23,42,.18)}
 
 /*=========================================================
 MÓDULO MUNICÍPIOS
@@ -828,5 +833,131 @@ ABA TERRITÓRIO
 .rfcTerritorioSeta{font-size:27px;color:#cbd5e1}
 @media(max-width:950px){.rfcTerritorioResumo{grid-template-columns:repeat(3,1fr)}.rfcTerritorioGrid{grid-template-columns:1fr 1fr}.rfcTerritorioRO{grid-column:1/-1}}
 @media(max-width:650px){.rfcTerritorioDestaque{align-items:flex-start;flex-direction:column}.rfcTerritorioResumo{grid-template-columns:1fr 1fr}.rfcTerritorioResumo>div:last-child{grid-column:1/-1}.rfcTerritorioGrid{grid-template-columns:1fr}.rfcTerritorioRO{grid-column:auto}.rfcTerritorioCard{min-height:105px;grid-template-columns:45px 1fr 15px;padding:12px}.rfcTerritorioIcone{width:43px;height:43px;font-size:22px}}
+/*=========================================================
+ABA FONTES
+=========================================================*/
+.rfcFontesResumo{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:11px}
+.rfcFonteKPI{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px}
+.rfcFonteKPI span{display:block;font-size:7px;font-weight:900;color:#64748b}
+.rfcFonteKPI strong{display:block;margin:4px 0 2px;font-size:20px;font-weight:900;color:#0f172a}
+.rfcFonteKPI small{font-size:8px;color:#94a3b8}
+.rfcFonteKPI .rfcFonteData{font-size:11px}
+.rfcFontesGrid{display:grid;grid-template-columns:1.3fr 1fr;gap:10px;margin-bottom:10px}
+.rfcFontePrincipal{border-top:4px solid #16a34a}
+.rfcFonteCabecalho{display:flex;align-items:center;gap:11px;margin-bottom:13px}
+.rfcFonteIcone{width:48px;height:48px;border-radius:11px;background:#ecfdf5;display:flex;align-items:center;justify-content:center;font-size:25px}
+.rfcFonteCabecalho div:last-child{display:flex;flex-direction:column;gap:2px}
+.rfcFonteCabecalho span{font-size:7px;font-weight:900;color:#64748b}
+.rfcFonteCabecalho strong{font-size:14px;font-weight:900;color:#0f172a}
+.rfcFonteCabecalho small{font-size:8px;color:#94a3b8}
+.rfcFonteDetalhes{display:flex;flex-direction:column;gap:6px}
+.rfcFonteLinha{display:grid;grid-template-columns:1fr auto;gap:5px;align-items:center;padding:8px 9px;background:#f8fafc;border-radius:7px}
+.rfcFonteLinha span{font-size:8px;color:#64748b}
+.rfcFonteLinha strong{font-size:9px;color:#0f172a;font-weight:900}
+.rfcFonteLinha small{grid-column:1/-1;font-size:7px;color:#94a3b8}
+.rfcIntegridadeGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+.rfcIntegridadeGrid div{padding:10px;background:#f8fafc;border-radius:8px}
+.rfcIntegridadeGrid span{display:block;font-size:7px;color:#64748b;font-weight:900}
+.rfcIntegridadeGrid strong{display:block;margin-top:3px;font-size:10px;color:#0f172a}
+.rfcIntegridadeNota{margin-top:9px;padding:9px;background:#f0fdf4;border-left:3px solid #16a34a;font-size:8px;line-height:1.5;color:#475569}
+.rfcSyncLinha{padding:8px 9px;border-bottom:1px solid #e2e8f0}
+.rfcSyncLinha>div{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rfcSyncLinha strong{font-size:9px}
+.rfcSyncLinha small{display:block;margin-top:3px;font-size:7px;color:#64748b}
+.rfcSyncOK,.rfcSyncStatus{padding:3px 6px;border-radius:999px;font-size:7px;font-weight:900}
+.rfcSyncOK{background:#dcfce7;color:#166534}
+.rfcSyncStatus{background:#fef3c7;color:#92400e}
+.rfcFluxoDados{display:flex;align-items:center;justify-content:center;gap:10px;padding:15px 5px;overflow-x:auto}
+.rfcFluxoDados div{min-width:110px;padding:11px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;text-align:center}
+.rfcFluxoDados div span{display:block;margin:auto auto 5px;width:22px;height:22px;line-height:22px;border-radius:50%;background:#0f172a;color:#fff;font-size:8px;font-weight:900}
+.rfcFluxoDados strong{display:block;font-size:8px}
+.rfcFluxoDados small{font-size:7px;color:#94a3b8}
+.rfcFluxoDados>b{color:#94a3b8}
+@media(max-width:850px){.rfcFontesResumo{grid-template-columns:1fr 1fr}.rfcFontesGrid{grid-template-columns:1fr}}
+@media(max-width:600px){.rfcFluxoDados{justify-content:flex-start}.rfcFluxoDados div{min-width:95px}.rfcFontesResumo{grid-template-columns:1fr 1fr}}
+
+/*=========================================================
+ABA GESTÃO
+=========================================================*/
+.rfcGestaoResumo{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:11px}
+.rfcGestaoKPI{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:11px;min-width:0}
+.rfcGestaoKPI span{display:block;font-size:7px;font-weight:900;color:#64748b}
+.rfcGestaoKPI strong{display:block;margin:4px 0 2px;font-size:21px;font-weight:900;color:#0f172a}
+.rfcGestaoKPI small{display:block;font-size:8px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rfcGestaoDestaque{border-top:3px solid #dc2626}
+.rfcGestaoGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.rfcGestaoCard{min-height:125px;border:1px solid #e2e8f0;border-radius:13px;background:#fff;padding:14px;display:grid;grid-template-columns:48px 1fr 18px;align-items:center;gap:10px;text-align:left;cursor:pointer;transition:.18s}
+.rfcGestaoCard:hover{transform:translateY(-2px);box-shadow:0 5px 16px rgba(15,23,42,.08)}
+.rfcGestaoMunicipios{border-top:4px solid #2563eb}
+.rfcGestaoEstado{border-top:4px solid #16a34a}
+.rfcGestaoPlanejamento{border-top:4px solid #f97316}
+.rfcGestaoIcone{width:46px;height:46px;border-radius:11px;background:#f8fafc;display:flex;align-items:center;justify-content:center;font-size:24px}
+.rfcGestaoTexto{display:flex;flex-direction:column;gap:3px;min-width:0}
+.rfcGestaoTexto span{font-size:7px;font-weight:900;color:#94a3b8}
+.rfcGestaoTexto strong{font-size:11px;font-weight:900;color:#0f172a}
+.rfcGestaoTexto small{font-size:8px;line-height:1.4;color:#64748b}
+.rfcGestaoSeta{font-size:25px;color:#cbd5e1}
+.rfcGestaoInferior{margin-top:0}
+.rfcGestaoTopMunicipios{display:flex;flex-direction:column;gap:9px;margin-top:8px}
+.rfcGestaoRankingCabecalho{display:flex;justify-content:space-between;gap:8px;font-size:9px;color:#334155}
+.rfcGestaoRankingCabecalho b{display:inline-block;width:24px;color:#64748b}
+.rfcGestaoRankingCabecalho strong{font-weight:900;color:#0f172a}
+.rfcGestaoRankingBarra{height:6px;background:#f1f5f9;border-radius:999px;overflow:hidden;margin-top:4px}
+.rfcGestaoRankingBarra i{display:block;height:100%;background:#ef4444;border-radius:999px}
+.rfcGestaoLeitura{display:flex;flex-direction:column;gap:7px;margin-top:8px}
+.rfcGestaoLeituraItem{padding:8px 10px;border-left:3px solid #2563eb;background:#f8fafc;border-radius:0 8px 8px 0}
+.rfcGestaoLeituraItem span{display:block;font-size:7px;font-weight:900;color:#64748b}
+.rfcGestaoLeituraItem strong{display:block;margin-top:2px;font-size:9px;color:#0f172a}
+.rfcGestaoLeituraItem small{display:block;margin-top:2px;font-size:7px;color:#94a3b8}
+@media(max-width:950px){.rfcGestaoResumo{grid-template-columns:repeat(3,1fr)}.rfcGestaoGrid{grid-template-columns:1fr 1fr}.rfcGestaoPlanejamento{grid-column:1/-1}}
+@media(max-width:650px){.rfcGestaoResumo{grid-template-columns:1fr 1fr}.rfcGestaoResumo>div:last-child{grid-column:1/-1}.rfcGestaoGrid{grid-template-columns:1fr}.rfcGestaoPlanejamento{grid-column:auto}.rfcGestaoCard{min-height:100px}}
+
+/*=========================================================
+PAINEL EXECUTIVO
+=========================================================*/
+.rfcExecutivoTitulo{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}
+.rfcExecutivoOnline{display:flex;align-items:center;gap:6px;padding:7px 10px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:999px;font-size:7px;color:#166534;white-space:nowrap}
+.rfcExecutivoOnline span{width:7px;height:7px;background:#22c55e;border-radius:50%;box-shadow:0 0 0 3px rgba(34,197,94,.15)}
+.rfcExecutivoKPIs{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px}
+.rfcExecutivoKPI{background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:11px;min-width:0}
+.rfcExecutivoKPI span{display:block;font-size:7px;font-weight:900;color:#64748b}
+.rfcExecutivoKPI strong{display:block;margin:5px 0 2px;font-size:22px;line-height:1;font-weight:900;color:#0f172a}
+.rfcExecutivoKPI small{display:block;font-size:8px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rfcExecutivoKPI .rfcExecutivoData{font-size:10px;line-height:1.3}
+.rfcKPIHoje{border-top:3px solid #f97316}
+.rfcKPICombate{border-top:3px solid #dc2626}
+.rfcKPIMunicipio{border-top:3px solid #7c3aed}
+.rfcExecutivoGraficos{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;margin-bottom:10px}
+.rfcExecutivoCard{min-width:0}
+.rfcExecutivoCardTopo{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.rfcExecutivoCardTopo>div:first-child{display:flex;flex-direction:column;gap:2px}
+.rfcExecutivoCardTopo span{font-size:7px;font-weight:900;color:#94a3b8}
+.rfcExecutivoCardTopo strong{font-size:10px;font-weight:900;color:#0f172a}
+.rfcExecutivoCardTopo small{font-size:8px;color:#64748b}
+.rfcExecutivoBadge{padding:4px 7px;background:#f1f5f9;border-radius:999px;font-size:7px;font-weight:900;color:#475569;white-space:nowrap}
+.rfcExecutivoBadgeMapa{background:#ecfdf5;color:#166534}
+.rfcExecutivoGraficoBox{position:relative;height:285px}
+.rfcExecutivoMapaCard{margin-bottom:10px}
+.rfcMapaExecutivo{height:500px;min-height:500px;border-radius:10px;overflow:hidden}
+.rfcAtencaoCard{margin-bottom:10px}
+.rfcExecutivoAtencao{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.rfcAtencaoItem{padding:10px 11px;background:#f8fafc;border-radius:9px;border-left:3px solid #94a3b8;min-width:0}
+.rfcAtencaoItem span{display:block;font-size:7px;font-weight:900;color:#64748b}
+.rfcAtencaoItem strong{display:block;margin:4px 0 2px;font-size:19px;font-weight:900;color:#0f172a}
+.rfcAtencaoItem small{display:block;font-size:7px;color:#94a3b8}
+.rfcAtencaoItem .rfcAtencaoNome{font-size:10px;line-height:1.3}
+.rfcAtencaoVermelho{border-left-color:#dc2626}
+.rfcAtencaoAzul{border-left-color:#2563eb}
+.rfcAtencaoAmarelo{border-left-color:#eab308}
+.rfcAtencaoLaranja{border-left-color:#f97316}
+.rfcAtencaoRoxo{border-left-color:#7c3aed}
+.rfcExecutivoRodape{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:9px 12px;background:#0f172a;border-radius:9px;color:#fff}
+.rfcExecutivoFonte{display:flex;flex-direction:column;gap:2px}
+.rfcExecutivoFonte span{font-size:6px;color:#94a3b8;font-weight:900}
+.rfcExecutivoFonte strong{font-size:8px}
+.rfcExecutivoAtualizacao{display:flex;align-items:center;gap:12px;font-size:7px;color:#cbd5e1;font-weight:700}
+@media(max-width:1100px){.rfcExecutivoKPIs{grid-template-columns:repeat(3,1fr)}.rfcExecutivoAtencao{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:800px){.rfcExecutivoGraficos{grid-template-columns:1fr}.rfcExecutivoGraficoBox{height:260px}.rfcMapaExecutivo{height:420px;min-height:420px}}
+@media(max-width:650px){.rfcExecutivoTitulo{flex-direction:column}.rfcExecutivoKPIs{grid-template-columns:1fr 1fr}.rfcExecutivoKPI strong{font-size:19px}.rfcExecutivoAtencao{grid-template-columns:1fr 1fr}.rfcExecutivoAtencao>div:last-child{grid-column:1/-1}.rfcMapaExecutivo{height:390px;min-height:390px}.rfcExecutivoRodape{align-items:flex-start;flex-direction:column}.rfcExecutivoAtualizacao{width:100%;justify-content:space-between;gap:5px;font-size:6px}}
 
 
