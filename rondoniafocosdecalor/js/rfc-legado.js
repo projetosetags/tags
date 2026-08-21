@@ -5,6 +5,48 @@ let RFC_CAMADA_MUNICIPIOS=null
 let RFC_GRAFICO_RESPOSTAS=null
 let RFC_MUNICIPIOS_CARREGADOS=false
 /*=========================================================
+100 FUNCTION RFCRENDEREXECUTIVOKPIS
+=========================================================*/
+async function rfcRenderExecutivoKPIs(){
+let box=document.getElementById('rfcExecutivoKPIs')
+if(!box)return
+try{
+let[status,eventos,ranking]=await Promise.all([api('status'),api('eventos'),api('ranking')])
+let r=status.resumo||{}
+let lista=eventos.data||[]
+let municipios=ranking.data||[]
+let combate=lista.filter(x=>x.status_operacional==='em_combate').length
+let maior=municipios.length?municipios[0]:null
+box.innerHTML=`<div class="rfcExecutivoKPI rfcKPIHoje"><span>🔥 FOCOS HOJE</span><strong>${fmt(r.focos_hoje)}</strong><small>Dia calendário</small></div><div class="rfcExecutivoKPI"><span>🛰️ ÚLTIMAS 24H</span><strong>${fmt(r.focos_24h)}</strong><small>Janela móvel</small></div><div class="rfcExecutivoKPI"><span>🏛️ MUNICÍPIOS ATINGIDOS</span><strong>${fmt(r.municipios_atingidos)}</strong><small>Com detecção</small></div><div class="rfcExecutivoKPI rfcKPICombate"><span>🚨 EM COMBATE</span><strong>${fmt(combate)}</strong><small>Eventos operacionais</small></div><div class="rfcExecutivoKPI rfcKPIMunicipio"><span>📍 MAIOR QUANTIDADE</span><strong>${maior?fmt(maior.focos):'—'}</strong><small>${maior?.municipality||'Sem dados'}</small></div><div class="rfcExecutivoKPI"><span>⏱️ ÚLTIMA DETECÇÃO</span><strong class="rfcExecutivoData">${r.ultima_deteccao?dataBR(r.ultima_deteccao):'—'}</strong><small>Registro mais recente</small></div>`
+let ultima=document.getElementById('rfcExecutivoUltimaAtualizacao')
+if(ultima)ultima.textContent=`ÚLTIMA ATUALIZAÇÃO: ${r.ultima_atualizacao?dataBR(r.ultima_atualizacao):'—'}`
+}catch(erro){
+console.error('Erro KPIs executivo:',erro)
+box.innerHTML='<div class="vazio">Não foi possível carregar os indicadores executivos.</div>'
+}
+}
+/*=========================================================
+101 FUNCTION RFCRENDEREXECUTIVOATENCAO
+=========================================================*/
+async function rfcRenderExecutivoAtencao(){
+let box=document.getElementById('rfcExecutivoAtencao')
+if(!box)return
+try{
+let[eventos,ranking]=await Promise.all([api('eventos'),api('ranking')])
+let lista=eventos.data||[]
+let municipios=ranking.data||[]
+let combate=lista.filter(x=>x.status_operacional==='em_combate')
+let monitorando=lista.filter(x=>x.status_operacional==='monitorando')
+let analise=lista.filter(x=>x.status_operacional==='em_analise')
+let primeiro=municipios[0]||null
+let frpMaximo=municipios.reduce((maior,x)=>Math.max(maior,Number(x.frp_maximo||0)),0)
+box.innerHTML=`<div class="rfcAtencaoItem rfcAtencaoVermelho"><span>🔥 EM COMBATE</span><strong>${fmt(combate.length)}</strong><small>Eventos com atuação operacional</small></div><div class="rfcAtencaoItem rfcAtencaoAzul"><span>👁 MONITORANDO</span><strong>${fmt(monitorando.length)}</strong><small>Eventos sob acompanhamento</small></div><div class="rfcAtencaoItem rfcAtencaoAmarelo"><span>🔎 EM ANÁLISE</span><strong>${fmt(analise.length)}</strong><small>Eventos em avaliação</small></div><div class="rfcAtencaoItem rfcAtencaoLaranja"><span>🏛️ MAIOR CONCENTRAÇÃO</span><strong class="rfcAtencaoNome">${primeiro?.municipality||'—'}</strong><small>${primeiro?fmt(primeiro.focos)+' focos':'Sem dados'}</small></div><div class="rfcAtencaoItem rfcAtencaoRoxo"><span>⚡ FRP MÁXIMO</span><strong>${numeroBR(frpMaximo,1)}</strong><small>Maior valor municipal disponível</small></div>`
+}catch(erro){
+console.error('Erro atenção executivo:',erro)
+box.innerHTML='<div class="vazio">Situação operacional indisponível.</div>'
+}
+}
+/*=========================================================
 100 FUNCTION RFCINICIARCLIENTEQUEIMADAS
 =========================================================*/
 function rfcIniciarClienteQueimadas(){
@@ -933,5 +975,135 @@ box.innerHTML=`<div class="rfcTerritorioKPI"><span>🔥 FOCOS HOJE</span><strong
 console.error('Erro resumo território:',erro)
 box.innerHTML='<div class="vazio">Não foi possível carregar os indicadores territoriais.</div>'
 }
+}
+/*=========================================================
+800 FUNCTION RFCRENDERFONTES
+=========================================================*/
+async function rfcRenderFontes(){
+let resumo=document.getElementById('rfcFontesResumo')
+if(!resumo)return
+try{
+let[status,satelites]=await Promise.all([api('status'),api('satelites')])
+let r=status.resumo||{}
+let listaSatelites=satelites.data||[]
+resumo.innerHTML=`<div class="rfcFonteKPI"><span>📍 REGISTROS</span><strong>${fmt(r.focos_total)}</strong><small>Focos armazenados</small></div><div class="rfcFonteKPI"><span>🏛️ MUNICÍPIOS</span><strong>${fmt(r.municipios_atingidos)}</strong><small>Com detecção</small></div><div class="rfcFonteKPI"><span>📡 SATÉLITES</span><strong>${fmt(listaSatelites.length)}</strong><small>Fontes orbitais</small></div><div class="rfcFonteKPI"><span>⏱️ ÚLTIMA DETECÇÃO</span><strong class="rfcFonteData">${r.ultima_deteccao?dataBR(r.ultima_deteccao):'—'}</strong><small>Registro mais recente</small></div>`
+rfcRenderFonteProtege(status)
+rfcRenderFontesSatelites(listaSatelites)
+rfcRenderFontesSync(status.sync||[])
+}catch(erro){
+console.error('Erro fontes:',erro)
+resumo.innerHTML='<div class="vazio">Não foi possível carregar as informações das fontes.</div>'
+}
+}
+/*=========================================================
+801 FUNCTION RFCRENDERFONTEPROTEGE
+=========================================================*/
+function rfcRenderFonteProtege(resultado){
+let box=document.getElementById('rfcFonteProtege')
+if(!box)return
+let config={}
+;(resultado.config||[]).forEach(x=>config[x.key]=x.value)
+box.innerHTML=`<div class="rfcFonteLinha"><span>Projeto</span><strong>${config.project_name||'RondoniaFocosdeCalor'}</strong></div><div class="rfcFonteLinha"><span>Origem</span><strong>PROTEGE / SEDAM</strong></div><div class="rfcFonteLinha"><span>Cobertura</span><strong>Rondônia • América do Sul</strong></div><div class="rfcFonteLinha"><span>Dados simulados</span><strong>NÃO</strong></div>`
+}
+/*=========================================================
+802 FUNCTION RFCRENDERFONTESSATELITES
+=========================================================*/
+function rfcRenderFontesSatelites(dados){
+let box=document.getElementById('rfcFontesSatelites')
+if(!box)return
+if(!dados.length){
+box.innerHTML='<div class="vazio">Nenhum satélite identificado.</div>'
+return
+}
+box.innerHTML=dados.map(x=>`<div class="rfcFonteLinha"><span>${x.satellite||'Não identificado'}</span><strong>${fmt(x.focos)} focos</strong><small>${x.ultima_deteccao?'Último: '+dataBR(x.ultima_deteccao):''}</small></div>`).join('')
+}
+/*=========================================================
+803 FUNCTION RFCRENDERFONTESSYNC
+=========================================================*/
+function rfcRenderFontesSync(dados){
+let box=document.getElementById('rfcFontesSync')
+if(!box)return
+if(!dados.length){
+box.innerHTML='<div class="vazio">Nenhuma sincronização registrada.</div>'
+return
+}
+box.innerHTML=dados.slice(0,8).map(x=>`<div class="rfcSyncLinha"><div><strong>${x.scope||'RO'}</strong><span class="${x.status==='SUCCESS'?'rfcSyncOK':'rfcSyncStatus'}">${x.status||'—'}</span></div><small>${dataBR(x.started_at)} • recebidos ${fmt(x.records_received)} • gravados ${fmt(x.records_upserted)}</small></div>`).join('')
+}
+/*=========================================================
+900 FUNCTION RFCABRIRGESTAO
+=========================================================*/
+function rfcAbrirGestao(tipo){
+if(tipo==='municipios'){
+trocarAba('municipios')
+return
+}
+if(tipo==='estado'){
+trocarAba('estado')
+return
+}
+if(tipo==='planejamento'){
+trocarAba('planejamento')
+}
+}
+/*=========================================================
+901 FUNCTION RFCCONFIGURARGESTAO
+=========================================================*/
+function rfcConfigurarGestao(){
+document.querySelectorAll('[data-rfc-gestao]').forEach(btn=>{
+btn.addEventListener('click',()=>rfcAbrirGestao(btn.dataset.rfcGestao))
+})
+}
+rfcConfigurarGestao()
+/*=========================================================
+902 FUNCTION RFCRENDERRESUMOGESTAO
+=========================================================*/
+async function rfcRenderResumoGestao(){
+let box=document.getElementById('rfcGestaoResumo')
+if(!box)return
+try{
+let[status,ranking]=await Promise.all([api('status'),api('ranking')])
+let r=status.resumo||{}
+let municipios=ranking.data||[]
+let totalMunicipios=52
+let atingidos=Number(r.municipios_atingidos||0)
+let semDeteccao=Math.max(0,totalMunicipios-atingidos)
+let maior=municipios.length?municipios[0]:null
+box.innerHTML=`<div class="rfcGestaoKPI"><span>🏛️ MUNICÍPIOS DE RO</span><strong>${fmt(totalMunicipios)}</strong><small>Base territorial</small></div><div class="rfcGestaoKPI"><span>🔥 COM DETECÇÃO</span><strong>${fmt(atingidos)}</strong><small>Período disponível</small></div><div class="rfcGestaoKPI"><span>✓ SEM DETECÇÃO</span><strong>${fmt(semDeteccao)}</strong><small>Na leitura atual</small></div><div class="rfcGestaoKPI"><span>📍 FOCOS NO BANCO</span><strong>${fmt(r.focos_total)}</strong><small>Registros disponíveis</small></div><div class="rfcGestaoKPI rfcGestaoDestaque"><span>🚨 MAIOR QUANTIDADE</span><strong>${maior?fmt(maior.focos):'—'}</strong><small>${maior?.municipality||'Sem dados'}</small></div>`
+rfcRenderGestaoTopMunicipios(municipios)
+rfcRenderGestaoLeitura(r,municipios)
+}catch(erro){
+console.error('Erro resumo gestão:',erro)
+box.innerHTML='<div class="vazio">Não foi possível carregar os indicadores de gestão.</div>'
+}
+}
+/*=========================================================
+903 FUNCTION RFCRENDERGESTAOTOPMUNICIPIOS
+=========================================================*/
+function rfcRenderGestaoTopMunicipios(dados){
+let box=document.getElementById('rfcGestaoTopMunicipios')
+if(!box)return
+let top=(dados||[]).slice(0,5)
+if(!top.length){
+box.innerHTML='<div class="vazio">Ranking indisponível.</div>'
+return
+}
+let maior=Math.max(...top.map(x=>Number(x.focos||0)),1)
+box.innerHTML=top.map((x,i)=>{
+let percentual=Math.max(3,(Number(x.focos||0)/maior)*100)
+return `<div class="rfcGestaoRankingLinha"><div class="rfcGestaoRankingCabecalho"><span><b>${i+1}º</b> ${x.municipality||'—'}</span><strong>${fmt(x.focos)}</strong></div><div class="rfcGestaoRankingBarra"><i style="width:${percentual}%"></i></div></div>`
+}).join('')
+}
+/*=========================================================
+904 FUNCTION RFCRENDERGESTAOLEITURA
+=========================================================*/
+function rfcRenderGestaoLeitura(resumo,municipios){
+let box=document.getElementById('rfcGestaoLeitura')
+if(!box)return
+let atingidos=Number(resumo.municipios_atingidos||0)
+let percentual=(atingidos/52)*100
+let primeiro=municipios?.[0]
+let segundo=municipios?.[1]
+let terceiro=municipios?.[2]
+box.innerHTML=`<div class="rfcGestaoLeituraItem"><span>COBERTURA MUNICIPAL</span><strong>${fmt(atingidos)} de 52 municípios apresentam detecções na leitura disponível.</strong><small>${numeroBR(percentual,1)}% do território municipal em quantidade de municípios.</small></div><div class="rfcGestaoLeituraItem"><span>MAIOR CONCENTRAÇÃO</span><strong>${primeiro?.municipality||'—'}</strong><small>${primeiro?fmt(primeiro.focos)+' focos registrados':'Sem informação disponível'}</small></div><div class="rfcGestaoLeituraItem"><span>MAIORES QUANTIDADES</span><strong>${[primeiro,segundo,terceiro].filter(Boolean).map(x=>x.municipality).join(' • ')||'—'}</strong><small>Três primeiras posições do ranking atual.</small></div><div class="rfcGestaoLeituraItem"><span>ÚLTIMA DETECÇÃO</span><strong>${resumo.ultima_deteccao?dataBR(resumo.ultima_deteccao):'—'}</strong><small>Registro mais recente disponível no banco.</small></div>`
 }
 
