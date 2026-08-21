@@ -33,7 +33,8 @@ src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js">
 <script
 src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
 </head>
 
 <body>
@@ -79,61 +80,28 @@ STATUS E ATUALIZAÇÃO
 </div>
 </header>
 
-
-<!-- =====================================================
-MENU PRINCIPAL
-===================================================== -->
-
+<!--=======================================================
+MENU PRINCIPAL RONDÔNIA FOCOS DE CALOR
+========================================================-->
 <nav class="menu">
-
-<button
-class="abaBtn ativa"
-data-aba="executivo">
-📊 EXECUTIVO RO
-</button>
-
-<button
-class="abaBtn"
-data-aba="mapa">
-🗺️ MAPA RONDÔNIA
-</button>
-
-<button
-class="abaBtn"
-data-aba="municipios">
-🏙️ MUNICÍPIOS
-</button>
-
-<button
-class="abaBtn"
-data-aba="tempo">
-🛰️ TEMPO REAL
-</button>
-
-<button
-class="abaBtn"
-data-aba="eventos">
-🔥 EVENTOS
-</button>
-
-<button
-class="abaBtn"
-data-aba="satelites">
-📡 SATÉLITES
-</button>
-
-<button
-class="abaBtn"
-data-aba="america">
-🌎 AMÉRICA DO SUL
-</button>
-
-<button
-class="abaBtn"
-data-aba="fonte">
-🧭 PROTEGE
-</button>
-
+<button class="abaBtn ativa" data-aba="executivo">📊 PAINEL EXECUTIVO</button>
+<button class="abaBtn" data-aba="municipios">🏛️ MUNICÍPIOS</button>
+<button class="abaBtn" data-aba="estado">🌎 ESTADO</button>
+<button class="abaBtn" data-aba="planejamento">📋 PLANEJAMENTO</button>
+<button class="abaBtn" data-aba="mapa">🗺️ MAPA ESTADUAL</button>
+<button class="abaBtn" data-aba="situacao">🚨 SITUAÇÃO</button>
+<button class="abaBtn" data-aba="monitoramento">🔥 MONITORAMENTO</button>
+<button class="abaBtn" data-aba="tempo">🛰️ TEMPO REAL RO</button>
+<button class="abaBtn" data-aba="tempomunicipio">🏙️ TEMPO REAL MUNICÍPIO</button>
+<button class="abaBtn" data-aba="eventos">🔥 EVENTOS DE FOGO</button>
+<button class="abaBtn" data-aba="satelites">📡 SATÉLITES</button>
+<button class="abaBtn" data-aba="america">🌎 AMÉRICA DO SUL</button>
+<button class="abaBtn" data-aba="riomadeira">🌊 RIO MADEIRA</button>
+<button class="abaBtn" data-aba="riscos">🤖 RISCOS IA</button>
+<button class="abaBtn" data-aba="auditoria">📑 AUDITORIA</button>
+<button class="abaBtn" data-aba="fonte">🧭 PROTEGE</button>
+<button class="abaBtn abaAcao" onclick="imprimirAbaRFC()">🖨️ PDF ABA</button>
+<button class="abaBtn abaAcao" onclick="exportarAbaPNGRFC()">📸 PNG SLIDE</button>
 </nav>
 
 
@@ -264,36 +232,73 @@ class="mapa mapaGrande">
 003 MUNICÍPIOS
 ===================================================== -->
 
-<section
-id="aba-municipios"
-class="aba">
-
+<!--=======================================================
+100 ABA MUNICÍPIOS
+========================================================-->
+<section id="aba-municipios" class="aba">
 <div class="tituloBloco">
-
-<h2>
-Ranking Municipal
-</h2>
-
-<p>
-Municípios de Rondônia ordenados pela concentração
-de focos registrados.
-</p>
-
+<h2>🏛️ Municípios de Rondônia</h2>
+<p>Acompanhamento das respostas municipais, planos de ação, dilação de prazo e pendências relacionadas ao combate às queimadas.</p>
 </div>
-
-
+<div id="rfcMunicipiosKPIs" class="kpis"></div>
 <div class="card">
-
-<input
-id="buscaMunicipio"
-class="busca"
-placeholder="🔎 Pesquisar município">
-
-<div id="tabelaMunicipios">
+<div class="cardTitulo">📋 TABELA GERAL DOS 52 MUNICÍPIOS</div>
+<div class="rfcBarraMunicipios">
+<select id="rfcFiltroMunicipioSituacao">
+<option value="">TODOS OS MUNICÍPIOS</option>
+<option value="VERDE">🟢 PLANO DE AÇÃO</option>
+<option value="AMARELO">🟡 DILAÇÃO DE PRAZO</option>
+<option value="VERMELHO">🔴 SEM RESPOSTA</option>
+</select>
+<input type="text" id="rfcBuscaMunicipio" placeholder="🔎 Pesquisar município...">
 </div>
-
+<div id="rfcTabelaMunicipios"></div>
 </div>
-
+<div class="card">
+<div class="rfcCabecalhoMapa">
+<div>
+<div class="cardTitulo">🗺️ MAPA MUNICIPAL</div>
+<div class="rfcSubtitulo">Situação dos Planos de Ação dos 52 Municípios</div>
+</div>
+<div class="rfcFiltroMapa">
+<button data-rfc-mapa="TODOS">TODOS</button>
+<button data-rfc-mapa="VERDE">🟢 COM PLANO</button>
+<button data-rfc-mapa="AMARELO">🟡 DILAÇÃO</button>
+<button data-rfc-mapa="VERMELHO">🔴 SEM RESPOSTA</button>
+</div>
+</div>
+<div id="rfcMapaMunicipios"></div>
+<div class="rfcLegendaMunicipal">
+<div><span class="rfcCor rfcVerde"></span>Plano de Ação Apresentado</div>
+<div><span class="rfcCor rfcAmarelo"></span>Dilação de Prazo</div>
+<div><span class="rfcCor rfcVermelho"></span>Sem Resposta</div>
+</div>
+<div class="fonteLinha">Fonte: Ofício Circular n. 16/2026/GABPRES/TCERO • TCE-RO</div>
+</div>
+<div class="grid2">
+<div class="card">
+<div class="cardTitulo">📊 DISTRIBUIÇÃO DAS RESPOSTAS</div>
+<div class="graficoBox">
+<canvas id="rfcGraficoMunicipiosResposta"></canvas>
+</div>
+</div>
+<div class="card">
+<div class="cardTitulo">📈 ESTATÍSTICAS MUNICIPAIS</div>
+<div id="rfcEstatisticasMunicipais"></div>
+</div>
+</div>
+<div class="card">
+<div class="cardTitulo">🔥 RANKING DE FOCOS DE CALOR</div>
+<div class="rfcBarraMunicipios">
+<input type="text" id="rfcBuscaFocosMunicipio" placeholder="🔎 Pesquisar município...">
+<select id="rfcPeriodoFocosMunicipio">
+<option value="1">Hoje</option>
+<option value="7" selected>7 dias</option>
+<option value="30">30 dias</option>
+</select>
+</div>
+<div id="rfcRankingFocosMunicipios"></div>
+</div>
 </section>
 
 
@@ -546,9 +551,8 @@ Fonte operacional: PROTEGE/SEDAM
 </div>
 
 
-<script
-src="js/rondonia-focos-calor.js?v=20260820-1">
-</script>
+<script src="js/rondonia-focos-calor.js?v=20260820-1"></script>
+<script src="js/rfc-legado.js?v=20260821-1"></script>
 
 
 </body>
