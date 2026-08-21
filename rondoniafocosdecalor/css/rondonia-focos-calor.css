@@ -582,3 +582,30 @@ MAPA MUNICIPAL
 .rotuloMunicipio{width:110px;text-align:center;color:#172033;font-size:9px;line-height:1.05;text-shadow:0 1px 2px #fff,1px 0 2px #fff,-1px 0 2px #fff;pointer-events:none}
 .rotuloMunicipio strong{font-weight:800}
 .rotuloMunicipio b{font-size:12px;font-weight:900;color:#020617}
+
+/*=========================================================
+MÓDULO MUNICÍPIOS
+=========================================================*/
+.rfcBarraMunicipios{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.rfcBarraMunicipios select,.rfcBarraMunicipios input{height:40px;border:1px solid #cbd5e1;border-radius:9px;padding:0 12px;background:#fff;font-size:12px}
+.rfcBarraMunicipios input{flex:1;min-width:220px}
+.rfcTabelaScroll{overflow:auto;max-height:620px}
+.rfcBadgeStatus{display:inline-block;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:900;white-space:nowrap}
+.rfcBadgeVerde{background:#dcfce7;color:#166534}
+.rfcBadgeAmarelo{background:#fef9c3;color:#854d0e}
+.rfcBadgeVermelho{background:#fee2e2;color:#991b1b}
+.rfcCabecalhoMapa{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.rfcSubtitulo{font-size:11px;color:#64748b}
+.rfcFiltroMapa{display:flex;gap:7px;flex-wrap:wrap}
+.rfcFiltroMapa button{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:8px 10px;font-size:10px;font-weight:800;cursor:pointer}
+.rfcFiltroMapa button:hover{background:#f1f5f9}
+#rfcMapaMunicipios{height:590px;border-radius:12px;background:#e2e8f0;margin-top:12px;overflow:hidden}
+.rfcLegendaMunicipal{display:flex;gap:20px;flex-wrap:wrap;padding:10px 0;font-size:11px;font-weight:700}
+.rfcCor{display:inline-block;width:13px;height:13px;border-radius:3px;margin-right:6px;vertical-align:-2px}
+.rfcVerde{background:#16a34a}
+.rfcAmarelo{background:#facc15}
+.rfcVermelho{background:#dc2626}
+.rfcEstatLinha{display:flex;justify-content:space-between;padding:13px 5px;border-bottom:1px solid #e2e8f0;font-size:13px}
+.rfcEstatLinha strong{font-weight:900}
+.rfcEstatTotal{background:#f8fafc;font-size:14px}
+@media(max-width:700px){#rfcMapaMunicipios{height:480px}.rfcBarraMunicipios select,.rfcBarraMunicipios input{width:100%}.rfcCabecalhoMapa{align-items:flex-start;flex-direction:column}}
