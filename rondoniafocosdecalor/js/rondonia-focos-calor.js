@@ -694,7 +694,15 @@ async function iniciar(){
 configurarBotoesAbas()
 configurarEventosInterface()
 await carregarStatus()
-await Promise.allSettled([carregarRanking(),carregarEvolucao(),carregarMapaRO(7),carregarSatelites(),carregarEventos(),carregarAmerica()])
+await Promise.allSettled([
+carregarRanking(),
+carregarEvolucao(),
+carregarMapaRO(7),
+carregarSatelites(),
+carregarEventos(),
+carregarAmerica(),
+rfcRenderResumoOperacao()
+])
 iniciarAtualizacaoAutomatica()
 }
 iniciar()
