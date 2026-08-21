@@ -792,3 +792,88 @@ function rfcConfigurarControle(){
 rfcConfigurarSumariosExecutivos()
 }
 rfcConfigurarControle()
+/*=========================================================
+600 FUNCTION RFCABRIRPAINELOPERACAO
+=========================================================*/
+function rfcAbrirPainelOperacao(tipo){
+document.querySelectorAll('.rfcOperacaoCard').forEach(x=>x.classList.toggle('ativa',x.dataset.rfcOperacao===tipo))
+let box=document.getElementById('rfcOperacaoConteudo')
+if(!box)return
+let origem=null
+if(tipo==='situacao')origem=document.getElementById('aba-situacao')
+if(tipo==='monitoramento')origem=document.getElementById('aba-monitoramento')
+if(tipo==='tempo')origem=document.getElementById('aba-tempo')
+if(tipo==='municipio')origem=document.getElementById('aba-tempomunicipio')
+if(tipo==='eventos')origem=document.getElementById('aba-eventos')
+if(tipo==='satelites')origem=document.getElementById('aba-satelites')
+if(!origem){
+box.innerHTML='<div class="vazio">Painel ainda não disponível.</div>'
+return
+}
+rfcMoverConteudoOperacao(origem,box,tipo)
+}
+/*=========================================================
+601 FUNCTION RFCMOVERCONTEUDOOPERACAO
+=========================================================*/
+function rfcMoverConteudoOperacao(origem,destino,tipo){
+if(!origem||!destino)return
+let container=document.getElementById(`rfcOperacaoInterno-${tipo}`)
+if(container){
+destino.innerHTML=''
+destino.appendChild(container)
+rfcAtualizarMapasOperacao()
+return
+}
+container=document.createElement('div')
+container.id=`rfcOperacaoInterno-${tipo}`
+container.className='rfcOperacaoInterno'
+while(origem.firstChild)container.appendChild(origem.firstChild)
+destino.innerHTML=''
+destino.appendChild(container)
+rfcAtualizarMapasOperacao()
+}
+/*=========================================================
+602 FUNCTION RFCATUALIZARMAPASOPERACAO
+=========================================================*/
+function rfcAtualizarMapasOperacao(){
+setTimeout(()=>{
+Object.values(mapas||{}).forEach(mapa=>{
+try{mapa.invalidateSize(true)}catch(e){}
+})
+},180)
+}
+/*=========================================================
+603 FUNCTION RFCCONFIGURAROPERACAO
+=========================================================*/
+function rfcConfigurarOperacao(){
+document.querySelectorAll('[data-rfc-operacao]').forEach(btn=>{
+btn.addEventListener('click',()=>rfcAbrirPainelOperacao(btn.dataset.rfcOperacao))
+})
+}
+/*=========================================================
+604 FUNCTION RFCINICIAROPERACAO
+=========================================================*/
+function rfcIniciarOperacao(){
+rfcConfigurarOperacao()
+setTimeout(()=>rfcAbrirPainelOperacao('situacao'),100)
+}
+rfcIniciarOperacao()
+/*=========================================================
+605 FUNCTION RFCRENDERRESUMOOPERACAO
+=========================================================*/
+async function rfcRenderResumoOperacao(){
+let box=document.getElementById('rfcOperacaoResumo')
+if(!box)return
+try{
+let[status,eventos]=await Promise.all([api('status'),api('eventos')])
+let r=status.resumo||{}
+let lista=eventos.data||[]
+let combate=lista.filter(x=>x.status_operacional==='em_combate').length
+let monitorando=lista.filter(x=>x.status_operacional==='monitorando').length
+let analise=lista.filter(x=>x.status_operacional==='em_analise').length
+box.innerHTML=`<div class="rfcOperacaoKPI"><span>🔥 FOCOS HOJE</span><strong>${fmt(r.focos_hoje)}</strong><small>Dia calendário</small></div><div class="rfcOperacaoKPI"><span>🛰️ ÚLTIMAS 24H</span><strong>${fmt(r.focos_24h)}</strong><small>Janela móvel</small></div><div class="rfcOperacaoKPI"><span>🏛️ MUNICÍPIOS</span><strong>${fmt(r.municipios_atingidos)}</strong><small>Com detecção</small></div><div class="rfcOperacaoKPI rfcOperacaoCritico"><span>🔥 EM COMBATE</span><strong>${fmt(combate)}</strong><small>Eventos operacionais</small></div><div class="rfcOperacaoKPI"><span>👁 MONITORANDO</span><strong>${fmt(monitorando)}</strong><small>Eventos acompanhados</small></div><div class="rfcOperacaoKPI"><span>🔎 EM ANÁLISE</span><strong>${fmt(analise)}</strong><small>Aguardando avaliação</small></div>`
+}catch(erro){
+console.error('Erro resumo operação:',erro)
+box.innerHTML='<div class="vazio">Não foi possível carregar o resumo operacional.</div>'
+}
+}
