@@ -609,3 +609,12 @@ MÓDULO MUNICÍPIOS
 .rfcEstatLinha strong{font-weight:900}
 .rfcEstatTotal{background:#f8fafc;font-size:14px}
 @media(max-width:700px){#rfcMapaMunicipios{height:480px}.rfcBarraMunicipios select,.rfcBarraMunicipios input{width:100%}.rfcCabecalhoMapa{align-items:flex-start;flex-direction:column}}
+/*=========================================================
+MÓDULO ESTADO
+=========================================================*/
+.rfcFormGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rfcFormGrid input,.rfcFormGrid button{height:40px;border:1px solid #cbd5e1;border-radius:9px;padding:0 12px;background:#fff;font-size:12px}
+.rfcFormGrid button{background:#0f172a;color:#fff;font-weight:900;cursor:pointer}
+.rfcFormGrid button:hover{background:#1e293b}
+@media(max-width:900px){.rfcFormGrid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.rfcFormGrid{grid-template-columns:1fr}}
