@@ -214,14 +214,27 @@ async function carregarEvolucao(){
 try{
 let resultado=await api('evolucao',{days:30})
 let dados=resultado.data||[]
+console.log('EVOLUÇÃO:',dados)
+let canvas=document.getElementById('graficoEvolucao')
+if(!canvas){
+console.error('Canvas graficoEvolucao não encontrado')
+return
+}
+if(!dados.length){
+console.warn('Evolução sem dados')
+return
+}
 let labels=dados.map(x=>new Date(`${x.dia}T12:00:00`).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}))
 let valores=dados.map(x=>Number(x.focos||0))
-let canvas=document.getElementById('graficoEvolucao')
-if(!canvas)return
 if(charts.graficoEvolucao)charts.graficoEvolucao.destroy()
-charts.graficoEvolucao=new Chart(canvas,{type:'line',data:{labels,datasets:[{label:'Focos por dia',data:valores,borderColor:'#ef3b2d',backgroundColor:'rgba(239,59,45,.14)',pointBackgroundColor:'#ef3b2d',pointBorderColor:'#ffffff',pointBorderWidth:2,pointRadius:4,pointHoverRadius:6,borderWidth:2,tension:.28,fill:true}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:28,right:10}},plugins:{legend:{display:true,position:'bottom'},tooltip:{enabled:true}},scales:{y:{beginAtZero:true,grid:{color:'#e5e7eb'}},x:{grid:{display:false}}}},plugins:[pluginValoresEvolucao]})
+charts.graficoEvolucao=new Chart(canvas.getContext('2d'),{
+type:'line',
+data:{labels,datasets:[{label:'Focos por dia',data:valores,borderColor:'#ef3b2d',backgroundColor:'rgba(239,59,45,.14)',pointBackgroundColor:'#ef3b2d',pointBorderColor:'#ffffff',pointBorderWidth:2,pointRadius:4,pointHoverRadius:6,borderWidth:2,tension:.28,fill:true}]},
+options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:28,right:10}},plugins:{legend:{display:false},tooltip:{enabled:true}},scales:{y:{beginAtZero:true,grid:{color:'#e5e7eb'}},x:{grid:{display:false}}}},
+plugins:[pluginValoresEvolucao]
+})
 }catch(erro){
-console.error('Erro evolução:',erro)
+console.error('ERRO CARREGAREVOLUCAO:',erro)
 }
 }
 /*=========================================================
@@ -252,17 +265,28 @@ async function carregarRanking(){
 try{
 let resultado=await api('ranking')
 rankingMunicipios=resultado.data||[]
+console.log('RANKING:',rankingMunicipios)
 renderTabelaMunicipios(rankingMunicipios)
 let top=rankingMunicipios.slice(0,10)
 let canvas=document.getElementById('graficoRanking')
-if(!canvas)return
+if(!canvas){
+console.error('Canvas graficoRanking não encontrado')
+return
+}
+if(!top.length){
+console.warn('Ranking sem dados')
+return
+}
 if(charts.graficoRanking)charts.graficoRanking.destroy()
 let cores=['#ef4444','#2563eb','#22c55e','#f97316','#7c3aed','#b45309','#ec4899','#64748b','#eab308','#38bdf8']
-charts.graficoRanking=new Chart(canvas,{type:'bar',data:{labels:top.map(x=>x.municipality),datasets:[{label:'Focos',data:top.map(x=>Number(x.focos||0)),backgroundColor:top.map((_,i)=>cores[i%cores.length]),borderColor:top.map((_,i)=>cores[i%cores.length]),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,layout:{padding:{right:45}},plugins:{legend:{display:false},tooltip:{enabled:true}},scales:{x:{beginAtZero:true,grid:{color:'#e5e7eb'}},y:{grid:{display:false},ticks:{font:{weight:'700'}}}}},plugins:[pluginValoresRanking]})
+charts.graficoRanking=new Chart(canvas.getContext('2d'),{
+type:'bar',
+data:{labels:top.map(x=>x.municipality),datasets:[{label:'Focos',data:top.map(x=>Number(x.focos||0)),backgroundColor:top.map((_,i)=>cores[i%cores.length]),borderColor:top.map((_,i)=>cores[i%cores.length]),borderWidth:1}]},
+options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,layout:{padding:{right:45}},plugins:{legend:{display:false},tooltip:{enabled:true}},scales:{x:{beginAtZero:true,grid:{color:'#e5e7eb'}},y:{grid:{display:false},ticks:{font:{weight:'700'}}}}},
+plugins:[pluginValoresRanking]
+})
 }catch(erro){
-console.error('Erro ranking:',erro)
-let box=document.getElementById('tabelaMunicipios')
-if(box)box.innerHTML='<div class="vazio">Não foi possível carregar o ranking municipal.</div>'
+console.error('ERRO CARREGARRANKING:',erro)
 }
 }
 /*=========================================================
@@ -378,6 +402,12 @@ return null
 030 FUNCTION RENDERMAPAEXECUTIVO
 =========================================================*/
 async function renderMapaExecutivo(dados,eventos=[]){
+let div=document.getElementById('mapaExecutivo')
+if(!div){
+console.error('Div mapaExecutivo não encontrada')
+return
+}
+console.log('MAPA EXECUTIVO DADOS:',dados.length)
 let mapa=iniciarMapa('mapaExecutivo',[-10.9,-63.3],6)
 limparCamadas(mapa)
 let camadaMunicipios=await carregarPoligonosMunicipais(mapa,dados)
@@ -387,7 +417,9 @@ mapa.fitBounds(camadaMunicipios.getBounds(),{padding:[12,12],maxZoom:7})
 }else{
 mapa.fitBounds([[-13.75,-66.95],[-7.85,-59.65]],{padding:[12,12]})
 }
-setTimeout(()=>mapa.invalidateSize(true),180)
+setTimeout(()=>{
+mapa.invalidateSize(true)
+},350)
 }
 /*=========================================================
 031 FUNCTION RENDEREVENTOSOPERACIONAISMAPA
