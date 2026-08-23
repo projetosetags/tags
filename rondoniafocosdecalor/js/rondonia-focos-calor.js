@@ -375,9 +375,14 @@ let nome=normalizarNomeMunicipio(nomeOriginal)
 let info=resumo[nome]||{quantidade:0,frpMaximo:0,ultima:null}
 let faixa=getFaixaFocosMunicipio(info.quantidade)
 layer.bindPopup(`<div class="popupExecutivo"><strong>${nomeOriginal||'Município'}</strong><br>Focos nas últimas 24h: <strong>${fmt(info.quantidade)}</strong><br>Faixa: <strong>${faixa.rotulo}</strong><br>FRP máximo: <strong>${numeroBR(info.frpMaximo,1)}</strong><br>Última detecção: ${dataBR(info.ultima)}</div>`)
-layer.on({mouseover:e=>{e.target.setStyle({weight:2,color:'#0f172a',fillOpacity:.68})},mouseout:e=>{camada.resetStyle(e.target)}})
+layer.on({
+mouseover:e=>e.target.setStyle({weight:2,color:'#0f172a',fillOpacity:.68}),
+mouseout:e=>camada.resetStyle(e.target),
+click:e=>{
+e.target.openPopup()
+}
+})
 }}).addTo(mapa)
-adicionarRotulosMunicipios(mapa,geo,resumo)
 adicionarLegendaFaixasMunicipais(mapa)
 return camada
 }catch(erro){
