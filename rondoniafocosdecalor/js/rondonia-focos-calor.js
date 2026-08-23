@@ -694,17 +694,22 @@ await carregarStatus()
 await Promise.allSettled([
 carregarRanking(),
 carregarEvolucao(),
-carregarMapaRO(7),
 carregarSatelites(),
 carregarEventos(),
-carregarAmerica(),
-rfcRenderResumoOperacao(),
-rfcRenderResumoTerritorio(),
-rfcRenderFontes(),
-rfcRenderResumoGestao(),
-rfcRenderExecutivoKPIs(),
-rfcRenderExecutivoAtencao()
+carregarAmerica()
 ])
+await carregarMapaRO(7)
+if(typeof rfcRenderResumoOperacao==='function')await rfcRenderResumoOperacao()
+if(typeof rfcRenderResumoTerritorio==='function')await rfcRenderResumoTerritorio()
+if(typeof rfcRenderFontes==='function')await rfcRenderFontes()
+if(typeof rfcRenderResumoGestao==='function')await rfcRenderResumoGestao()
+if(typeof rfcRenderExecutivoKPIs==='function')await rfcRenderExecutivoKPIs()
+if(typeof rfcRenderExecutivoAtencao==='function')await rfcRenderExecutivoAtencao()
+setTimeout(()=>{
+Object.values(mapas).forEach(mapa=>{
+try{mapa.invalidateSize(true)}catch(e){}
+})
+},400)
 iniciarAtualizacaoAutomatica()
 }
 iniciar()
