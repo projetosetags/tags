@@ -339,23 +339,7 @@ return div
 legenda.addTo(mapa)
 mapa._legendaFaixasRFC=legenda
 }
-/*=========================================================
-028 FUNCTION ADICIONARROTULOSMUNICIPIOS
-=========================================================*/
-function adicionarRotulosMunicipios(mapa,geo,resumo){
-;(geo.features||[]).forEach(feature=>{
-try{
-let nomeOriginal=obterNomeMunicipioGeoJSON(feature)
-if(!nomeOriginal)return
-let nome=normalizarNomeMunicipio(nomeOriginal)
-let qtd=resumo[nome]?.quantidade||0
-let centro=L.geoJSON(feature).getBounds().getCenter()
-let faixa=getFaixaFocosMunicipio(qtd)
-let icone=L.divIcon({className:'rotuloMunicipioWrapper',html:`<div class="rotuloMunicipio"><span>${nomeOriginal}</span><strong style="background:${faixa.cor}">${fmt(qtd)}</strong></div>`,iconSize:[112,38],iconAnchor:[56,19]})
-L.marker(centro,{icon:icone,interactive:false,zIndexOffset:500}).addTo(mapa)
-}catch(e){}
-})
-}
+
 /*=========================================================
 029 FUNCTION CARREGARPOLIGONOSMUNICIPAIS
 =========================================================*/
