@@ -1,75 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-name="viewport"
-content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5,user-scalable=yes">
-
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5,user-scalable=yes">
 <meta name="theme-color" content="#0f172a">
-
-<title>
-Rondônia Focos de Calor | TCE-RO
-</title>
-
-<link
-rel="icon"
-href="data:,">
-
-<link
-rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
-<link
-rel="stylesheet"
-href="css/rondonia-focos-calor.css?v=20260820-1">
-
-<script
-src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js">
-</script>
-
-<script
-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
+<title>Rondônia Focos de Calor | TCE-RO</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="css/rondonia-focos-calor.css?v=20260823-1">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../config.js"></script>
 </head>
-
 <body>
-
 <div class="app">
-
-<!-- =====================================================
-CABEÇALHO
-===================================================== -->
-
-<header class="topo">
-
-<div class="marca">
-
-<div class="icone">
-🔥
-</div>
-
-<div>
-
-<h1>
-RONDÔNIA FOCOS DE CALOR
-</h1>
-
-<p>
-Inteligência territorial • PROTEGE/SEDAM • TCE-RO
-</p>
-
-</div>
-
-</div>
-
 <!--=======================================================
-STATUS E ATUALIZAÇÃO
+001 CABEÇALHO
 ========================================================-->
+<header class="topo">
+<div class="marca">
+<div class="icone">🔥</div>
+<div>
+<h1>RONDÔNIA FOCOS DE CALOR</h1>
+<p>Inteligência territorial • PROTEGE/SEDAM • TCE-RO</p>
+</div>
+</div>
 <div class="statusTopo">
 <span id="statusFonte" class="status statusAguardando">AGUARDANDO DADOS</span>
 <div class="statusDetalhes">
@@ -79,9 +35,8 @@ STATUS E ATUALIZAÇÃO
 </div>
 </div>
 </header>
-
 <!--=======================================================
-MENU PRINCIPAL RONDÔNIA FOCOS DE CALOR
+002 MENU PRINCIPAL
 ========================================================-->
 <nav class="menu">
 <button class="abaBtn ativa" data-aba="executivo">📊 EXECUTIVO</button>
@@ -92,10 +47,9 @@ MENU PRINCIPAL RONDÔNIA FOCOS DE CALOR
 <button class="abaBtn" data-aba="fontes">🧭 FONTES</button>
 <button class="abaBtn abaAcao" onclick="imprimirAbaRFC()">🖨️ PDF</button>
 </nav>
-
 <main>
 <!--=======================================================
-100 PAINEL EXECUTIVO
+100 ABA EXECUTIVO
 ========================================================-->
 <section id="aba-executivo" class="aba ativa">
 <div class="tituloBloco rfcExecutivoTitulo">
@@ -116,7 +70,7 @@ MENU PRINCIPAL RONDÔNIA FOCOS DE CALOR
 <div class="vazio">Carregando indicadores...</div>
 </div>
 <!--=======================================================
-102 EVOLUÇÃO + TOP 10
+102 EVOLUÇÃO E TOP 10
 ========================================================-->
 <div class="rfcExecutivoGraficos">
 <div class="card rfcExecutivoCard">
@@ -159,7 +113,7 @@ MENU PRINCIPAL RONDÔNIA FOCOS DE CALOR
 <div id="mapaExecutivo" class="mapa rfcMapaExecutivo"></div>
 </div>
 <!--=======================================================
-104 FAIXA DE ATENÇÃO
+104 SITUAÇÃO DE ATENÇÃO
 ========================================================-->
 <div class="card rfcAtencaoCard">
 <div class="rfcExecutivoCardTopo">
@@ -174,7 +128,16 @@ MENU PRINCIPAL RONDÔNIA FOCOS DE CALOR
 </div>
 </div>
 <!--=======================================================
-105 RODAPÉ EXECUTIVO
+105 MUNICÍPIOS PRIORITÁRIOS
+========================================================-->
+<div class="card">
+<div class="cardTitulo">MUNICÍPIOS QUE EXIGEM MAIOR ATENÇÃO • ÚLTIMAS 24H</div>
+<div id="prioridadeMunicipios">
+<div class="vazio">Calculando prioridades...</div>
+</div>
+</div>
+<!--=======================================================
+106 RODAPÉ EXECUTIVO
 ========================================================-->
 <div class="rfcExecutivoRodape">
 <div class="rfcExecutivoFonte">
@@ -188,45 +151,197 @@ MENU PRINCIPAL RONDÔNIA FOCOS DE CALOR
 </div>
 </section>
 <!--=======================================================
-001 SITUAÇÃO OPERACIONAL DOS EVENTOS
+200 ABA GESTÃO
 ========================================================-->
-<button type="button" class="rfcBtnVoltar" onclick="rfcVoltarPara('operacao')">← OPERAÇÃO</button>
+<section id="aba-gestao" class="aba">
+<div class="tituloBloco">
+<div class="rfcTituloEtiqueta">GESTÃO • PLANEJAMENTO • MUNICÍPIOS</div>
+<h2>🏛️ Gestão</h2>
+<p>Visão integrada da situação municipal, planejamento e acompanhamento estadual das ações relacionadas às queimadas.</p>
+</div>
+<div id="rfcGestaoResumo" class="rfcGestaoResumo">
+<div class="vazio">Carregando indicadores de gestão...</div>
+</div>
+<div class="rfcGestaoGrid">
+<button type="button" class="rfcGestaoCard rfcGestaoMunicipios" data-rfc-gestao="municipios">
+<div class="rfcGestaoIcone">🏛️</div>
+<div class="rfcGestaoTexto">
+<span>GESTÃO MUNICIPAL</span>
+<strong>MUNICÍPIOS</strong>
+<small>52 municípios • situação • focos • ranking • consulta individual</small>
+</div>
+<div class="rfcGestaoSeta">›</div>
+</button>
+<button type="button" class="rfcGestaoCard rfcGestaoEstado" data-rfc-gestao="estado">
+<div class="rfcGestaoIcone">🌎</div>
+<div class="rfcGestaoTexto">
+<span>VISÃO CONSOLIDADA</span>
+<strong>ESTADO DE RONDÔNIA</strong>
+<small>Indicadores estaduais • mapa integrado • áreas protegidas</small>
+</div>
+<div class="rfcGestaoSeta">›</div>
+</button>
+<button type="button" class="rfcGestaoCard rfcGestaoPlanejamento" data-rfc-gestao="planejamento">
+<div class="rfcGestaoIcone">📋</div>
+<div class="rfcGestaoTexto">
+<span>PREVENÇÃO E RESPOSTA</span>
+<strong>PLANEJAMENTO</strong>
+<small>Prioridades • ações • riscos • acompanhamento institucional</small>
+</div>
+<div class="rfcGestaoSeta">›</div>
+</button>
+</div>
+<div class="grid2 rfcGestaoInferior">
 <div class="card">
-<div class="cardTitulo">SITUAÇÃO OPERACIONAL DOS EVENTOS DE FOGO</div>
-<div id="eventosExecutivo" class="kpis">
-<div class="vazio">Carregando situação operacional...</div>
+<div class="cardTitulo">🔥 TOP 5 MUNICÍPIOS • FOCOS</div>
+<div id="rfcGestaoTopMunicipios" class="rfcGestaoTopMunicipios">
+<div class="vazio">Carregando ranking...</div>
 </div>
 </div>
-<!--=======================================================
-002 MUNICÍPIOS PRIORITÁRIOS
-========================================================-->
 <div class="card">
-<div class="cardTitulo">MUNICÍPIOS QUE EXIGEM MAIOR ATENÇÃO • ÚLTIMAS 24H</div>
-<div id="prioridadeMunicipios">
-<div class="vazio">Calculando prioridades...</div>
+<div class="cardTitulo">📌 LEITURA EXECUTIVA</div>
+<div id="rfcGestaoLeitura" class="rfcGestaoLeitura">
+<div class="vazio">Processando dados...</div>
 </div>
 </div>
+</div>
+</section>
 <!--=======================================================
-003 EVOLUÇÃO E TOP 10
+210 ABA MUNICÍPIOS
 ========================================================-->
+<section id="aba-municipios" class="aba">
+<button type="button" class="rfcBtnVoltar" onclick="rfcVoltarPara('gestao')">← GESTÃO</button>
+<div class="tituloBloco">
+<h2>🏛️ Municípios de Rondônia</h2>
+<p>Acompanhamento das respostas municipais, planos de ação, dilação de prazo e pendências relacionadas ao combate às queimadas.</p>
+</div>
+<div id="rfcMunicipiosKPIs" class="kpis"></div>
+<div class="card">
+<div class="cardTitulo">📋 TABELA GERAL DOS 52 MUNICÍPIOS</div>
+<div class="rfcBarraMunicipios">
+<select id="rfcFiltroMunicipioSituacao">
+<option value="">TODOS OS MUNICÍPIOS</option>
+<option value="VERDE">🟢 PLANO DE AÇÃO</option>
+<option value="AMARELO">🟡 DILAÇÃO DE PRAZO</option>
+<option value="VERMELHO">🔴 SEM RESPOSTA</option>
+</select>
+<input type="text" id="rfcBuscaMunicipio" placeholder="🔎 Pesquisar município...">
+</div>
+<div id="rfcTabelaMunicipios"></div>
+</div>
+<div class="card">
+<div class="rfcCabecalhoMapa">
+<div>
+<div class="cardTitulo">🗺️ MAPA MUNICIPAL</div>
+<div class="rfcSubtitulo">Situação dos Planos de Ação dos 52 Municípios</div>
+</div>
+<div class="rfcFiltroMapa">
+<button type="button" data-rfc-mapa="TODOS">TODOS</button>
+<button type="button" data-rfc-mapa="VERDE">🟢 COM PLANO</button>
+<button type="button" data-rfc-mapa="AMARELO">🟡 DILAÇÃO</button>
+<button type="button" data-rfc-mapa="VERMELHO">🔴 SEM RESPOSTA</button>
+</div>
+</div>
+<div id="rfcMapaMunicipios"></div>
+<div class="rfcLegendaMunicipal">
+<div><span class="rfcCor rfcVerde"></span>Plano de Ação Apresentado</div>
+<div><span class="rfcCor rfcAmarelo"></span>Dilação de Prazo</div>
+<div><span class="rfcCor rfcVermelho"></span>Sem Resposta</div>
+</div>
+<div class="fonteLinha">Fonte: Ofício Circular n. 16/2026/GABPRES/TCERO • TCE-RO</div>
+</div>
 <div class="grid2">
 <div class="card">
-<div class="cardTitulo">EVOLUÇÃO DIÁRIA • ÚLTIMOS 30 DIAS</div>
+<div class="cardTitulo">📊 DISTRIBUIÇÃO DAS RESPOSTAS</div>
 <div class="graficoBox">
-<canvas id="graficoEvolucao"></canvas>
+<canvas id="rfcGraficoMunicipiosResposta"></canvas>
 </div>
 </div>
 <div class="card">
-<div class="cardTitulo">TOP 10 MUNICÍPIOS • FOCOS</div>
-<div class="graficoBox">
-<canvas id="graficoRanking"></canvas>
+<div class="cardTitulo">📈 ESTATÍSTICAS MUNICIPAIS</div>
+<div id="rfcEstatisticasMunicipais"></div>
 </div>
 </div>
+<div class="card">
+<div class="cardTitulo">🔥 RANKING DE FOCOS DE CALOR</div>
+<div class="rfcBarraMunicipios">
+<input type="text" id="rfcBuscaFocosMunicipio" placeholder="🔎 Pesquisar município...">
+<select id="rfcPeriodoFocosMunicipio">
+<option value="1">Hoje</option>
+<option value="7" selected>7 dias</option>
+<option value="30">30 dias</option>
+</select>
+</div>
+<div id="rfcRankingFocosMunicipios"></div>
+</div>
+</section>
+<!--=======================================================
+220 ABA ESTADO
+========================================================-->
+<section id="aba-estado" class="aba">
+<button type="button" class="rfcBtnVoltar" onclick="rfcVoltarPara('gestao')">← GESTÃO</button>
+<div class="tituloBloco">
+<h2>🌎 Monitoramento Estadual</h2>
+<p>Cadastro, indicadores institucionais e acompanhamento das ações estaduais relacionadas ao combate às queimadas.</p>
+</div>
+<div id="rfcEstadoKPIs" class="kpis"></div>
+<div class="card">
+<div class="cardTitulo">CADASTRO ESTADUAL</div>
+<div id="rfcCadastroEstado"></div>
+</div>
+<div class="card">
+<div class="cardTitulo">CADASTRAR ÓRGÃO ESTADUAL</div>
+<div id="rfcFormularioEstado"></div>
+</div>
+<div class="card">
+<div class="cardTitulo">INDICADORES ESTADUAIS</div>
+<div id="rfcIndicadoresEstado"></div>
 </div>
 <!--=======================================================
-300 ABA PLANEJAMENTO
+221 MAPA ESTADUAL INTEGRADO
+========================================================-->
+<div class="card rfcMapaEstadoCard">
+<div class="rfcMapaEstadoCabecalho">
+<div>
+<div class="cardTitulo">🗺️ MAPA ESTADUAL INTEGRADO</div>
+<div class="rfcTextoAuxiliar">Municípios • Focos de calor • Unidades de Conservação • Terras Indígenas</div>
+</div>
+<button id="rfcBtnToggleMapaEstado" class="rfcBtnMapaEstado" type="button">🗺️ EXIBIR MAPA</button>
+</div>
+<div id="rfcMapaEstadoConteudo" class="rfcMapaEstadoConteudo">
+<div class="rfcMapaEstadoToolbar">
+<div class="rfcMapaEstadoPeriodo">
+<span>PERÍODO DOS FOCOS</span>
+<button type="button" data-rfc-mapaestado-dias="1">24H</button>
+<button type="button" data-rfc-mapaestado-dias="7" class="ativa">7 DIAS</button>
+<button type="button" data-rfc-mapaestado-dias="30">30 DIAS</button>
+</div>
+<div class="rfcMapaEstadoCamadasRapidas">
+<button type="button" data-rfc-layer="municipios" class="ativa">🏛️ MUNICÍPIOS</button>
+<button type="button" data-rfc-layer="focos" class="ativa">🔥 FOCOS</button>
+<button type="button" data-rfc-layer="ucs">🌳 UCs</button>
+<button type="button" data-rfc-layer="tis">🪶 TIs</button>
+</div>
+</div>
+<div id="rfcMapaEstadoKPIs" class="rfcMapaEstadoKPIs"></div>
+<div id="rfcMapaEstado"></div>
+<div class="rfcMapaEstadoLegenda">
+<div><span class="rfcMapaLegendaCor" style="background:#dcfce7"></span>1–10 focos</div>
+<div><span class="rfcMapaLegendaCor" style="background:#fef3c7"></span>11–50 focos</div>
+<div><span class="rfcMapaLegendaCor" style="background:#fdba74"></span>51–100 focos</div>
+<div><span class="rfcMapaLegendaCor" style="background:#fb923c"></span>101–250 focos</div>
+<div><span class="rfcMapaLegendaCor" style="background:#ef4444"></span>251–500 focos</div>
+<div><span class="rfcMapaLegendaCor" style="background:#991b1b"></span>501+ focos</div>
+</div>
+<div class="fonteLinha">Fontes: PROTEGE/SEDAM • Base Municipal de Rondônia • CNUC/TCGeo • Terras Indígenas</div>
+</div>
+</div>
+</section>
+<!--=======================================================
+230 ABA PLANEJAMENTO
 ========================================================-->
 <section id="aba-planejamento" class="aba">
+<button type="button" class="rfcBtnVoltar" onclick="rfcVoltarPara('gestao')">← GESTÃO</button>
 <div class="tituloBloco rfcTituloPlanejamento">
 <div>
 <div class="rfcTituloEtiqueta">GESTÃO PREVENTIVA • QUEIMADAS 2026</div>
@@ -302,119 +417,7 @@ MENU PRINCIPAL RONDÔNIA FOCOS DE CALOR
 <div class="rfcRodapePlanejamento">TCE-RO • RONDÔNIA FOCOS DE CALOR • Fonte operacional de focos: PROTEGE/SEDAM</div>
 </section>
 <!--=======================================================
-004 MAPA EXECUTIVO
-========================================================-->
-<div class="card">
-<div class="cardTitulo">MAPA EXECUTIVO DE RONDÔNIA • FOCOS POR MUNICÍPIO • ÚLTIMAS 24H</div>
-<div id="mapaExecutivo" class="mapa"></div>
-</div>
-</section>
-<!--=======================================================
-005 MAPA RONDÔNIA
-========================================================-->
-<section id="aba-mapa" class="aba">
-<div class="tituloBloco">
-<h2>Mapa de Focos • Rondônia</h2>
-<p>Visualização georreferenciada das detecções, intensidade e distribuição territorial.</p>
-</div>
-
-
-<div class="filtros">
-
-<select id="periodoMapa">
-
-<option value="1">
-Hoje
-</option>
-
-<option
-value="7"
-selected>
-Últimos 7 dias
-</option>
-
-<option value="30">
-Últimos 30 dias
-</option>
-
-<option value="365">
-Últimos 12 meses
-</option>
-
-</select>
-
-
-<button id="btnAtualizarMapa">
-ATUALIZAR MAPA
-</button>
-
-</div>
-
-
-<div
-id="mapaRO"
-class="mapa mapaGrande">
-</div>
-
-</section>
-<!--=======================================================
-900 ABA GESTÃO
-========================================================-->
-<section id="aba-gestao" class="aba">
-<div class="tituloBloco">
-<div class="rfcTituloEtiqueta">GESTÃO • PLANEJAMENTO • MUNICÍPIOS</div>
-<h2>🏛️ Gestão</h2>
-<p>Visão integrada da situação municipal, planejamento e acompanhamento estadual das ações relacionadas às queimadas.</p>
-</div>
-<div id="rfcGestaoResumo" class="rfcGestaoResumo">
-<div class="vazio">Carregando indicadores de gestão...</div>
-</div>
-<div class="rfcGestaoGrid">
-<button type="button" class="rfcGestaoCard rfcGestaoMunicipios" data-rfc-gestao="municipios">
-<div class="rfcGestaoIcone">🏛️</div>
-<div class="rfcGestaoTexto">
-<span>GESTÃO MUNICIPAL</span>
-<strong>MUNICÍPIOS</strong>
-<small>52 municípios • situação • focos • ranking • consulta individual</small>
-</div>
-<div class="rfcGestaoSeta">›</div>
-</button>
-<button type="button" class="rfcGestaoCard rfcGestaoEstado" data-rfc-gestao="estado">
-<div class="rfcGestaoIcone">🌎</div>
-<div class="rfcGestaoTexto">
-<span>VISÃO CONSOLIDADA</span>
-<strong>ESTADO DE RONDÔNIA</strong>
-<small>Indicadores estaduais • mapa integrado • áreas protegidas</small>
-</div>
-<div class="rfcGestaoSeta">›</div>
-</button>
-<button type="button" class="rfcGestaoCard rfcGestaoPlanejamento" data-rfc-gestao="planejamento">
-<div class="rfcGestaoIcone">📋</div>
-<div class="rfcGestaoTexto">
-<span>PREVENÇÃO E RESPOSTA</span>
-<strong>PLANEJAMENTO</strong>
-<small>Prioridades • ações • riscos • acompanhamento institucional</small>
-</div>
-<div class="rfcGestaoSeta">›</div>
-</button>
-</div>
-<div class="grid2 rfcGestaoInferior">
-<div class="card">
-<div class="cardTitulo">🔥 TOP 5 MUNICÍPIOS • FOCOS</div>
-<div id="rfcGestaoTopMunicipios" class="rfcGestaoTopMunicipios">
-<div class="vazio">Carregando ranking...</div>
-</div>
-</div>
-<div class="card">
-<div class="cardTitulo">📌 LEITURA EXECUTIVA</div>
-<div id="rfcGestaoLeitura" class="rfcGestaoLeitura">
-<div class="vazio">Processando dados...</div>
-</div>
-</div>
-</div>
-</section>
-<!--=======================================================
-600 ABA OPERAÇÃO
+300 ABA OPERAÇÃO
 ========================================================-->
 <section id="aba-operacao" class="aba">
 <div class="tituloBloco">
@@ -426,37 +429,111 @@ class="mapa mapaGrande">
 <div class="vazio">Carregando informações operacionais...</div>
 </div>
 <div class="rfcOperacaoMenu">
-<button type="button" class="rfcOperacaoCard ativa" data-rfc-operacao="situacao">
-<span class="rfcOperacaoIcone">🚨</span>
-<div><strong>SITUAÇÃO</strong><small>Visão operacional</small></div>
-</button>
-<button type="button" class="rfcOperacaoCard" data-rfc-operacao="monitoramento">
-<span class="rfcOperacaoIcone">🔥</span>
-<div><strong>MONITORAMENTO</strong><small>Acompanhamento</small></div>
-</button>
-<button type="button" class="rfcOperacaoCard" data-rfc-operacao="tempo">
-<span class="rfcOperacaoIcone">🛰️</span>
-<div><strong>TEMPO REAL RO</strong><small>Últimas detecções</small></div>
-</button>
-<button type="button" class="rfcOperacaoCard" data-rfc-operacao="municipio">
-<span class="rfcOperacaoIcone">🏙️</span>
-<div><strong>POR MUNICÍPIO</strong><small>Consulta individual</small></div>
-</button>
-<button type="button" class="rfcOperacaoCard" data-rfc-operacao="eventos">
-<span class="rfcOperacaoIcone">🔥</span>
-<div><strong>EVENTOS</strong><small>Eventos de fogo</small></div>
-</button>
-<button type="button" class="rfcOperacaoCard" data-rfc-operacao="satelites">
-<span class="rfcOperacaoIcone">📡</span>
-<div><strong>SATÉLITES</strong><small>Origem das detecções</small></div>
-</button>
+<button type="button" class="rfcOperacaoCard ativa" data-rfc-operacao="situacao"><span class="rfcOperacaoIcone">🚨</span><div><strong>SITUAÇÃO</strong><small>Visão operacional</small></div></button>
+<button type="button" class="rfcOperacaoCard" data-rfc-operacao="monitoramento"><span class="rfcOperacaoIcone">🔥</span><div><strong>MONITORAMENTO</strong><small>Acompanhamento</small></div></button>
+<button type="button" class="rfcOperacaoCard" data-rfc-operacao="tempo"><span class="rfcOperacaoIcone">🛰️</span><div><strong>TEMPO REAL RO</strong><small>Últimas detecções</small></div></button>
+<button type="button" class="rfcOperacaoCard" data-rfc-operacao="municipio"><span class="rfcOperacaoIcone">🏙️</span><div><strong>POR MUNICÍPIO</strong><small>Consulta individual</small></div></button>
+<button type="button" class="rfcOperacaoCard" data-rfc-operacao="eventos"><span class="rfcOperacaoIcone">🔥</span><div><strong>EVENTOS</strong><small>Eventos de fogo</small></div></button>
+<button type="button" class="rfcOperacaoCard" data-rfc-operacao="satelites"><span class="rfcOperacaoIcone">📡</span><div><strong>SATÉLITES</strong><small>Origem das detecções</small></div></button>
 </div>
 <div id="rfcOperacaoConteudo" class="card rfcOperacaoConteudo">
 <div class="vazio">Selecione uma opção operacional.</div>
 </div>
 </section>
 <!--=======================================================
-700 ABA TERRITÓRIO
+310 ABA SITUAÇÃO
+========================================================-->
+<section id="aba-situacao" class="aba">
+<div class="tituloBloco">
+<h2>🚨 Situação Operacional</h2>
+<p>Situação consolidada dos eventos de fogo identificados.</p>
+</div>
+<div class="card">
+<div class="cardTitulo">SITUAÇÃO OPERACIONAL DOS EVENTOS DE FOGO</div>
+<div id="eventosExecutivo" class="kpis">
+<div class="vazio">Carregando situação operacional...</div>
+</div>
+</div>
+</section>
+<!--=======================================================
+320 ABA MONITORAMENTO
+========================================================-->
+<section id="aba-monitoramento" class="aba">
+<div class="tituloBloco">
+<h2>🔥 Monitoramento</h2>
+<p>Acompanhamento operacional das detecções, municípios atingidos e evolução dos focos de calor.</p>
+</div>
+<div class="card">
+<div class="cardTitulo">MONITORAMENTO DE FOCOS</div>
+<div class="vazio">Módulo preparado para integração das informações de monitoramento.</div>
+</div>
+</section>
+<!--=======================================================
+330 ABA TEMPO REAL RO
+========================================================-->
+<section id="aba-tempo" class="aba">
+<div class="tituloBloco">
+<h2>🛰️ Tempo Real • Rondônia</h2>
+<p>Últimas detecções disponíveis no banco Rondônia Focos de Calor.</p>
+</div>
+<div id="tempoRealCards" class="kpis"></div>
+<div class="card">
+<div class="cardTitulo">ÚLTIMAS DETECÇÕES</div>
+<div id="listaTempoReal"></div>
+</div>
+</section>
+<!--=======================================================
+340 ABA TEMPO REAL MUNICÍPIO
+========================================================-->
+<section id="aba-tempomunicipio" class="aba">
+<div class="tituloBloco">
+<h2>🏙️ Tempo Real • Município</h2>
+<p>Consulta individual das detecções de focos de calor por município.</p>
+</div>
+<div class="card">
+<div class="rfcBarraMunicipios">
+<input type="text" id="rfcBuscaTempoMunicipio" placeholder="🔎 Informe o município...">
+</div>
+<div id="rfcTempoMunicipioResultado">
+<div class="vazio">Selecione ou pesquise um município para visualizar as detecções.</div>
+</div>
+</div>
+</section>
+<!--=======================================================
+350 ABA EVENTOS
+========================================================-->
+<section id="aba-eventos" class="aba">
+<div class="tituloBloco">
+<h2>🔥 Eventos de Fogo</h2>
+<p>Agrupamento das detecções por evento quando essa informação estiver disponível na fonte.</p>
+</div>
+<div class="card">
+<div id="listaEventos"></div>
+</div>
+</section>
+<!--=======================================================
+360 ABA SATÉLITES
+========================================================-->
+<section id="aba-satelites" class="aba">
+<div class="tituloBloco">
+<h2>📡 Satélites e Sensores</h2>
+<p>Participação das plataformas responsáveis pelas detecções.</p>
+</div>
+<div class="grid2">
+<div class="card">
+<div class="cardTitulo">DISTRIBUIÇÃO DAS DETECÇÕES</div>
+<div class="graficoBox">
+<canvas id="graficoSatelites"></canvas>
+</div>
+</div>
+<div class="card">
+<div class="cardTitulo">SENSORES</div>
+<div id="listaSatelites"></div>
+</div>
+</div>
+</section>
+<!--=======================================================
+400 ABA TERRITÓRIO
 ========================================================-->
 <section id="aba-territorio" class="aba">
 <div class="tituloBloco">
@@ -476,37 +553,57 @@ class="mapa mapaGrande">
 <div class="vazio">Carregando indicadores territoriais...</div>
 </div>
 <div class="rfcTerritorioGrid">
-<button type="button" class="rfcTerritorioCard rfcTerritorioRO" data-rfc-territorio="estado">
-<div class="rfcTerritorioIcone">🗺️</div>
-<div class="rfcTerritorioTexto">
-<span>RONDÔNIA</span>
-<strong>MAPA ESTADUAL INTEGRADO</strong>
-<small>52 municípios • focos • UCs • Terras Indígenas</small>
-</div>
-<div class="rfcTerritorioSeta">›</div>
-</button>
-<button type="button" class="rfcTerritorioCard rfcTerritorioAmerica" data-rfc-territorio="america">
-<div class="rfcTerritorioIcone">🌎</div>
-<div class="rfcTerritorioTexto">
-<span>CONTEXTO REGIONAL</span>
-<strong>AMÉRICA DO SUL</strong>
-<small>Distribuição continental das detecções disponíveis</small>
-</div>
-<div class="rfcTerritorioSeta">›</div>
-</button>
-<button type="button" class="rfcTerritorioCard rfcTerritorioRio" data-rfc-territorio="riomadeira">
-<div class="rfcTerritorioIcone">🌊</div>
-<div class="rfcTerritorioTexto">
-<span>HIDROLOGIA</span>
-<strong>RIO MADEIRA</strong>
-<small>Níveis • cheias • secas • extremos históricos</small>
-</div>
-<div class="rfcTerritorioSeta">›</div>
-</button>
+<button type="button" class="rfcTerritorioCard rfcTerritorioRO" data-rfc-territorio="estado"><div class="rfcTerritorioIcone">🗺️</div><div class="rfcTerritorioTexto"><span>RONDÔNIA</span><strong>MAPA ESTADUAL INTEGRADO</strong><small>52 municípios • focos • UCs • Terras Indígenas</small></div><div class="rfcTerritorioSeta">›</div></button>
+<button type="button" class="rfcTerritorioCard rfcTerritorioAmerica" data-rfc-territorio="america"><div class="rfcTerritorioIcone">🌎</div><div class="rfcTerritorioTexto"><span>CONTEXTO REGIONAL</span><strong>AMÉRICA DO SUL</strong><small>Distribuição continental das detecções disponíveis</small></div><div class="rfcTerritorioSeta">›</div></button>
+<button type="button" class="rfcTerritorioCard rfcTerritorioRio" data-rfc-territorio="riomadeira"><div class="rfcTerritorioIcone">🌊</div><div class="rfcTerritorioTexto"><span>HIDROLOGIA</span><strong>RIO MADEIRA</strong><small>Níveis • cheias • secas • extremos históricos</small></div><div class="rfcTerritorioSeta">›</div></button>
 </div>
 </section>
- <!--=======================================================
-503 ABA CONTROLE
+<!--=======================================================
+410 MAPA DE FOCOS RONDÔNIA
+========================================================-->
+<section id="aba-mapa" class="aba">
+<button type="button" class="rfcBtnVoltar" onclick="rfcVoltarPara('territorio')">← TERRITÓRIO</button>
+<div class="tituloBloco">
+<h2>🗺️ Mapa de Focos • Rondônia</h2>
+<p>Visualização georreferenciada das detecções, intensidade e distribuição territorial.</p>
+</div>
+<div class="filtros">
+<select id="periodoMapa">
+<option value="1">Hoje</option>
+<option value="7" selected>Últimos 7 dias</option>
+<option value="30">Últimos 30 dias</option>
+<option value="365">Últimos 12 meses</option>
+</select>
+<button id="btnAtualizarMapa">ATUALIZAR MAPA</button>
+</div>
+<div id="mapaRO" class="mapa mapaGrande"></div>
+</section>
+<!--=======================================================
+420 ABA AMÉRICA DO SUL
+========================================================-->
+<section id="aba-america" class="aba">
+<button type="button" class="rfcBtnVoltar" onclick="rfcVoltarPara('territorio')">← TERRITÓRIO</button>
+<div class="tituloBloco">
+<h2>🌎 América do Sul</h2>
+<p>Visão continental dos focos de calor disponibilizados pela integração PROTEGE/SEDAM.</p>
+</div>
+<div id="mapaAmerica" class="mapa mapaGrande"></div>
+</section>
+<!--=======================================================
+430 ABA RIO MADEIRA
+========================================================-->
+<section id="aba-riomadeira" class="aba">
+<button type="button" class="rfcBtnVoltar" onclick="rfcVoltarPara('territorio')">← TERRITÓRIO</button>
+<div class="tituloBloco">
+<h2>🌊 Rio Madeira</h2>
+<p>Monitoramento hidrológico, cheias, secas e extremos históricos associados ao território de Rondônia.</p>
+</div>
+<div id="rfcRioMadeiraConteudo">
+<div class="vazio">Módulo preparado para receber o painel Rio Madeira.</div>
+</div>
+</section>
+<!--=======================================================
+500 ABA CONTROLE
 ========================================================-->
 <section id="aba-controle" class="aba">
 <div class="tituloBloco">
@@ -515,37 +612,17 @@ class="mapa mapaGrande">
 <p>Riscos, auditoria, sumários executivos e recursos de apoio à comunicação e apresentação dos resultados.</p>
 </div>
 <div class="rfcHubGrid rfcControleGrid">
-<button type="button" class="rfcHubCard rfcHubRoxo" data-rfc-destino="riscos">
-<div class="rfcHubIcone">🤖</div>
-<div class="rfcHubConteudo"><strong>RISCOS IA</strong><span>Priorização territorial • riscos • alertas • inteligência analítica</span></div>
-<div class="rfcHubSeta">›</div>
-</button>
-<button type="button" class="rfcHubCard rfcHubAzul" data-rfc-destino="auditoria">
-<div class="rfcHubIcone">📑</div>
-<div class="rfcHubConteudo"><strong>AUDITORIA</strong><span>Evidências • análises • acompanhamento • controle externo</span></div>
-<div class="rfcHubSeta">›</div>
-</button>
+<button type="button" class="rfcHubCard rfcHubRoxo" data-rfc-destino="riscos"><div class="rfcHubIcone">🤖</div><div class="rfcHubConteudo"><strong>RISCOS IA</strong><span>Priorização territorial • riscos • alertas • inteligência analítica</span></div><div class="rfcHubSeta">›</div></button>
+<button type="button" class="rfcHubCard rfcHubAzul" data-rfc-destino="auditoria"><div class="rfcHubIcone">📑</div><div class="rfcHubConteudo"><strong>AUDITORIA</strong><span>Evidências • análises • acompanhamento • controle externo</span></div><div class="rfcHubSeta">›</div></button>
 </div>
 <div class="card rfcControleCard">
 <div class="cardTitulo">📘 SUMÁRIOS EXECUTIVOS</div>
 <div class="rfcTextoAuxiliar">Quatro formatos de síntese para acompanhamento, apresentação e comunicação institucional.</div>
 <div class="rfcSumariosGrid">
-<button type="button" class="rfcSumarioCard" data-rfc-sumario="estadual">
-<div class="rfcSumarioIcone">🌎</div>
-<div><strong>SUMÁRIO ESTADUAL</strong><span>Visão consolidada de Rondônia</span></div>
-</button>
-<button type="button" class="rfcSumarioCard" data-rfc-sumario="municipal">
-<div class="rfcSumarioIcone">🏛️</div>
-<div><strong>SUMÁRIO MUNICIPAL</strong><span>Resumo individual por município</span></div>
-</button>
-<button type="button" class="rfcSumarioCard" data-rfc-sumario="prioritarios">
-<div class="rfcSumarioIcone">🚨</div>
-<div><strong>SUMÁRIO PRIORITÁRIOS</strong><span>Municípios que exigem maior atenção</span></div>
-</button>
-<button type="button" class="rfcSumarioCard" data-rfc-sumario="workshop">
-<div class="rfcSumarioIcone">🎤</div>
-<div><strong>SUMÁRIO WORKSHOP</strong><span>Síntese executiva para apresentação e comunicação</span></div>
-</button>
+<button type="button" class="rfcSumarioCard" data-rfc-sumario="estadual"><div class="rfcSumarioIcone">🌎</div><div><strong>SUMÁRIO ESTADUAL</strong><span>Visão consolidada de Rondônia</span></div></button>
+<button type="button" class="rfcSumarioCard" data-rfc-sumario="municipal"><div class="rfcSumarioIcone">🏛️</div><div><strong>SUMÁRIO MUNICIPAL</strong><span>Resumo individual por município</span></div></button>
+<button type="button" class="rfcSumarioCard" data-rfc-sumario="prioritarios"><div class="rfcSumarioIcone">🚨</div><div><strong>SUMÁRIO PRIORITÁRIOS</strong><span>Municípios que exigem maior atenção</span></div></button>
+<button type="button" class="rfcSumarioCard" data-rfc-sumario="workshop"><div class="rfcSumarioIcone">🎤</div><div><strong>SUMÁRIO WORKSHOP</strong><span>Síntese executiva para apresentação e comunicação</span></div></button>
 </div>
 </div>
 <div class="card rfcControleCard">
@@ -560,7 +637,33 @@ class="mapa mapaGrande">
 </div>
 </section>
 <!--=======================================================
-800 ABA FONTES
+510 ABA RISCOS IA
+========================================================-->
+<section id="aba-riscos" class="aba">
+<button type="button" class="rfcBtnVoltar" onclick="rfcVoltarPara('controle')">← CONTROLE</button>
+<div class="tituloBloco">
+<h2>🤖 Riscos IA</h2>
+<p>Análises gerenciais, priorização territorial e apoio inteligente à tomada de decisão.</p>
+</div>
+<div id="rfcRiscosIAConteudo">
+<div class="vazio">Módulo de Riscos IA preparado para integração.</div>
+</div>
+</section>
+<!--=======================================================
+520 ABA AUDITORIA
+========================================================-->
+<section id="aba-auditoria" class="aba">
+<button type="button" class="rfcBtnVoltar" onclick="rfcVoltarPara('controle')">← CONTROLE</button>
+<div class="tituloBloco">
+<h2>📑 Auditoria</h2>
+<p>Evidências, análises, acompanhamento e instrumentos relacionados ao controle externo.</p>
+</div>
+<div id="rfcAuditoriaConteudo">
+<div class="vazio">Módulo de Auditoria preparado para integração.</div>
+</div>
+</section>
+<!--=======================================================
+600 ABA FONTES
 ========================================================-->
 <section id="aba-fontes" class="aba">
 <div class="tituloBloco">
@@ -624,388 +727,40 @@ class="mapa mapaGrande">
 </div>
 </section>
 <!--=======================================================
-100 ABA MUNICÍPIOS
+610 ABA PROTEGE
 ========================================================-->
-<button type="button" class="rfcBtnVoltar" onclick="rfcVoltarPara('gestao')">← GESTÃO</button>
-<section id="aba-municipios" class="aba">
+<section id="aba-fonte" class="aba">
+<button type="button" class="rfcBtnVoltar" onclick="rfcVoltarPara('fontes')">← FONTES</button>
 <div class="tituloBloco">
-<h2>🏛️ Municípios de Rondônia</h2>
-<p>Acompanhamento das respostas municipais, planos de ação, dilação de prazo e pendências relacionadas ao combate às queimadas.</p>
-</div>
-<div id="rfcMunicipiosKPIs" class="kpis"></div>
-<div class="card">
-<div class="cardTitulo">📋 TABELA GERAL DOS 52 MUNICÍPIOS</div>
-<div class="rfcBarraMunicipios">
-<select id="rfcFiltroMunicipioSituacao">
-<option value="">TODOS OS MUNICÍPIOS</option>
-<option value="VERDE">🟢 PLANO DE AÇÃO</option>
-<option value="AMARELO">🟡 DILAÇÃO DE PRAZO</option>
-<option value="VERMELHO">🔴 SEM RESPOSTA</option>
-</select>
-<input type="text" id="rfcBuscaMunicipio" placeholder="🔎 Pesquisar município...">
-</div>
-<div id="rfcTabelaMunicipios"></div>
-</div>
-<div class="card">
-<div class="rfcCabecalhoMapa">
-<div>
-<div class="cardTitulo">🗺️ MAPA MUNICIPAL</div>
-<div class="rfcSubtitulo">Situação dos Planos de Ação dos 52 Municípios</div>
-</div>
-<div class="rfcFiltroMapa">
-<button data-rfc-mapa="TODOS">TODOS</button>
-<button data-rfc-mapa="VERDE">🟢 COM PLANO</button>
-<button data-rfc-mapa="AMARELO">🟡 DILAÇÃO</button>
-<button data-rfc-mapa="VERMELHO">🔴 SEM RESPOSTA</button>
-</div>
-</div>
-<div id="rfcMapaMunicipios"></div>
-<div class="rfcLegendaMunicipal">
-<div><span class="rfcCor rfcVerde"></span>Plano de Ação Apresentado</div>
-<div><span class="rfcCor rfcAmarelo"></span>Dilação de Prazo</div>
-<div><span class="rfcCor rfcVermelho"></span>Sem Resposta</div>
-</div>
-<div class="fonteLinha">Fonte: Ofício Circular n. 16/2026/GABPRES/TCERO • TCE-RO</div>
+<h2>🧭 PROTEGE • SEDAM</h2>
+<p>Origem, integridade, atualização e rastreabilidade dos dados utilizados pelo painel.</p>
 </div>
 <div class="grid2">
 <div class="card">
-<div class="cardTitulo">📊 DISTRIBUIÇÃO DAS RESPOSTAS</div>
-<div class="graficoBox">
-<canvas id="rfcGraficoMunicipiosResposta"></canvas>
-</div>
+<div class="cardTitulo">FONTE OPERACIONAL</div>
+<div id="fonteInfo"></div>
 </div>
 <div class="card">
-<div class="cardTitulo">📈 ESTATÍSTICAS MUNICIPAIS</div>
-<div id="rfcEstatisticasMunicipais"></div>
+<div class="cardTitulo">HISTÓRICO DE SINCRONIZAÇÃO</div>
+<div id="syncInfo"></div>
 </div>
 </div>
-<div class="card">
-<div class="cardTitulo">🔥 RANKING DE FOCOS DE CALOR</div>
-<div class="rfcBarraMunicipios">
-<input type="text" id="rfcBuscaFocosMunicipio" placeholder="🔎 Pesquisar município...">
-<select id="rfcPeriodoFocosMunicipio">
-<option value="1">Hoje</option>
-<option value="7" selected>7 dias</option>
-<option value="30">30 dias</option>
-</select>
-</div>
-<div id="rfcRankingFocosMunicipios"></div>
-</div>
-</section>
-
-<!--=======================================================
-200 ABA ESTADO
-========================================================-->
-<section id="aba-estado" class="aba">
-<div class="tituloBloco">
-<h2>🌎 Monitoramento Estadual</h2>
-<p>Cadastro, indicadores institucionais e acompanhamento das ações estaduais relacionadas ao combate às queimadas.</p>
-</div>
-<div id="rfcEstadoKPIs" class="kpis"></div>
-<div class="card">
-<div class="cardTitulo">CADASTRO ESTADUAL</div>
-<div id="rfcCadastroEstado"></div>
-</div>
-<div class="card">
-<div class="cardTitulo">CADASTRAR ÓRGÃO ESTADUAL</div>
-<div id="rfcFormularioEstado"></div>
-</div>
-<div class="card">
-<div class="cardTitulo">INDICADORES ESTADUAIS</div>
-<div id="rfcIndicadoresEstado"></div>
-</div>
-<!--=======================================================
-210 MAPA ESTADUAL INTEGRADO
-========================================================-->
-<div class="card rfcMapaEstadoCard">
-<div class="rfcMapaEstadoCabecalho">
-<div>
-<div class="cardTitulo">🗺️ MAPA ESTADUAL INTEGRADO</div>
-<div class="rfcTextoAuxiliar">Municípios • Focos de calor • Unidades de Conservação • Terras Indígenas</div>
-</div>
-<button id="rfcBtnToggleMapaEstado" class="rfcBtnMapaEstado" type="button">🗺️ EXIBIR MAPA</button>
-</div>
-<div id="rfcMapaEstadoConteudo" class="rfcMapaEstadoConteudo">
-<div class="rfcMapaEstadoToolbar">
-<div class="rfcMapaEstadoPeriodo">
-<span>PERÍODO DOS FOCOS</span>
-<button type="button" data-rfc-mapaestado-dias="1">24H</button>
-<button type="button" data-rfc-mapaestado-dias="7" class="ativa">7 DIAS</button>
-<button type="button" data-rfc-mapaestado-dias="30">30 DIAS</button>
-</div>
-<div class="rfcMapaEstadoCamadasRapidas">
-<button type="button" data-rfc-layer="municipios" class="ativa">🏛️ MUNICÍPIOS</button>
-<button type="button" data-rfc-layer="focos" class="ativa">🔥 FOCOS</button>
-<button type="button" data-rfc-layer="ucs">🌳 UCs</button>
-<button type="button" data-rfc-layer="tis">🪶 TIs</button>
-</div>
-</div>
-<div id="rfcMapaEstadoKPIs" class="rfcMapaEstadoKPIs"></div>
-<div id="rfcMapaEstado"></div>
-<div class="rfcMapaEstadoLegenda">
-<div><span class="rfcMapaLegendaCor" style="background:#dcfce7"></span>1–10 focos</div>
-<div><span class="rfcMapaLegendaCor" style="background:#fef3c7"></span>11–50 focos</div>
-<div><span class="rfcMapaLegendaCor" style="background:#fdba74"></span>51–100 focos</div>
-<div><span class="rfcMapaLegendaCor" style="background:#fb923c"></span>101–250 focos</div>
-<div><span class="rfcMapaLegendaCor" style="background:#ef4444"></span>251–500 focos</div>
-<div><span class="rfcMapaLegendaCor" style="background:#991b1b"></span>501+ focos</div>
-</div>
-<div class="fonteLinha">Fontes: PROTEGE/SEDAM • Base Municipal de Rondônia • CNUC/TCGeo • Terras Indígenas</div>
-</div>
-</div>
-</section>
-<!-- =====================================================
-004 TEMPO REAL
-===================================================== -->
-
-<section
-id="aba-tempo"
-class="aba">
-
-<div class="tituloBloco">
-
-<h2>
-Tempo Real
-</h2>
-
-<p>
-Últimas detecções disponíveis no banco
-Rondônia Focos de Calor.
-</p>
-
-</div>
-
-
-<div
-id="tempoRealCards"
-class="kpis">
-</div>
-
-
-<div class="card">
-
-<div class="cardTitulo">
-ÚLTIMAS DETECÇÕES
-</div>
-
-<div id="listaTempoReal">
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-005 EVENTOS
-===================================================== -->
-
-<section
-id="aba-eventos"
-class="aba">
-
-<div class="tituloBloco">
-
-<h2>
-Eventos de Fogo
-</h2>
-
-<p>
-Agrupamento das detecções por evento,
-quando essa informação estiver disponível na fonte.
-</p>
-
-</div>
-
-
-<div class="card">
-
-<div id="listaEventos">
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-006 SATÉLITES
-===================================================== -->
-
-<section
-id="aba-satelites"
-class="aba">
-
-<div class="tituloBloco">
-
-<h2>
-Satélites e Sensores
-</h2>
-
-<p>
-Participação das plataformas responsáveis
-pelas detecções.
-</p>
-
-</div>
-
-
-<div class="grid2">
-
-<div class="card">
-
-<div class="cardTitulo">
-DISTRIBUIÇÃO DAS DETECÇÕES
-</div>
-
-<div class="graficoBox">
-
-<canvas id="graficoSatelites">
-</canvas>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<div class="cardTitulo">
-SENSORES
-</div>
-
-<div id="listaSatelites">
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-007 AMÉRICA DO SUL
-===================================================== -->
-<button type="button" class="rfcBtnVoltar" onclick="rfcVoltarPara('territorio')">← TERRITÓRIO</button>
-<section
-id="aba-america"
-class="aba">
-
-<div class="tituloBloco">
-
-<h2>
-América do Sul
-</h2>
-
-<p>
-Visão continental dos focos de calor disponibilizados
-pela integração PROTEGE/SEDAM.
-</p>
-
-</div>
-
-
-<div
-id="mapaAmerica"
-class="mapa mapaGrande">
-</div>
-
-</section>
-
-
-<!-- =====================================================
-008 PROTEGE
-===================================================== -->
-
-<section
-id="aba-fonte"
-class="aba">
-
-<div class="tituloBloco">
-
-<h2>
-PROTEGE • SEDAM
-</h2>
-
-<p>
-Origem, integridade, atualização e rastreabilidade
-dos dados utilizados pelo painel.
-</p>
-
-</div>
-
-
-<div class="grid2">
-
-<div class="card">
-
-<div class="cardTitulo">
-FONTE OPERACIONAL
-</div>
-
-<div id="fonteInfo">
-</div>
-
-</div>
-
-
-<div class="card">
-
-<div class="cardTitulo">
-HISTÓRICO DE SINCRONIZAÇÃO
-</div>
-
-<div id="syncInfo">
-</div>
-
-</div>
-
-</div>
-
-
 <div class="card aviso">
-
-<strong>
-NOTA DE INTEGRIDADE:
-</strong>
-
-Este painel não utiliza dados simulados para preencher
-indicadores operacionais.
-
-Os valores serão apresentados somente após a ingestão
-válida e rastreável das informações provenientes das
-fontes integradas.
-
+<strong>NOTA DE INTEGRIDADE:</strong>
+Este painel não utiliza dados simulados para preencher indicadores operacionais. Os valores serão apresentados somente após a ingestão válida e rastreável das informações provenientes das fontes integradas.
 </div>
-
 </section>
-
-
 </main>
-
-
-<!-- =====================================================
-RODAPÉ
-===================================================== -->
-
-<footer>
-
-Tribunal de Contas do Estado de Rondônia
-•
-Projeto RondoniaFocosdeCalor
-•
-Fonte operacional: PROTEGE/SEDAM
-
-</footer>
-
-
+<!--=======================================================
+700 RODAPÉ
+========================================================-->
+<footer>Tribunal de Contas do Estado de Rondônia • Projeto RondoniaFocosdeCalor • Fonte operacional: PROTEGE/SEDAM</footer>
 </div>
-
-
-<script src="js/rfc-legado.js?v=20260821-1"></script>
-<script src="js/rondonia-focos-calor.js?v=20260820-1"></script>
-
-
+<!--=======================================================
+800 SCRIPTS
+========================================================-->
+<script src="js/rfc-legado.js?v=20260823-1"></script>
+<script src="js/rondonia-focos-calor.js?v=20260823-1"></script>
 </body>
 </html>
+
