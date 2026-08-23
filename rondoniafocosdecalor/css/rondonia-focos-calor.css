@@ -580,13 +580,6 @@ LEGENDA MUNICIPAL • MAPA EXECUTIVO
 .legendaTitulo{font-size:9px;font-weight:900;margin-bottom:4px;border-bottom:1px solid #e2e8f0;padding-bottom:4px}
 .legendaQuadrado{display:inline-block;width:13px;height:11px;border:1px solid #94a3b8;border-radius:2px;margin-right:6px;vertical-align:-1px}
 .legendaNota{margin-top:5px;padding-top:5px;border-top:1px solid #e2e8f0;color:#64748b;font-size:7px;font-weight:700}
-/*=========================================================
-RÓTULOS MUNICIPAIS • MAPA EXECUTIVO
-=========================================================*/
-.rotuloMunicipioWrapper{background:transparent;border:0}
-.rotuloMunicipio{width:112px;text-align:center;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:2px}
-.rotuloMunicipio span{max-width:108px;font-size:8px;line-height:1.05;font-weight:800;color:#0f172a;text-shadow:0 1px 2px #fff,1px 0 2px #fff,-1px 0 2px #fff;white-space:normal}
-.rotuloMunicipio strong{min-width:25px;height:22px;padding:0 5px;border:2px solid rgba(255,255,255,.95);border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#111827;box-shadow:0 2px 5px rgba(15,23,42,.18)}
 
 /*=========================================================
 MÓDULO MUNICÍPIOS
