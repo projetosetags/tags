@@ -30,3 +30,19 @@ window.clientQueimadas = supabase.createClient(
     }
 )
 
+/*=========================================================
+SEPAT • CARREGAR CORREÇÃO DE VIGÊNCIA
+=========================================================*/
+;(function carregarCorrecaoVigenciaSepat(){
+function carregar(){
+if(!document.getElementById('app-sepat')&&!/\/sepatindex\.html$/i.test(location.pathname))return
+if(document.getElementById('scriptSepatVigencia'))return
+let s=document.createElement('script')
+s.id='scriptSepatVigencia'
+s.src='js/sepat-vigencia.js?v=20260902-1'
+s.async=true
+document.body.appendChild(s)
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(carregar,0),{once:true})
+else setTimeout(carregar,0)
+})()
