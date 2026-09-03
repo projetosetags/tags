@@ -58,12 +58,24 @@ class="login-voltar-sepat">
 =========================================================-->
 <section id="app-sepat" class="app-sepat hidden">
 <header class="topo-sepat">
-<div>
+<div class="topo-principal-sepat">
+<div class="topo-esquerda-sepat">
+<div class="titulo-area-sepat">
 <div class="titulo-sepat">Painel de Acompanhamento TAG SEPAT-RO 2026</div>
 <div id="sepat-user-info" class="usuario-sepat">-</div>
 </div>
-<div class="topo-acoes-sepat">
-
+</div>
+<div class="topo-botoes-sepat">
+<button id="btnBackupSepat" class="btn-topo-sepat hidden" onclick="backupSepat()">BACKUP Sepat</button>
+<div id="btn-monitoramento" style="display:none">
+<a href="https://projetosetags.github.io/tags/monitoramento/monitoramento.html" target="_blank" class="btn-topo-sepat">
+<span>📊</span>
+<span>Monitoramento</span>
+</a>
+</div>
+<button class="btn-topo-sepat sair" onclick="logoutSepat()">Sair</button>
+</div>
+</div>
 <div id="miniKpisSepat" class="mini-kpis-topo-sepat hidden">
 <div class="mini-kpi-topo-sepat azul">
 <span id="miniItensSepat">0</span>
@@ -78,23 +90,6 @@ class="login-voltar-sepat">
 <small>PRODUTOS</small>
 </div>
 </div>
-
-<button id="btnBackupSepat" class="btn-topo-sepat hidden" style="flex-shrink:0" onclick="backupSepat()">
-BACKUP Sepat
-</button>
-
-<div id="btn-monitoramento" style="display:none;flex-shrink:0">
-<a href="https://projetosetags.github.io/tags/monitoramento/monitoramento.html" target="_blank" class="btn-topo-sepat" style="display:flex;align-items:center;gap:6px">
-<span>📊</span>
-<span>Monitoramento</span>
-</a>
-</div>
-
-<button class="btn-topo-sepat sair" onclick="logoutSepat()">
-Sair
-</button>
-
-</div>
 </header>
 <nav class="tabs-sepat">
 <button id="tab-dashboard" onclick="switchSepatTab('dashboard')" class="tab-sepat tab-active">📊<span>Dashboard</span></button>
@@ -103,10 +98,7 @@ Sair
 <button id="tab-graficos" onclick="switchSepatTab('graficos')" class="tab-sepat">📈<span>Gráficos</span></button>
 <button id="tab-concluidos" onclick="switchSepatTab('concluidos')" class="tab-sepat">🏆<span>100% Cumpridos</span></button>
 <button id="tab-perfis" onclick="switchSepatTab('perfis')" class="tab-sepat hidden">👥<span>Perfis SEPAT</span></button>
-<button id="tab-perfistce" class="tab-sepat hidden" onclick="switchSepatTab('perfistce')">
-<div>🛡️</div>
-<span>PERFIS TCE-RO</span>
-</button>
+<button id="tab-perfistce" onclick="switchSepatTab('perfistce')" class="tab-sepat hidden">🛡️<span>PERFIS TCE-RO</span></button>
 </nav>
 <main class="main-sepat">
 <!--=========================================================
