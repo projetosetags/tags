@@ -5,7 +5,7 @@ Correção de exibição, filtro e relatórios
 (function(){
 'use strict'
 
-const VERSAO_VIGENCIA_SEPAT='20260902-2'
+const VERSAO_VIGENCIA_SEPAT='20260902-3'
 
 function dataIsoSepat(v){
 if(v===null||v===undefined)return''
@@ -37,6 +37,73 @@ return String(v===null||v===undefined?'':v)
 .replace(/'/g,'&#039;')
 }
 
+/*=========================================================
+CASOS ESPECIAIS DE VIGÊNCIA • SEM INVENTAR DATAS
+=========================================================*/
+const CASOS_ESPECIAIS_VIGENCIA_SEPAT={
+'P02:71':{
+tipo:'sem_inicio',
+inicioTexto:'NÃO INFORMADO NO PLANO',
+nota:'O Plano/TAG não informa data inicial para este subitem. Encerramento previsto: 31/08/2025.'
+},
+'P02:72':{
+tipo:'sem_inicio',
+inicioTexto:'NÃO INFORMADO NO PLANO',
+nota:'O Plano/TAG não informa data inicial para este subitem. Encerramento previsto: 30/06/2025.'
+},
+'P02:73':{
+tipo:'condicional',
+fimTexto:'CONDICIONAL • 60 DIAS APÓS O TERMO DE DOAÇÃO',
+nota:'O Plano/TAG condiciona o encerramento ao termo de doação, com previsão de regularização e incorporação em 60 dias.'
+},
+'GR05:95':{
+tipo:'condicional',
+inicioTexto:'APÓS PROVOCAÇÃO DO MUNICÍPIO',
+fimTexto:'PRAZO MÉDIO • ATÉ 90 DIAS',
+nota:'Conforme Observação 19, a ação depende de provocação do Município. O processo de doação até a apresentação do projeto à ALE/RO é, em média, de até 90 dias.'
+},
+'GR05:96':{
+tipo:'condicional',
+inicioTexto:'APÓS PROVOCAÇÃO DO MUNICÍPIO',
+fimTexto:'PRAZO MÉDIO • ATÉ 90 DIAS',
+nota:'Conforme Observação 19, a ação depende de provocação do Município. O processo de doação até a apresentação do projeto à ALE/RO é, em média, de até 90 dias.'
+},
+'GR05:97':{
+tipo:'condicional',
+inicioTexto:'APÓS PROVOCAÇÃO DO MUNICÍPIO',
+fimTexto:'PRAZO MÉDIO • ATÉ 90 DIAS',
+nota:'Conforme Observação 19, a ação depende de provocação do Município. O processo de doação até a apresentação do projeto à ALE/RO é, em média, de até 90 dias.'
+}
+}
+
+function chaveCasoEspecialVigenciaSepat(i){
+return String(i?.siglaitem||'').trim().toUpperCase()+':'+String(Number(i?.numsubitem||0))
+}
+
+function obterCasoEspecialVigenciaSepat(i){
+return CASOS_ESPECIAIS_VIGENCIA_SEPAT[chaveCasoEspecialVigenciaSepat(i)]||null
+}
+
+function vigenciaInicioExibicaoSepat(i){
+let caso=obterCasoEspecialVigenciaSepat(i)
+if(caso?.inicioTexto)return caso.inicioTexto
+return formatarVigenciaSepat(i?.data_inicio)
+}
+
+function vigenciaFimExibicaoSepat(i){
+let caso=obterCasoEspecialVigenciaSepat(i)
+if(caso?.fimTexto)return caso.fimTexto
+return formatarVigenciaSepat(i?.data_fim)
+}
+
+function vigenciaNotaExibicaoSepat(i){
+return obterCasoEspecialVigenciaSepat(i)?.nota||''
+}
+
+function vigenciaEhEspecialSepat(i){
+return!!obterCasoEspecialVigenciaSepat(i)
+}
+
 function obterFiltrosVigenciaSepat(){
 return{
 inicio:String(document.getElementById('filtroVigenciaInicioSepat')?.value||''),
@@ -46,8 +113,10 @@ fim:String(document.getElementById('filtroVigenciaFimSepat')?.value||'')
 
 function obterLimitesVigenciaSepat(){
 let lista=[...(typeof sepatData!=='undefined'?(sepatData||[]):[])]
-let inicios=lista.map(i=>dataIsoSepat(i.data_inicio)).filter(Boolean).sort()
-let finais=lista.map(i=>dataIsoSepat(i.data_fim)).filter(Boolean).sort()
+// Casos condicionais/incompletos não entram nos extremos cronológicos.
+let regulares=lista.filter(i=>!vigenciaEhEspecialSepat(i))
+let inicios=regulares.map(i=>dataIsoSepat(i.data_inicio)).filter(Boolean).sort()
+let finais=regulares.map(i=>dataIsoSepat(i.data_fim)).filter(Boolean).sort()
 let primeira=inicios.length?inicios[0]:''
 let ultima=finais.length?finais[finais.length-1]:(inicios.length?inicios[inicios.length-1]:'')
 return{primeira,ultima}
@@ -101,11 +170,13 @@ renderTabelaSepat()
 
 function registroDentroVigenciaSepat(i,inicioFiltro,fimFiltro){
 if(!inicioFiltro&&!fimFiltro)return true
+// Não inferir intervalo cronológico para registros condicionais ou com uma das datas ausentes.
+if(vigenciaEhEspecialSepat(i))return false
 let inicio=dataIsoSepat(i.data_inicio)
 let fim=dataIsoSepat(i.data_fim)
-if(inicioFiltro&&fim&&fim<inicioFiltro)return false
-if(fimFiltro&&inicio&&inicio>fimFiltro)return false
-if(!inicio&&!fim)return false
+if(!inicio||!fim)return false
+if(inicioFiltro&&fim<inicioFiltro)return false
+if(fimFiltro&&inicio>fimFiltro)return false
 return true
 }
 
@@ -124,7 +195,10 @@ i.produto,
 i.cargo,
 i.setor,
 i.data_inicio,
-i.data_fim
+i.data_fim,
+vigenciaInicioExibicaoSepat(i),
+vigenciaFimExibicaoSepat(i),
+vigenciaNotaExibicaoSepat(i)
 ].join(' ').toLowerCase().includes(busca))
 }
 if(ocultar100){
@@ -154,6 +228,9 @@ style.textContent=`
 .btn-periodo-total-sepat{height:48px;padding:0 13px;border:1px solid #93c5fd;border-radius:14px;background:linear-gradient(135deg,#0f5fd7,#2563eb);color:#fff;font-size:9px;font-weight:1000;cursor:pointer;white-space:nowrap}
 .vigencia-sepat{min-width:92px!important;max-width:150px!important;text-align:center!important;white-space:normal!important;font-size:9px!important;font-weight:900!important;background:#f8fbff!important}
 .vigencia-sepat.fim-texto{text-align:left!important;line-height:1.35!important}
+.vigencia-especial-sepat{background:#fff7ed!important;color:#9a3412!important;border-left:2px solid #f97316!important;border-right:2px solid #f97316!important;line-height:1.35!important}
+.vigencia-sem-inicio-sepat{background:#f8fafc!important;color:#475569!important;border-left:2px solid #94a3b8!important;line-height:1.35!important}
+.nota-filtro-vigencia-sepat{width:100%;font-size:8px;font-weight:800;color:#64748b;line-height:1.3;padding-left:4px}
 .tabela-sepat th:nth-child(5),.tabela-sepat td:nth-child(5){width:92px!important;min-width:92px!important;max-width:150px!important;text-align:center!important;white-space:normal!important}
 .tabela-sepat th:nth-child(6),.tabela-sepat td:nth-child(6){width:98px!important;min-width:98px!important;max-width:170px!important;text-align:center!important;white-space:normal!important}
 .tabela-sepat th:nth-child(n+7),.tabela-sepat td:nth-child(n+7){width:52px!important;min-width:52px!important;max-width:52px!important;padding:2px!important;text-align:center!important;font-size:9px!important;font-weight:1000!important}
@@ -205,6 +282,7 @@ box.innerHTML=`
 <button id="btnPeriodoCompletoVigenciaSepat" type="button" class="btn-periodo-total-sepat">PERÍODO COMPLETO</button>
 </div>
 <button id="btnLimparVigenciaSepat" type="button" class="btn-modo-sepat" style="height:48px;padding:0 14px">LIMPAR DATAS</button>
+<div class="nota-filtro-vigencia-sepat">Registros condicionais ou sem uma das datas não entram no filtro cronológico nem definem a primeira/última data.</div>
 `
 busca.insertAdjacentElement('afterend',box)
 document.getElementById('filtroVigenciaInicioSepat').addEventListener('change',()=>renderTabelaSepat())
@@ -250,8 +328,15 @@ const mesAtual=mesesOrdem[new Date().getMonth()]
 const indiceAtual=mesesOrdem.indexOf(mesAtual)
 tbody.innerHTML=lista.map(i=>{
 let total=getTotalSepat(i)
+let casoEspecial=obterCasoEspecialVigenciaSepat(i)
 let fimOriginal=String(i.data_fim||'').trim()
 let fimEhData=!!dataIsoSepat(fimOriginal)
+let inicioExibicao=vigenciaInicioExibicaoSepat(i)
+let fimExibicao=vigenciaFimExibicaoSepat(i)
+let notaVigencia=vigenciaNotaExibicaoSepat(i)
+let classeInicio=casoEspecial?(casoEspecial.tipo==='sem_inicio'?'vigencia-sem-inicio-sepat':'vigencia-especial-sepat'):''
+let classeFim=casoEspecial?'vigencia-especial-sepat':(fimOriginal&&!fimEhData?'fim-texto':'')
+let tituloVigencia=escaparHtmlVigenciaSepat(notaVigencia)
 let html=`
 <tr>
 <td class="col-subitem" style="width:340px;min-width:340px;max-width:340px;font-size:10px;font-weight:900;line-height:1.5;white-space:normal;word-break:break-word;vertical-align:top;">
@@ -266,11 +351,11 @@ ${escaparHtmlVigenciaSepat(i.produto||'-')}
 <td style="font-size:9px;line-height:1.35;max-width:130px;vertical-align:top;">
 ${escaparHtmlVigenciaSepat(i.cargo||i.setor||'-')}
 </td>
-<td class="vigencia-sepat">
-${escaparHtmlVigenciaSepat(formatarVigenciaSepat(i.data_inicio))}
+<td class="vigencia-sepat ${classeInicio}" title="${tituloVigencia}">
+${escaparHtmlVigenciaSepat(inicioExibicao)}
 </td>
-<td class="vigencia-sepat ${fimOriginal&&!fimEhData?'fim-texto':''}">
-${escaparHtmlVigenciaSepat(formatarVigenciaSepat(i.data_fim))}
+<td class="vigencia-sepat ${classeFim}" title="${tituloVigencia}">
+${escaparHtmlVigenciaSepat(fimExibicao)}
 </td>
 `
 MESES_SEPAT.filter(m=>mesesOrdem.indexOf(m)<=indiceAtual).forEach(mes=>{
@@ -318,7 +403,7 @@ ${lista.map(i=>`
 <div class="modal-text-sepat"><b>Subitem:</b> ${escaparHtmlVigenciaSepat(i.subitem||'-')}</div>
 <div class="modal-text-sepat"><b>Produto:</b> ${escaparHtmlVigenciaSepat(i.produto||'-')}</div>
 <div class="modal-text-sepat"><b>Responsável:</b> ${escaparHtmlVigenciaSepat(i.cargo||i.setor||'-')}</div>
-<div class="vigencia-modal-sepat"><b>Vigência:</b> ${escaparHtmlVigenciaSepat(formatarVigenciaSepat(i.data_inicio))} <b>até</b> ${escaparHtmlVigenciaSepat(formatarVigenciaSepat(i.data_fim))}</div>
+<div class="vigencia-modal-sepat"><b>Vigência:</b> ${escaparHtmlVigenciaSepat(vigenciaInicioExibicaoSepat(i))} <b>até</b> ${escaparHtmlVigenciaSepat(vigenciaFimExibicaoSepat(i))}${vigenciaNotaExibicaoSepat(i)?`<br><span style="font-size:10px;font-weight:700;color:#64748b">${escaparHtmlVigenciaSepat(vigenciaNotaExibicaoSepat(i))}</span>`:''}</div>
 <div class="modal-grid-sepat">
 ${MESES_SEPAT.slice(0,Math.min(new Date().getMonth()+1,12)).map(m=>`<div class="modal-mes-sepat"><div>${m.toUpperCase()}</div><div>${Number(i[m]||0)}%</div></div>`).join('')}
 </div>
@@ -344,8 +429,8 @@ String(typeof modoTabelaSepat!=='undefined'&&modoTabelaSepat==='item'?(i.item||'
 String(typeof modoTabelaSepat!=='undefined'&&modoTabelaSepat==='item'?(i.descricaoitem||'-'):(i.subitem||'-')),
 String(i.produto||'-'),
 String(i.cargo||i.setor||'-'),
-formatarVigenciaSepat(i.data_inicio),
-formatarVigenciaSepat(i.data_fim)
+vigenciaInicioExibicaoSepat(i),
+vigenciaFimExibicaoSepat(i)
 ]
 mesesAtivos.forEach(m=>linha.push(Number(i[m.campo]||0)+'%'))
 linha.push(getTotalSepat(i)+'%')
@@ -392,8 +477,8 @@ let linhas=lista.map(i=>`
 <td>${escaparHtmlVigenciaSepat(typeof modoTabelaSepat!=='undefined'&&modoTabelaSepat==='item'?(i.descricaoitem||'-'):(i.subitem||'-'))}</td>
 <td>${escaparHtmlVigenciaSepat(i.produto||'-')}</td>
 <td>${escaparHtmlVigenciaSepat(i.cargo||i.setor||'-')}</td>
-<td align="center">${escaparHtmlVigenciaSepat(formatarVigenciaSepat(i.data_inicio))}</td>
-<td>${escaparHtmlVigenciaSepat(formatarVigenciaSepat(i.data_fim))}</td>
+<td align="center">${escaparHtmlVigenciaSepat(vigenciaInicioExibicaoSepat(i))}</td>
+<td>${escaparHtmlVigenciaSepat(vigenciaFimExibicaoSepat(i))}</td>
 <td align="center">${getTotalSepat(i)}%</td>
 </tr>`).join('')
 let html=`
