@@ -350,7 +350,6 @@ else view.classList.remove('tabela-item-sepat')
 let tbody=document.getElementById('tbodySepat')
 if(!tbody)return
 let lista=obterListaMonitoramentoVigenciaSepat()
-atualizarMiniKPIsPeriodoSepat(lista)
 const mesesOrdem=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
 const mesAtual=mesesOrdem[new Date().getMonth()]
 const indiceAtual=mesesOrdem.indexOf(mesAtual)
@@ -407,7 +406,7 @@ try{ocultas=JSON.parse(localStorage.getItem('sepatColunasOcultas')||'[]')}catch(
 ocultas.forEach(mes=>{
 document.querySelectorAll('.mes-'+mes).forEach(el=>{el.style.display='none'})
 })
-if(typeof atualizarMiniKPIsSepat==='function')atualizarMiniKPIsSepat()
+atualizarMiniKPIsPeriodoSepat(lista)
 }
 
 function abrirModalComVigenciaSepat(chave){
