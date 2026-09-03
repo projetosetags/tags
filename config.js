@@ -39,7 +39,7 @@ if(!document.getElementById('app-sepat')&&!/\/sepatindex\.html$/i.test(location.
 if(document.getElementById('scriptSepatVigencia'))return
 let s=document.createElement('script')
 s.id='scriptSepatVigencia'
-s.src='js/sepat-vigencia.js?v=20260902-1'
+s.src='js/sepat-vigencia.js?v=20260902-3'
 s.async=true
 document.body.appendChild(s)
 }
