@@ -183,6 +183,9 @@ renderTabelaSepat()
 
 function registroDentroVigenciaSepat(i,inicioFiltro,fimFiltro){
 if(!inicioFiltro&&!fimFiltro)return true
+let limites=obterLimitesVigenciaSepat()
+let periodoCompleto=inicioFiltro===limites.primeira&&fimFiltro===limites.ultima
+if(periodoCompleto)return true
 if(vigenciaEhEspecialSepat(i))return false
 let inicio=dataIsoSepat(i.data_inicio)
 let fim=dataIsoSepat(i.data_fim)
