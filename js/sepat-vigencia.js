@@ -589,10 +589,10 @@ renderTabelaSepat()
 console.log('SEPAT vigência início/fim ativa:',VERSAO_VIGENCIA_SEPAT)
 }
 
+window.toggleCabecalhoSepat=toggleCabecalhoSepat
 if(document.readyState==='loading'){
 document.addEventListener('DOMContentLoaded',()=>setTimeout(instalarCorrecaoVigenciaSepat,80),{once:true})
 }else{
 setTimeout(instalarCorrecaoVigenciaSepat,80)
 }
-
 })()
