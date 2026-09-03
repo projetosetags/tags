@@ -170,13 +170,12 @@ renderTabelaSepat()
 
 function registroDentroVigenciaSepat(i,inicioFiltro,fimFiltro){
 if(!inicioFiltro&&!fimFiltro)return true
-// Não inferir intervalo cronológico para registros condicionais ou com uma das datas ausentes.
 if(vigenciaEhEspecialSepat(i))return false
 let inicio=dataIsoSepat(i.data_inicio)
 let fim=dataIsoSepat(i.data_fim)
 if(!inicio||!fim)return false
-if(inicioFiltro&&fim<inicioFiltro)return false
-if(fimFiltro&&inicio>fimFiltro)return false
+if(inicioFiltro&&inicio<inicioFiltro)return false
+if(fimFiltro&&fim>fimFiltro)return false
 return true
 }
 
