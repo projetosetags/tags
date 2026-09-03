@@ -222,6 +222,19 @@ lista=lista.filter(i=>registroDentroVigenciaSepat(i,filtros.inicio,filtros.fim))
 return lista
 }
 
+function atualizarMiniKPIsPeriodoSepat(lista){
+lista=[...(lista||[])]
+let itens=[...new Set(lista.map(i=>String(i.siglaitem||'').trim()).filter(v=>v&&v!=='-'))].length
+let subitens=lista.filter(i=>String(i.subitem||'').trim()!=='').length
+let produtos=[...new Set(lista.map(i=>String(i.produto||'').trim()).filter(v=>v&&v!=='-'))].length
+let miniItens=document.getElementById('miniItensSepat')
+let miniSubitens=document.getElementById('miniSubitensSepat')
+let miniProdutos=document.getElementById('miniProdutosSepat')
+if(miniItens)miniItens.innerText=itens||0
+if(miniSubitens)miniSubitens.innerText=subitens||0
+if(miniProdutos)miniProdutos.innerText=produtos||0
+}
+
 function instalarEstiloVigenciaSepat(){
 if(document.getElementById('styleVigenciaSepat'))return
 let style=document.createElement('style')
@@ -337,6 +350,7 @@ else view.classList.remove('tabela-item-sepat')
 let tbody=document.getElementById('tbodySepat')
 if(!tbody)return
 let lista=obterListaMonitoramentoVigenciaSepat()
+atualizarMiniKPIsPeriodoSepat(lista)
 const mesesOrdem=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
 const mesAtual=mesesOrdem[new Date().getMonth()]
 const indiceAtual=mesesOrdem.indexOf(mesAtual)
