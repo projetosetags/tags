@@ -65,29 +65,19 @@ class="login-voltar-sepat">
 <div id="sepat-user-info" class="usuario-sepat">-</div>
 </div>
 </div>
+<div class="topo-direita-compacto-sepat">
 <div class="topo-botoes-sepat">
 <button id="btnBackupSepat" class="btn-topo-sepat hidden" onclick="backupSepat()">BACKUP Sepat</button>
 <div id="btn-monitoramento" style="display:none">
-<a href="https://projetosetags.github.io/tags/monitoramento/monitoramento.html" target="_blank" class="btn-topo-sepat">
-<span>📊</span>
-<span>Monitoramento</span>
-</a>
+<a href="https://projetosetags.github.io/tags/monitoramento/monitoramento.html" target="_blank" class="btn-topo-sepat">📊 Monitoramento</a>
 </div>
 <button class="btn-topo-sepat sair" onclick="logoutSepat()">Sair</button>
 </div>
-</div>
 <div id="miniKpisSepat" class="mini-kpis-topo-sepat hidden">
-<div class="mini-kpi-topo-sepat azul">
-<span id="miniItensSepat">0</span>
-<small>ITENS</small>
+<div class="mini-kpi-topo-sepat azul"><span id="miniItensSepat">0</span><small>ITENS</small></div>
+<div class="mini-kpi-topo-sepat verde"><span id="miniSubitensSepat">0</span><small>SUBITENS</small></div>
+<div class="mini-kpi-topo-sepat roxo"><span id="miniProdutosSepat">0</span><small>PRODUTOS</small></div>
 </div>
-<div class="mini-kpi-topo-sepat verde">
-<span id="miniSubitensSepat">0</span>
-<small>SUBITENS</small>
-</div>
-<div class="mini-kpi-topo-sepat roxo">
-<span id="miniProdutosSepat">0</span>
-<small>PRODUTOS</small>
 </div>
 </div>
 </header>
@@ -284,61 +274,24 @@ OCULTAR 100%
 =========================================================-->
 <section id="view-monitoramento" class="view-sepat hidden">
 <div class="barra-filtros-sepat">
+<div class="linha-filtro-monitoramento-sepat">
 <input id="buscaMonitoramentoSepat" oninput="renderTabelaSepat()" placeholder="Pesquisar..." class="input-busca-sepat">
-
-<div class="flex items-center gap-2 ml-2">
-
-<button
-onclick="
-modoTabelaSepat='item';
-document.getElementById('btnModoItemSepat').classList.add('ativo-sepat')
-document.getElementById('btnModoSubitemSepat').classList.remove('ativo-sepat')
-renderTabelaSepat()
-"
-id="btnModoItemSepat"
-class="btn-modo-sepat ativo-sepat">
-ITEM
-</button>
-
-<button
-onclick="
-modoTabelaSepat='subitem';
-document.getElementById('btnModoSubitemSepat').classList.add('ativo-sepat')
-document.getElementById('btnModoItemSepat').classList.remove('ativo-sepat')
-renderTabelaSepat()
-"
-id="btnModoSubitemSepat"
-class="btn-modo-sepat">
-SUBITEM
-</button>
-
-<button onclick="restaurarColunasMesesSepat()" class="btn-modo-sepat">
-EXIBIR COLUNAS
-</button>
 </div>
-
-<button onclick="gerarPDFMonitoramentoSepat()" class="btn-pdf-sepat">
-PDF Monitoramento
-</button>
-
-<button onclick="gerarWordMonitoramentoSepat()" class="btn-pdf-sepat btn-word-sepat">
-WORD Monitoramento
-</button>
-
-<label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:1000;white-space:nowrap">
-<input type="checkbox" id="ocultar100Sepat" onchange="renderTabelaSepat()">
-OCULTAR 100%
-</label>
-
+<div class="linha-acoes-monitoramento-sepat">
+<button onclick="modoTabelaSepat='item';document.getElementById('btnModoItemSepat').classList.add('ativo-sepat');document.getElementById('btnModoSubitemSepat').classList.remove('ativo-sepat');renderTabelaSepat()" id="btnModoItemSepat" class="btn-modo-sepat ativo-sepat">ITEM</button>
+<button onclick="modoTabelaSepat='subitem';document.getElementById('btnModoSubitemSepat').classList.add('ativo-sepat');document.getElementById('btnModoItemSepat').classList.remove('ativo-sepat');renderTabelaSepat()" id="btnModoSubitemSepat" class="btn-modo-sepat">SUBITEM</button>
+<button onclick="restaurarColunasMesesSepat()" class="btn-modo-sepat">EXIBIR COLUNAS</button>
+<button onclick="gerarPDFMonitoramentoSepat()" class="btn-pdf-sepat">📄 PDF</button>
+<button onclick="gerarWordMonitoramentoSepat()" class="btn-word-sepat">📝 WORD</button>
+<label class="check-ocultar-sepat"><input type="checkbox" id="ocultar100Sepat" onchange="renderTabelaSepat()">OCULTAR 100%</label>
+<button id="btnOcultarCabecalhoSepat" type="button" class="btn-cabecalho-sepat" onclick="toggleCabecalhoSepat()">OCULTAR CABEÇALHO</button>
 </div>
-  
+</div>
 <div class="tabela-wrap-sepat">
 <table class="tabela-sepat">
 <thead>
 <tr>
-<th id="thModoSepat" class="col-subitem">
-SUBITEM
-</th>
+<th id="thModoSepat" class="col-subitem">SUBITEM</th>
 <th id="thDescricaoSepat">DESCRIÇÃO</th>
 <th>PRODUTOS</th>
 <th>RESPONSÁVEL(IS)</th>
@@ -361,7 +314,6 @@ SUBITEM
 <tbody id="tbodySepat"></tbody>
 </table>
 </div>
-  
 </section>
 <!--=========================================================
 007 SEPAT GRAFICOS
