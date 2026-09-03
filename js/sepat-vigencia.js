@@ -259,9 +259,19 @@ style.textContent=`
 .vigencia-especial-sepat{background:#fff7ed!important;color:#9a3412!important;border-left:2px solid #f97316!important;border-right:2px solid #f97316!important;line-height:1.35!important}
 .vigencia-sem-inicio-sepat{background:#f8fafc!important;color:#475569!important;border-left:2px solid #94a3b8!important;line-height:1.35!important}
 .nota-filtro-vigencia-sepat{width:100%;font-size:8px;font-weight:800;color:#64748b;line-height:1.3;padding-left:4px}
-.tabela-sepat th:nth-child(5),.tabela-sepat td:nth-child(5){width:92px!important;min-width:92px!important;max-width:150px!important;text-align:center!important;white-space:normal!important}
-.tabela-sepat th:nth-child(6),.tabela-sepat td:nth-child(6){width:98px!important;min-width:98px!important;max-width:170px!important;text-align:center!important;white-space:normal!important}
-.tabela-sepat th:nth-child(n+7),.tabela-sepat td:nth-child(n+7){width:52px!important;min-width:52px!important;max-width:52px!important;padding:2px!important;text-align:center!important;font-size:9px!important;font-weight:1000!important}
+#view-monitoramento .tabela-wrap-sepat{width:100%!important;overflow-x:auto!important;overflow-y:auto!important}
+#view-monitoramento .tabela-sepat{width:100%!important;min-width:0!important;table-layout:fixed!important}
+#view-monitoramento .tabela-sepat th{white-space:normal!important;line-height:1.15!important;padding:5px 3px!important;font-size:8px!important}
+#view-monitoramento .tabela-sepat td{padding:5px 4px!important;font-size:8px!important;line-height:1.3!important;white-space:normal!important;word-break:break-word!important}
+#view-monitoramento .tabela-sepat th:nth-child(1),#view-monitoramento .tabela-sepat td:nth-child(1){width:8%!important;min-width:0!important;max-width:none!important;font-size:8px!important;line-height:1.3!important}
+#view-monitoramento .tabela-sepat th:nth-child(2),#view-monitoramento .tabela-sepat td:nth-child(2){width:24%!important;min-width:0!important;max-width:none!important;font-size:8px!important;line-height:1.35!important}
+#view-monitoramento .tabela-sepat th:nth-child(3),#view-monitoramento .tabela-sepat td:nth-child(3){width:14%!important;min-width:0!important;max-width:none!important;font-size:8px!important;line-height:1.3!important}
+#view-monitoramento .tabela-sepat th:nth-child(4),#view-monitoramento .tabela-sepat td:nth-child(4){width:8%!important;min-width:0!important;max-width:none!important;font-size:7px!important;line-height:1.25!important}
+#view-monitoramento .tabela-sepat th:nth-child(5),#view-monitoramento .tabela-sepat td:nth-child(5){width:6.5%!important;min-width:0!important;max-width:none!important;text-align:center!important;font-size:8px!important}
+#view-monitoramento .tabela-sepat th:nth-child(6),#view-monitoramento .tabela-sepat td:nth-child(6){width:6.5%!important;min-width:0!important;max-width:none!important;text-align:center!important;font-size:8px!important}
+#view-monitoramento .tabela-sepat th:nth-child(n+7),#view-monitoramento .tabela-sepat td:nth-child(n+7){width:3%!important;min-width:0!important;max-width:none!important;padding:2px!important;text-align:center!important;font-size:8px!important;font-weight:1000!important}
+#view-monitoramento .input-mes-sepat{width:30px!important;height:26px!important;padding:0!important;font-size:8px!important;border-radius:6px!important}
+#view-monitoramento .td-total-sepat{width:4%!important;min-width:0!important;max-width:none!important;font-size:8px!important}
 .vigencia-modal-sepat{margin:10px 0 2px;padding:10px 12px;border-radius:12px;background:#eff6ff;border:1px solid #bfdbfe;font-size:11px;font-weight:900;color:#1e3a5f}
 @media(max-width:900px){#filtrosVigenciaSepat{width:100%}.filtro-vigencia-sepat{flex:1;min-width:155px}}
 `
@@ -369,16 +379,16 @@ let classeFim=casoEspecial?'vigencia-especial-sepat':(fimOriginal&&!fimEhData?'f
 let tituloVigencia=escaparHtmlVigenciaSepat(notaVigencia)
 let html=`
 <tr>
-<td class="col-subitem" style="width:340px;min-width:340px;max-width:340px;font-size:10px;font-weight:900;line-height:1.5;white-space:normal;word-break:break-word;vertical-align:top;">
+<td class="col-subitem">
 ${escaparHtmlVigenciaSepat(typeof modoTabelaSepat!=='undefined'&&modoTabelaSepat==='item'?(i.item||'-'):(i.siglaitem||'-'))}
 </td>
-<td style="max-width:760px;font-size:9px;line-height:1.55;vertical-align:top;">
+<td>
 ${escaparHtmlVigenciaSepat(typeof modoTabelaSepat!=='undefined'&&modoTabelaSepat==='item'?(i.descricaoitem||'-'):(i.subitem||'-'))}
 </td>
-<td style="font-size:9px;line-height:1.4;max-width:170px;vertical-align:top;">
+<td>
 ${escaparHtmlVigenciaSepat(i.produto||'-')}
 </td>
-<td style="font-size:9px;line-height:1.35;max-width:130px;vertical-align:top;">
+<td>
 ${escaparHtmlVigenciaSepat(i.cargo||i.setor||'-')}
 </td>
 <td class="vigencia-sepat ${classeInicio}" title="${tituloVigencia}">
