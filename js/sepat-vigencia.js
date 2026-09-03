@@ -110,7 +110,20 @@ inicio:String(document.getElementById('filtroVigenciaInicioSepat')?.value||''),
 fim:String(document.getElementById('filtroVigenciaFimSepat')?.value||'')
 }
 }
-
+function dataHojeLocalSepat(){
+let d=new Date()
+let ano=d.getFullYear()
+let mes=String(d.getMonth()+1).padStart(2,'0')
+let dia=String(d.getDate()).padStart(2,'0')
+return`${ano}-${mes}-${dia}`
+}
+function preencherPeriodoPadraoVigenciaSepat(){
+let limites=atualizarOpcoesExtremasVigenciaSepat()
+let inicio=document.getElementById('filtroVigenciaInicioSepat')
+let fim=document.getElementById('filtroVigenciaFimSepat')
+if(inicio&&!inicio.value&&limites.primeira)inicio.value=limites.primeira
+if(fim&&!fim.value)fim.value=dataHojeLocalSepat()
+}
 function obterLimitesVigenciaSepat(){
 let lista=[...(typeof sepatData!=='undefined'?(sepatData||[]):[])]
 // Casos condicionais/incompletos não entram nos extremos cronológicos.
@@ -295,6 +308,7 @@ document.getElementById('filtroVigenciaFimSepat').value=''
 renderTabelaSepat()
 })
 atualizarOpcoesExtremasVigenciaSepat()
+preencherPeriodoPadraoVigenciaSepat()
 }
 
 function atualizarCabecalhoModoVigenciaSepat(){
@@ -312,6 +326,7 @@ if(thDescricao)thDescricao.innerText='DESCRIÇÃO'
 function renderTabelaComVigenciaSepat(){
 instalarCabecalhoVigenciaSepat()
 instalarFiltrosVigenciaSepat()
+preencherPeriodoPadraoVigenciaSepat()
 atualizarOpcoesExtremasVigenciaSepat()
 atualizarCabecalhoModoVigenciaSepat()
 let view=document.getElementById('view-monitoramento')
