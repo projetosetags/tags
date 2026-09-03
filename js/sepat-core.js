@@ -1495,111 +1495,270 @@ return `<option value="${id}" title="${i.subitem} • ${getTotalSepat(i)}% • $
 sel.innerHTML=html
 }
 /*=========================================================
-022 SEPAT CORE RENDER GRAFICO MASTER
+022 SEPAT GRAFICO MASTER
+MESMA BASE E MESMA REGRA DO DASHBOARD
 =========================================================*/
 function renderGraficoMasterSepat(){
+
 let canvas=document.getElementById('graficoMasterSepat')
 if(!canvas)return
+
 let ctx=canvas.getContext('2d')
-if(graficoMasterSepat)graficoMasterSepat.destroy()
-let itemSelecionado=String(document.getElementById('filtroItemSepat')?.value||'todos')
-let subSelecionado=String(document.getElementById('filtroSubitemSepat')?.value||'TOTAL')
+
+if(graficoMasterSepat){
+graficoMasterSepat.destroy()
+graficoMasterSepat=null
+}
+
+let itemSelecionado=String(
+document.getElementById('filtroItemSepat')?.value||'todos'
+)
+
+let subSelecionado=String(
+document.getElementById('filtroSubitemSepat')?.value||'TOTAL'
+)
+
+/*=========================================================
+BASE ÚNICA
+A MESMA SEPATDATA UTILIZADA NO DASHBOARD
+=========================================================*/
 let lista=[...(sepatData||[])]
+
 if(itemSelecionado!=='todos'){
-lista=lista.filter(i=>String(i.siglaitem||'')===itemSelecionado)
+
+lista=lista.filter(i=>
+String(i.siglaitem||'')===itemSelecionado
+)
+
 }
+
 let titulo='TOTAL CONSOLIDADO SEPAT'
-let desc='Evolução média consolidada dos subitens/produtos selecionados.'
+
+let desc=
+'Evolução média mensal consolidada dos subitens/produtos selecionados.'
+
+/*=========================================================
+FILTRO SUBITEM
+=========================================================*/
 if(subSelecionado!=='TOTAL'){
-let achado=lista.find(i=>String(i.id)===subSelecionado||String(i.subitem)===subSelecionado)
+
+let achado=lista.find(i=>
+String(i.id)===subSelecionado||
+String(i.subitem)===subSelecionado
+)
+
 if(achado){
+
 lista=[achado]
-titulo='SUBITEM '+(achado.subitem||'-')+' • '+(achado.siglaitem||'-')
-desc=(achado.produto||'-')+'<br><br><b>Item:</b> '+(achado.item||'-')
+
+titulo=
+'SUBITEM '+
+(achado.subitem||'-')+
+' • '+
+(achado.siglaitem||'-')
+
+desc=
+(achado.produto||'-')+
+'<br><br><b>Item:</b> '+
+(achado.item||'-')
+
 }
+
 }
-let valores=MESES_SEPAT.slice(0,MES_ATUAL_SEPAT+1).map((m,indice)=>{
-if(indice===MES_ATUAL_SEPAT){
-return calcularMediaSepat(lista)
-}
-let total=0
-lista.forEach(i=>{
-let v=Number(i[m]||0)
-if(isNaN(v))v=0
-total+=v
+
+/*=========================================================
+MÉDIA MENSAL
+IMPORTANTE:
+TODOS OS MESES USAM EXATAMENTE A MESMA FÓRMULA
+INCLUSIVE O MÊS ATUAL
+=========================================================*/
+let valores=
+MESES_SEPAT
+.slice(0,MES_ATUAL_SEPAT+1)
+.map(m=>{
+
+if(!lista.length)return 0
+
+let soma=lista.reduce((total,i)=>{
+
+let valor=Number(i[m]||0)
+
+if(isNaN(valor))valor=0
+
+return total+valor
+
+},0)
+
+return Math.round(
+soma/lista.length
+)
+
 })
-return Math.round(total/(lista.length||1))
-})
+
+/*=========================================================
+GRÁFICO
+=========================================================*/
 graficoMasterSepat=new Chart(ctx,{
+
 type:'bar',
+
 data:{
-labels:MESES_LABEL_SEPAT.slice(0,MES_ATUAL_SEPAT+1),
+
+labels:
+MESES_LABEL_SEPAT
+.slice(0,MES_ATUAL_SEPAT+1),
+
 datasets:[{
+
 label:titulo,
+
 data:valores,
+
 borderWidth:2,
+
 borderRadius:10,
+
 borderSkipped:false,
+
 maxBarThickness:42
+
 }]
+
 },
+
 options:{
+
 responsive:true,
+
 maintainAspectRatio:false,
+
 plugins:{
+
 legend:{
+
 display:true,
+
 position:'bottom',
+
 labels:{
-font:{weight:'900',size:12}
+
+font:{
+weight:'900',
+size:12
 }
+
+}
+
 },
+
 tooltip:{
+
 callbacks:{
-label:(ctx)=>ctx.raw+'%'
+
+label:(ctx)=>
+ctx.raw+'%'
+
 }
+
 },
+
 datalabels:{
+
 display:true,
+
 anchor:'end',
+
 align:'top',
-font:{weight:'900',size:11},
-formatter:(v)=>v+'%'
-}
+
+font:{
+weight:'900',
+size:11
 },
+
+formatter:(v)=>
+v+'%'
+
+}
+
+},
+
 scales:{
+
 y:{
+
 beginAtZero:true,
+
 max:100,
+
 ticks:{
-callback:(v)=>v+'%'
+
+callback:(v)=>
+v+'%'
+
 }
+
 },
+
 x:{
+
 ticks:{
-font:{weight:'900',size:11}
+
+font:{
+weight:'900',
+size:11
 }
+
 }
+
 }
+
+}
+
 },
+
 plugins:[ChartDataLabels]
+
 })
+
+/*=========================================================
+DESCRIÇÃO MENSAL
+=========================================================*/
 let box=document.getElementById('descGraficoSepat')
+
 if(box){
+
 let textoMeses=''
+
 valores.forEach((valor,indice)=>{
-textoMeses+=MESES_LABEL_SEPAT[indice]+': <b>'+valor+'%</b>'
+
+textoMeses+=
+MESES_LABEL_SEPAT[indice]+
+': <b>'+
+valor+
+'%</b>'
+
 if(indice<valores.length-1){
+
 textoMeses+=' | '
+
 }
+
 })
+
 box.innerHTML=`
+
 <b>${titulo}</b><br>
+
 ${desc}
+
 <br><br>
+
 ${textoMeses}
+
 `
+
 }
+
 }
 /*=========================================================
 023 SEPAT CORE CARREGAR PERFIS
