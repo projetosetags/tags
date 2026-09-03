@@ -1572,27 +1572,14 @@ IMPORTANTE:
 TODOS OS MESES USAM EXATAMENTE A MESMA FÓRMULA
 INCLUSIVE O MÊS ATUAL
 =========================================================*/
-let valores=
-MESES_SEPAT
-.slice(0,MES_ATUAL_SEPAT+1)
-.map(m=>{
-
+let valores=MESES_SEPAT.slice(0,MES_ATUAL_SEPAT+1).map(m=>{
 if(!lista.length)return 0
-
-let soma=lista.reduce((total,i)=>{
-
-let valor=Number(i[m]||0)
-
-if(isNaN(valor))valor=0
-
-return total+valor
-
+let total=lista.reduce((acc,i)=>{
+let v=Number(i[m]||0)
+if(isNaN(v))v=0
+return acc+v
 },0)
-
-return Math.round(
-soma/lista.length
-)
-
+return Math.round(total/lista.length)
 })
 
 /*=========================================================
@@ -3731,15 +3718,17 @@ function filtrarAndamentoSepat(lista){
 return[...(lista||[])].filter(i=>getTotalSepat(i)>0&&getTotalSepat(i)<100)
 }
 /*=========================================================
-081 TOTAL MEDIO
+081 TOTAL MEDIO • MES ATUAL
 =========================================================*/
 function calcularMediaSepat(lista){
 lista=[...(lista||[])]
 if(!lista.length)return 0
-let soma=0
-lista.forEach(i=>{
-soma+=getTotalSepat(i)
-})
+let mesAtual=MESES_SEPAT[MES_ATUAL_SEPAT]
+let soma=lista.reduce((acc,i)=>{
+let valor=Number(i[mesAtual]||0)
+if(isNaN(valor))valor=0
+return acc+valor
+},0)
 return Math.round(soma/lista.length)
 }
 /*=========================================================
