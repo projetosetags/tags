@@ -368,25 +368,7 @@ document.getElementById('filtroVigenciaInicioSepat').value=''
 document.getElementById('filtroVigenciaFimSepat').value=''
 renderTabelaSepat()
 })
-let acoesMonitoramento=document.querySelector('#view-monitoramento .barra-filtros-sepat>.flex')
-if(acoesMonitoramento){
-let btnPdf=acoesMonitoramento.querySelector('.btn-pdf-sepat')
-let btnWord=acoesMonitoramento.querySelector('.btn-word-sepat')
-if(btnPdf)btnPdf.innerHTML='📄 PDF'
-if(btnWord)btnWord.innerHTML='📝 WORD'
-let checkOcultar=acoesMonitoramento.querySelector('.check-ocultar-sepat')
-let btnCabecalho=document.getElementById('btnOcultarCabecalhoSepat')
-if(!btnCabecalho){
-btnCabecalho=document.createElement('button')
-btnCabecalho.id='btnOcultarCabecalhoSepat'
-btnCabecalho.type='button'
-btnCabecalho.className='btn-cabecalho-sepat'
-btnCabecalho.textContent='OCULTAR CABEÇALHO'
-if(checkOcultar)acoesMonitoramento.insertBefore(btnCabecalho,checkOcultar)
-else acoesMonitoramento.appendChild(btnCabecalho)
-btnCabecalho.addEventListener('click',toggleCabecalhoSepat)
-}
-}
+
 atualizarOpcoesExtremasVigenciaSepat()
 preencherPeriodoPadraoVigenciaSepat()
 }
