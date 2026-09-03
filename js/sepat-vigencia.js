@@ -5,7 +5,7 @@ Correção de exibição, filtro e relatórios
 (function(){
 'use strict'
 
-const VERSAO_VIGENCIA_SEPAT='20260902-1'
+const VERSAO_VIGENCIA_SEPAT='20260902-2'
 
 function dataIsoSepat(v){
 if(v===null||v===undefined)return''
@@ -42,6 +42,61 @@ return{
 inicio:String(document.getElementById('filtroVigenciaInicioSepat')?.value||''),
 fim:String(document.getElementById('filtroVigenciaFimSepat')?.value||'')
 }
+}
+
+function obterLimitesVigenciaSepat(){
+let lista=[...(typeof sepatData!=='undefined'?(sepatData||[]):[])]
+let inicios=lista.map(i=>dataIsoSepat(i.data_inicio)).filter(Boolean).sort()
+let finais=lista.map(i=>dataIsoSepat(i.data_fim)).filter(Boolean).sort()
+let primeira=inicios.length?inicios[0]:''
+let ultima=finais.length?finais[finais.length-1]:(inicios.length?inicios[inicios.length-1]:'')
+return{primeira,ultima}
+}
+
+function atualizarOpcoesExtremasVigenciaSepat(){
+let limites=obterLimitesVigenciaSepat()
+let inputInicio=document.getElementById('filtroVigenciaInicioSepat')
+let inputFim=document.getElementById('filtroVigenciaFimSepat')
+if(inputInicio){
+if(limites.primeira)inputInicio.min=limites.primeira
+if(limites.ultima)inputInicio.max=limites.ultima
+}
+if(inputFim){
+if(limites.primeira)inputFim.min=limites.primeira
+if(limites.ultima)inputFim.max=limites.ultima
+}
+let primeiraTexto=document.getElementById('textoPrimeiraDataVigenciaSepat')
+let ultimaTexto=document.getElementById('textoUltimaDataVigenciaSepat')
+if(primeiraTexto)primeiraTexto.textContent=formatarVigenciaSepat(limites.primeira)
+if(ultimaTexto)ultimaTexto.textContent=formatarVigenciaSepat(limites.ultima)
+let btnPrimeira=document.getElementById('btnPrimeiraDataVigenciaSepat')
+let btnUltima=document.getElementById('btnUltimaDataVigenciaSepat')
+let btnCompleto=document.getElementById('btnPeriodoCompletoVigenciaSepat')
+if(btnPrimeira)btnPrimeira.disabled=!limites.primeira
+if(btnUltima)btnUltima.disabled=!limites.ultima
+if(btnCompleto)btnCompleto.disabled=!(limites.primeira&&limites.ultima)
+return limites
+}
+
+function usarPrimeiraDataVigenciaSepat(){
+let limites=atualizarOpcoesExtremasVigenciaSepat()
+let input=document.getElementById('filtroVigenciaInicioSepat')
+if(input&&limites.primeira){input.value=limites.primeira;renderTabelaSepat()}
+}
+
+function usarUltimaDataVigenciaSepat(){
+let limites=atualizarOpcoesExtremasVigenciaSepat()
+let input=document.getElementById('filtroVigenciaFimSepat')
+if(input&&limites.ultima){input.value=limites.ultima;renderTabelaSepat()}
+}
+
+function usarPeriodoCompletoVigenciaSepat(){
+let limites=atualizarOpcoesExtremasVigenciaSepat()
+let inicio=document.getElementById('filtroVigenciaInicioSepat')
+let fim=document.getElementById('filtroVigenciaFimSepat')
+if(inicio&&limites.primeira)inicio.value=limites.primeira
+if(fim&&limites.ultima)fim.value=limites.ultima
+renderTabelaSepat()
 }
 
 function registroDentroVigenciaSepat(i,inicioFiltro,fimFiltro){
@@ -90,6 +145,13 @@ style.textContent=`
 .filtro-vigencia-sepat{height:48px;display:flex;align-items:center;gap:7px;padding:0 10px;border:1px solid #bfd7ff;border-radius:16px;background:#fff;box-shadow:0 6px 18px rgba(15,23,42,.06)}
 .filtro-vigencia-sepat span{font-size:9px;font-weight:1000;color:#475569;text-transform:uppercase;white-space:nowrap}
 .filtro-vigencia-sepat input{height:32px;border:0;outline:0;background:transparent;font-size:11px;font-weight:900;color:#0f172a;min-width:116px}
+.atalhos-vigencia-sepat{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap}
+.btn-extremo-vigencia-sepat{height:48px;min-width:112px;padding:5px 10px;border:1px solid #bfdbfe;border-radius:14px;background:linear-gradient(180deg,#eff6ff,#dbeafe);color:#1e3a5f;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;box-shadow:0 5px 14px rgba(37,99,235,.08)}
+.btn-extremo-vigencia-sepat small{font-size:8px;font-weight:1000;letter-spacing:.25px}
+.btn-extremo-vigencia-sepat strong{margin-top:4px;font-size:11px;font-weight:1000;color:#0f5fd7}
+.btn-extremo-vigencia-sepat:hover{transform:translateY(-1px);box-shadow:0 9px 18px rgba(37,99,235,.13)}
+.btn-extremo-vigencia-sepat:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-periodo-total-sepat{height:48px;padding:0 13px;border:1px solid #93c5fd;border-radius:14px;background:linear-gradient(135deg,#0f5fd7,#2563eb);color:#fff;font-size:9px;font-weight:1000;cursor:pointer;white-space:nowrap}
 .vigencia-sepat{min-width:92px!important;max-width:150px!important;text-align:center!important;white-space:normal!important;font-size:9px!important;font-weight:900!important;background:#f8fbff!important}
 .vigencia-sepat.fim-texto{text-align:left!important;line-height:1.35!important}
 .tabela-sepat th:nth-child(5),.tabela-sepat td:nth-child(5){width:92px!important;min-width:92px!important;max-width:150px!important;text-align:center!important;white-space:normal!important}
@@ -133,16 +195,29 @@ box.innerHTML=`
 <span>FIM</span>
 <input id="filtroVigenciaFimSepat" type="date">
 </label>
+<div class="atalhos-vigencia-sepat" title="Datas extremas existentes no Plano de Ação/TAG SEPAT">
+<button id="btnPrimeiraDataVigenciaSepat" type="button" class="btn-extremo-vigencia-sepat">
+<small>PRIMEIRA DATA</small><strong id="textoPrimeiraDataVigenciaSepat">-</strong>
+</button>
+<button id="btnUltimaDataVigenciaSepat" type="button" class="btn-extremo-vigencia-sepat">
+<small>ÚLTIMA DATA</small><strong id="textoUltimaDataVigenciaSepat">-</strong>
+</button>
+<button id="btnPeriodoCompletoVigenciaSepat" type="button" class="btn-periodo-total-sepat">PERÍODO COMPLETO</button>
+</div>
 <button id="btnLimparVigenciaSepat" type="button" class="btn-modo-sepat" style="height:48px;padding:0 14px">LIMPAR DATAS</button>
 `
 busca.insertAdjacentElement('afterend',box)
 document.getElementById('filtroVigenciaInicioSepat').addEventListener('change',()=>renderTabelaSepat())
 document.getElementById('filtroVigenciaFimSepat').addEventListener('change',()=>renderTabelaSepat())
+document.getElementById('btnPrimeiraDataVigenciaSepat').addEventListener('click',usarPrimeiraDataVigenciaSepat)
+document.getElementById('btnUltimaDataVigenciaSepat').addEventListener('click',usarUltimaDataVigenciaSepat)
+document.getElementById('btnPeriodoCompletoVigenciaSepat').addEventListener('click',usarPeriodoCompletoVigenciaSepat)
 document.getElementById('btnLimparVigenciaSepat').addEventListener('click',()=>{
 document.getElementById('filtroVigenciaInicioSepat').value=''
 document.getElementById('filtroVigenciaFimSepat').value=''
 renderTabelaSepat()
 })
+atualizarOpcoesExtremasVigenciaSepat()
 }
 
 function atualizarCabecalhoModoVigenciaSepat(){
@@ -160,6 +235,7 @@ if(thDescricao)thDescricao.innerText='DESCRIÇÃO'
 function renderTabelaComVigenciaSepat(){
 instalarCabecalhoVigenciaSepat()
 instalarFiltrosVigenciaSepat()
+atualizarOpcoesExtremasVigenciaSepat()
 atualizarCabecalhoModoVigenciaSepat()
 let view=document.getElementById('view-monitoramento')
 if(view){
@@ -359,4 +435,3 @@ setTimeout(instalarCorrecaoVigenciaSepat,80)
 }
 
 })()
-
