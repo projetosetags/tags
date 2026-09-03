@@ -244,31 +244,44 @@ let style=document.createElement('style')
 style.id='styleVigenciaSepat'
 style.textContent=`
 #filtrosVigenciaSepat{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.filtro-vigencia-sepat{height:40px;display:flex;align-items:center;gap:5px;padding:0 8px;border:1px solid #bfd7ff;border-radius:12px;background:#fff;box-shadow:0 4px 12px rgba(15,23,42,.06)}
+.filtro-vigencia-sepat{height:44px;display:flex;align-items:center;gap:6px;padding:0 9px;border:1px solid #bfd7ff;border-radius:14px;background:#fff;box-shadow:0 4px 12px rgba(15,23,42,.06)}
 .filtro-vigencia-sepat span{font-size:8px;font-weight:1000;color:#475569;text-transform:uppercase;white-space:nowrap}
-.filtro-vigencia-sepat input{height:28px;border:0;outline:0;background:transparent;font-size:10px;font-weight:900;color:#0f172a;min-width:96px}
+.filtro-vigencia-sepat input{height:30px;border:0;outline:0;background:transparent;font-size:10px;font-weight:900;color:#0f172a;min-width:100px}
 .atalhos-vigencia-sepat{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.btn-extremo-vigencia-sepat{height:40px;min-width:92px;padding:3px 7px;border:1px solid #bfdbfe;border-radius:12px;background:linear-gradient(180deg,#eff6ff,#dbeafe);color:#1e3a5f;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;box-shadow:0 4px 10px rgba(37,99,235,.08)}
+.btn-extremo-vigencia-sepat{height:44px;min-width:96px;padding:4px 8px;border:1px solid #bfdbfe;border-radius:14px;background:linear-gradient(180deg,#eff6ff,#dbeafe);color:#1e3a5f;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;box-shadow:0 4px 10px rgba(37,99,235,.08)}
 .btn-extremo-vigencia-sepat small{font-size:7px;font-weight:1000;letter-spacing:.2px}
-.btn-extremo-vigencia-sepat strong{margin-top:2px;font-size:10px;font-weight:1000;color:#0f5fd7}
-.btn-extremo-vigencia-sepat:hover{transform:translateY(-1px);box-shadow:0 7px 14px rgba(37,99,235,.13)}
+.btn-extremo-vigencia-sepat strong{margin-top:3px;font-size:10px;font-weight:1000;color:#0f5fd7}
+.btn-extremo-vigencia-sepat:hover{transform:translateY(-1px);box-shadow:0 8px 16px rgba(37,99,235,.13)}
 .btn-extremo-vigencia-sepat:disabled{opacity:.45;cursor:not-allowed;transform:none}
-.btn-periodo-total-sepat{height:40px;padding:0 10px;border:1px solid #93c5fd;border-radius:12px;background:linear-gradient(135deg,#0f5fd7,#2563eb);color:#fff;font-size:8px;font-weight:1000;cursor:pointer;white-space:nowrap}
-.nota-filtro-vigencia-sepat{width:100%;font-size:7px;font-weight:800;color:#64748b;line-height:1.15;padding-left:2px}
-#view-monitoramento #filtrosVigenciaSepat{flex:1 1 auto!important;width:auto!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:6px!important;flex-wrap:wrap!important}
-#view-monitoramento .filtro-vigencia-sepat{height:40px!important;padding:0 8px!important;border-radius:12px!important}
-#view-monitoramento .filtro-vigencia-sepat input{min-width:96px!important;font-size:10px!important}
-#view-monitoramento .btn-extremo-vigencia-sepat{height:40px!important;min-width:92px!important;padding:3px 7px!important}
-#view-monitoramento .btn-periodo-total-sepat{height:40px!important;padding:0 10px!important}
-#view-monitoramento #btnLimparVigenciaSepat{height:40px!important;padding:0 12px!important;border-radius:12px!important;font-size:10px!important}
-#view-monitoramento .barra-filtros-sepat>.flex{display:flex!important;align-items:center!important;gap:7px!important;flex-wrap:wrap!important}
-#view-monitoramento .btn-modo-sepat,#view-monitoramento .btn-pdf-sepat,#view-monitoramento .btn-word-sepat{height:40px!important;width:auto!important;min-width:auto!important;padding:0 14px!important;font-size:10px!important;border-radius:12px!important}
-#view-monitoramento .btn-pdf-sepat,#view-monitoramento .btn-word-sepat{min-width:150px!important}
+.btn-periodo-total-sepat{height:44px;padding:0 11px;border:1px solid #93c5fd;border-radius:14px;background:linear-gradient(135deg,#0f5fd7,#2563eb);color:#fff;font-size:8px;font-weight:1000;cursor:pointer;white-space:nowrap}
 .vigencia-sepat{min-width:0!important;max-width:none!important;text-align:center!important;white-space:normal!important;font-size:8px!important;font-weight:900!important;background:#f8fbff!important}
 .vigencia-sepat.fim-texto{text-align:left!important;line-height:1.25!important}
 .vigencia-especial-sepat{background:#fff7ed!important;color:#9a3412!important;border-left:2px solid #f97316!important;border-right:2px solid #f97316!important;line-height:1.25!important}
 .vigencia-sem-inicio-sepat{background:#f8fafc!important;color:#475569!important;border-left:2px solid #94a3b8!important;line-height:1.25!important}
-#view-monitoramento .tabela-wrap-sepat{width:100%!important;overflow-x:auto!important;overflow-y:auto!important;max-height:calc(100vh - 255px)!important}
+.nota-filtro-vigencia-sepat{width:100%;font-size:7px;font-weight:800;color:#64748b;line-height:1.15;padding-left:2px}
+.btn-cabecalho-sepat{height:44px;padding:0 18px;border:1px solid #d6d3d1;border-radius:18px;background:#f5f5f4;color:#111827;font-size:11px;font-weight:1000;cursor:pointer;white-space:nowrap;box-shadow:0 4px 12px rgba(15,23,42,.05)}
+.btn-cabecalho-sepat:hover{background:#e7e5e4}
+.cabecalho-oculto-sepat{display:none!important}
+#view-monitoramento .barra-filtros-sepat{display:flex!important;align-items:center!important;justify-content:flex-start!important;flex-wrap:wrap!important;gap:8px!important;padding:12px 14px!important;margin-bottom:12px!important;border-radius:20px!important;background:linear-gradient(180deg,#fff,#f5f9ff)!important;border:1px solid #d9e7f8!important;box-shadow:0 10px 24px rgba(0,70,150,.07)!important}
+#view-monitoramento .input-busca-sepat{order:1!important;flex:0 0 24%!important;width:24%!important;max-width:24%!important;min-width:220px!important;height:46px!important;padding:0 15px!important;border-radius:16px!important;font-size:13px!important;font-weight:900!important}
+#view-monitoramento .input-busca-sepat::placeholder{color:#64748b!important;font-weight:900!important}
+#view-monitoramento #filtrosVigenciaSepat{order:2!important;flex:1 1 calc(76% - 8px)!important;width:auto!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:6px!important;flex-wrap:wrap!important}
+#view-monitoramento .filtro-vigencia-sepat{height:44px!important;padding:0 9px!important;border-radius:14px!important}
+#view-monitoramento .filtro-vigencia-sepat span{font-size:8px!important}
+#view-monitoramento .filtro-vigencia-sepat input{min-width:100px!important;font-size:10px!important}
+#view-monitoramento .atalhos-vigencia-sepat{display:flex!important;align-items:center!important;gap:6px!important;flex-wrap:wrap!important}
+#view-monitoramento .btn-extremo-vigencia-sepat{height:44px!important;min-width:96px!important;padding:4px 8px!important;border-radius:14px!important}
+#view-monitoramento .btn-periodo-total-sepat{height:44px!important;padding:0 11px!important;border-radius:14px!important}
+#view-monitoramento #btnLimparVigenciaSepat{height:44px!important;padding:0 16px!important;border-radius:18px!important;font-size:11px!important}
+#view-monitoramento .nota-filtro-vigencia-sepat{order:3!important;flex:0 0 100%!important;width:100%!important;margin-top:-2px!important}
+#view-monitoramento .barra-filtros-sepat>.flex{order:4!important;flex:0 0 100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;flex-wrap:wrap!important}
+#view-monitoramento .btn-modo-sepat{height:44px!important;padding:0 20px!important;border:1px solid #bfdbfe!important;border-radius:18px!important;background:linear-gradient(180deg,#eff6ff,#dbeafe)!important;color:#1e3a5f!important;font-size:11px!important;font-weight:1000!important;min-width:92px!important}
+#view-monitoramento .btn-modo-sepat.ativo,#view-monitoramento .btn-modo-sepat.active{background:linear-gradient(135deg,#0f5fd7,#2563eb)!important;color:#fff!important;border-color:#2563eb!important}
+#view-monitoramento .btn-pdf-sepat{height:44px!important;padding:0 18px!important;border:none!important;border-radius:18px!important;background:linear-gradient(135deg,#ef4444,#dc2626)!important;color:#fff!important;font-size:12px!important;font-weight:1000!important;min-width:108px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;box-shadow:0 6px 16px rgba(239,68,68,.22)!important}
+#view-monitoramento .btn-word-sepat{height:44px!important;padding:0 18px!important;border:none!important;border-radius:18px!important;background:linear-gradient(135deg,#2563eb,#1d4ed8)!important;color:#fff!important;font-size:12px!important;font-weight:1000!important;min-width:108px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;box-shadow:0 6px 16px rgba(37,99,235,.22)!important}
+#view-monitoramento .check-ocultar-sepat{height:44px!important;padding:0 18px!important;border:1px solid #d6d3d1!important;border-radius:18px!important;background:#f5f5f4!important;color:#111827!important;font-size:11px!important;font-weight:1000!important;display:inline-flex!important;align-items:center!important;gap:6px!important;white-space:nowrap!important}
+#view-monitoramento .check-ocultar-sepat input{width:14px!important;height:14px!important}
+#view-monitoramento .tabela-wrap-sepat{width:100%!important;overflow-x:auto!important;overflow-y:auto!important;max-height:calc(100vh - 245px)!important}
 #view-monitoramento .tabela-sepat{width:100%!important;min-width:0!important;table-layout:fixed!important}
 #view-monitoramento .tabela-sepat th{white-space:normal!important;line-height:1.1!important;padding:4px 2px!important;font-size:7px!important}
 #view-monitoramento .tabela-sepat td{padding:4px 3px!important;font-size:7.5px!important;line-height:1.25!important;white-space:normal!important;word-break:break-word!important}
@@ -282,9 +295,22 @@ style.textContent=`
 #view-monitoramento .input-mes-sepat{width:28px!important;height:24px!important;padding:0!important;font-size:7px!important;border-radius:5px!important}
 #view-monitoramento .td-total-sepat{width:4%!important;min-width:0!important;max-width:none!important;font-size:7px!important}
 .vigencia-modal-sepat{margin:8px 0 2px;padding:8px 10px;border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe;font-size:10px;font-weight:900;color:#1e3a5f}
-@media(max-width:900px){#filtrosVigenciaSepat{width:100%}.filtro-vigencia-sepat{flex:1;min-width:145px}#view-monitoramento #filtrosVigenciaSepat{flex:0 0 100%!important}}
+@media(max-width:1200px){#view-monitoramento .input-busca-sepat{flex:0 0 100%!important;width:100%!important;max-width:100%!important}#view-monitoramento #filtrosVigenciaSepat{flex:0 0 100%!important;width:100%!important}.topo-botoes-sepat{flex-wrap:wrap!important}}
+@media(max-width:900px){#filtrosVigenciaSepat{width:100%}.filtro-vigencia-sepat{flex:1;min-width:145px}#view-monitoramento .barra-filtros-sepat>.flex{gap:8px!important}#view-monitoramento .check-ocultar-sepat,#view-monitoramento .btn-cabecalho-sepat{font-size:10px!important}}
 `
 document.head.appendChild(style)
+}
+function toggleCabecalhoSepat(){
+let topo=document.querySelector('#app-sepat .topo-sepat')
+let tabs=document.querySelector('#app-sepat .tabs-sepat')
+let oculto=false
+if(topo){
+topo.classList.toggle('cabecalho-oculto-sepat')
+oculto=topo.classList.contains('cabecalho-oculto-sepat')
+}
+if(tabs)tabs.classList.toggle('cabecalho-oculto-sepat',oculto)
+let btn=document.getElementById('btnOcultarCabecalhoSepat')
+if(btn)btn.textContent=oculto?'EXIBIR CABEÇALHO':'OCULTAR CABEÇALHO'
 }
 
 function instalarCabecalhoVigenciaSepat(){
@@ -342,6 +368,25 @@ document.getElementById('filtroVigenciaInicioSepat').value=''
 document.getElementById('filtroVigenciaFimSepat').value=''
 renderTabelaSepat()
 })
+let acoesMonitoramento=document.querySelector('#view-monitoramento .barra-filtros-sepat>.flex')
+if(acoesMonitoramento){
+let btnPdf=acoesMonitoramento.querySelector('.btn-pdf-sepat')
+let btnWord=acoesMonitoramento.querySelector('.btn-word-sepat')
+if(btnPdf)btnPdf.innerHTML='📄 PDF'
+if(btnWord)btnWord.innerHTML='📝 WORD'
+let checkOcultar=acoesMonitoramento.querySelector('.check-ocultar-sepat')
+let btnCabecalho=document.getElementById('btnOcultarCabecalhoSepat')
+if(!btnCabecalho){
+btnCabecalho=document.createElement('button')
+btnCabecalho.id='btnOcultarCabecalhoSepat'
+btnCabecalho.type='button'
+btnCabecalho.className='btn-cabecalho-sepat'
+btnCabecalho.textContent='OCULTAR CABEÇALHO'
+if(checkOcultar)acoesMonitoramento.insertBefore(btnCabecalho,checkOcultar)
+else acoesMonitoramento.appendChild(btnCabecalho)
+btnCabecalho.addEventListener('click',toggleCabecalhoSepat)
+}
+}
 atualizarOpcoesExtremasVigenciaSepat()
 preencherPeriodoPadraoVigenciaSepat()
 }
