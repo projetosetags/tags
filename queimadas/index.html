@@ -7,7 +7,7 @@
 <title>QUEIMADAS 2026 | Monitoramento Inteligente</title>
 <link rel="icon" href="data:,">
 <link rel="manifest" href="../manifest.json">
-<link rel="stylesheet" href="css/queimadas.css?v=20260807-11">
+<link rel="stylesheet" href="css/queimadas.css?v=20260905-1">
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -19,13 +19,13 @@
 <script>Chart.register(ChartDataLabels);</script>
 <script src="../config.js"></script>
 <script src="../js/municipios-ro.js"></script>
-<script src="../js/queimadas.js?v=20260808-1"></script>
-<script src="../js/queimadasRT.js?v=20260807-2"></script>
-<script src="../js/queimadas-monitoramento.js?v=20260730"></script>
-<script src="../js/queimadas-municipios.js?v=20260807-2"></script>
-<script src="../js/queimadas-mapas.js?v=20260730"></script>
-<script src="../js/queimadas-tempo-real.js?v=20260811-1"></script>
-<script src="../js/queimadas-rio-madeira.js?v=20260814-1"></script>
+<script src="../js/queimadas.js?v=20260905-1"></script>
+<script src="../js/queimadasRT.js?v=20260905-1"></script>
+<script src="../js/queimadas-monitoramento.js?v=20260905-1"></script>
+<script src="../js/queimadas-municipios.js?v=20260905-1"></script>
+<script src="../js/queimadas-mapas.js?v=20260905-1"></script>
+<script src="../js/queimadas-tempo-real.js?v=20260905-1"></script>
+<script src="../js/queimadas-rio-madeira.js?v=20260905-1"></script>
 </head>
 <body>
 <div id="login-queimadas" class="loginQueimadasOverlay">
@@ -113,7 +113,7 @@
 
 </div>
 <div class="fonte-card">
-Fonte: OpenStreetMap • INPE • Sedam • Base Municipal RO
+Fonte: OpenStreetMap • PROTEGE/SEDAM • INPE • Base Municipal RO
 </div>
 </div>
 <div id="cardIRIQHeatmap" class="cardExecutivo">
@@ -474,7 +474,7 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 </div>
 <div class="kpi-card">
 <div id="trmUltimaData" class="kpi-num">—</div>
-<div class="kpi-label">ÚLTIMA DATA INPE</div>
+<div class="kpi-label">ÚLTIMA DATA DISPONÍVEL</div>
 </div>
 <div class="kpi-card">
 <div id="trmTotalRegistros" class="kpi-num">—</div>
@@ -510,12 +510,12 @@ onkeyup="renderMunicipiosOficio('CADASTRO')"
 <div class="cardExecutivo">
 <h2>🔥 FOCOS MAIS RECENTES</h2>
 <div id="trmFocosRecentes"></div>
-<div class="fonte-card">Fonte: INPE • Sistema de Monitoramento Inteligente de Queimadas • TCE-RO</div>
+<div class="fonte-card">Fonte: PROTEGE/SEDAM • INPE • Sistema de Monitoramento Inteligente de Queimadas • TCE-RO</div>
 </div>
 <div class="cardExecutivo">
 <h2>🔥 MAIORES FOCOS DE 2026</h2>
 <div id="trmMaioresFocos"></div>
-<div class="fonte-card">Critério: maiores valores de FRP registrados em 2026 • Fonte: INPE • TCE-RO</div>
+<div class="fonte-card">Critério: maiores valores de FRP registrados em 2026 • Fonte: PROTEGE/SEDAM • INPE • TCE-RO</div>
 </div>
 </div>
 </section>
