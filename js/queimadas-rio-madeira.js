@@ -64,7 +64,50 @@ return String(valor??'')
 }
 /*=========================================================
 003 CARREGAR DADOS DO SUPABASE
+Correção 05/09/2026: paginação completa da série histórica.
+O Supabase limita consultas comuns; sem paginação o painel carregava
+apenas parte dos 21 mil+ registros e podia mostrar um nível antigo.
 =========================================================*/
+async function rmBuscarTodos(client,tabela,colunas,ordem){
+let pagina=0
+let limite=1000
+let todos=[]
+while(true){
+let inicio=pagina*limite
+let fim=inicio+limite-1
+let consulta=client.from(tabela).select(colunas)
+if(ordem)consulta=consulta.order(ordem,{ascending:true})
+let{data,error}=await consulta.range(inicio,fim)
+if(error)throw error
+let lote=data||[]
+todos.push(...lote)
+if(lote.length<limite)break
+pagina++
+if(pagina>100)throw new Error('Limite de segurança excedido ao carregar '+tabela)
+}
+return todos
+}
+function rmDiasDefasagem(dataISO){
+if(!dataISO)return null
+let d=new Date(`${rmDataISO(dataISO)}T12:00:00`)
+let hoje=new Date()
+let diff=Math.floor((hoje-d)/(1000*60*60*24))
+return Number.isFinite(diff)?Math.max(0,diff):null
+}
+function rmRenderStatusBase(){
+let dados=[...RM_DADOS].filter(x=>x.data).sort((a,b)=>String(a.data).localeCompare(String(b.data)))
+let ultimo=dados[dados.length-1]
+let dias=rmDiasDefasagem(ultimo?.data)
+let alvo=document.getElementById('painelRioMadeiraSituacao')
+if(!alvo||!ultimo)return
+let antigo=alvo.querySelector('.rmStatusBase')
+if(antigo)antigo.remove()
+let div=document.createElement('div')
+div.className='rmStatusBase'
+div.style.cssText='margin:10px 0;padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid #cbd5e1;font-size:12px;font-weight:800;color:#334155'
+div.innerHTML=`Base Supabase: <b>${RM_DADOS.length.toLocaleString('pt-BR')} registros</b> • última medição disponível: <b>${rmDataBR(ultimo.data)}</b>${dias!==null&&dias>3?` • <span style="color:#b45309">atenção: ${dias} dias sem nova medição na base</span>`:''}`
+alvo.prepend(div)
+}
 async function carregarRioMadeira(forcar=false){
 let client=rmCliente()
 if(!client){
@@ -73,41 +116,24 @@ return
 }
 if(RM_CARREGADO&&!forcar){
 alterarCicloRioMadeira()
+rmRenderStatusBase()
 return
 }
+let box=document.getElementById('painelRioMadeiraSituacao')
+if(box)box.innerHTML='<div class="rioMadeiraAguardando">🌊 Carregando série histórica completa do Rio Madeira...</div>'
 try{
 let[r1,r2,r3,r4,r5]=await Promise.all([
-client
-.from('rio_madeira_niveis')
-.select('data,ciclo_hidrologico,ano_inicio_ciclo,mes,dia,dia_ciclo,nivel_cm,nivel_m')
-.order('data',{ascending:true}),
-client
-.from('vw_rio_madeira_ciclos')
-.select('*')
-.order('data_inicio',{ascending:true}),
-client
-.from('vw_rio_madeira_ranking_cheias')
-.select('*')
-.order('nivel_cm',{ascending:false}),
-client
-.from('vw_rio_madeira_ranking_secas')
-.select('*')
-.order('nivel_cm',{ascending:true}),
-client
-.from('vw_rio_madeira_curva_historica')
-.select('*')
-.order('dia_ciclo',{ascending:true})
+rmBuscarTodos(client,'rio_madeira_niveis','data,ciclo_hidrologico,ano_inicio_ciclo,mes,dia,dia_ciclo,nivel_cm,nivel_m','data'),
+rmBuscarTodos(client,'vw_rio_madeira_ciclos','*','data_inicio'),
+rmBuscarTodos(client,'vw_rio_madeira_ranking_cheias','*','data'),
+rmBuscarTodos(client,'vw_rio_madeira_ranking_secas','*','data'),
+rmBuscarTodos(client,'vw_rio_madeira_curva_historica','*','dia_ciclo')
 ])
-if(r1.error)throw r1.error
-if(r2.error)throw r2.error
-if(r3.error)throw r3.error
-if(r4.error)throw r4.error
-if(r5.error)throw r5.error
-RM_DADOS=r1.data||[]
-RM_CICLOS=r2.data||[]
-RM_CHEIAS=r3.data||[]
-RM_SECAS=r4.data||[]
-RM_CURVA=r5.data||[]
+RM_DADOS=r1
+RM_CICLOS=r2
+RM_CHEIAS=[...r3].sort((a,b)=>Number(b.nivel_cm||0)-Number(a.nivel_cm||0))
+RM_SECAS=[...r4].sort((a,b)=>Number(a.nivel_cm||0)-Number(b.nivel_cm||0))
+RM_CURVA=[...r5].sort((a,b)=>Number(a.dia_ciclo||0)-Number(b.dia_ciclo||0))
 RM_CARREGADO=true
 preencherFiltrosRioMadeira()
 renderKPIsRioMadeira()
@@ -117,12 +143,13 @@ renderExtremosRioMadeira()
 renderGraficoRioMadeiraHistorico()
 renderGraficoRioMadeiraExtremos()
 renderTabelaRioMadeira()
+rmRenderStatusBase()
 }catch(e){
 console.error('Erro ao carregar Rio Madeira:',e)
 RM_CARREGADO=false
 let box=document.getElementById('painelRioMadeiraSituacao')
 if(box){
-box.innerHTML=`<div class="alerta-vermelho">Erro ao carregar dados do Rio Madeira: ${rmEscaparHTML(e?.message||e)}</div>`
+box.innerHTML=`<div class="alerta-vermelho"><b>Rio Madeira indisponível.</b><br>${rmEscaparHTML(e?.message||e)}</div>`
 }
 }
 }
@@ -726,4 +753,17 @@ ${lista.map(x=>`
 </table>
 </div>
 `
+}
+
+/*=========================================================
+014 ATUALIZAÇÃO AUTOMÁTICA
+=========================================================*/
+if(!window.__RM_AUTO_REFRESH__){
+window.__RM_AUTO_REFRESH__=true
+setInterval(()=>{
+let aba=document.getElementById('abaRioMadeira')
+if(aba&&!aba.classList.contains('hidden')){
+carregarRioMadeira(true)
+}
+},10*60*1000)
 }
