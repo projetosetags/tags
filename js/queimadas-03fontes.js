@@ -20,7 +20,9 @@ carregar('../js/queimadas-mapa-municipios-v3.js?v=20260906-2','qmtMapaV3',functi
 carregar('../js/queimadas-municipios-dashboard-v3.js?v=20260906-1','qmtDashboardV3',function(){
 carregar('../js/queimadas-municipios-entrega4-v4.js?v=20260906-2','qmtEntrega4V4',function(){
 carregar('../js/queimadas-municipios-entrega4-ajuste-v5.js?v=20260906-1','qmtEntrega4AjusteV5',function(){
-carregar('../js/queimadas-relatorio-tecnico-pdf.js?v=20260906-1','qmtRelatorioTecnicoPDF')
+carregar('../js/queimadas-relatorio-tecnico-pdf.js?v=20260906-1','qmtRelatorioTecnicoPDF',function(){
+carregar('../js/queimadas-relatorio-municipios-v2.js?v=20260906-1','qmtRelatorioMunicipiosV2')
+})
 })
 })
 })
