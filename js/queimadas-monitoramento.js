@@ -9,7 +9,6 @@ return`<button onclick="${botoes[tipo][0]}()" class="btn-pdf">${botoes[tipo][2]}
 
 /*=========================================================
 206 NORMALIZACAO DE FONTES • SEM MUTATIONOBSERVER
-Evita loop de DOM que travava o navegador.
 =========================================================*/
 function normalizarRotulosFontesQueimadas(){
 try{
@@ -35,7 +34,6 @@ if(novo!==texto)node.nodeValue=novo
 
 /*=========================================================
 207 RIO MADEIRA • FONTES E STATUS
-Fonte conforme planilha/boletim CENSIPAM recebido em 06/09/2026.
 =========================================================*/
 function ajustarStatusRioMadeiraFontes(){
 try{
@@ -74,7 +72,6 @@ window.renderGraficoRioMadeiraComparacao=()=>window.renderGraficoRioMadeiraHisto
 
 /*=========================================================
 209 INTEGRACAO HIDROCLIMATICA • SOB DEMANDA
-Não executa consultas pesadas enquanto a tela de login está aberta.
 =========================================================*/
 function fmtBR(v,d=2){let n=Number(v);return Number.isFinite(n)?n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}):'—'}
 function dataCurta(v){if(!v)return'—';let p=String(v).slice(0,10).split('-');return p.length===3?`${p[2]}/${p[1]}`:'—'}
@@ -104,4 +101,47 @@ setTimeout(instalarEixoDataRioMadeira,1200)
 setInterval(atualizarComplementosAbaAtual,300000)
 document.addEventListener('click',e=>{if(e.target?.id==='btnAbaRioMadeira')setTimeout(()=>{ajustarStatusRioMadeiraFontes();instalarEixoDataRioMadeira();atualizarIntegracaoHidroclimatica()},600)})
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciarMonitoramentoComplementar,{once:true});else iniciarMonitoramentoComplementar()
+
+/*=========================================================
+211 MAPA EXECUTIVO • ESTABILIZACAO APOS F5/LOGIN
+O Leaflet pode ser criado antes de o container adquirir a largura final.
+Forca recalculo de tamanho e reenquadra Rondônia após a tela ficar visível.
+=========================================================*/
+function corrigirMapaExecutivoQueimadas(){
+try{
+const mapa=window.mapaExecutivoRO
+const div=document.getElementById('mapaRO')
+const aba=document.getElementById('abaExecutivo')
+if(!mapa||!div||!aba||aba.classList.contains('hidden'))return
+if(div.offsetWidth<100||div.offsetHeight<100)return
+mapa.invalidateSize({pan:false,animate:false})
+const limites=L.latLngBounds([[-13.72,-66.75],[-7.85,-59.65]])
+mapa.fitBounds(limites,{padding:[18,18],animate:false,maxZoom:7})
+}catch(error){console.warn('211 Mapa executivo:',error)}
+}
+function agendarCorrecaoMapaExecutivo(){
+;[80,250,600,1200,2200].forEach(t=>setTimeout(corrigirMapaExecutivoQueimadas,t))
+}
+function instalarCorrecaoMapaExecutivo(){
+const abrirOriginal=window.abrirPainelQueimadas
+if(typeof abrirOriginal==='function'&&!abrirOriginal.__mapaFix){
+const novo=function(){const r=abrirOriginal.apply(this,arguments);agendarCorrecaoMapaExecutivo();return r}
+novo.__mapaFix=true
+window.abrirPainelQueimadas=novo
+}
+const mostrarOriginal=window.mostrarAbaQueimadas
+if(typeof mostrarOriginal==='function'&&!mostrarOriginal.__mapaFix){
+const novo=function(aba){const r=mostrarOriginal.apply(this,arguments);if(aba==='executivo')agendarCorrecaoMapaExecutivo();return r}
+novo.__mapaFix=true
+window.mostrarAbaQueimadas=novo
+}
+document.addEventListener('click',e=>{if(e.target?.id==='btnAbaExecutivo')agendarCorrecaoMapaExecutivo()})
+window.addEventListener('resize',()=>setTimeout(corrigirMapaExecutivoQueimadas,150))
+setTimeout(agendarCorrecaoMapaExecutivo,500)
+}
+
+function iniciarTudoComplementar(){
+iniciarMonitoramentoComplementar()
+instalarCorrecaoMapaExecutivo()
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciarTudoComplementar,{once:true});else iniciarTudoComplementar()
