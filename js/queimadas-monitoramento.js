@@ -130,7 +130,6 @@ setTimeout(agendarCorrecaoMapaExecutivo,500)
 
 /*=========================================================
 212 PDF E PNG • ICONES NO CABECALHO
-Move os botoes existentes do menu e os posiciona antes de SAIR.
 =========================================================*/
 function moverAcoesExportacaoParaTopo(){
 const topo=document.querySelector('.topoUsuarioQueimadas')
@@ -139,22 +138,18 @@ const btnPng=document.getElementById('btnExportarPNG')
 const btnSair=topo?.querySelector('button[onclick="logoutQueimadas()"]')
 if(!topo||!btnPdf||!btnPng||!btnSair)return
 let grupo=document.getElementById('acoesExportacaoTopo')
-if(!grupo){
-grupo=document.createElement('div')
-grupo.id='acoesExportacaoTopo'
-grupo.style.cssText='display:inline-flex;align-items:center;gap:7px;margin-left:12px;margin-right:8px'
-topo.insertBefore(grupo,btnSair)
-}
-const preparar=(btn,icone,titulo)=>{
-btn.className=''
-btn.textContent=icone
-btn.title=titulo
-btn.setAttribute('aria-label',titulo)
-btn.style.cssText='width:34px;height:34px;min-width:34px;padding:0;border:1px solid rgba(255,255,255,.30);border-radius:9px;background:rgba(255,255,255,.12);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:17px;line-height:1;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.15)'
-grupo.appendChild(btn)
-}
+if(!grupo){grupo=document.createElement('div');grupo.id='acoesExportacaoTopo';grupo.style.cssText='display:inline-flex;align-items:center;gap:7px;margin-left:12px;margin-right:8px';topo.insertBefore(grupo,btnSair)}
+const preparar=(btn,icone,titulo)=>{btn.className='';btn.textContent=icone;btn.title=titulo;btn.setAttribute('aria-label',titulo);btn.style.cssText='width:34px;height:34px;min-width:34px;padding:0;border:1px solid rgba(255,255,255,.30);border-radius:9px;background:rgba(255,255,255,.12);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:17px;line-height:1;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.15)';grupo.appendChild(btn)}
 preparar(btnPdf,'📄','Gerar PDF da aba atual')
 preparar(btnPng,'🖼️','Exportar PNG da aba atual')
+}
+
+/*=========================================================
+213 CARREGA MODULO 3 FONTES SATELITAIS
+=========================================================*/
+function carregarModulo3Fontes(){
+if(document.getElementById('script3Fontes'))return
+let s=document.createElement('script');s.id='script3Fontes';s.src='../js/queimadas-03fontes.js?v=20260906-1';s.defer=true;document.head.appendChild(s)
 }
 
 function iniciarTudoComplementar(){
@@ -162,5 +157,6 @@ iniciarMonitoramentoComplementar()
 instalarCorrecaoMapaExecutivo()
 setTimeout(moverAcoesExportacaoParaTopo,150)
 setTimeout(moverAcoesExportacaoParaTopo,900)
+carregarModulo3Fontes()
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciarTudoComplementar,{once:true});else iniciarTudoComplementar()
