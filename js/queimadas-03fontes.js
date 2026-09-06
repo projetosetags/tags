@@ -25,7 +25,9 @@ carregar('../js/queimadas-relatorio-municipios-v2.js?v=20260906-1','qmtRelatorio
 carregar('../js/queimadas-relatorio-municipios-v3.js?v=20260906-1','qmtRelatorioMunicipiosV3',function(){
 carregar('../js/queimadas-municipios-timeline-horizontal-v6.js?v=20260906-1','qmtTimelineHorizontalV6',function(){
 carregar('../js/queimadas-municipios-timeline-vertical-v7.js?v=20260906-1','qmtTimelineVerticalV7',function(){
-carregar('../js/queimadas-municipios-timeline-ordem-v8.js?v=20260906-1','qmtTimelineOrdemV8')
+carregar('../js/queimadas-municipios-timeline-ordem-v8.js?v=20260906-1','qmtTimelineOrdemV8',function(){
+carregar('../js/queimadas-municipios-timeline-v8.js?v=20260906-2','qmtTimelineV8')
+})
 })
 })
 })
