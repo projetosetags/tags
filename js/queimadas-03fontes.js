@@ -1,7 +1,7 @@
 /*=========================================================
 BOOTSTRAP • 3 FONTES + CADASTRO MUNICIPAL
 Mantém a versão estável do painel 3 Fontes e carrega o
-Cadastro Municipal, layout, mapa documental e Entrega 4 completa.
+Cadastro Municipal, layout, mapa documental, Entrega 4 e PDF técnico.
 =========================================================*/
 (function(){
 function carregar(src,id,cb){
@@ -19,7 +19,9 @@ carregar('../js/queimadas-municipios-layout-v2.js?v=20260906-3','qmtLayoutV2',fu
 carregar('../js/queimadas-mapa-municipios-v3.js?v=20260906-2','qmtMapaV3',function(){
 carregar('../js/queimadas-municipios-dashboard-v3.js?v=20260906-1','qmtDashboardV3',function(){
 carregar('../js/queimadas-municipios-entrega4-v4.js?v=20260906-2','qmtEntrega4V4',function(){
-carregar('../js/queimadas-municipios-entrega4-ajuste-v5.js?v=20260906-1','qmtEntrega4AjusteV5')
+carregar('../js/queimadas-municipios-entrega4-ajuste-v5.js?v=20260906-1','qmtEntrega4AjusteV5',function(){
+carregar('../js/queimadas-relatorio-tecnico-pdf.js?v=20260906-1','qmtRelatorioTecnicoPDF')
+})
 })
 })
 })
