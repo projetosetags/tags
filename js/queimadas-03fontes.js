@@ -28,7 +28,9 @@ carregar('../js/queimadas-municipios-timeline-ordem-v8.js?v=20260906-1','qmtTime
 carregar('../js/queimadas-municipios-timeline-v8.js?v=20260909-1','qmtTimelineV8',function(){
 carregar('../js/queimadas-mapa-municipios-v4.js?v=20260909-1','qmtMapaV4',function(){
 carregar('../js/queimadas-sincronizacao-global-v1.js?v=20260909-1','qSyncGlobalV1',function(){
-carregar('../js/queimadas-inteligencia-operacional-v1.js?v=20260909-1','qInteligenciaOperacionalV1')
+carregar('../js/queimadas-inteligencia-operacional-v1.js?v=20260909-1','qInteligenciaOperacionalV1',function(){
+carregar('../js/queimadas-3fontes-beta-v1.js?v=20260909-1','q3SipamBetaV1')
+})
 })
 })
 })
