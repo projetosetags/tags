@@ -1,358 +1,51 @@
 /*=========================================================
-001 MONITORAMENTO CLIENT
+001 HISTÓRICO AUTOMÁTICO — FONTE DIRETA DOS TAGs
+Não depende mais de evolucao_mensal/monitoramento_historico.
 =========================================================*/
+window.graficoHistoricoObj=null
+const HIST_MESES=[['jan','JAN'],['fev','FEV'],['mar','MAR'],['abr','ABR'],['mai','MAI'],['jun','JUN'],['jul','JUL'],['ago','AGO'],['set','SET'],['out','OUT'],['nov','NOV'],['dez','DEZ']]
 
-let graficoHistorico=null
-
-async function sincronizarHistoricoTAG(){
-
-if(!MONITORAMENTO_ATUAL){
-alert('Selecione um monitoramento')
-return
+async function obterHistoricoFonte(monitoramentoId){
+const{data:mon,error:eMon}=await client.from('monitoramentos').select('id,origem,titulo').eq('id',Number(monitoramentoId)).single()
+if(eMon)throw eMon
+const{data,error}=await client.from('vw_monitoramento_integrado').select('origem,codigo_item,codigo_subitem,jan,fev,mar,abr,mai,jun,jul,ago,set,out,nov,dez').eq('origem',String(mon.origem||'').toUpperCase())
+if(error)throw error
+return{monitoramento:mon,itens:data||[]}
 }
 
-let{data:itens,error}=await client
-.from('monitoramento_itens')
-.select('*')
-.eq('monitoramento_id',MONITORAMENTO_ATUAL)
-
-if(error){
-console.log(error)
-return
+function calcularMediaHistorica(itens,campo){
+const vals=(itens||[]).map(i=>i[campo]).filter(v=>v!==null&&v!==undefined&&v!=='').map(Number).filter(Number.isFinite)
+return vals.length?Number((vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1)):null
 }
 
-let totalInseridos=0
-let inserts=[]
-
-for(let item of(itens||[])){
-
-let{data:evolucao,error:evolucaoError}=await client
-.from('evolucao_mensal')
-.select('*')
-.eq('deliberacao_id',item.deliberacao_id||item.id_origem)
-
-if(evolucaoError){
-console.log(evolucaoError)
-continue
-}
-
-for(let e of(evolucao||[])){
-
-let{data:existente}=await client
-.from('monitoramento_historico')
-.select('id')
-.eq('monitoramento_id',MONITORAMENTO_ATUAL)
-.eq('item_id',item.id)
-.eq('mes_referencia',e.mes_referencia)
-.limit(1)
-
-if(existente&&existente.length>0){
-continue
-}
-
-inserts.push({
-monitoramento_id:MONITORAMENTO_ATUAL,
-item_id:item.id,
-mes_referencia:e.mes_referencia,
-percentual:Number(e.percentual_lancado||0),
-origem:'TAG'
-})
-
-totalInseridos++
-
-}
-
-}
-
-if(inserts.length>0){
-
-let{error:insertError}=await client
-.from('monitoramento_historico')
-.insert(inserts)
-
-if(insertError){
-console.log(insertError)
-alert('Erro ao inserir histórico')
-return
-}
-
-}
-
-await registrarLog(
-'SINCRONIZAÇÃO HISTÓRICO TAG',
-'monitoramento_historico',
-MONITORAMENTO_ATUAL
-)
-
-await carregarHistorico(MONITORAMENTO_ATUAL)
-
-alert(
-`${totalInseridos} históricos sincronizados`
-)
-
-}
-
-/*=========================================================
-001 MONITORAMENTO-HISTORICO.JS FUNCTION CARREGARHISTORICO
-=========================================================*/
 async function carregarHistorico(monitoramentoId=null){
-
-let ctx=document.getElementById('graficoHistorico')
-
-if(!ctx){
-console.log('Canvas histórico não encontrado')
-return
+const ctx=document.getElementById('graficoHistorico');if(!ctx)return
+if(!monitoramentoId)monitoramentoId=document.getElementById('historicoMonitoramentoSelect')?.value||window.MONITORAMENTO_ATUAL||null
+if(!monitoramentoId)return
+try{
+const pacote=await obterHistoricoFonte(monitoramentoId)
+const valores=HIST_MESES.map(([campo])=>calcularMediaHistorica(pacote.itens,campo))
+if(window.graficoHistoricoObj?.destroy)window.graficoHistoricoObj.destroy()
+window.graficoHistoricoObj=new Chart(ctx,{type:'line',data:{labels:HIST_MESES.map(x=>x[1]),datasets:[{label:`Evolução média declarada — ${pacote.monitoramento.origem}`,data:valores,fill:true,tension:.35,spanGaps:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#fff'}},datalabels:{color:'#fff',anchor:'end',align:'top',formatter:v=>v===null?'':v+'%'}},scales:{x:{ticks:{color:'#fff'},grid:{color:'rgba(255,255,255,.05)'}},y:{ticks:{color:'#fff',callback:v=>v+'%'},grid:{color:'rgba(255,255,255,.05)'},beginAtZero:true,max:100}}},plugins:[ChartDataLabels]})
+const lista=document.getElementById('listaHistorico');if(lista){
+lista.innerHTML=`<div class="mt-fonte-aviso"><strong>Histórico automático.</strong> Os valores abaixo são calculados diretamente dos lançamentos mensais do TAG ${pacote.monitoramento.origem}; não é necessário copiar ou sincronizar histórico manualmente.</div><div class="mt-resumo-grid">${HIST_MESES.map(([campo,label],idx)=>`<div class="mt-resumo-card"><span>${label}</span><strong>${valores[idx]===null?'-':valores[idx].toFixed(1)+'%'}</strong></div>`).join('')}</div>`
+}
+}catch(e){console.error('Histórico:',e)}
 }
 
-if(!monitoramentoId){
-
-monitoramentoId=
-document.getElementById('historicoMonitoramentoSelect')
-?.value||null
-
-}
-
-if(!monitoramentoId){
-console.log('Nenhum monitoramento selecionado')
-return
-}
-
-let{data,error}=await client
-.from('monitoramento_historico')
-.select('*')
-.eq('monitoramento_id',monitoramentoId)
-.order('mes_referencia',{ascending:true})
-
-if(error){
-console.log('ERRO HISTÓRICO:',error)
-return
-}
-
-data=data||[]
-
-if(
-window.graficoHistoricoObj&&
-typeof window.graficoHistoricoObj.destroy==='function'
-){
-window.graficoHistoricoObj.destroy()
-}
-
-if(data.length===0){
-
-window.graficoHistoricoObj=
-new Chart(ctx,{
-type:'line',
-data:{
-labels:['SEM DADOS'],
-datasets:[{
-label:'Evolução Média',
-data:[0],
-borderColor:'#10b981',
-backgroundColor:'rgba(16,185,129,.2)',
-fill:true,
-tension:.35
-}]
-},
-options:{
-responsive:true,
-plugins:{
-legend:{
-labels:{
-color:'#fff'
-}
-}
-},
-scales:{
-x:{
-ticks:{color:'#fff'},
-grid:{color:'rgba(255,255,255,.05)'}
-},
-y:{
-ticks:{color:'#fff'},
-grid:{color:'rgba(255,255,255,.05)'},
-beginAtZero:true,
-max:100
-}
-}
-}
-})
-
-return
-
-}
-
-let mapa={}
-
-data.forEach(i=>{
-
-let percentual=Number(i.percentual||0)
-
-let chave=i.mes_referencia||'SEM DATA'
-
-if(!mapa[chave]){
-mapa[chave]=[]
-}
-
-mapa[chave].push(percentual)
-
-})
-
-let labels=[]
-let valores=[]
-
-Object.keys(mapa).forEach(k=>{
-
-labels.push(k)
-
-let arr=mapa[k]||[]
-
-let media=
-arr.reduce((a,b)=>a+b,0)/arr.length
-
-valores.push(
-Number(media.toFixed(1))
-)
-
-})
-
-window.graficoHistoricoObj=
-new Chart(ctx,{
-type:'line',
-data:{
-labels:labels,
-datasets:[{
-label:'Evolução Média',
-data:valores,
-borderColor:'#10b981',
-backgroundColor:'rgba(16,185,129,.2)',
-fill:true,
-tension:.35
-}]
-},
-options:{
-responsive:true,
-plugins:{
-legend:{
-labels:{
-color:'#fff'
-}
-}
-},
-scales:{
-x:{
-ticks:{color:'#fff'},
-grid:{color:'rgba(255,255,255,.05)'}
-},
-y:{
-ticks:{color:'#fff'},
-grid:{color:'rgba(255,255,255,.05)'},
-beginAtZero:true,
-max:100
-}
-}
-}
-})
-
-}
-/*=========================================================
-020 MONITORAMENTO-HISTORICO.JS POPULAR SELECT
-=========================================================*/
 async function popularSelectHistorico(){
-
-let select=document.getElementById('historicoMonitoramentoSelect')
-
-console.log('SELECT:',select)
-
-if(!select){
-return
+const select=document.getElementById('historicoMonitoramentoSelect');if(!select)return
+const{data,error}=await client.from('monitoramentos').select('id,titulo,origem').order('id',{ascending:true});if(error){console.error(error);return}
+select.innerHTML=(data||[]).map((m,index)=>`<option value="${m.id}" ${Number(window.MONITORAMENTO_ATUAL)===Number(m.id)||(!window.MONITORAMENTO_ATUAL&&index===0)?'selected':''}>${m.titulo||'Monitoramento'} — ${m.origem||''}</option>`).join('')
+if(select.value)await carregarHistorico(select.value)
 }
 
-let{data,error}=await client
-.from('monitoramentos')
-.select('*')
-.order('titulo',{ascending:true})
+async function carregarHistoricoMonitoramento(){const id=document.getElementById('historicoMonitoramentoSelect')?.value;if(id)await carregarHistorico(id)}
+async function sincronizarHistoricoTAG(){await carregarHistoricoMonitoramento();alert('Histórico atualizado diretamente a partir do TAG de origem.')}
 
-if(error){
+window.carregarHistorico=carregarHistorico
+window.carregarHistoricoMonitoramento=carregarHistoricoMonitoramento
+window.popularSelectHistorico=popularSelectHistorico
+window.sincronizarHistoricoTAG=sincronizarHistoricoTAG
 
-console.log('ERRO HISTÓRICO:',error)
-
-return
-
-}
-
-console.log('MONITORAMENTOS:',data)
-
-select.innerHTML=''
-
-;(data||[]).forEach((m,index)=>{
-
-select.innerHTML+=`
-<option value="${m.id}" ${index===0?'selected':''}>
-${m.titulo||'Monitoramento'}
-</option>
-`
-
-})
-
-if(data&&data.length>0){
-
-await carregarHistoricoMonitoramento()
-
-}
-
-}
-/*=========================================================
-021 MONITORAMENTO-HISTORICO.JS CARREGAR HISTORICO
-=========================================================*/
-async function carregarHistoricoMonitoramento(){
-
-let monitoramentoId=
-document.getElementById('historicoMonitoramentoSelect')
-?.value
-
-if(!monitoramentoId){
-return
-}
-
-await carregarHistorico(monitoramentoId)
-
-let{data,error}=await client
-.from('monitoramento_historico')
-.select('*')
-.eq('monitoramento_id',monitoramentoId)
-.order('mes_referencia',{ascending:true})
-
-if(error){
-console.log(error)
-return
-}
-
-console.log('HISTÓRICO:',data)
-
-if(typeof renderListaHistorico==='function'){
-renderListaHistorico(data||[])
-}
-
-}
-/*=========================================================
-099 MONITORAMENTO-HISTORICO.JS INIT
-=========================================================*/
-document.addEventListener('DOMContentLoaded',async()=>{
-
-console.log('HISTÓRICO INIT')
-
-if(typeof popularSelectHistorico==='function'){
-
-await popularSelectHistorico()
-
-}
-
-let select=document.getElementById('historicoMonitoramentoSelect')
-
-if(select&&select.value){
-
-await carregarHistoricoMonitoramento()
-
-}
-
-})
+document.addEventListener('DOMContentLoaded',()=>setTimeout(popularSelectHistorico,900))
