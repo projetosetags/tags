@@ -1,911 +1,337 @@
-  
-window.ITEM_EVIDENCIA_ATUAL=null
-
-async function uploadEvidencia(){
-
-if(!ITEM_EVIDENCIA_ATUAL){
-alert('Selecione um item')
-return
-}
-
-let file=document.getElementById('arquivoEvidencia').files[0]
-
-if(!file){
-alert('Selecione um arquivo')
-return
-}
-
-let tipo=prompt('Tipo da Evidência')
-if(tipo===null)return
-
-let numero=prompt('Número do Documento')
-if(numero===null)return
-
-let orgao=prompt('Órgão')
-if(orgao===null)return
-
-let descricao=prompt('Descrição')
-if(descricao===null)return
-
-let confiabilidade=prompt('Confiabilidade: ALTA/MÉDIA/BAIXA')
-if(confiabilidade===null)return
-
-let status='PENDENTE'
-
-let nomeArquivo=
-Date.now()+
-'_'+
-file.name
-.replaceAll(' ','_')
-
-let caminho=
-ITEM_EVIDENCIA_ATUAL+
-'/'+
-nomeArquivo
-
-let{error:uploadError}=await client
-.storage
-.from('monitoramento-evidencias')
-.upload(caminho,file)
-
-if(uploadError){
-console.log(uploadError)
-alert('Erro upload')
-return
-}
-
-let{data:urlData}=client
-.storage
-.from('monitoramento-evidencias')
-.getPublicUrl(caminho)
-
-let link=urlData.publicUrl
-
-let{error}=await client
-.from('monitoramento_evidencias')
-.insert([{
-item_id:ITEM_EVIDENCIA_ATUAL,
-tipo_evidencia:tipo,
-numero_documento:numero,
-descricao:descricao,
-orgao:orgao,
-link_arquivo:link,
-status_validacao:status,
-confiabilidade:confiabilidade,
-data_documento:new Date().toISOString().slice(0,10)
-}])
-
-if(error){
-console.log(error)
-alert('Erro banco')
-return
-}
-
-document.getElementById('arquivoEvidencia').value=''
-await client
-.from('monitoramento_itens')
-.update({
-evidencia_upload:true
-})
-.eq('id',ITEM_EVIDENCIA_ATUAL)
-await carregarEvidencias()
-await renderPainelEvidencias()
-await registrarLog(
-'UPLOAD EVIDÊNCIA',
-'monitoramento_evidencias',
-ITEM_EVIDENCIA_ATUAL
-)
-
-}
-
-async function carregarEvidencias(){
-
-if(!ITEM_EVIDENCIA_ATUAL)return
-
-let{data,error}=await client
-.from('monitoramento_evidencias')
-.select('*')
-.eq('item_id',ITEM_EVIDENCIA_ATUAL)
-.order('id',{ascending:false})
-
-if(error){
-console.log(error)
-return
-}
-
-let html=''
-
-;(data||[]).forEach(e=>{
-
-html+=`
-<div class="card-evidencia">
-
-<div class="card-evidencia-topo">
-
-<div>
-<div class="evidencia-titulo">
-${e.tipo_evidencia||'-'}
-</div>
-
-<div class="evidencia-subtitulo">
-${e.numero_documento||'-'} • ${e.orgao||'-'}
-</div>
-</div>
-
-<div class="badge-status ${getClasseValidacao(e.status_validacao)}">
-${e.status_validacao||'-'}
-</div>
-
-</div>
-
-<div class="evidencia-descricao">
-${e.descricao||'-'}
-</div>
-
-<div class="evidencia-grid">
-
-<div>
-<b>Confiabilidade:</b>
-${e.confiabilidade||'-'}
-</div>
-
-<div>
-<b>Data:</b>
-${formatarData(e.data_documento)}
-</div>
-
-</div>
-
-<div class="evidencia-actions">
-
-<a href="${e.link_arquivo}" target="_blank" class="btn-link">
-📎 Abrir Arquivo
-</a>
-
-<button class="btn-padrao azul" onclick="validarEvidencia(${e.id})">
-✔ Validar
-</button>
-
-<button class="btn-padrao amarelo" onclick="editarEvidencia(${e.id})">
-✏ Editar
-</button>
-
-<button class="btn-padrao vermelho" onclick="excluirEvidencia(${e.id})">
-🗑 Excluir
-</button>
-
-</div>
-
-</div>
-`
-
-})
-
-document.getElementById('listaEvidencias').innerHTML=html
-
-}
-
-function getClasseValidacao(s){
-
-if(s==='VALIDADA')return'verde'
-if(s==='PENDENTE')return'amarelo'
-if(s==='REJEITADA')return'vermelho'
-
-return'azul'
-
-}
-
-async function validarEvidencia(id){
-
-let{error}=await client
-.from('monitoramento_evidencias')
-.update({
-status_validacao:'VALIDADA'
-})
-.eq('id',id)
-
-if(error){
-console.log(error)
-return
-}
-
-await carregarEvidencias()
-
-}
-
-
-
-async function registrarLog(
-acao,
-tabela,
-registro
-){
-
-try{
-
-await client
-.from('monitoramento_logs')
-.insert([{
-usuario:
-USER_MONITORAMENTO?.nome||
-USER_MONITORAMENTO?.username||
-'AUDITOR',
-acao:acao,
-tabela:tabela,
-registro_id:registro,
-monitoramento_id:MONITORAMENTO_ATUAL||null,
-origem:
-USER_MONITORAMENTO?.origem||'-',
-nivel:
-USER_MONITORAMENTO?.nivel||4,
-dados:{
-data:new Date().toISOString()
-}
-}])
-
-}catch(e){
-
-console.log(e)
-
-}
-
-}
-async function editarEvidencia(id){
-let{data,error}=await client.from('monitoramento_evidencias').select('*').eq('id',id).single()
-if(error||!data){
-console.log(error)
-return
-}
-let descricao=prompt('Descrição',data.descricao||'')
-if(descricao===null)return
-let confiabilidade=prompt('Confiabilidade: ALTA, MÉDIA ou BAIXA',data.confiabilidade||'MÉDIA')
-if(confiabilidade===null)return
-let status=prompt('Status: VALIDADA, PENDENTE ou REJEITADA',data.status_validacao||'PENDENTE')
-if(status===null)return
-let payload={
-descricao:descricao,
-confiabilidade:confiabilidade.toUpperCase(),
-status_validacao:status.toUpperCase()
-}
-let{error:updateError}=await client.from('monitoramento_evidencias').update(payload).eq('id',id)
-if(updateError){
-console.log(updateError)
-alert('Erro ao editar')
-return
-}
-await registrarLog('EDIÇÃO EVIDÊNCIA','monitoramento_evidencias',id)
-await carregarCentralEvidencias()
-alert('Evidência atualizada')
-}
-
-async function excluirEvidencia(id){
-let ok=confirm('Excluir evidência?')
-if(!ok)return
-let{error}=await client.from('monitoramento_evidencias').delete().eq('id',id)
-if(error){
-console.log(error)
-alert('Erro ao excluir')
-return
-}
-await registrarLog('EXCLUSÃO EVIDÊNCIA','monitoramento_evidencias',id)
-await carregarCentralEvidencias()
-alert('Evidência removida')
-}
 /*=========================================================
-046 MONITORAMENTO-EVIDENCIAS.JS FUNCTION RENDERPAINELEVIDENCIAS
+001 MONITORAMENTO-EVIDENCIAS.JS ESTADO
+=========================================================*/
+window.ITEM_EVIDENCIA_ATUAL=null
+window.MAPA_EVIDENCIAS={}
+window.MAPA_ANALISES={}
+window.MAPA_FONTE_MONITORAMENTO={}
+
+/*=========================================================
+002 MONITORAMENTO-EVIDENCIAS.JS UTILITÁRIOS
+=========================================================*/
+function escaparHTML(v){
+return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))
+}
+function textoOuTraco(v){const s=String(v??'').trim();return s?s:'-'}
+function classeStatusMonitoramento(status){
+const s=String(status||'').toUpperCase()
+if(s==='EXECUTADA')return'badge-executada'
+if(s.includes('PARCIAL'))return'badge-parcial'
+if(s.includes('NÃO'))return'badge-nao'
+return'badge-andamento'
+}
+function formatarDataSegura(v){
+if(!v)return'-'
+const d=new Date(v)
+if(Number.isNaN(d.getTime()))return String(v)
+return d.toLocaleDateString('pt-BR')
+}
+function obterFonteItem(item){
+return window.MAPA_FONTE_MONITORAMENTO[String(item.deliberacao_id||'')]||{}
+}
+function resumoValidacaoEvidencias(itemId,textoManual=''){
+const docs=window.MAPA_EVIDENCIAS[itemId]||[]
+const validas=docs.filter(e=>e.status_validacao==='VALIDADA').length
+const rejeitadas=docs.filter(e=>e.status_validacao==='REJEITADA').length
+const pendentes=docs.length-validas-rejeitadas
+const temTexto=String(textoManual||'').trim().length>0
+let status='PENDENTE'
+if((temTexto||docs.length>0)&&validas===0)status='PARCIAL'
+if(validas>0&&(pendentes>0||rejeitadas>0))status='PARCIAL'
+if(validas>0&&pendentes===0&&rejeitadas===0)status='COMPLETA'
+return{status,total:docs.length,validas,pendentes,rejeitadas}
+}
+
+/*=========================================================
+003 MONITORAMENTO-EVIDENCIAS.JS CARREGAMENTO INTEGRADO
 =========================================================*/
 async function renderPainelEvidencias(){
-
-let box=document.getElementById('painelEvidenciasItens')
-
+const box=document.getElementById('painelEvidenciasItens')
 if(!box)return
-
-box.innerHTML=''
-
-let busca=(document.getElementById('buscaEvidencia')?.value||'').toLowerCase()
-
-let origem=document.getElementById('filtroOrigemEvidencia')?.value||'TODAS'
-
-let query=client
-.from('monitoramento_itens')
-.select('*')
-.gte('percentual',100)
-.order('item',{ascending:true})
-
-if(origem!=='TODAS'){
-query=query.eq('origem',origem)
-}
-
-let{data,error}=await query
-
-console.log('ORIGEM=',origem)
-console.log('ERRO=',error)
-console.log('DATA=',data)
-if(error){
-console.log(error)
-return
-}
-
-data=(data||[]).filter(i=>{
-
-let txt=`
-${i.item||''}
-${i.subitem||''}
-${i.produto||''}
-${i.descricao||''}
-`.toLowerCase()
-
-return txt.includes(busca)
-
+box.innerHTML='<div class="evidencia-loading">Carregando dados do monitoramento...</div>'
+const busca=String(document.getElementById('buscaEvidencia')?.value||'').toLowerCase().trim()
+const origem=String(document.getElementById('filtroOrigemEvidencia')?.value||document.getElementById('filtroOrigem')?.value||'TODAS').toUpperCase()
+let query=client.from('monitoramento_itens').select('*').order('id',{ascending:true})
+if(window.MONITORAMENTO_ATUAL)query=query.eq('monitoramento_id',Number(window.MONITORAMENTO_ATUAL))
+if(origem!=='TODAS')query=query.eq('origem',origem)
+const[{data:itens,error},{data:fontes,error:erroFonte},{data:evidencias,error:erroEvid},{data:analises,error:erroAnalises}]=await Promise.all([
+query,
+client.from('vw_monitoramento_integrado').select('*'),
+client.from('monitoramento_evidencias').select('*').order('created_at',{ascending:false}),
+client.from('monitoramento_analises').select('*').order('created_at',{ascending:false})
+])
+if(error){console.error(error);box.innerHTML='<div class="alerta-vermelho">Erro ao carregar os itens.</div>';return}
+if(erroFonte)console.warn(erroFonte)
+if(erroEvid)console.warn(erroEvid)
+if(erroAnalises)console.warn(erroAnalises)
+window.MAPA_FONTE_MONITORAMENTO={}
+;(fontes||[]).forEach(f=>{window.MAPA_FONTE_MONITORAMENTO[String(f.id)]=f})
+window.MAPA_EVIDENCIAS={}
+;(evidencias||[]).forEach(e=>{if(!window.MAPA_EVIDENCIAS[e.item_id])window.MAPA_EVIDENCIAS[e.item_id]=[];window.MAPA_EVIDENCIAS[e.item_id].push(e)})
+window.MAPA_ANALISES={}
+;(analises||[]).forEach(a=>{if(!window.MAPA_ANALISES[a.item_id])window.MAPA_ANALISES[a.item_id]=a})
+let dados=typeof ordenarDataGlobal==='function'?ordenarDataGlobal(itens||[]):(itens||[])
+if(busca){
+dados=dados.filter(i=>{
+const f=obterFonteItem(i)
+return [i.item,i.subitem,i.descricao,i.produto,i.responsavel,f.achado,f.acao,f.produto,f.meta].join(' ').toLowerCase().includes(busca)
 })
-
+}
+const resumo={total:dados.length,comEvidencia:0,validadas:0,semEvidencia:0,comAnalise:0}
 let html=''
-
-data.forEach(i=>{
-
-let status=i.status||'-'
-
-let classe='badge-andamento'
-
-if(status.includes('EXECUTADA')){
-classe='badge-executada'
+for(const i of dados){
+const f=obterFonteItem(i)
+const docs=window.MAPA_EVIDENCIAS[i.id]||[]
+const analise=window.MAPA_ANALISES[i.id]
+const val=resumoValidacaoEvidencias(i.id,i.evidencia)
+if(val.total>0||String(i.evidencia||'').trim())resumo.comEvidencia++;else resumo.semEvidencia++
+if(val.status==='COMPLETA')resumo.validadas++
+if(analise)resumo.comAnalise++
+const achado=textoOuTraco(f.achado||i.achado||i.deliberacao)
+const acao=textoOuTraco(f.acao||i.acao_gestor||i.descricao)
+const produto=textoOuTraco(f.produto||i.produto||i.produto_esperado)
+const prazo=textoOuTraco(f.prazo_texto||i.entrega_esperada||i.prazo)
+const meta=textoOuTraco(f.meta||i.beneficio_esperado)
+const orgao=String(i.origem||'-').toUpperCase()
+const codigoItem=f.codigo_item||i.item
+const codigoSubitem=f.codigo_subitem||i.subitem
+let evidenciasHtml=''
+if(docs.length){
+evidenciasHtml='<div class="evidencia-documentos">'+docs.map((e,n)=>`
+<div class="evidencia-documento">
+<div class="evidencia-documento-num">${n+1}</div>
+<div class="evidencia-documento-corpo">
+<div><b>${escaparHTML(textoOuTraco(e.tipo_evidencia))}</b>${e.numero_documento?` - ${escaparHTML(e.numero_documento)}`:''}</div>
+<div class="evidencia-documento-desc">${escaparHTML(textoOuTraco(e.descricao))}</div>
+<div class="evidencia-documento-meta">${escaparHTML(textoOuTraco(e.orgao_setor||e.orgao))} • ${formatarDataSegura(e.data_documento)} • ${escaparHTML(textoOuTraco(e.confiabilidade))}</div>
+<div class="evidencia-documento-acoes">
+${e.link_arquivo?`<a class="btn-mini" target="_blank" rel="noopener" href="${escaparHTML(e.link_arquivo)}">Abrir arquivo</a>`:''}
+${e.link_sei?`<a class="btn-mini" target="_blank" rel="noopener" href="${escaparHTML(e.link_sei)}">Abrir SEI</a>`:''}
+<span class="evidencia-validacao evidencia-${String(e.status_validacao||'PENDENTE').toLowerCase()}">${escaparHTML(e.status_validacao||'PENDENTE')}</span>
+<button class="btn-mini verde" onclick="validarEvidencia(${e.id},'VALIDADA')">Validar</button>
+<button class="btn-mini vermelho" onclick="validarEvidencia(${e.id},'REJEITADA')">Rejeitar</button>
+<button class="btn-mini" onclick="editarEvidencia(${e.id})">Editar</button>
+</div>
+</div>
+</div>`).join('')+'</div>'
+}else{
+evidenciasHtml='<div class="evidencia-vazia">Nenhum documento estruturado lançado.</div>'
 }
-
-if(status.includes('PARCIAL')){
-classe='badge-parcial'
-}
-
-if(status.includes('NÃO')){
-classe='badge-nao'
-}
-
-let mes100=i.mes_100||i.mes_referencia||'-'
-
-let possuiEvidencia=
-i.evidencia&&
-String(i.evidencia).trim()!==''
-
-let checks=i.evidencias_check||[]
-let totalChecks=
-checks.length+
-(possuiEvidencia?1:0)+
-(i.evidencia_upload?1:0)
-let classeBorda='card-evidencia-pendente'
-
-if(i.evidencia_status==='PARCIAL'){
-classeBorda='card-evidencia-parcial'
-}
-
-if(i.evidencia_status==='COMPLETA'){
-classeBorda='card-evidencia-completa'
-}
-
 html+=`
-<div class="linha-evidencia linha-evidencia-item ${classeBorda}" data-evidencia-item="${i.id}">
-
+<article class="evidencia-ficha" data-evidencia-item="${i.id}">
+<header class="evidencia-ficha-header">
 <div>
-<b>${i.item||'-'}</b>
+<div class="evidencia-origem">${escaparHTML(orgao)}</div>
+<h3>ITEM ${escaparHTML(textoOuTraco(codigoItem))} • SUBITEM ${escaparHTML(textoOuTraco(codigoSubitem))}</h3>
 </div>
-
-<div>
-${i.subitem||'-'}
+<div class="evidencia-status-area">
+<span class="badge-status-evidencia ${classeStatusMonitoramento(i.status)}">${escaparHTML(i.status||'-')}</span>
+<strong>${Number(i.percentual||0).toFixed(0)}%</strong>
 </div>
-
-<div style="
-font-size:11px;
-line-height:1.35;
-white-space:normal;
-word-break:break-word;
-">
-${i.produto||i.produto_esperado||'-'}
+</header>
+<div class="evidencia-quadro-fonte">
+<div class="evidencia-quadro-cab">Achado / Situação Encontrada</div><div>${escaparHTML(achado)}</div>
+<div class="evidencia-quadro-cab">Ação a ser Adotada</div><div>${escaparHTML(acao)}</div>
+<div class="evidencia-quadro-cab">Prazo</div><div>${escaparHTML(prazo)}</div>
+<div class="evidencia-quadro-cab">Produto Esperado</div><div>${escaparHTML(produto)}</div>
+<div class="evidencia-quadro-cab">Responsável</div><div>${escaparHTML(textoOuTraco(i.responsavel||f.responsavel))}</div>
+${meta!=='-'?`<div class="evidencia-quadro-cab">Meta / Resultado Esperado</div><div>${escaparHTML(meta)}</div>`:''}
 </div>
-
-<div>
-${mes100}
+<section class="evidencia-secao">
+<h4>Informações prestadas pela ${escaparHTML(orgao)}</h4>
+<textarea id="obsEvidencia_${i.id}" class="evidencia-textarea" placeholder="Registre aqui, de forma objetiva e numerada, os documentos e informações apresentados pelo jurisdicionado.">${escaparHTML(i.evidencia||'')}</textarea>
+<div class="evidencia-toolbar">
+<button class="btn-padrao" onclick="salvarResumoEvidencia(${i.id},this)">💾 Salvar informações</button>
+<button class="btn-padrao verde" onclick="abrirModalUpload(${i.id})">📎 Adicionar evidência</button>
+<button class="btn-padrao azul" onclick="abrirAnaliseDoItem(${i.id})">🧠 Análise técnica</button>
 </div>
-
-<div>
-
-<span class="badge-status-evidencia ${classe}">
-${status}
-</span>
-
-<div style="
-margin-top:6px;
-font-size:10px;
-font-weight:800;
-color:#111;
-">
-📎 ${totalChecks} evidências
-</div>
-
-</div>
-
-<div>
-
-<div class="box-evidencias-check">
-
-<label class="item-check-evidencia"><input type="checkbox" value="RELATÓRIO" ${checks.includes('RELATÓRIO')?'checked':''}>RELATÓRIO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="DIAGNÓSTICO" ${checks.includes('DIAGNÓSTICO')?'checked':''}>DIAGNÓSTICO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="PLANO DE AÇÃO" ${checks.includes('PLANO DE AÇÃO')?'checked':''}>PLANO AÇÃO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="PLANEJAMENTO" ${checks.includes('PLANEJAMENTO')?'checked':''}>PLANEJAMENTO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="MONITORAMENTO" ${checks.includes('MONITORAMENTO')?'checked':''}>MONITORAMENTO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="PARECER TÉCNICO" ${checks.includes('PARECER TÉCNICO')?'checked':''}>PARECER</label>
-<label class="item-check-evidencia"><input type="checkbox" value="NOTA TÉCNICA" ${checks.includes('NOTA TÉCNICA')?'checked':''}>NOTA TÉCNICA</label>
-<label class="item-check-evidencia"><input type="checkbox" value="ESTUDO TÉCNICO" ${checks.includes('ESTUDO TÉCNICO')?'checked':''}>ESTUDO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="CHECKLIST" ${checks.includes('CHECKLIST')?'checked':''}>CHECKLIST</label>
-<label class="item-check-evidencia"><input type="checkbox" value="INSPEÇÃO" ${checks.includes('INSPEÇÃO')?'checked':''}>INSPEÇÃO</label>
-
-<label class="item-check-evidencia"><input type="checkbox" value="ATA DE REUNIÃO" ${checks.includes('ATA DE REUNIÃO')?'checked':''}>ATA</label>
-<label class="item-check-evidencia"><input type="checkbox" value="LISTA DE PRESENÇA" ${checks.includes('LISTA DE PRESENÇA')?'checked':''}>PRESENÇA</label>
-<label class="item-check-evidencia"><input type="checkbox" value="REGISTRO FOTOGRÁFICO" ${checks.includes('REGISTRO FOTOGRÁFICO')?'checked':''}>FOTOS</label>
-<label class="item-check-evidencia"><input type="checkbox" value="APRESENTAÇÃO" ${checks.includes('APRESENTAÇÃO')?'checked':''}>APRESENTAÇÃO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="CERTIFICADO" ${checks.includes('CERTIFICADO')?'checked':''}>CERTIFICADO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="CAPACITAÇÃO" ${checks.includes('CAPACITAÇÃO')?'checked':''}>CAPACITAÇÃO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="TREINAMENTO" ${checks.includes('TREINAMENTO')?'checked':''}>TREINAMENTO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="OFÍCIO" ${checks.includes('OFÍCIO')?'checked':''}>OFÍCIO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="MEMORANDO" ${checks.includes('MEMORANDO')?'checked':''}>MEMORANDO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="DESPACHO" ${checks.includes('DESPACHO')?'checked':''}>DESPACHO</label>
-
-<label class="item-check-evidencia"><input type="checkbox" value="PORTARIA" ${checks.includes('PORTARIA')?'checked':''}>PORTARIA</label>
-<label class="item-check-evidencia"><input type="checkbox" value="DECRETO" ${checks.includes('DECRETO')?'checked':''}>DECRETO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="INSTRUÇÃO NORMATIVA" ${checks.includes('INSTRUÇÃO NORMATIVA')?'checked':''}>INSTRUÇÃO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="REGIMENTO" ${checks.includes('REGIMENTO')?'checked':''}>REGIMENTO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="ATO NORMATIVO" ${checks.includes('ATO NORMATIVO')?'checked':''}>ATO NORM.</label>
-<label class="item-check-evidencia"><input type="checkbox" value="MINUTA" ${checks.includes('MINUTA')?'checked':''}>MINUTA</label>
-<label class="item-check-evidencia"><input type="checkbox" value="ACORDO / ACT" ${checks.includes('ACORDO / ACT')?'checked':''}>ACT</label>
-<label class="item-check-evidencia"><input type="checkbox" value="TERMO" ${checks.includes('TERMO')?'checked':''}>TERMO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="PARCERIA" ${checks.includes('PARCERIA')?'checked':''}>PARCERIA</label>
-<label class="item-check-evidencia"><input type="checkbox" value="PROCESSO SEI" ${checks.includes('PROCESSO SEI')?'checked':''}>SEI</label>
-
-<label class="item-check-evidencia"><input type="checkbox" value="SISTEMA" ${checks.includes('SISTEMA')?'checked':''}>SISTEMA</label>
-<label class="item-check-evidencia"><input type="checkbox" value="PLATAFORMA DIGITAL" ${checks.includes('PLATAFORMA DIGITAL')?'checked':''}>PLATAFORMA</label>
-<label class="item-check-evidencia"><input type="checkbox" value="GEOPORTAL" ${checks.includes('GEOPORTAL')?'checked':''}>GEOPORTAL</label>
-<label class="item-check-evidencia"><input type="checkbox" value="BANCO DE DADOS" ${checks.includes('BANCO DE DADOS')?'checked':''}>BANCO DADOS</label>
-<label class="item-check-evidencia"><input type="checkbox" value="PAINEL / DASHBOARD" ${checks.includes('PAINEL / DASHBOARD')?'checked':''}>DASHBOARD</label>
-<label class="item-check-evidencia"><input type="checkbox" value="API / INTEGRAÇÃO" ${checks.includes('API / INTEGRAÇÃO')?'checked':''}>API</label>
-<label class="item-check-evidencia"><input type="checkbox" value="MANUAL" ${checks.includes('MANUAL')?'checked':''}>MANUAL</label>
-<label class="item-check-evidencia"><input type="checkbox" value="CARTILHA" ${checks.includes('CARTILHA')?'checked':''}>CARTILHA</label>
-<label class="item-check-evidencia"><input type="checkbox" value="VÍDEO" ${checks.includes('VÍDEO')?'checked':''}>VÍDEO</label>
-<label class="item-check-evidencia"><input type="checkbox" value="OUTRO" ${checks.includes('OUTRO')?'checked':''}>OUTRO</label>
-
-</div>
-
-<input
-type="text"
-id="evidenciaExtra_${i.id}"
-class="evidencia-extra"
-placeholder="Outra evidência não listada..."
->
-
-${!i.evidencia_upload?`
-<div class="alerta-upload">
-📎 Fazer Upload PDF/IMG
-</div>
-`:''}
-
-<textarea
-id="obsEvidencia_${i.id}"
-class="evidencia-textarea"
-placeholder="Exemplo: Ofício n. 120/2026/GAB/SEDAM; Processo SEI 0000.123456/2026-10; Relatório técnico da Coordenadoria X; Ata reunião 15-05-2026..."
->${i.evidencia||''}</textarea>
-
-${i.evidencia_resumo_ia?`
-<div class="box-resumo-ia">
-<div class="titulo-resumo-ia">
-🧠 Resumo IA
-</div>
-<div class="texto-resumo-ia">
-${i.evidencia_resumo_ia}
-</div>
-</div>
-`:''}
-
-<div style="
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin-top:10px;
-">
-
-<button
-class="btn-salvar-evidencia ${possuiEvidencia?'btn-evidencia-ok':''}"
-onclick="salvarEvidenciaLancada(${i.id},this)">
-${possuiEvidencia?'✔ SALVO':'💾 SALVAR'}
-</button>
-
-<button
-class="btn-padrao azul"
-onclick="gerarPDFItem(${i.id})">
-📄 PDF
-</button>
-
-<button
-class="btn-padrao roxo"
-onclick="gerarResumoIA(${i.id})">
-🧠 IA
-</button>
-<button
-class="btn-padrao verde"
-onclick="abrirModalUpload(${i.id})">
-📎 Upload
-</button>
-</div>
-
-</div>
-
-<div style="
-font-size:10px;
-line-height:1.4;
-color:#222;
-">
-
-<div>
-<b>Usuário:</b>
-${i.evidencia_usuario||'-'}
-</div>
-
-<div>
-<b>Data:</b>
-${i.evidencia_data
-?new Date(i.evidencia_data)
-.toLocaleString('pt-BR')
-:'-'}
-</div>
-
-<div style="
-margin-top:8px;
-font-weight:800;
-color:${
-i.evidencia_status==='COMPLETA'
-?'#15803d'
-:
-i.evidencia_status==='PARCIAL'
-?'#b45309'
-:'#b91c1c'
-};
-">
-${i.evidencia_status||'PENDENTE'}
-</div>
-
-</div>
-
-</div>
-`
-
-})
-
-if(!html){
-
-html=`
-<div style="
-padding:30px;
-color:#fff;
-font-weight:700;
-">
-Nenhum subitem atingiu 100% até o momento.
-</div>
-`
-
+${evidenciasHtml}
+</section>
+<section class="evidencia-secao evidencia-analise-resumo">
+<h4>Análise Técnica</h4>
+${analise?`<div class="analise-salva"><div class="analise-salva-topo"><b>${escaparHTML(analise.situacao||i.status||'-')}</b><span>${formatarDataSegura(analise.created_at)}</span></div><div>${escaparHTML(analise.analise_tecnica||'-')}</div></div>`:'<div class="evidencia-vazia">Análise técnica ainda não registrada.</div>'}
+</section>
+<footer class="evidencia-situacao evidencia-situacao-${val.status.toLowerCase()}">
+<span>EVIDÊNCIAS: ${val.validas} validada(s), ${val.pendentes} pendente(s), ${val.rejeitadas} rejeitada(s)</span>
+<strong>SITUAÇÃO DA EVIDÊNCIA: ${val.status}</strong>
+</footer>
+</article>`
+}
+box.innerHTML=`
+<div class="evidencia-resumo-grid">
+<div><span>Subitens</span><strong>${resumo.total}</strong></div>
+<div><span>Com evidência</span><strong>${resumo.comEvidencia}</strong></div>
+<div><span>Evidência validada</span><strong>${resumo.validadas}</strong></div>
+<div><span>Sem evidência</span><strong>${resumo.semEvidencia}</strong></div>
+<div><span>Com análise</span><strong>${resumo.comAnalise}</strong></div>
+</div>${html||'<div class="evidencia-vazia">Nenhum item encontrado para o filtro informado.</div>'}`
 }
 
-box.innerHTML=html
-
+/*=========================================================
+004 MONITORAMENTO-EVIDENCIAS.JS RESUMO DO JURISDICIONADO
+=========================================================*/
+async function salvarResumoEvidencia(id,btn){
+const texto=document.getElementById(`obsEvidencia_${id}`)?.value?.trim()||''
+if(btn){btn.disabled=true;btn.textContent='SALVANDO...'}
+const val=resumoValidacaoEvidencias(id,texto)
+const{error}=await client.from('monitoramento_itens').update({
+evidencia:texto||null,
+evidencia_usuario:window.USER_MONITORAMENTO?.username||window.USER_MONITORAMENTO?.nome||'auditor',
+evidencia_data:new Date().toISOString(),
+evidencia_status:val.status
+}).eq('id',id)
+if(error){console.error(error);alert('Erro ao salvar as informações da evidência.')}else{
+if(typeof registrarLog==='function')await registrarLog('INFORMAÇÕES DE EVIDÊNCIA ATUALIZADAS','monitoramento_itens',id)
 }
-async function salvarEvidenciaLancada(id,btn){
-
-let texto=document
-.getElementById(`obsEvidencia_${id}`)
-?.value||''
-
-let linha=document.querySelector(
-`[data-evidencia-item="${id}"]`
-)
-
-let checks=[]
-let evidenciaExtra=document.getElementById(`evidenciaExtra_${id}`)?.value?.trim()||''
-if(linha){
-
-linha
-.querySelectorAll('input[type="checkbox"]:checked')
-.forEach(c=>{
-checks.push(c.value)
-})
-
-}
-
-let status='PENDENTE'
-
-if(texto.trim()!==''&&checks.length>=3){
-status='COMPLETA'
-}else if(texto.trim()!==''||checks.length>0){
-status='PARCIAL'
-}
-
-btn.disabled=true
-btn.innerHTML='SALVANDO...'
-
-let payload={
-
-evidencia:texto,
-evidencias_check:evidenciaExtra?[...checks,evidenciaExtra]:checks,
-evidencia_usuario:
-USER_MONITORAMENTO?.username||'-',
-
-evidencia_data:new Date(),
-
-evidencia_status:status
-
-}
-
-let{error}=await client
-.from('monitoramento_itens')
-.update(payload)
-.eq('id',id)
-
-if(error){
-console.log(error)
-alert('Erro ao salvar')
-btn.disabled=false
-return
-}
-
-await registrarLog(
-'EVIDÊNCIA LANÇADA',
-'monitoramento_itens',
-id
-)
-btn.classList.add('btn-evidencia-ok')
-btn.innerHTML='✔ SALVO'
-btn.disabled=false
-if(typeof atualizarCardDashboard==='function'){
-atualizarCardDashboard(id,status)
-}
+if(btn){btn.disabled=false;btn.textContent='💾 Salvar informações'}
 await renderPainelEvidencias()
 }
+
 /*=========================================================
-071 MONITORAMENTO-EVIDENCIAS.JS DEBUG GLOBAL
-LOCAL: FINAL DO ARQUIVO
-AÇÃO: ADICIONAR
+005 MONITORAMENTO-EVIDENCIAS.JS MODAL E UPLOAD
 =========================================================*/
-window.addEventListener('error',e=>{
-console.log('ERRO GLOBAL:',e.message)
-})
+function abrirModalUpload(itemId){
+window.ITEM_EVIDENCIA_ATUAL=itemId
+const modal=document.getElementById('modalUploadEvidencia')
+if(!modal)return
+modal.classList.remove('hidden')
+const form=document.getElementById('formEvidenciaEstruturada')
+if(form)form.reset()
+const item=document.querySelector(`[data-evidencia-item="${itemId}"] .evidencia-origem`)?.textContent||''
+const org=document.getElementById('evOrgaoSetor')
+if(org&&!org.value)org.value=item
+}
+function fecharModalUpload(){document.getElementById('modalUploadEvidencia')?.classList.add('hidden')}
+function abrirModalEvidencia(itemId){abrirModalUpload(itemId)}
+function fecharModalEvidencia(){fecharModalUpload()}
+
+async function uploadEvidencia(){
+const itemId=window.ITEM_EVIDENCIA_ATUAL
+if(!itemId){alert('Selecione um item.');return}
+const tipo=document.getElementById('evTipo')?.value?.trim()||''
+const numero=document.getElementById('evNumero')?.value?.trim()||''
+const linkSei=document.getElementById('evSei')?.value?.trim()||''
+const orgaoSetor=document.getElementById('evOrgaoSetor')?.value?.trim()||''
+const descricao=document.getElementById('evDescricao')?.value?.trim()||''
+const confiabilidade=document.getElementById('evConfiabilidade')?.value||'MÉDIA'
+const dataDocumento=document.getElementById('evData')?.value||new Date().toISOString().slice(0,10)
+const file=document.getElementById('arquivoEvidencia')?.files?.[0]||null
+if(!tipo){alert('Informe o tipo de evidência.');return}
+if(!descricao&&!numero&&!file&&!linkSei){alert('Informe ao menos uma descrição, número, arquivo ou link SEI.');return}
+let linkArquivo=null
+if(file){
+const nomeSeguro=file.name.replace(/[^a-zA-Z0-9._-]/g,'_')
+const caminho=`${itemId}/${Date.now()}_${nomeSeguro}`
+const{error:uploadError}=await client.storage.from('monitoramento-evidencias').upload(caminho,file,{upsert:false})
+if(uploadError){console.error(uploadError);alert('Erro no upload do arquivo.');return}
+const{data:urlData}=client.storage.from('monitoramento-evidencias').getPublicUrl(caminho)
+linkArquivo=urlData?.publicUrl||null
+}
+const{error}=await client.from('monitoramento_evidencias').insert([{
+item_id:itemId,
+tipo_evidencia:tipo,
+numero_documento:numero||null,
+descricao:descricao||null,
+orgao:orgaoSetor||null,
+orgao_setor:orgaoSetor||null,
+link_arquivo:linkArquivo,
+link_sei:linkSei||null,
+status_validacao:'PENDENTE',
+confiabilidade:confiabilidade,
+data_documento:dataDocumento
+}])
+if(error){console.error(error);alert('Erro ao registrar a evidência.');return}
+await client.from('monitoramento_itens').update({evidencia_upload:!!file,evidencia_status:'PARCIAL'}).eq('id',itemId)
+if(typeof registrarLog==='function')await registrarLog('EVIDÊNCIA ADICIONADA','monitoramento_evidencias',itemId)
+fecharModalUpload()
+await renderPainelEvidencias()
+}
+
 /*=========================================================
-072 MONITORAMENTO-EVIDENCIAS.JS PDF ITEM
+006 MONITORAMENTO-EVIDENCIAS.JS VALIDAR/EDITAR/EXCLUIR
+=========================================================*/
+async function validarEvidencia(id,status='VALIDADA'){
+const{error}=await client.from('monitoramento_evidencias').update({status_validacao:status}).eq('id',id)
+if(error){console.error(error);alert('Erro ao validar evidência.');return}
+if(typeof registrarLog==='function')await registrarLog(`EVIDÊNCIA ${status}`,'monitoramento_evidencias',id)
+await atualizarStatusEvidenciaItemPorDocumento(id)
+await renderPainelEvidencias()
+}
+async function atualizarStatusEvidenciaItemPorDocumento(evidenciaId){
+const{data:e}=await client.from('monitoramento_evidencias').select('item_id').eq('id',evidenciaId).single()
+if(!e)return
+const[{data:docs},{data:item}]=await Promise.all([
+client.from('monitoramento_evidencias').select('status_validacao').eq('item_id',e.item_id),
+client.from('monitoramento_itens').select('evidencia').eq('id',e.item_id).single()
+])
+window.MAPA_EVIDENCIAS[e.item_id]=docs||[]
+const val=resumoValidacaoEvidencias(e.item_id,item?.evidencia||'')
+await client.from('monitoramento_itens').update({evidencia_status:val.status}).eq('id',e.item_id)
+}
+async function editarEvidencia(id){
+const{data,error}=await client.from('monitoramento_evidencias').select('*').eq('id',id).single()
+if(error||!data){console.error(error);return}
+const descricao=prompt('Descrição da evidência:',data.descricao||'')
+if(descricao===null)return
+const numero=prompt('Número/identificador do documento:',data.numero_documento||'')
+if(numero===null)return
+const{error:updateError}=await client.from('monitoramento_evidencias').update({descricao,numero_documento:numero||null}).eq('id',id)
+if(updateError){console.error(updateError);alert('Erro ao editar evidência.');return}
+if(typeof registrarLog==='function')await registrarLog('EVIDÊNCIA EDITADA','monitoramento_evidencias',id)
+await renderPainelEvidencias()
+}
+async function excluirEvidencia(id){
+if(!confirm('Excluir este registro de evidência?'))return
+const{data:e}=await client.from('monitoramento_evidencias').select('item_id').eq('id',id).single()
+const{error}=await client.from('monitoramento_evidencias').delete().eq('id',id)
+if(error){console.error(error);alert('Erro ao excluir evidência.');return}
+if(typeof registrarLog==='function')await registrarLog('EVIDÊNCIA EXCLUÍDA','monitoramento_evidencias',id)
+if(e?.item_id){window.MAPA_EVIDENCIAS[e.item_id]=[]}
+await renderPainelEvidencias()
+}
+
+/*=========================================================
+007 MONITORAMENTO-EVIDENCIAS.JS ANÁLISE TÉCNICA
+=========================================================*/
+async function abrirAnaliseDoItem(itemId){
+window.ITEM_EVIDENCIA_ATUAL=itemId
+if(typeof abrirTela==='function')abrirTela('analises')
+const{data:item}=await client.from('monitoramento_itens').select('*').eq('id',itemId).single()
+const{data:analises}=await client.from('monitoramento_analises').select('*').eq('item_id',itemId).order('created_at',{ascending:false}).limit(1)
+const editor=document.getElementById('textoAnalise')
+if(editor){
+if(analises?.length)editor.innerText=analises[0].analise_tecnica||''
+else editor.innerText=`ITEM: ${item?.item||'-'}\nSUBITEM: ${item?.subitem||'-'}\n\nANÁLISE TÉCNICA:\n\nCONCLUSÃO:\n`
+}
+if(typeof carregarAnalises==='function')await carregarAnalises()
+}
+
+/*=========================================================
+008 MONITORAMENTO-EVIDENCIAS.JS PDF INDIVIDUAL SIMPLES
 =========================================================*/
 async function gerarPDFItem(id){
-
-let{jsPDF}=window.jspdf
-
-let doc=new jsPDF()
-
-let{data,error}=await client
-.from('monitoramento_itens')
-.select('*')
-.eq('id',id)
-.single()
-
-if(error||!data){
-console.log(error)
-return
+window.ITEM_EVIDENCIA_ATUAL=id
+if(typeof gerarQuadroAnaliseItens==='function'){
+await gerarQuadroAnaliseItens(id)
+if(typeof gerarPDFMonitoramento==='function')await gerarPDFMonitoramento()
 }
-
-doc.setFontSize(16)
-
-doc.text(
-`ITEM ${data.item||'-'}`,
-14,
-20
-)
-
-doc.setFontSize(12)
-
-doc.text(
-`SUBITEM: ${data.subitem||'-'}`,
-14,
-32
-)
-
-doc.text(
-`STATUS: ${data.status||'-'}`,
-14,
-42
-)
-
-doc.text(
-`EVIDÊNCIA:`,
-14,
-56
-)
-
-let texto=
-doc.splitTextToSize(
-data.evidencia||'-',
-180
-)
-
-doc.text(
-texto,
-14,
-66
-)
-
-doc.save(
-`ITEM_${data.item||'MONITORAMENTO'}.pdf`
-)
-
-}
-/*=========================================================
-073 MONITORAMENTO-EVIDENCIAS.JS IA RESUMO
-=========================================================*/
-async function gerarResumoIA(id){
-
-let{data,error}=await client
-.from('monitoramento_itens')
-.select('*')
-.eq('id',id)
-.single()
-
-if(error||!data){
-console.log(error)
-return
-}
-
-let texto=data.evidencia||''
-
-if(!texto.trim()){
-alert('Sem evidência para resumir')
-return
-}
-
-let resumo=
-texto
-.split('.')
-.slice(0,3)
-.join('.')
-.trim()+'.'
-
-let{error:updateError}=await client
-.from('monitoramento_itens')
-.update({
-evidencia_resumo_ia:resumo
-})
-.eq('id',id)
-
-if(updateError){
-console.log(updateError)
-return
-}
-
-await registrarLog(
-'IA RESUMO EVIDÊNCIA',
-'monitoramento_itens',
-id
-)
-
-await renderPainelEvidencias()
-
-alert('Resumo IA gerado')
-
-}
-
-function abrirModalUpload(itemId){
-
-ITEM_EVIDENCIA_ATUAL=itemId
-
-document
-.getElementById('modalUploadEvidencia')
-.classList.remove('hidden')
-
-carregarEvidencias()
-
-}
-
-function fecharModalUpload(){
-
-document
-.getElementById('modalUploadEvidencia')
-.classList.add('hidden')
-
-}
-/*=========================================================
-074 MONITORAMENTO-EVIDENCIAS.JS MODAL EVIDENCIAS
-=========================================================*/
-function abrirModalEvidencia(itemId){
-
-ITEM_EVIDENCIA_ATUAL=itemId
-
-let modal=document.getElementById('modalUploadEvidencia')
-
-if(modal){
-modal.classList.remove('hidden')
-}
-
-carregarEvidencias()
-
-}
-
-function fecharModalEvidencia(){
-
-let modal=document.getElementById('modalUploadEvidencia')
-
-if(modal){
-modal.classList.add('hidden')
-}
-
 }
 
 /*=========================================================
-075 MONITORAMENTO-EVIDENCIAS.JS AUTO PERSIST CHECKBOX
+009 MONITORAMENTO-EVIDENCIAS.JS LOG
 =========================================================*/
-async function persistirChecksAutomatico(id){
-
-let linha=document.querySelector(
-`[data-evidencia-item="${id}"]`
-)
-
-if(!linha)return
-
-let checks=[]
-
-linha
-.querySelectorAll('input[type="checkbox"]:checked')
-.forEach(c=>{
-checks.push(c.value)
-})
-
-let status='PENDENTE'
-
-if(checks.length>0){
-status='PARCIAL'
-}
-
-if(checks.length>=5){
-status='COMPLETA'
-}
-
-let payload={
-evidencias_check:checks,
-evidencia_status:status,
-evidencia_usuario:
-USER_MONITORAMENTO?.username||'-',
-evidencia_data:new Date()
-}
-
-let{error}=await client
-.from('monitoramento_itens')
-.update(payload)
-.eq('id',id)
-
-if(error){
-console.log(error)
-return
-}
-
+async function registrarLog(acao,tabela,registro){
+try{
+await client.from('monitoramento_logs').insert([{
+usuario:window.USER_MONITORAMENTO?.nome||window.USER_MONITORAMENTO?.username||'AUDITOR',
+acao,tabela,registro_id:registro||0,monitoramento_id:window.MONITORAMENTO_ATUAL||null,
+origem:window.USER_MONITORAMENTO?.origem||document.getElementById('filtroOrigem')?.value||'-',
+nivel:window.USER_MONITORAMENTO?.nivel||4,dados:{data:new Date().toISOString()}
+}])
+}catch(e){console.warn('Log não registrado:',e)}
 }
 
 /*=========================================================
-076 MONITORAMENTO-EVIDENCIAS.JS EVENTOS CHECKBOX
+010 MONITORAMENTO-EVIDENCIAS.JS COMPATIBILIDADE
 =========================================================*/
-document.addEventListener('change',async e=>{
-
-if(
-e.target.matches(
-'.box-evidencias-check input[type="checkbox"]'
-)
-){
-
-let linha=e.target.closest(
-'[data-evidencia-item]'
-)
-
-if(!linha)return
-
-let id=linha.dataset.evidenciaItem
-
-await persistirChecksAutomatico(id)
-
-}
-
-})
+window.carregarEvidencias=renderPainelEvidencias
