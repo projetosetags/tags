@@ -1,6 +1,6 @@
 /*=========================================================
 BOOTSTRAP • 3 FONTES + CADASTRO MUNICIPAL
-Carrega cadastro, mapa documental, PDF técnico, timeline e sincronização global.
+Carrega cadastro, mapa documental, PDF técnico, timeline, sincronização e inteligência operacional.
 =========================================================*/
 (function(){
 function carregar(src,id,cb){
@@ -27,7 +27,9 @@ carregar('../js/queimadas-municipios-timeline-vertical-v7.js?v=20260906-1','qmtT
 carregar('../js/queimadas-municipios-timeline-ordem-v8.js?v=20260906-1','qmtTimelineOrdemV8',function(){
 carregar('../js/queimadas-municipios-timeline-v8.js?v=20260909-1','qmtTimelineV8',function(){
 carregar('../js/queimadas-mapa-municipios-v4.js?v=20260909-1','qmtMapaV4',function(){
-carregar('../js/queimadas-sincronizacao-global-v1.js?v=20260909-1','qSyncGlobalV1')
+carregar('../js/queimadas-sincronizacao-global-v1.js?v=20260909-1','qSyncGlobalV1',function(){
+carregar('../js/queimadas-inteligencia-operacional-v1.js?v=20260909-1','qInteligenciaOperacionalV1')
+})
 })
 })
 })
