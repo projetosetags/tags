@@ -1,7 +1,6 @@
 /*=========================================================
 BOOTSTRAP • 3 FONTES + CADASTRO MUNICIPAL
-Mantém a versão estável do painel 3 Fontes e carrega o
-Cadastro Municipal, layout, mapa documental, Entrega 4, PDF técnico e timeline vertical.
+Carrega cadastro, mapa documental, PDF técnico, timeline e sincronização global.
 =========================================================*/
 (function(){
 function carregar(src,id,cb){
@@ -26,7 +25,11 @@ carregar('../js/queimadas-relatorio-municipios-v3.js?v=20260906-1','qmtRelatorio
 carregar('../js/queimadas-municipios-timeline-horizontal-v6.js?v=20260906-1','qmtTimelineHorizontalV6',function(){
 carregar('../js/queimadas-municipios-timeline-vertical-v7.js?v=20260906-1','qmtTimelineVerticalV7',function(){
 carregar('../js/queimadas-municipios-timeline-ordem-v8.js?v=20260906-1','qmtTimelineOrdemV8',function(){
-carregar('../js/queimadas-municipios-timeline-v8.js?v=20260906-2','qmtTimelineV8')
+carregar('../js/queimadas-municipios-timeline-v8.js?v=20260909-1','qmtTimelineV8',function(){
+carregar('../js/queimadas-mapa-municipios-v4.js?v=20260909-1','qmtMapaV4',function(){
+carregar('../js/queimadas-sincronizacao-global-v1.js?v=20260909-1','qSyncGlobalV1')
+})
+})
 })
 })
 })
