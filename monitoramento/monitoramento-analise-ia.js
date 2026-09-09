@@ -1,418 +1,132 @@
+/*=========================================================
+001 MONITORAMENTO-ANALISE-IA.JS RASCUNHO ASSISTIDO
+NÃO ALTERA PERCENTUAL OU STATUS ORIGINADOS DOS TAGS.
+=========================================================*/
 async function gerarAnaliseIA(){
-
-if(!ITEM_EVIDENCIA_ATUAL){
-alert('Selecione um item')
-return
+const itemId=window.ITEM_EVIDENCIA_ATUAL
+if(!itemId){alert('Selecione um item no painel Evidências.');return}
+const[{data:item,error:itemError},{data:evidencias,error:evidError}]=await Promise.all([
+client.from('monitoramento_itens').select('*').eq('id',itemId).single(),
+client.from('monitoramento_evidencias').select('*').eq('item_id',itemId).order('created_at',{ascending:true})
+])
+if(itemError||!item){console.error(itemError);return}
+if(evidError)console.warn(evidError)
+const docs=evidencias||[]
+const validas=docs.filter(e=>e.status_validacao==='VALIDADA').length
+const pendentes=docs.filter(e=>(e.status_validacao||'PENDENTE')==='PENDENTE').length
+const rejeitadas=docs.filter(e=>e.status_validacao==='REJEITADA').length
+const percentual=Number(item.percentual||0)
+const statusFonte=item.status||'EM ANDAMENTO'
+let texto='ANÁLISE TÉCNICA DO MONITORAMENTO\n\n'
+texto+=`ITEM: ${item.item||'-'}\nSUBITEM: ${item.subitem||'-'}\nORIGEM: ${item.origem||'-'}\nEXECUÇÃO DECLARADA NO TAG: ${percentual.toFixed(0)}% - ${statusFonte}\n\n`
+texto+='AÇÃO / MEDIDA MONITORADA:\n'
+texto+=`${item.acao_gestor||item.descricao||'-'}\n\n`
+texto+='PRODUTO ESPERADO:\n'
+texto+=`${item.produto_esperado||item.produto||'-'}\n\n`
+texto+='INFORMAÇÕES PRESTADAS PELO JURISDICIONADO:\n'
+texto+=`${item.evidencia||'Não há síntese registrada no painel Evidências.'}\n\n`
+texto+='EVIDÊNCIAS DOCUMENTAIS:\n'
+if(!docs.length){
+texto+='Não há documentos estruturados registrados para este subitem.\n\n'
+}else{
+docs.forEach((e,n)=>{
+texto+=`${n+1}. ${e.tipo_evidencia||'Documento'}${e.numero_documento?` - ${e.numero_documento}`:''}: ${e.descricao||'sem descrição'} [${e.status_validacao||'PENDENTE'}].\n`
+})
+texto+=`\nSíntese de validação: ${validas} validada(s), ${pendentes} pendente(s) e ${rejeitadas} rejeitada(s).\n\n`
 }
-
-let{data:item,error:itemError}=await client
-.from('monitoramento_itens')
-.select('*')
-.eq('id',ITEM_EVIDENCIA_ATUAL)
-.single()
-
-if(itemError||!item){
-console.log(itemError)
-return
-}
-
-let{data:evidencias,error:evidError}=await client
-.from('monitoramento_evidencias')
-.select('*')
-.eq('item_id',ITEM_EVIDENCIA_ATUAL)
-
-if(evidError){
-console.log(evidError)
-return
-}
-
-let qtd=evidencias?.length||0
-
-let qtdValidas=
-(evidencias||[])
-.filter(e=>e.status_validacao==='VALIDADA')
-.length
-
-let percentual=qtd>0
-?Math.round((qtdValidas/qtd)*100)
-:0
-
-let status='NÃO EXECUTADA'
-
-if(percentual>=80){
-status='EXECUTADA'
-}else if(percentual>=40){
-status='PARCIALMENTE EXECUTADA'
+texto+='AVALIAÇÃO TÉCNICA:\n'
+if(percentual>=100&&validas>0&&pendentes===0&&rejeitadas===0){
+texto+='Os registros do TAG indicam execução integral da ação e há evidência documental validada no sistema. A conclusão definitiva deve considerar a suficiência, a adequação, a confiabilidade e a aderência do conteúdo das evidências ao produto pactuado.\n\n'
+}else if(percentual>=100){
+texto+='Embora o TAG registre 100% de execução, a comprovação documental ainda demanda validação técnica suficiente para sustentar conclusão definitiva sobre o cumprimento integral.\n\n'
 }else if(percentual>0){
-status='EM ANDAMENTO'
-}
-
-let risco='ALTO'
-
-if(percentual>=80){
-risco='BAIXO'
-}else if(percentual>=40){
-risco='MÉDIO'
-}
-
-let texto=''
-
-texto+=`ANÁLISE TÉCNICA DO MONITORAMENTO\n\n`
-
-texto+=`ITEM: ${item.item||'-'}\n`
-texto+=`SUBITEM: ${item.subitem||'-'}\n\n`
-
-texto+=`DELIBERAÇÃO:\n`
-texto+=`${item.deliberacao||'-'}\n\n`
-
-texto+=`AÇÃO DO GESTOR:\n`
-texto+=`${item.acao_gestor||'-'}\n\n`
-
-texto+=`PRODUTO ESPERADO:\n`
-texto+=`${item.produto_esperado||'-'}\n\n`
-
-texto+=`ANÁLISE DAS EVIDÊNCIAS:\n`
-
-if(qtd===0){
-
-texto+=`Não foram localizadas evidências documentais suficientes para comprovação da implementação das medidas propostas pelo gestor.\n\n`
-
+texto+='Os registros do TAG indicam execução parcial. As evidências devem ser confrontadas com a ação pactuada, o produto esperado e o prazo, de modo a identificar quais parcelas estão efetivamente comprovadas e quais permanecem pendentes.\n\n'
 }else{
-
-;(evidencias||[]).forEach((e,i)=>{
-
-texto+=`${i+1}. ${e.tipo_evidencia||'-'}`
-texto+=` - ${e.numero_documento||'-'}`
-texto+=` - ${e.status_validacao||'-'}.\n`
-
-})
-
-texto+=`\n`
-
-texto+=`Foram identificadas ${qtd} evidências relacionadas ao item monitorado, sendo ${qtdValidas} evidências validadas tecnicamente.\n\n`
-
+texto+='Os registros do TAG não indicam avanço de execução. Caso existam documentos recentes ainda não refletidos no TAG, estes devem ser validados antes de qualquer reclassificação técnica.\n\n'
+}
+texto+='CONCLUSÃO:\n'
+texto+='[Registrar a conclusão técnica fundamentada, indicando se a ação está comprovada, parcialmente comprovada, não comprovada ou se necessita de complementação documental.]\n\n'
+texto+='ENCAMINHAMENTO:\n'
+texto+='[Registrar providências, complementações, prazos ou proposta de encerramento do item.]'
+const editor=document.getElementById('textoAnalise')
+if(editor)editor.innerText=texto
+const situacao=document.getElementById('analiseSituacao')
+if(situacao)situacao.value=statusFonte
 }
 
-texto+=`CONCLUSÃO TÉCNICA:\n`
-
-if(status==='EXECUTADA'){
-
-texto+=`As evidências analisadas demonstram que as medidas previstas foram implementadas de forma satisfatória, indicando cumprimento relevante da deliberação monitorada.\n\n`
-
-}
-
-if(status==='PARCIALMENTE EXECUTADA'){
-
-texto+=`As evidências demonstram avanço parcial na implementação das medidas previstas, contudo ainda existem pendências relevantes para o completo atendimento da deliberação.\n\n`
-
-}
-
-if(status==='EM ANDAMENTO'){
-
-texto+=`As medidas encontram-se em fase de implementação, existindo indícios iniciais de execução, porém sem evidências suficientes para caracterizar cumprimento integral.\n\n`
-
-}
-
-if(status==='NÃO EXECUTADA'){
-
-texto+=`Não foram identificados elementos suficientes que demonstrem implementação efetiva das medidas propostas.\n\n`
-
-}
-
-texto+=`RISCO IDENTIFICADO: ${risco}.\n\n`
-
-texto+=`BENEFÍCIO ESPERADO:\n`
-texto+=`${item.beneficio_esperado||'-'}\n\n`
-
-texto+=`ENCAMINHAMENTO SUGERIDO:\n`
-
-if(status==='EXECUTADA'){
-texto+=`Manter acompanhamento periódico para verificação da sustentabilidade das medidas implementadas.\n`
-}
-
-if(status==='PARCIALMENTE EXECUTADA'){
-texto+=`Determinar continuidade das ações e apresentação complementar de evidências.\n`
-}
-
-if(status==='EM ANDAMENTO'){
-texto+=`Intensificar monitoramento e cobrança de implementação das medidas previstas.\n`
-}
-
-if(status==='NÃO EXECUTADA'){
-texto+=`Determinar adoção imediata de providências pela unidade jurisdicionada.\n`
-}
-
-document.getElementById('textoAnalise').innerText=texto
-
-await client
-.from('monitoramento_itens')
-.update({
-status:status,
-percentual:percentual
-})
-.eq('id',ITEM_EVIDENCIA_ATUAL)
-
-await carregarItensMatriz()
-await carregarDashboard()
-
-}
-
+/*=========================================================
+002 MONITORAMENTO-ANALISE-IA.JS SALVAR ANÁLISE
+=========================================================*/
 async function salvarAnalise(){
-
-if(!ITEM_EVIDENCIA_ATUAL){
-alert('Selecione um item')
-return
-}
-
-let texto=document
-.getElementById('textoAnalise')
-.innerText
-
-if(!texto){
-alert('Digite a análise')
-return
-}
-
-let{data:item}=await client
-.from('monitoramento_itens')
-.select('*')
-.eq('id',ITEM_EVIDENCIA_ATUAL)
-.single()
-
-let status=item?.status||'EM ANDAMENTO'
-
-let percentual=item?.percentual||0
-
-let impacto='MODERADO'
-
-if(percentual>=80){
-impacto='BAIXO'
-}else if(percentual<40){
-impacto='ALTO'
-}
-
-let{error}=await client
-.from('monitoramento_analises')
-.insert([{
-item_id:ITEM_EVIDENCIA_ATUAL,
+const itemId=window.ITEM_EVIDENCIA_ATUAL
+if(!itemId){alert('Selecione um item no painel Evidências.');return}
+const texto=document.getElementById('textoAnalise')?.innerText?.trim()||''
+if(!texto){alert('Digite a análise técnica.');return}
+const{data:item,error:itemError}=await client.from('monitoramento_itens').select('*').eq('id',itemId).single()
+if(itemError||!item){console.error(itemError);return}
+const situacao=document.getElementById('analiseSituacao')?.value||item.status||'EM ANDAMENTO'
+const impacto=document.getElementById('analiseImpacto')?.value||item.criticidade||'MÉDIA'
+const encaminhamento=document.getElementById('analiseEncaminhamento')?.value?.trim()||''
+const conclusao=extrairSecaoAnalise(texto,'CONCLUSÃO')||texto
+const{error}=await client.from('monitoramento_analises').insert([{
+item_id:itemId,
 analise_tecnica:texto,
-situacao:status,
-impacto:impacto,
-beneficio:item?.beneficio_esperado||'',
-encaminhamento:'Monitoramento contínuo',
-conclusao:texto
+situacao,
+impacto,
+beneficio:item.beneficio_esperado||'',
+encaminhamento,
+conclusao,
+workflow_status:'RASCUNHO'
 }])
-
-if(error){
-console.log(error)
-alert('Erro ao salvar')
-return
-}
-
-alert('Análise salva')
+if(error){console.error(error);alert('Erro ao salvar a análise.');return}
+if(typeof registrarLog==='function')await registrarLog('ANÁLISE TÉCNICA SALVA','monitoramento_analises',itemId)
+alert('Análise técnica salva. O percentual do TAG foi preservado.')
 await carregarAnalises()
 }
+function extrairSecaoAnalise(texto,titulo){
+const re=new RegExp(`${titulo}:\\s*([\\s\\S]*?)(?:\\n[A-ZÁÉÍÓÚÃÕÇ /-]{3,}:|$)`,'i')
+const m=String(texto||'').match(re)
+return m?m[1].trim():''
+}
 
+/*=========================================================
+003 MONITORAMENTO-ANALISE-IA.JS HISTÓRICO
+=========================================================*/
 async function carregarAnalises(){
-
-if(!ITEM_EVIDENCIA_ATUAL)return
-
-let{data,error}=await client
-.from('monitoramento_analises')
-.select('*')
-.eq('item_id',ITEM_EVIDENCIA_ATUAL)
-.order('id',{ascending:false})
-
-if(error){
-console.log(error)
-return
-}
-
-let html=''
-
-;(data||[]).forEach(a=>{
-
-html+=`
+const itemId=window.ITEM_EVIDENCIA_ATUAL
+const lista=document.getElementById('listaAnalises')
+if(!lista||!itemId)return
+const{data,error}=await client.from('monitoramento_analises').select('*').eq('item_id',itemId).order('created_at',{ascending:false})
+if(error){console.error(error);return}
+lista.innerHTML=(data||[]).map(a=>`
 <div class="card-analise">
-
-<div class="card-analise-topo">
-
-<div>
-<div class="analise-titulo">
-${a.situacao||'-'}
-</div>
-
-<div class="analise-subtitulo">
-Impacto: ${a.impacto||'-'}
-</div>
-</div>
-
-<div class="badge-status ${getClasseStatus(a.situacao)}">
-${a.situacao||'-'}
-</div>
-
-</div>
-
-<pre class="texto-analise-pre">
-${a.analise_tecnica||'-'}
-</pre>
-
-<div class="analise-actions">
-
-<button class="btn-padrao azul" onclick="copiarAnalise(${a.id})">
-📋 Copiar
-</button>
-
-<button class="btn-padrao vermelho" onclick="excluirAnalise(${a.id})">
-🗑 Excluir
-</button>
-
-</div>
-
-</div>
-`
-
-})
-
-document.getElementById('listaAnalises').innerHTML=html
-
+<div class="card-analise-topo"><div><div class="analise-titulo">${a.situacao||'-'}</div><div class="analise-subtitulo">Impacto: ${a.impacto||'-'} • ${a.created_at?new Date(a.created_at).toLocaleString('pt-BR'):'-'}</div></div><span class="badge-status ${typeof getClasseStatus==='function'?getClasseStatus(a.situacao):''}">${a.workflow_status||'RASCUNHO'}</span></div>
+<pre class="texto-analise-pre">${a.analise_tecnica||'-'}</pre>
+${a.encaminhamento?`<div class="analise-encaminhamento"><b>Encaminhamento:</b> ${a.encaminhamento}</div>`:''}
+<div class="analise-actions"><button class="btn-padrao azul" onclick="copiarAnalise(${a.id})">📋 Copiar</button><button class="btn-padrao vermelho" onclick="excluirAnalise(${a.id})">🗑 Excluir</button></div>
+</div>`).join('')||'<div class="evidencia-vazia">Nenhuma análise registrada.</div>'
 }
-
 async function copiarAnalise(id){
-
-let{data,error}=await client
-.from('monitoramento_analises')
-.select('*')
-.eq('id',id)
-.single()
-
-if(error||!data)return
-
-navigator.clipboard.writeText(
-data.analise_tecnica||''
-)
-
-alert('Copiado')
-
+const{data}=await client.from('monitoramento_analises').select('analise_tecnica').eq('id',id).single()
+if(data?.analise_tecnica){await navigator.clipboard.writeText(data.analise_tecnica);alert('Análise copiada.')}
 }
-
 async function excluirAnalise(id){
-
-if(!confirm('Excluir análise?'))return
-
-let{error}=await client
-.from('monitoramento_analises')
-.delete()
-.eq('id',id)
-
-if(error){
-console.log(error)
-return
-}
-
+if(!confirm('Excluir esta versão da análise?'))return
+const{error}=await client.from('monitoramento_analises').delete().eq('id',id)
+if(error){console.error(error);alert('Erro ao excluir.');return}
 await carregarAnalises()
-
 }
 
+/*=========================================================
+004 MONITORAMENTO-ANALISE-IA.JS RESUMO
+=========================================================*/
 async function gerarResumoIA(){
-
-let{data,error}=await client
-.from('monitoramento_itens')
-.select('*')
-data=ordenarDataGlobal(data)
-
-if(error){
-console.log(error)
-return
-}
-if(error){
-console.log(error)
-return
+if(typeof gerarResumoExecutivo==='function')return gerarResumoExecutivo()
 }
 
-let total=data?.length||0
-
-let executadas=
-(data||[])
-.filter(i=>i.status==='EXECUTADA')
-.length
-
-let parciais=
-(data||[])
-.filter(i=>i.status==='PARCIALMENTE EXECUTADA')
-.length
-
-let naoExecutadas=
-(data||[])
-.filter(i=>i.status==='NÃO EXECUTADA')
-.length
-
-let andamento=
-(data||[])
-.filter(i=>i.status==='EM ANDAMENTO')
-.length
-
-let texto=''
-
-texto+=`RESUMO EXECUTIVO\n\n`
-
-texto+=`O presente monitoramento teve por objetivo avaliar o cumprimento das deliberações constantes dos processos acompanhados pela equipe técnica.\n\n`
-
-texto+=`Foram analisados ${total} itens monitorados.\n\n`
-
-texto+=`RESULTADOS:\n\n`
-
-texto+=`• EXECUTADAS: ${executadas}\n`
-texto+=`• PARCIALMENTE EXECUTADAS: ${parciais}\n`
-texto+=`• NÃO EXECUTADAS: ${naoExecutadas}\n`
-texto+=`• EM ANDAMENTO: ${andamento}\n\n`
-
-if(executadas>=parciais&&executadas>=naoExecutadas){
-
-texto+=`Observou-se evolução relevante na implementação das medidas monitoradas, com indicativos de fortalecimento dos controles internos e melhorias operacionais.\n\n`
-
-}else{
-
-texto+=`Persistem fragilidades relevantes na implementação das medidas monitoradas, exigindo continuidade das ações de controle e acompanhamento técnico.\n\n`
-
-}
-
-texto+=`Recomenda-se a continuidade do monitoramento dos itens pendentes, especialmente aqueles classificados como parcialmente executados ou não executados.\n`
-
-document.getElementById('previewRelatorio').innerHTML=
-`<pre class="texto-analise-pre">${texto}</pre>`
-
-abrirTela('relatorios')
-
-}
-function formatarTexto(comando){
-
-document.execCommand(
-comando,
-false,
-null
-)
-
-}
-
-function inserirTopico(){
-
-document.execCommand(
-'insertText',
-false,
-'\n• '
-)
-
-}
-
-function inserirConclusaoPadrao(){
-
-let texto='\n\nCONCLUSÃO:\nConforme análise das evidências apresentadas, verifica-se evolução parcial das medidas monitoradas, persistindo pontos que demandam acompanhamento contínuo pela equipe técnica.\n'
-
-document.execCommand(
-'insertText',
-false,
-texto
-)
-
-}
+/*=========================================================
+005 MONITORAMENTO-ANALISE-IA.JS EDITOR
+=========================================================*/
+function formatarTexto(comando){document.execCommand(comando,false,null)}
+function inserirTopico(){document.execCommand('insertText',false,'\n• ')}
+function inserirConclusaoPadrao(){document.execCommand('insertText',false,'\n\nCONCLUSÃO:\n[Fundamentar a conclusão a partir das evidências validadas e do produto pactuado.]\n')}
