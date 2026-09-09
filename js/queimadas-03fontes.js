@@ -22,6 +22,7 @@ carregar('../js/queimadas-municipios-entrega4-ajuste-v5.js?v=20260906-1','qmtEnt
 carregar('../js/queimadas-relatorio-tecnico-pdf.js?v=20260906-1','qmtRelatorioTecnicoPDF',function(){
 carregar('../js/queimadas-relatorio-municipios-v2.js?v=20260906-1','qmtRelatorioMunicipiosV2',function(){
 carregar('../js/queimadas-relatorio-municipios-v3.js?v=20260906-1','qmtRelatorioMunicipiosV3',function(){
+carregar('../js/queimadas-relatorio-municipios-v4.js?v=20260909-1','qmtRelatorioMunicipiosV4',function(){
 carregar('../js/queimadas-municipios-timeline-horizontal-v6.js?v=20260906-1','qmtTimelineHorizontalV6',function(){
 carregar('../js/queimadas-municipios-timeline-vertical-v7.js?v=20260906-1','qmtTimelineVerticalV7',function(){
 carregar('../js/queimadas-municipios-timeline-ordem-v8.js?v=20260906-1','qmtTimelineOrdemV8',function(){
@@ -30,6 +31,7 @@ carregar('../js/queimadas-mapa-municipios-v4.js?v=20260909-2','qmtMapaV4',functi
 carregar('../js/queimadas-sincronizacao-global-v1.js?v=20260909-1','qSyncGlobalV1',function(){
 carregar('../js/queimadas-inteligencia-operacional-v1.js?v=20260909-1','qInteligenciaOperacionalV1',function(){
 carregar('../js/queimadas-3fontes-beta-v1.js?v=20260909-1','q3SipamBetaV1')
+})
 })
 })
 })
