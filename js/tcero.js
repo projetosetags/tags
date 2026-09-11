@@ -10,13 +10,26 @@ style.id='sedam-mobile-fix'
 style.textContent=`
 html,body{width:100%;max-width:100%;touch-action:pan-x pan-y pinch-zoom;-webkit-text-size-adjust:100%}
 #dashboard{width:100%!important;max-width:100%!important;margin:0 auto!important}
-.tab-view{width:100%!important;max-width:100%!important}
+.tab-view{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+#view-dashboard,#view-resumo,#view-mensal,#view-analise,#view-concluidos,#view-perfis,#view-tcero,#view-usuarios{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
 #view-tcero{overflow:visible!important}
-#listaTCERO{width:100%!important;max-width:100%!important}
+#listaTCERO,#listaPerfis,#listaUsuarios{width:100%!important;max-width:100%!important}
 .tcero-scroll{width:100%!important;max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+#view-mensal>div:last-child{width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:visible!important;-webkit-overflow-scrolling:touch!important}
+#view-mensal table{width:max-content!important;min-width:1450px!important;table-layout:auto!important;border-collapse:collapse!important;height:auto!important}
+#view-mensal thead,#view-mensal tbody{height:auto!important}
+#view-mensal tr{height:auto!important;min-height:0!important;max-height:none!important}
+#view-mensal th,#view-mensal td{height:auto!important;min-height:0!important;max-height:none!important;vertical-align:middle!important;white-space:normal!important;line-height:1.25!important;padding:7px 6px!important}
+#view-mensal td:nth-child(2){min-width:260px!important;max-width:340px!important}
+#view-mensal th:nth-child(4),#view-mensal td:nth-child(4){min-width:170px!important;max-width:190px!important}
+#view-mensal td select{max-width:100%!important}
+#view-mensal-filtros{width:100%!important;max-width:100%!important}
+#view-analise canvas,#view-dashboard canvas{max-width:100%!important}
+#concluidos-container,#cards-container{width:100%!important;max-width:100%!important}
+
 @media(max-width:768px){
-body{padding:6px!important}
-#dashboard{padding:4px!important}
+body{padding:6px!important;overflow-x:hidden!important}
+#dashboard{padding:4px!important;overflow-x:hidden!important}
 .topo-sedam-modern{position:relative!important;top:auto!important;padding:14px 12px!important;gap:12px!important;flex-direction:column!important;align-items:stretch!important;border-radius:0!important}
 .topo-esquerda-sedam{width:100%!important}
 .titulo-sedam-modern{font-size:24px!important;line-height:1.12!important;letter-spacing:.2px!important}
@@ -33,10 +46,41 @@ nav{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!importa
 #view-dashboard{padding:8px 4px 18px!important}
 #view-dashboard>.grid{grid-template-columns:1fr!important}
 #view-dashboard .bg-white\\/90{min-width:0!important}
+#view-resumo{padding:4px!important}
+.barra-topo-resumo,.acoes-topo-resumo{width:100%!important;max-width:100%!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important}
+.box-pesquisa-resumo,.box-pesquisa-resumo input,.acoes-topo-resumo>div{width:100%!important;max-width:100%!important}
+#cards-container,#concluidos-container{grid-template-columns:1fr!important}
+#view-mensal{padding:4px!important;overflow-x:hidden!important;overflow-y:visible!important}
+#view-mensal-filtros{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important}
+#view-mensal-filtros>div{width:100%!important;margin-left:0!important;justify-content:stretch!important}
+#view-mensal-filtros button,#view-mensal-filtros input{width:100%!important;max-width:100%!important;min-width:0!important;min-height:42px!important}
+#boxModoResumoMensal{display:grid!important;grid-template-columns:1fr 1fr!important}
+#view-mensal>div:last-child{display:block!important;width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:visible!important;border-radius:14px!important}
+#view-mensal table{width:max-content!important;min-width:1450px!important;table-layout:auto!important;height:auto!important}
+#view-mensal thead,#view-mensal tbody,#view-mensal tr,#view-mensal th,#view-mensal td{height:auto!important;min-height:0!important;max-height:none!important}
+#view-mensal th,#view-mensal td{padding:7px 6px!important;font-size:10px!important;line-height:1.2!important;vertical-align:middle!important}
+#view-mensal th:nth-child(1),#view-mensal td:nth-child(1){position:sticky!important;left:0!important;z-index:3!important;background:#fff!important;min-width:72px!important;max-width:72px!important}
+#view-mensal thead th:nth-child(1){z-index:5!important;background:#f8fafc!important}
+#view-mensal td:nth-child(2){min-width:260px!important;max-width:320px!important}
+#view-mensal th:nth-child(4),#view-mensal td:nth-child(4){min-width:180px!important;max-width:180px!important}
+#view-mensal td:nth-child(4) select{font-size:11px!important;height:34px!important}
+#view-mensal .input-mes,#view-mensal .td-mes-strong span{width:52px!important;height:34px!important}
+#view-analise{padding:4px!important}
+#view-analise>.grid{grid-template-columns:1fr!important}
+#view-analise .bg-slate-900\\/40{padding:10px!important;overflow:hidden!important}
+#view-analise canvas{width:100%!important;height:auto!important;min-height:240px!important}
+#ranking{overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+#view-concluidos{padding:4px!important}
+#concluidos-list{padding:12px!important;overflow-wrap:anywhere!important}
+#view-perfis,#view-tcero,#view-usuarios{padding:4px!important;overflow-x:hidden!important}
+#boxCadastroPerfis,#boxCadastroTCERO{flex-direction:column!important;align-items:stretch!important;width:100%!important}
+#boxCadastroPerfis>*,#boxCadastroTCERO>*{width:100%!important;max-width:100%!important;min-width:0!important}
+#listaPerfis,#listaUsuarios{overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+#listaPerfis table,#listaUsuarios table{min-width:720px!important;width:max-content!important}
+.tcero-scroll table{min-width:720px!important;width:max-content!important}
 #bandeiraFlutuante{top:430px!important;width:min(76vw,300px)!important;opacity:.20!important}
-.tcero-scroll table{min-width:720px!important}
-#boxCadastroTCERO{flex-direction:column!important;align-items:stretch!important}
-#boxCadastroTCERO>*{width:100%!important;max-width:100%!important}
+.modal,.modal-resumo,.modal-detalhes,.popup-resumo,.popup-item,.popup-subitem{padding:8px!important}
+.modal-card,.modal-content,.popup-card{width:96vw!important;max-width:96vw!important;padding:14px!important;border-radius:18px!important}
 }
 @media(max-width:420px){
 .titulo-sedam-modern{font-size:22px!important}
