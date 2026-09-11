@@ -122,6 +122,45 @@ else{montar();setTimeout(montar,250);setTimeout(montar,900)}
 })()
 
 /*=========================================================
+SEDAM • ABERTURA GARANTIDA PELO PAINEL GERAL
+=========================================================*/
+;(function corrigirAberturaSedam(){
+function abrirSedamDireto(){
+sessionStorage.setItem('painelAtivo','sedam')
+localStorage.removeItem('activeTab')
+const geral=document.getElementById('painel-geral-acesso')
+const login=document.getElementById('login-screen')
+const dashboard=document.getElementById('dashboard')
+if(geral){
+geral.classList.add('hidden')
+geral.style.setProperty('display','none','important')
+geral.style.visibility='hidden'
+geral.style.opacity='0'
+}
+if(dashboard){
+dashboard.classList.add('hidden')
+dashboard.style.setProperty('display','none','important')
+}
+if(login){
+login.classList.remove('hidden')
+login.style.setProperty('display','flex','important')
+login.style.visibility='visible'
+login.style.opacity='1'
+}
+document.body.classList.add('login-bg')
+document.body.style.visibility='visible'
+}
+window.addEventListener('click',function(e){
+const alvo=e.target&&e.target.closest?e.target.closest('.painel-card-sedam,.btn-sedam'):null
+if(!alvo)return
+e.preventDefault()
+e.stopImmediatePropagation()
+abrirSedamDireto()
+},true)
+window.abrirPainelSedam=abrirSedamDireto
+})()
+
+/*=========================================================
 SEPAT • CARREGAR CORREÇÃO DE VIGÊNCIA
 =========================================================*/
 ;(function carregarCorrecaoVigenciaSepat(){
