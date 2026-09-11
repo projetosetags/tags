@@ -1,6 +1,18 @@
 window.S_URL='https://zvtzbiqfwhggysiuiuxh.supabase.co'
 
-window.S_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2dHpiaXFmd2hnZ3lzaXVpdXhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1ODYyMjcsImV4cCI6MjA5MzE2MjIyN30.tCnFZv2B6Kmd9KsyZM8CHClZqsq7Nyu-8nxyYVs_ZMQ'
+window.S_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6Inp2dHpiaXFmd2hnZ3lzaXVpdXhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1ODYyMjcsImV4cCI6MjA5MzE2MjIyN30.tCnFZv2B6Kmd9KsyZM8CHClZqsq7Nyu-8nxyYVs_ZMQ'
+
+/*=========================================================
+ROOT INDEX • GARANTIR PAINEL GERAL DE ACESSO
+=========================================================*/
+;(function resetarEstadoPainelGeral(){
+const path=location.pathname.replace(/\/+$/,'')
+const ehIndexRaiz=/\/tags(?:\/index\.html)?$/i.test(path)
+if(!ehIndexRaiz)return
+sessionStorage.removeItem('painelAtivo')
+localStorage.removeItem('user')
+localStorage.removeItem('activeTab')
+})()
 
 window.clientPublic = supabase.createClient(
     window.S_URL,
