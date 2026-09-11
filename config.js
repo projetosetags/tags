@@ -176,3 +176,21 @@ document.body.appendChild(s)
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(carregar,0),{once:true})
 else setTimeout(carregar,0)
 })()
+
+/*=========================================================
+MONITORAMENTO • CORRIGIR CONTRASTE DO MENU NO CELULAR
+=========================================================*/
+;(function corrigirCoresMonitoramentoMobile(){
+if(!/\/monitoramento\/monitoramento\.html$/i.test(location.pathname))return
+const style=document.createElement('style')
+style.id='monitoramento-mobile-color-fix'
+style.textContent=`
+@media(max-width:900px){
+#navMonitoramento{background:#ffffff!important}
+#navMonitoramento .nav-btn{background:#eef2f7!important;color:#0f172a!important;border:1px solid #d7dee8!important;box-shadow:0 3px 10px rgba(15,23,42,.06)!important}
+#navMonitoramento .nav-btn:hover{background:#e2e8f0!important;color:#0f172a!important}
+#navMonitoramento .nav-btn.nav-active{background:linear-gradient(135deg,#2563eb,#1d4ed8)!important;color:#ffffff!important;border-color:#2563eb!important;box-shadow:0 8px 20px rgba(37,99,235,.28)!important}
+}
+`
+document.head.appendChild(style)
+})()
