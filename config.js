@@ -49,6 +49,7 @@ PAINEL GERAL • LAYOUT COMPACTO MOBILE
 function montar(){
 const path=location.pathname.replace(/\/+$/,'')
 if(!/\/tags(?:\/index\.html)?$/i.test(path))return
+if(sessionStorage.getItem('painelAtivo')==='sedam')return
 const geral=document.getElementById('painel-geral-acesso')
 if(!geral)return
 const styleId='painel-geral-mobile-style'
@@ -56,7 +57,7 @@ document.getElementById(styleId)?.remove()
 const style=document.createElement('style')
 style.id=styleId
 style.textContent=`
-#painel-geral-acesso{position:fixed!important;inset:0!important;z-index:999999!important;display:flex!important;overflow:auto!important;background:linear-gradient(rgba(7,54,90,.15),rgba(7,54,90,.42)),url('assets/portovelho.png') center/cover no-repeat fixed!important;padding:0!important}
+#painel-geral-acesso{position:fixed!important;inset:0!important;z-index:999999!important;overflow:auto!important;background:linear-gradient(rgba(7,54,90,.15),rgba(7,54,90,.42)),url('assets/portovelho.png') center/cover no-repeat fixed!important;padding:0!important}
 #painel-geral-acesso .painel-geral-overlay{position:absolute!important;inset:0!important;background:rgba(8,66,104,.12)!important;backdrop-filter:blur(5px)!important}
 #painel-geral-acesso .painel-geral-conteudo{position:relative!important;z-index:2!important;width:min(1180px,96vw)!important;margin:auto!important;padding:12px!important}
 #painel-geral-acesso .painel-geral-titulo{font-size:0!important;text-align:left!important;margin:0 0 2px!important;text-shadow:none!important;color:#fff!important}
