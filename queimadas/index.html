@@ -1,2 +1,1051 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><title>Restaurando painel...</title></head><body>Restaurando painel...</body></html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5,user-scalable=yes">
+<meta name="theme-color" content="#0f172a">
+<title>QUEIMADAS 2026 | Monitoramento Inteligente</title>
+<link rel="icon" href="data:,">
+<link rel="manifest" href="../manifest.json">
+<link rel="stylesheet" href="css/queimadas.css?v=20260905-1">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>Chart.register(ChartDataLabels);</script>
+<script src="../config.js"></script>
+<script src="../js/municipios-ro.js"></script>
+<script src="../js/queimadas.js?v=20260905-1"></script>
+<script src="../js/queimadasRT.js?v=20260905-1"></script>
+<script src="../js/queimadas-monitoramento.js?v=20260905-1"></script>
+<script src="../js/queimadas-municipios.js?v=20260905-1"></script>
+<script src="../js/queimadas-mapas.js?v=20260905-1"></script>
+<script src="../js/queimadas-tempo-real.js?v=20260905-1"></script>
+<script src="../js/queimadas-rio-madeira.js?v=20260905-1"></script>
+</head>
+<body>
+<div id="login-queimadas" class="loginQueimadasOverlay">
+<div class="loginQueimadasBox">
+<div class="loginQueimadasIcone">🔥</div>
+<h1>QUEIMADAS 2026</h1>
+<p>Acesso restrito • TCE-RO</p>
+<input id="queimadas-user" type="text" placeholder="Usuário" autocomplete="username">
+<input id="queimadas-pass" type="password" placeholder="Senha" autocomplete="current-password">
+<button onclick="loginQueimadas()">ENTRAR</button>
+<div id="queimadas-login-erro"></div>
+</div>
+</div>
+<div id="app-queimadas" style="display:none">
+  
+<div class="layoutPrincipal">
+<header class="topoSistema">
+<div class="topoEsquerda">
+<div class="logoFogo">🔥</div>
+<div>
+<h1>QUEIMADAS 2026</h1>
+<p>Monitoramento Inteligente • TCE-RO • SEDAM • CBMRO</p>
+</div>
+</div>
+<div class="topoUsuarioQueimadas">
+<span id="queimadas-user-info"></span>
+<button onclick="logoutQueimadas()">SAIR</button>
+</div>
+</header>
+<nav class="menuQueimadas">
+<button id="btnAbaExecutivo" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('executivo')">📊 PAINEL EXECUTIVO</button>
+<button id="btnAbaExecutivoMunicipal" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('executivomunicipal')">🏛️ MUNICÍPIOS</button>
+<button id="btnAbaEstado" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('estado')">🌎 ESTADO</button>
+<button id="btnAbaPlanejamento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('planejamento')">📋 PLANEJAMENTO</button>
+<button id="btnAbaMapa" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('mapa')">🗺️ MAPA ESTADUAL</button>
+<button id="btnAbaSituacao" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('situacao')">🚨 SITUAÇÃO</button>
+<button id="btnAbaMonitoramento" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('monitoramento')">🔥 MONITORAMENTO</button>
+<button id="btnAbaTempoReal" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('temporeal')">🛰️ TEMPO REAL RO</button>
+<button id="btnAbaTempoRealMunicipio" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('temporealmunicipio')">🏙️ TEMPO REAL MUNICÍPIO</button>
+<button id="btnAbaRioMadeira" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('riomadeira')">🌊 RIO MADEIRA</button>
+<button id="btnAbaAnalise" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('analise')">🤖 RISCOS IA</button>
+<button id="btnAbaAuditor" class="btnAbaQueimadas" onclick="mostrarAbaQueimadas('auditor')">📑 AUDITORIA</button>
+<button id="btnImprimirPainel" class="btnAbaQueimadas btnPdfQueimadas" onclick="imprimirAbaAtualQueimadas()">🖨️ PDF ABA</button>
+<button id="btnExportarPNG" class="btnAbaQueimadas btnPdfQueimadas" onclick="exportarAbaPNG()">📸 PNG SLIDE</button>
+</nav>
+<!--=========================================================
+001 EXECUTIVO
+=========================================================-->
+<section id="abaExecutivo" class="abaQueimadas">
+<div class="painelTitulo">DASHBOARD EXECUTIVO</div>
+<div id="painelKPIs"></div>
+<div id="cardMapaRO" class="cardExecutivo">
+<h2>MAPA DE RONDÔNIA - RISCO DE QUEIMADAS</h2>
+<button class="btnOcultarMapa" onclick="toggleMapaRO()">👁 OCULTAR / EXIBIR MAPA</button>
+<div id="MapaRO">
+<div id="mapaRO"></div>
+</div>
+
+<div class="legendaMapaExecutivo">
+
+<div class="itemLegenda">
+<span class="legCor" style="background:#dc2626"></span>
+🔴 Crítico (75-100)
+</div>
+
+<div class="itemLegenda">
+<span class="legCor" style="background:#f97316"></span>
+🟠 Alto (50-74)
+</div>
+
+<div class="itemLegenda">
+<span class="legCor" style="background:#facc15"></span>
+🟡 Moderado (25-49)
+</div>
+
+<div class="itemLegenda">
+<span class="legCor" style="background:#16a34a"></span>
+🟢 Baixo (1-24)
+</div>
+
+<div class="itemLegenda">
+<span class="legCor" style="background:#94a3b8"></span>
+⚪ Sem Dados
+</div>
+
+</div>
+<div class="fonte-card">
+Fonte: OpenStreetMap • PROTEGE/SEDAM • INPE • Base Municipal RO
+</div>
+</div>
+<div id="cardIRIQHeatmap" class="cardExecutivo">
+<h2>IRIQ ESTADUAL E HEATMAP ESTADUAL</h2>
+<div id="painelIRIQHeatmapUnificado"></div>
+</div>
+<div id="cardMunicipiosPrioritarios" class="cardExecutivo">
+<h2>Ranking Estadual por IRIQ Ambiental • TCERO • INPE • PRODES • MAPBIOMAS • CHAPT</h2>
+<div id="painelMunicipiosPrioritarios"></div>
+</div>
+<div class="exec-duplo">
+<div id="cardFocosCalor" class="cardExecutivo">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+<h2 style="margin:0">
+FOCOS DE CALOR
+</h2>
+<div style="display:flex;gap:8px;align-items:center">
+<select
+id="filtroPeriodoFocos"
+onchange="carregarFocosPeriodo()"
+>
+<option value="1">Hoje</option>
+<option value="7">7 Dias</option>
+<option value="30">30 Dias</option>
+<option value="365">12 Meses</option>
+<option value="ano" selected>Ano Atual</option>
+<option value="custom">Personalizado</option>
+</select>
+</div>
+</div>
+<div
+id="boxPeriodoPersonalizado"
+style="display:none;margin:10px 0"
+>
+<input
+type="date"
+id="dataInicialFocos"
+>
+<input
+type="date"
+id="dataFinalFocos"
+>
+<button
+onclick="carregarFocosPeriodo()"
+>
+Atualizar
+</button>
+</div>
+<div id="painelFocosCalor"></div>
+</div>
+<div id="cardAlertas" class="cardExecutivo">
+<h2>ALERTAS AUTOMÁTICOS - TOP 5 MUNICÍPIOS COM MAIOR QUANTIDADE DE FOCOS DE CALOR</h2>
+<div id="painelAlertas"></div>
+</div>
+</div>
+<div class="exec-duplo">
+<div class="cardExecutivo">
+<h2>UNIDADES DE CONSERVAÇÃO ESTADUAIS</h2>
+<div id="painelUCs"></div>
+</div>
+<div class="cardExecutivo">
+<h2>INDICADORES ESTRATÉGICOS</h2>
+<div id="painelIndicadoresEstrategicos"></div>
+</div>
+</div>
+</section>
+<!--=========================================================
+003 ESTADO
+=========================================================-->
+<section id="abaEstado" class="abaQueimadas hidden">
+<div class="painelTitulo">MONITORAMENTO ESTADUAL</div>
+<div id="painelKPIsEstado"></div>
+<div class="cardExecutivo">
+<h2>CADASTRO ESTADUAL</h2>
+<div id="painelCadastroEstado"></div>
+</div>
+<div class="cardExecutivo">
+<h2>CADASTRAR ÓRGÃO ESTADUAL</h2>
+<div id="painelFormularioEstado"></div>
+</div>
+<div class="cardExecutivo">
+<h2>INDICADORES ESTADUAIS</h2>
+<div id="painelIndicadoresEstado"></div>
+</div>
+</section>
+<!--=========================================================
+002 MUNICÍPIOS
+=========================================================-->
+<section id="abaExecutivoMunicipal" class="abaQueimadas hidden">
+<div class="painelTitulo">🏛️ MUNICÍPIOS DE RONDÔNIA</div>
+<div id="painelKPIsMunicipais"></div>
+<div class="cardExecutivo">
+<h2>📋 TABELA GERAL DOS MUNICÍPIOS</h2>
+<div class="barraTabelaMunicipios">
+<select id="filtroMunicipioSituacao" onchange="renderTabelaMunicipios()">
+<option value="">TODOS OS MUNICÍPIOS</option>
+<option value="VERDE">🟢 PLANO DE AÇÃO</option>
+<option value="AMARELO">🟡 DILAÇÃO DE PRAZO</option>
+<option value="VERMELHO">🔴 SEM RESPOSTA</option>
+</select>
+<input type="text" id="buscaMunicipio" placeholder="🔎 Pesquisar município..." onkeyup="renderTabelaMunicipios()">
+</div>
+<div id="painelTabelaMunicipios"></div>
+</div>
+<div class="cardExecutivo">
+<div class="cabecalhoMapaMunicipal">
+<div>
+<h2>🗺️ MAPA MUNICIPAL</h2>
+<div class="subtituloMapaMunicipal">Situação dos Planos de Ação dos 52 Municípios</div>
+</div>
+<div class="filtroMapaMunicipal">
+<button onclick="renderMapaPlanosMunicipais('TODOS')" class="btnMapaMunicipal">TODOS</button>
+<button onclick="renderMapaPlanosMunicipais('VERDE')" class="btnMapaMunicipal">🟢 COM PLANO</button>
+<button onclick="renderMapaPlanosMunicipais('AMARELO')" class="btnMapaMunicipal">🟡 DILAÇÃO</button>
+<button onclick="renderMapaPlanosMunicipais('VERMELHO')" class="btnMapaMunicipal">🔴 SEM RESPOSTA</button>
+</div>
+</div>
+<div id="mapaMunicipalPlanos"></div>
+<div class="exec-legenda-municipal">
+<div class="leg-verde">🟢 Plano de Ação Apresentado</div>
+<div class="leg-amarelo">🟡 Dilação de Prazo</div>
+<div class="leg-vermelho">🔴 Sem Resposta</div>
+</div>
+<div class="fonte-card">Fonte: Ofício Circular n.16/2026/GABPRES/TCERO • Municípios de Rondônia</div>
+</div>
+<div class="exec-duplo">
+<div class="cardExecutivo">
+<h2>📊 DISTRIBUIÇÃO DAS RESPOSTAS</h2>
+<div class="graficoRespostaBox">
+<canvas id="graficoMunicipiosResposta"></canvas>
+</div>
+</div>
+<div class="cardExecutivo">
+<h2>📈 ESTATÍSTICAS MUNICIPAIS</h2>
+<div id="painelEstatisticasMunicipais"></div>
+</div>
+</div>
+<div class="cardExecutivo cardDestaque">
+<h2>🔐 CADASTRO MUNICIPAL</h2>
+<div class="subtituloCadastroMunicipal">Consulta e edição protegida dos dados documentais dos municípios.</div>
+<div id="painelCadastroMunicipiosResumo"></div>
+</div>
+</section>
+<!--=========================================================
+003 CADASTRO MUNICIPAL
+=========================================================-->
+<section id="abaCadastroMunicipal" class="abaQueimadas hidden">
+<div class="painelTitulo">
+CADASTRO MUNICIPAL
+</div>
+<div class="cardExecutivo">
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+<input
+type="text"
+id="pesquisaCadastroMunicipio"
+placeholder="Pesquisar município..."
+onkeyup="renderMunicipiosOficio('CADASTRO')"
+>
+</div>
+<div id="painelCadastroMunicipios"></div>
+</div>
+</section>
+<!--=========================================================
+004 PLANEJAMENTO
+=========================================================-->
+<section id="abaPlanejamento" class="abaQueimadas hidden">
+<div class="painelTitulo">PLANEJAMENTO ESTRATÉGICO</div>
+
+<div class="cardExecutivo">
+<h2>📘 PLANO UNIFICADO</h2>
+<div id="infoPlanoUnificado"></div>
+<div id="painelPlanoUnificado"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🌿 PLANO SEDAM</h2>
+<div id="infoPlanoSedam"></div>
+<div id="painelPlanoSedam"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🚒 PLANO CBMRO</h2>
+<div id="infoPlanoCBM"></div>
+<div id="painelPlanoCBM"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🔗 CADEIA DE VALOR</h2>
+<div id="infoCadeiaValor"></div>
+<div id="painelCadeiaValor"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🎯 TEORIA DA MUDANÇA</h2>
+<div id="infoTeoriaMudanca"></div>
+<div id="painelTeoriaMudanca"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🌎 OBJETIVOS DE DESENVOLVIMENTO SUSTENTÁVEL (ODS)</h2>
+<div id="infoODS"></div>
+<div id="painelODS"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>📑 EVIDÊNCIAS DOS ODS</h2>
+<div id="infoODSEvidencias"></div>
+<div id="painelODSEvidencias"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>📡 RADAR DE ADERÊNCIA À AGENDA 2030</h2>
+<div id="infoRadarODS"></div>
+<div style="height:500px">
+<canvas id="graficoRadarODS"></canvas>
+</div>
+</div>
+
+<div class="cardExecutivo">
+<h2>📊 MATURIDADE DOS ODS</h2>
+<div id="infoMaturidadeODS"></div>
+<div id="painelODSMaturidade"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🤖 ANÁLISE INTELIGENTE (IA)</h2>
+<div id="infoIA"></div>
+<div id="painelODSExplicacaoIA"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>📅 CRONOGRAMA GANTT</h2>
+<div id="infoGantt"></div>
+<div id="painelGantt"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🏁 MARCOS ESTRATÉGICOS</h2>
+<div id="infoMarcos"></div>
+<div id="painelMarcos" class="marcosGrid"></div>
+</div>
+
+</section>
+<!--=========================================================
+005 MONITORAMENTO
+=========================================================-->
+<section id="abaMonitoramento" class="abaQueimadas hidden">
+<div class="painelTitulo">🔥 MONITORAMENTO INTEGRADO</div>
+<div class="monitoramentoBlocoTitulo">🏛️ AÇÕES INSTITUCIONAIS</div>
+<div class="monitoramentoAcoesGrid">
+<div class="cardExecutivo monitoramentoCard">
+<h2>🌳 SEDAM</h2>
+<div id="painelAcoesSedam"></div>
+<div class="fonteMonitoramento">Fonte: SEDAM • Plano de Ação e evidências apresentadas</div>
+</div>
+<div class="cardExecutivo monitoramentoCard">
+<h2>🚒 CBMRO</h2>
+<div id="painelAcoesCBM"></div>
+<div class="fonteMonitoramento">Fonte: CBMRO • POTIF 2026 e registros de execução</div>
+</div>
+<div class="cardExecutivo monitoramentoCard">
+<h2>🏛️ TCE-RO</h2>
+<div id="painelAcoesTCERO"></div>
+<div class="fonteMonitoramento">Fonte: TCE-RO • Planejamento e acompanhamento institucional</div>
+</div>
+</div>
+<div class="monitoramentoBlocoTitulo">📊 DESEMPENHO E GOVERNANÇA</div>
+<div class="monitoramentoDuplo">
+<div class="cardExecutivo monitoramentoCard">
+<h2>🧭 GOVERNANÇA</h2>
+<div id="painelGovernanca"></div>
+</div>
+<div class="cardExecutivo monitoramentoCard">
+<h2>🎯 MONITORAMENTO 4D</h2>
+<div id="painelMonitoramento4D"></div>
+</div>
+</div>
+<div class="monitoramentoBlocoTitulo">💰 EXECUÇÃO</div>
+<div class="monitoramentoDuplo">
+<div class="cardExecutivo monitoramentoCard">
+<h2>📋 EXECUÇÃO FÍSICA</h2>
+<div id="painelExecucaoFisica"></div>
+</div>
+<div class="cardExecutivo monitoramentoCard">
+<h2>💰 EXECUÇÃO FINANCEIRA</h2>
+<div id="painelExecucaoFinanceira"></div>
+</div>
+</div>
+<div class="monitoramentoBlocoTitulo">📎 CONTROLE E COMPROVAÇÃO</div>
+<div class="cardExecutivo monitoramentoCard">
+<h2>📂 EVIDÊNCIAS</h2>
+<div id="painelEvidencias"></div>
+<div class="fonteMonitoramento">Fonte: documentos, produtos e evidências disponibilizados pelos órgãos responsáveis • Atualização automática</div>
+</div>
+</section>
+<!--=========================================================
+005.1 TEMPO REAL RO
+=========================================================-->
+<section id="abaTempoReal" class="abaQueimadas hidden">
+<div class="painelTitulo">
+🛰 CENTRO DE MONITORAMENTO EM TEMPO REAL DO ESTADO
+</div>
+<div id="painelTempoRealKPIs"></div>
+<div class="exec-duplo">
+<div class="cardExecutivo">
+<h2>🔥 FOCOS DE CALOR RO</h2>
+<div id="painelTempoRealFocos"></div>
+</div>
+<div class="cardExecutivo">
+<h2>🏆 MUNICÍPIOS - Focos de Calor 2026</h2>
+<div id="painelTempoRealRanking"></div>
+</div>
+</div>
+<div class="exec-duplo">
+<div class="cardExecutivo">
+<h2>🛰 INFORMAÇÕES DO MONITORAMENTO</h2>
+<div id="painelTempoRealSatelites"></div>
+</div>
+<div class="cardExecutivo">
+<h2>📡 ÚLTIMA SINCRONIZAÇÃO</h2>
+<div id="painelTempoRealAtualizacao"></div>
+</div>
+</div>
+<div class="cardExecutivo">
+<h2>📈 EVOLUÇÃO DOS FOCOS RO</h2>
+<div class="graficoTempoRealBox" style="height:390px;position:relative">
+<canvas id="graficoTempoReal"></canvas>
+</div>
+</div>
+<div class="cardExecutivo">
+<h2>🤖 RANKING IRIQ DOS 52 MUNICÍPIOS</h2>
+<div id="painelTempoRealRankingIRIQ"></div>
+<div class="fonte-card">Fonte: IRIQ Ambiental • INPE • PRODES • MapBiomas • CHAPT</div>
+</div>
+</section>
+<!--=========================================================
+005.2 TEMPO REAL MUNICÍPIOS
+=========================================================-->
+<section id="abaTempoRealMunicipio" class="abaQueimadas hidden">
+<div class="painelTitulo">
+🏙️ CENTRO DE MONITORAMENTO EM TEMPO REAL POR MUNICÍPIO
+</div>
+<div class="cardExecutivo">
+<h2>📍 SELECIONE O MUNICÍPIO</h2>
+<select id="selectMunicipioTempoReal" onchange="renderTempoRealMunicipio(this.value)">
+<option value="">Selecione um município...</option>
+</select>
+</div>
+<div id="painelTempoRealMunicipio">
+<div class="kpi-grid">
+<div class="kpi-card">
+<div id="trmFocosAno" class="kpi-num">—</div>
+<div class="kpi-label">FOCOS EM 2026</div>
+</div>
+<div class="kpi-card">
+<div id="trmFocosHoje" class="kpi-num">—</div>
+<div class="kpi-label">FOCOS HOJE</div>
+</div>
+<div class="kpi-card">
+<div id="trmUltimaData" class="kpi-num">—</div>
+<div class="kpi-label">ÚLTIMA DATA DISPONÍVEL</div>
+</div>
+<div class="kpi-card">
+<div id="trmTotalRegistros" class="kpi-num">—</div>
+<div class="kpi-label">REGISTROS DO MUNICÍPIO</div>
+</div>
+</div>
+<div class="exec-duplo">
+<div class="cardExecutivo">
+<h2>🔥 FOCOS DE CALOR DO MUNICÍPIO</h2>
+<div id="trmResumoFocos"></div>
+</div>
+<div class="cardExecutivo">
+<h2>🛰 INFORMAÇÕES DO MONITORAMENTO</h2>
+<div id="trmMonitoramento"></div>
+</div>
+</div>
+<div class="exec-duplo">
+<div class="cardExecutivo">
+<h2>📡 ÚLTIMA SINCRONIZAÇÃO</h2>
+<div id="trmSincronizacao"></div>
+</div>
+<div class="cardExecutivo">
+<h2>📊 RESUMO DO MUNICÍPIO</h2>
+<div id="trmResumoMunicipio"></div>
+</div>
+</div>
+<div class="cardExecutivo">
+<h2>📈 EVOLUÇÃO DOS FOCOS DO MUNICÍPIO — 2026</h2>
+<div class="graficoTempoRealBox" style="height:390px;position:relative">
+<canvas id="graficoTempoRealMunicipio"></canvas>
+</div>
+</div>
+<div class="cardExecutivo">
+<h2>🔥 FOCOS MAIS RECENTES</h2>
+<div id="trmFocosRecentes"></div>
+<div class="fonte-card">Fonte: PROTEGE/SEDAM • INPE • Sistema de Monitoramento Inteligente de Queimadas • TCE-RO</div>
+</div>
+<div class="cardExecutivo">
+<h2>🔥 MAIORES FOCOS DE 2026</h2>
+<div id="trmMaioresFocos"></div>
+<div class="fonte-card">Critério: maiores valores de FRP registrados em 2026 • Fonte: PROTEGE/SEDAM • INPE • TCE-RO</div>
+</div>
+</div>
+</section>
+<!--=========================================================
+005.3 RIO MADEIRA
+=========================================================-->
+<section id="abaRioMadeira" class="abaQueimadas hidden">
+
+<div class="painelTitulo">
+🌊 RIO MADEIRA • MONITORAMENTO HIDROLÓGICO
+</div>
+
+<!-- KPIs PRINCIPAIS -->
+<div id="rioMadeiraKPIs" class="rioMadeiraKPIGrid">
+
+<div class="rioMadeiraKPI">
+<div id="rmNivelAtual" class="rioMadeiraKPIValor">—</div>
+<div class="rioMadeiraKPITitulo">NÍVEL MAIS RECENTE</div>
+</div>
+
+<div class="rioMadeiraKPI">
+<div id="rmVariacao24h" class="rioMadeiraKPIValor">—</div>
+<div class="rioMadeiraKPITitulo">VARIAÇÃO 24H</div>
+</div>
+
+<div class="rioMadeiraKPI rioMadeiraCheia">
+<div id="rmCheiaHistorica" class="rioMadeiraKPIValor">—</div>
+<div class="rioMadeiraKPITitulo">CHEIA RECORDE</div>
+</div>
+
+<div class="rioMadeiraKPI rioMadeiraSeca">
+<div id="rmSecaHistorica" class="rioMadeiraKPIValor">—</div>
+<div class="rioMadeiraKPITitulo">SECA RECORDE</div>
+</div>
+
+<div class="rioMadeiraKPI rioMadeiraHistorico">
+<div id="rmCiclosHistoricos" class="rioMadeiraKPIValor">—</div>
+<div class="rioMadeiraKPITitulo">CICLOS HISTÓRICOS</div>
+</div>
+
+</div>
+
+<!-- GRÁFICO PRINCIPAL -->
+<div class="cardExecutivo">
+
+<div class="rioMadeiraCabecalho">
+
+<div>
+<h2>📈 CICLO HIDROLÓGICO ATUAL × HISTÓRICO</h2>
+<div class="rioMadeiraSubtitulo">
+Comparação diária do nível do Rio Madeira em Porto Velho
+</div>
+</div>
+
+<div class="rioMadeiraFiltros">
+
+<select id="rmCicloAtual" onchange="alterarCicloRioMadeira()">
+
+</select>
+
+<select id="rmCicloComparacao" onchange="renderGraficoRioMadeiraComparacao()">
+<option value="">COMPARAR COM...</option>
+</select>
+
+</div>
+
+</div>
+
+<div class="rioMadeiraGraficoBox">
+<canvas id="graficoRioMadeiraHistorico"></canvas>
+</div>
+
+<div class="rioMadeiraFonte">
+Fonte: ANA • SGB/CPRM • Série histórica da Estação 15400000 • Porto Velho
+</div>
+
+</div>
+
+<!-- RANKINGS -->
+<div class="rioMadeiraRankingGrid">
+
+<div class="cardExecutivo">
+<h2>🌊 MAIORES CHEIAS DA SÉRIE</h2>
+<div id="painelRioMadeiraCheias"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🏜️ MAIORES SECAS DA SÉRIE</h2>
+<div id="painelRioMadeiraSecas"></div>
+</div>
+
+</div>
+
+<!-- SITUAÇÃO E EXTREMOS -->
+<div class="exec-duplo">
+
+<div class="cardExecutivo">
+<h2>📊 SITUAÇÃO DO CICLO</h2>
+<div id="painelRioMadeiraSituacao"></div>
+</div>
+
+<div class="cardExecutivo">
+<h2>🧭 EXTREMOS HISTÓRICOS</h2>
+<div id="painelRioMadeiraExtremos"></div>
+</div>
+
+</div>
+
+<!-- EVOLUÇÃO HISTÓRICA -->
+<div class="cardExecutivo">
+
+<h2>📉 EVOLUÇÃO DAS CHEIAS E SECAS • 1967–2026</h2>
+
+<div class="rioMadeiraGraficoBox">
+<canvas id="graficoRioMadeiraExtremos"></canvas>
+</div>
+
+<div class="rioMadeiraFonte">
+Máximo e mínimo registrados em cada ciclo hidrológico.
+</div>
+
+</div>
+
+<!-- SÉRIE HISTÓRICA -->
+<div class="cardExecutivo">
+
+<h2>📋 SÉRIE HISTÓRICA POR CICLO</h2>
+
+<div class="rioMadeiraBarraTabela">
+
+<select
+id="rmFiltroCicloTabela"
+onchange="renderTabelaRioMadeira()">
+</select>
+
+<input
+type="text"
+id="rmBuscaTabela"
+placeholder="🔎 Pesquisar data..."
+onkeyup="renderTabelaRioMadeira()">
+
+</div>
+
+<div id="painelTabelaRioMadeira"></div>
+
+<div class="rioMadeiraFonte">
+Série histórica de níveis do Rio Madeira em Porto Velho.
+</div>
+
+</div>
+
+<!-- PRECIPITAÇÃO -->
+<div class="cardExecutivo">
+
+<h2>🌧️ PRECIPITAÇÃO NA BACIA</h2>
+
+<div id="painelRioMadeiraPrecipitacao">
+
+<div class="rioMadeiraAguardando">
+Base preparada para integração dos dados de precipitação GPM/NASA • Beni • Mamoré • Guaporé • Abunã
+</div>
+
+</div>
+
+</div>
+
+<!-- INTEGRAÇÃO HIDROCLIMÁTICA -->
+<div class="cardExecutivo cardDestaque">
+
+<h2>🔥🌊 INTEGRAÇÃO HIDROCLIMÁTICA</h2>
+
+<div id="painelRioMadeiraIntegracao">
+
+<div class="rioMadeiraIntegracaoFluxo">
+
+<div>
+<strong>PRECIPITAÇÃO</strong>
+<span>🌧️</span>
+</div>
+
+<div class="rioMadeiraSeta">→</div>
+
+<div>
+<strong>RIO MADEIRA</strong>
+<span>🌊</span>
+</div>
+
+<div class="rioMadeiraSeta">→</div>
+
+<div>
+<strong>ESTIAGEM</strong>
+<span>☀️</span>
+</div>
+
+<div class="rioMadeiraSeta">→</div>
+
+<div>
+<strong>QUEIMADAS</strong>
+<span>🔥</span>
+</div>
+
+<div class="rioMadeiraSeta">→</div>
+
+<div>
+<strong>RISCO</strong>
+<span>🚨</span>
+</div>
+
+</div>
+
+</div>
+
+<div class="rioMadeiraFonte">
+Integração: ANA • SGB/CPRM • GPM/NASA • INPE • TCE-RO
+</div>
+
+</div>
+
+</section>
+<!--=========================================================
+006 RISCOS sugestões IA
+=========================================================-->
+<section id="abaAnalise" class="abaQueimadas hidden">
+<div class="painelTitulo">IA E RISCOS</div>
+<div class="cardExecutivo"><h2>MATRIZ DE RISCO 5X5</h2><div id="painelMatriz5x5"></div></div>
+<div class="cardExecutivo"><h2>DASHBOARD CHAPT</h2><div id="painelCHAP"></div></div>
+<div class="cardExecutivo"><h2>PREDIÇÃO DE QUEIMADAS</h2><div id="painelIARiscos"></div></div>
+<div class="cardExecutivo"><h2>MATRIZ DE RESPOSTA RECOMENDADA</h2><div id="painelIAPriorizacao"></div></div>
+<div class="cardExecutivo"><h2>SUGESTÕES AUTOMÁTICAS</h2><div id="painelIASugestoes"></div></div>
+</section>
+<!--=========================================================
+007 MAPA ESTADUAL
+=========================================================-->
+<section id="abaMapa" class="abaQueimadas hidden">
+<div class="painelTitulo">MAPA ESTADUAL</div>
+<div class="cardExecutivo">
+<div id="mapaROEstadual"></div>
+</div>
+<div class="cardExecutivo">
+<h2>UNIDADES DE CONSERVAÇÃO DE RONDÔNIA</h2>
+<div id="painelUCsMapa"></div>
+</div>
+<div class="cardExecutivo">
+<h2>TERRAS INDÍGENAS</h2>
+<div id="painelTIMapa"></div>
+</div>
+</section>
+<!--=========================================================
+008 SALA DE SITUAÇÃO
+=========================================================-->
+<section id="abaSituacao" class="abaQueimadas hidden">
+
+<div class="painelTitulo">🚨 SITUAÇÃO E GOVERNANÇA</div>
+
+<div class="situacaoGridPrincipal">
+
+<div class="cardExecutivo situacaoBox">
+<h2>📊 SITUAÇÃO ESTADUAL</h2>
+<div id="painelSalaSituacaoEstadual"></div>
+<div class="fonteSituacao">
+Fonte: INPE Programa Queimadas • PRODES • MapBiomas • IRIQ/TCE-RO
+</div>
+</div>
+
+<div class="cardExecutivo situacaoBox">
+
+<h2>📊 ÍNDICE DE PRIORIZAÇÃO TERRITORIAL — IPT</h2>
+<div id="painelTopIPT"></div>
+<div class="chapMetodologiaBox">
+
+<div class="chapMetodologiaCabecalho" onclick="toggleMetodologiaCHAP()">
+<div>
+<span id="chapToggle" class="chapToggle">−</span>
+<strong>MODELO CHAP E SUA APLICAÇÃO ANALÍTICA — IA-CHAP</strong>
+</div>
+<span id="chapAcao" class="chapAcao">OCULTAR</span>
+</div>
+
+<div id="chapMetodologiaConteudo" class="chapMetodologiaConteudo">
+
+<div class="chapIntroducao">
+<strong>MODELO CHAP</strong>
+<p>
+O IA-CHAP utiliza como referência o Modelo de Competência Organizacional CHAP e a metodologia M-RAIG instituída pela Resolução n. 463/2026/TCE-RO. A metodologia estrutura a análise em quatro dimensões complementares — Conhecimento, Habilidade, Atitude e Propósito — permitindo organizar informações, avaliar a capacidade de atuação e apoiar a priorização do acompanhamento pelo Tribunal de Contas.
+</p>
+</div>
+
+<div class="chapDimensoes">
+
+<div class="chapDimensao">
+<div class="chapLetra">C</div>
+<div>
+<strong>CONHECIMENTO</strong>
+<p>
+Representa a capacidade de conhecer e compreender adequadamente a situação analisada. Envolve diagnóstico baseado em dados, informações verificáveis, evidências, indicadores, registros históricos e demais elementos necessários à compreensão do problema.
+</p>
+<p>
+<b>Na prática:</b> busca verificar se existem informações suficientes e confiáveis para compreender o cenário e fundamentar decisões.
+</p>
+</div>
+</div>
+
+<div class="chapDimensao">
+<div class="chapLetra">H</div>
+<div>
+<strong>HABILIDADE</strong>
+<p>
+Representa a capacidade de transformar conhecimento em planejamento e estratégia. Abrange métodos, procedimentos, organização, instrumentos de gestão e definição das ações necessárias ao enfrentamento da situação identificada.
+</p>
+<p>
+<b>Na prática:</b> avalia se existe planejamento adequado e capacidade técnica e organizacional para atuar.
+</p>
+</div>
+</div>
+
+<div class="chapDimensao">
+<div class="chapLetra">A</div>
+<div>
+<strong>ATITUDE</strong>
+<p>
+Representa a passagem do planejamento para a execução. Considera a realização efetiva das ações, o monitoramento, a adoção das providências necessárias, a produção de evidências e a prestação de contas dos resultados alcançados.
+</p>
+<p>
+<b>Na prática:</b> verifica se aquilo que foi diagnosticado e planejado está efetivamente sendo executado.
+</p>
+</div>
+</div>
+
+<div class="chapDimensao">
+<div class="chapLetra">P</div>
+<div>
+<strong>PROPÓSITO</strong>
+<p>
+Representa a orientação da atuação para resultados, impactos e geração de valor público. Busca verificar se conhecimento, planejamento e execução convergem para a solução ou mitigação do problema e para a entrega de resultados relevantes à sociedade.
+</p>
+<p>
+<b>Na prática:</b> responde se as ações realizadas estão produzindo resultado e contribuindo para a finalidade pública pretendida.
+</p>
+</div>
+</div>
+
+</div>
+
+<div class="chapFluxoTitulo">
+LÓGICA DE APLICAÇÃO
+</div>
+
+<div class="chapFluxo">
+
+<div>
+<span>1</span>
+<strong>CONHECER</strong>
+<small>Diagnóstico e evidências</small>
+</div>
+
+<div class="chapSeta">→</div>
+
+<div>
+<span>2</span>
+<strong>PLANEJAR</strong>
+<small>Estratégias e métodos</small>
+</div>
+
+<div class="chapSeta">→</div>
+
+<div>
+<span>3</span>
+<strong>EXECUTAR</strong>
+<small>Ações e monitoramento</small>
+</div>
+
+<div class="chapSeta">→</div>
+
+<div>
+<span>4</span>
+<strong>GERAR VALOR</strong>
+<small>Resultados e impactos</small>
+</div>
+
+</div>
+
+<div class="chapCalculo">
+
+<strong>COMO É FORMADO O SCORE IA-CHAP</strong>
+
+<p>
+O Score IA-CHAP apresentado no painel corresponde à consolidação dos critérios utilizados pelo sistema para avaliar as dimensões do modelo. A pontuação permite estabelecer uma referência comparativa entre os objetos monitorados e apoiar sua ordenação segundo a necessidade relativa de acompanhamento.
+</p>
+
+<div class="chapFormula">
+SCORE IA-CHAP = avaliação integrada de C + H + A + P
+</div>
+
+<p>
+Quanto maior a pontuação resultante, maior é a prioridade relativa atribuída pelo modelo para fins de acompanhamento. O Score deve ser interpretado como instrumento de apoio à inteligência e à priorização, e não como conclusão automática de auditoria.
+</p>
+
+</div>
+
+<div class="chapUso">
+
+<strong>COMO UTILIZAR O RESULTADO NO TCE-RO</strong>
+
+<div class="chapUsoGrid">
+
+<div>
+<b>1. COMPARAR</b>
+<p>Comparar os Scores dos objetos ou municípios avaliados e identificar aqueles que apresentam maior prioridade relativa.</p>
+</div>
+
+<div>
+<b>2. PRIORIZAR</b>
+<p>Direcionar a atenção técnica para situações que, segundo o modelo, demandam acompanhamento mais próximo.</p>
+</div>
+
+<div>
+<b>3. CONFRONTAR</b>
+<p>Confrontar o resultado automatizado com indicadores, documentos, evidências, dados oficiais e informações obtidas no acompanhamento.</p>
+</div>
+
+<div>
+<b>4. REAVALIAR</b>
+<p>Atualizar a leitura sempre que novas informações modificarem o diagnóstico, o planejamento, a execução ou os resultados observados.</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="chapLinguagemSimples">
+<strong>💬 EM LINGUAGEM SIMPLES</strong>
+<p>
+O CHAP verifica uma sequência lógica: <b>sabemos exatamente qual é o problema? Sabemos como enfrentá-lo? Estamos realmente fazendo o que foi planejado? E as ações estão produzindo o resultado esperado?</b>
+</p>
+<p>
+O IA-CHAP utiliza essa lógica para auxiliar o TCE-RO a organizar e comparar as situações monitoradas. Quanto maior o Score, maior a indicação de prioridade para acompanhamento.
+</p>
+</div>
+
+<div class="chapAlerta">
+<strong>⚠️ ORIENTAÇÃO TÉCNICA</strong>
+<p>
+O Score IA-CHAP constitui instrumento de apoio à inteligência, seleção e priorização. A pontuação não representa, isoladamente, constatação de irregularidade, responsabilização, aplicação de sanção ou conclusão de auditoria. O resultado deve ser analisado conjuntamente com as evidências, os indicadores, a materialidade, a relevância, o risco e o julgamento profissional da equipe técnica.
+</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="fonteSituacao">
+Fonte: Modelo CHAP • Metodologia M-RAIG • Resolução n. 463/2026/TCE-RO
+</div>
+
+</div>
+
+</div>
+
+<div class="cardExecutivo situacaoBox">
+<h2>📈 INDICADORES ESTRATÉGICOS DE GOVERNANÇA</h2>
+<div id="painelIndicadoresGovernanca"></div>
+<div class="fonteSituacao">
+Fonte: TCE-RO • IRIQ • CHAP • Monitoramento Integrado
+</div>
+</div>
+
+</section>
+<!--=========================================================
+009 AUDITORIA
+=========================================================-->
+<section id="abaAuditor" class="abaQueimadas hidden">
+<div class="painelTitulo">AUDITORIA CONCOMITANTE</div>
+<div id="painelAuditoria"></div>
+<div class="bannerExecutivoQueimadas">
+<div class="bannerTitulo">SUMÁRIO EXECUTIVO</div>
+<div class="bannerSubtitulo">PREVENÇÃO E COMBATE ÀS QUEIMADAS E INCÊNDIOS FLORESTAIS</div>
+<div class="bannerRodape">Governança • Gestão de Riscos • CHAP • M-RAIG • TCE-RO</div>
+</div>
+<div class="cardExecutivo cardDestaque">
+<h2>📄 RELATÓRIOS EXECUTIVOS</h2>
+
+<div class="boxRelatoriosExecutivos">
+<button class="btnRelatorioPDF" onclick="gerarPDFTecnico0501()">
+<div class="btnIcone">📙</div>
+<div class="btnTitulo">RELATÓRIO TÉCNICO</div>
+<div class="btnSubtitulo">PCe 0501/2026 • PDF</div>
+</button>
+<button class="btnRelatorioWORD" onclick="gerarWordTecnico0501()">
+<div class="btnIcone">📘</div>
+<div class="btnTitulo">RELATÓRIO TÉCNICO</div>
+<div class="btnSubtitulo">Documento Editável WORD</div>
+</button>
+<button class="btnSumarioExecutivo" onclick="gerarPDFSumarioExecutivo0501()">
+<div class="btnIcone">📗</div>
+<div class="btnTitulo">SUMÁRIO EXECUTIVO</div>
+<div class="btnSubtitulo">Versão Executiva PDF</div>
+</button>
+<div class="boxSumarioMunicipalAuditoria">
+<div class="tituloSumarioMunicipalAuditoria">🏙️ SUMÁRIO EXECUTIVO MUNICIPAL</div>
+<select id="selectMunicipioSumarioAuditoria">
+<option value="">Selecione o município...</option>
+</select>
+<button class="btnGerarSumarioMunicipal" onclick="gerarPDFSumarioExecutivoMunicipalAuditoria()">
+<div class="btnIcone">🏙️</div>
+<div class="btnTitulo">GERAR SUMÁRIO</div>
+<div class="btnSubtitulo">Município selecionado • PDF</div>
+</button>
+</div>
+</div>
+
+</div>
+</section>
+
+</div>
+<!--
+<script>
+if ('serviceWorker' in navigator) {
+window.addEventListener('load', async ()=>{
+try{
+await navigator.serviceWorker.register('./sw.js',{
+scope:'./'
+})
+console.log('Service Worker registrado')
+}catch(e){
+console.error(e)
+}
+})
+}
+</script>
+-->
+</div>
+</body>
+</html>
