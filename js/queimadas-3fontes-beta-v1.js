@@ -17,3 +17,16 @@ document.addEventListener('click',ev=>{if(ev.target?.id==='btnAba3Fontes')setTim
 function iniciar(){render();carregar();setTimeout(carregar,4500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(iniciar,900),{once:true});else setTimeout(iniciar,900)
 })();
+
+/*=========================================================
+441 RESILIÊNCIA CLIMÁTICA MUNICIPAL • CARREGAMENTO SEGURO
+Módulo complementar e desacoplado do painel principal.
+=========================================================*/
+(function(){
+if(document.getElementById('qResilienciaClimaticaV1'))return;
+const s=document.createElement('script');
+s.id='qResilienciaClimaticaV1';
+s.src='../js/queimadas-resiliencia-climatica-v1.js?v=20260911-2';
+s.defer=true;
+document.head.appendChild(s);
+})();
