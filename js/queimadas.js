@@ -2090,6 +2090,7 @@ client.from('queimadas_monitoramento').select('*'),
 client.from('vw_queimadas_municipios_resposta').select('*'),
 typeof buscarFocosTempoReal==='function'?buscarFocosTempoReal(dataInicial,dataHoje):Promise.resolve({data:[],error:null})
 ])
+municipios=window.aplicarDocumentosOficiaisMunicipios?.(municipios||[])||municipios||[]
 let focos=resultadoFocos?.data||[]
 let resumoFocos=typeof calcularResumoTempoReal==='function'?calcularResumoTempoReal(focos,dataHoje):{total:focos.length,focosHoje:0,municipios:0,ultimaData:''}
 let areaQueimada=heat.reduce((s,i)=>s+Number(i.area_queimada_hectares||i.area_queimada_ha||i.area_queimada||0),0)
@@ -2226,6 +2227,7 @@ formatter:v=>v
 =========================================================*/
 async function renderSalaSituacao(){
 let {data:municipios=[]}=await client.from('vw_queimadas_municipios_resposta').select('*')
+municipios=window.aplicarDocumentosOficiaisMunicipios?.(municipios||[])||municipios||[]
 let total=52
 
 let listaSemPlano=municipios.filter(i=>{
@@ -4075,7 +4077,7 @@ if(erroHeatmap)console.error('Sumário Ranking Estadual:',erroHeatmap)
 if(erroMapbiomas)console.error('Sumário MapBiomas:',erroMapbiomas)
 if(erroProdes)console.error('Sumário PRODES:',erroProdes)
 focosINPE=focosINPE||[]
-municipios=municipios||[]
+municipios=window.aplicarDocumentosOficiaisMunicipios?.(municipios||[])||municipios||[]
 heatmap=heatmap||[]
 mapbiomas=mapbiomas||[]
 prodes=prodes||[]
@@ -4671,7 +4673,7 @@ client.from('queimadas_heatmap').select('*')
 ])
 if(erroCadastro)console.error('Sumário municipal cadastro:',erroCadastro)
 if(erroHeatmap)console.error('Sumário municipal IRIQ:',erroHeatmap)
-cadastros=cadastros||[]
+cadastros=window.aplicarDocumentosOficiaisMunicipios?.(cadastros||[])||cadastros||[]
 console.log('CADASTRO MUNICIPAL PDF:',cadastros.find(i=>normalizarMunicipio(i.municipio)===municipioNormalizado))
 heatmaps=heatmaps||[]
 let focos=focosRO.filter(i=>normalizarMunicipio(i.municipio)===municipioNormalizado)
