@@ -283,9 +283,26 @@ fonte_local:true
 }));
 
 const municipios=[
-{municipio:'Campo Novo de Rondônia',classificacao_cor:'VERDE',plano_acao:true,sem_resposta:false,ultimo_documento:'06844/26',ultimo_documento_data:'2026-09-14',ultimo_documento_pagina:'1-38'},
-{municipio:'Porto Velho',classificacao_cor:'VERDE',plano_acao:true,sem_resposta:false,ultimo_documento:'06916/26',ultimo_documento_data:'2026-09-15',ultimo_documento_pagina:'1-18'}
+{municipio:'Campo Novo de Rondônia',classificacao_cor:'VERDE',classificacao:'PLANO RECEBIDO',classificacao_ia:'PLANO RECEBIDO',plano_acao:true,dilacao_prazo:false,sem_resposta:false,lnumerodocenviado:'06843/26',ldatarecebimentodoc:'2026-09-14',lpaginarecebimentodoc:'1-4',llnumerodocenviado:'06844/26',lldatarecebimentodoc:'2026-09-14',llpaginarecebimentodoc:'1-38',ultimo_documento:'06844/26',ultimo_documento_data:'2026-09-14',ultimo_documento_pagina:'1-38'},
+{municipio:'Porto Velho',classificacao_cor:'VERDE',classificacao:'PLANO RECEBIDO',classificacao_ia:'PLANO RECEBIDO',plano_acao:true,dilacao_prazo:false,sem_resposta:false,llnumerodocenviado:'06916/26',lldatarecebimentodoc:'2026-09-15',llpaginarecebimentodoc:'1-18',ultimo_documento:'06916/26',ultimo_documento_data:'2026-09-15',ultimo_documento_pagina:'1-18'}
 ];
+
+
+function normMunicipio(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()}
+window.aplicarDocumentosOficiaisMunicipios=function(lista){
+ const base=(lista||[]).map(x=>({...x}))
+ municipios.forEach(local=>{
+  const idx=base.findIndex(x=>normMunicipio(x.municipio)===normMunicipio(local.municipio))
+  if(idx<0){base.push({...local});return}
+  const atual=base[idx]
+  const dataAtual=String(atual.lldatarecebimentodoc||atual.ldatarecebimentodoc||atual.ultimo_documento_data||'').slice(0,10)
+  const dataLocal=String(local.ultimo_documento_data||local.lldatarecebimentodoc||'').slice(0,10)
+  if(!dataAtual||dataLocal>=dataAtual){
+    base[idx]={...atual,...local}
+  }
+ })
+ return base
+}
 
 window.QUEIMADAS_DOCUMENTOS_OFICIAIS_2026={
 atualizado_em:'2026-09-18T15:44:00-03:00',
