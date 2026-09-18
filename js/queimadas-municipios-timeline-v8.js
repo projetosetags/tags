@@ -21,6 +21,11 @@ function br(v){let s=iso(v);if(!s)return'—';let[a,m,d]=s.split('-');return`${d
 function dm(v){let s=iso(v);if(!s)return'—';return`${s.slice(8,10)}/${s.slice(5,7)}`}
 function tp(t){return t==='PLANO_ENVIADO'?'RESPOSTA':t}
 function cfg(t){return T.find(x=>x[0]===tp(t))||['OUTRO','OUTRO','📝','#64748b']}
+function mergeLocal(lista){
+ let loc=window.QUEIMADAS_DOCUMENTOS_OFICIAIS_2026?.movimentacoes||[],map=new Map()
+ ;[...(lista||[]),...loc].forEach(x=>{let k=[String(x.municipio||'').toUpperCase(),String(x.numero_documento||''),String(x.tipo_evento||''),iso(dt(x))].join('|');if(!map.has(k)||x.fonte_local)map.set(k,x)})
+ return [...map.values()]
+}
 function css(){
 let old=document.getElementById('ltV9Style');if(old)old.remove()
 let s=document.createElement('style');s.id='ltV9Style';s.textContent=`
@@ -73,7 +78,7 @@ async function render(){
 let alvo=document.getElementById('e4Timeline');if(!alvo)return;let c=window.clientQueimadas||window.client;if(!c)return
 try{
 let{data,error}=await c.from('queimadas_municipios_movimentacoes').select('*').order('data_documento').order('data_envio').order('data_recebimento');if(error)throw error
-D=data||[];let anos=D.map(x=>iso(dt(x))).filter(Boolean).map(x=>Number(x.slice(0,4))).filter(Number.isFinite),ano=anos.length?Math.max(...anos):new Date().getFullYear(),base=dadosAno(ano),tot={}
+D=mergeLocal(data||[]);let anos=D.map(x=>iso(dt(x))).filter(Boolean).map(x=>Number(x.slice(0,4))).filter(Number.isFinite),ano=anos.length?Math.max(...anos):new Date().getFullYear(),base=dadosAno(ano),tot={}
 T.forEach(([t])=>tot[t]=base.filter(x=>tp(x.tipo_evento)===t).length)
 let head=`<div class="lt9Head">MÊS</div>${T.map(t=>`<div class="lt9Head"><span><i style="background:${t[3]}"></i>${t[1]}</span></div>`).join('')}`
 let linhas=M.map((mesNome,i)=>`<div class="lt9Mes">${mesNome}</div>${T.map(t=>cel(ano,i+1,t[0])).join('')}`).join('')
