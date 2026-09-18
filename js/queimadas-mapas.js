@@ -374,8 +374,9 @@ if(error){
 console.log(error)
 return
 }
+const dadosMunicipais=window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]
 const indice={}
-data.forEach(i=>{
+dadosMunicipais.forEach(i=>{
 indice[normalizarMunicipio(i.municipio)]=i
 })
 const geo=await fetch('./assets/geojson/municipios-ro.geojson')
