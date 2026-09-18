@@ -260,6 +260,7 @@ client.from('queimadas_heatmap').select('municipio,iriq,risco,classificacao,foco
 ])
 if(erroFocos)console.error('RT Sumário - focos:',erroFocos)
 if(erroMunicipios)console.error('RT Sumário - municípios:',erroMunicipios)
+municipios=window.aplicarDocumentosOficiaisMunicipios?.(municipios||[])||municipios||[]
 if(erroExecutivo)console.error('RT Sumário - executivo:',erroExecutivo)
 if(erroRankingFocos)console.error('RT Sumário - ranking focos:',erroRankingFocos)
 if(erroRankingIRIQ)console.error('RT Sumário - ranking IRIQ:',erroRankingIRIQ)
@@ -544,6 +545,7 @@ rtFonte(doc,'Fonte: INPE Programa Queimadas • PRODES • MapBiomas • IRIQ/TC
 async function rtAnaliseMunicipal(doc){
 rtCabecalhoPagina(doc,'5. ANÁLISE MUNICIPAL')
 let{data=[]}=await client.from('vw_queimadas_municipios_resposta').select('*')
+data=window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]
 let total=data.length
 let respondidos=data.filter(i=>String(i.classificacao_ia||'').toUpperCase().includes('PLANO')).length
 let dilacao=data.filter(i=>String(i.classificacao_ia||'').toUpperCase().includes('DILA')).length
@@ -658,6 +660,7 @@ rtFonte(doc,'Fonte: Heatmap Estadual • IRIQ • TCE-RO')
 async function adicionarTabelaMunicipiosPDF(doc){
 let{data,error}=await client.from('vw_queimadas_municipios_resposta').select('*').order('municipio')
 if(error)return
+data=window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]
 doc.addPage()
 rtCabecalhoPagina(doc,'SITUAÇÃO DOS 52 MUNICÍPIOS')
 doc.autoTable({startY:42,head:[['Nº','MUNICÍPIO','SITUAÇÃO','DOCUMENTO','RECEBIMENTO']],body:(data||[]).map((i,idx)=>[idx+1,i.municipio||'-',i.classificacao_ia||'-',i.lnumerodocenviado||i.llnumerodocenviado||'-',formatarDataBR(i.ldatarecebimentodoc)]),styles:{fontSize:6.6,cellPadding:1.8,textColor:[51,65,85]},headStyles:{fillColor:[15,23,42],textColor:[255,255,255]},alternateRowStyles:{fillColor:[245,245,245]},margin:{left:10,right:10}})
