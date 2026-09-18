@@ -56,6 +56,15 @@ function faixaEvidencias(){
  d.innerHTML='<b>📎 EVIDÊNCIAS • QUEIMADAS</b><span>Os novos planos foram decompostos em metas e procedimentos. A execução declarada não é tratada como evidência validada; cada item deve receber documento comprobatório e análise técnica.</span>'
  tela.prepend(d)
 }
+function faixasTodosPaineis(){
+ let docs=B().docs||[];if(!docs.length)return
+ document.querySelectorAll('.tela-monitoramento').forEach(t=>{
+  if(['tela-dashboard','tela-evidencias','tela-documentosqueimadas'].includes(t.id)||t.querySelector('.qmon-faixa-global'))return
+  let d=document.createElement('div');d.className='qmon-faixa qmon-faixa-global'
+  d.innerHTML='<b>🔥 QUEIMADAS 2026 • BASE DOCUMENTAL ATUALIZADA</b><span>3 documentos oficiais incorporados: Campo Novo de Rondônia (06843/26 e 06844/26) e Porto Velho (06916/26). Metas e procedimentos disponíveis em “Docs. Queimadas”.</span>'
+  t.prepend(d)
+ })
+}
 function montar(){
  estilo()
  let nav=document.getElementById('navMonitoramento')
@@ -68,7 +77,7 @@ function montar(){
  if(main&&!document.getElementById('tela-documentosqueimadas')){
   let s=document.createElement('section');s.id='tela-documentosqueimadas';s.className='tela-monitoramento hidden';main.appendChild(s)
  }
- renderTela();faixaDashboard();faixaEvidencias();envolverRelatorios()
+ renderTela();faixaDashboard();faixaEvidencias();faixasTodosPaineis();envolverRelatorios()
 }
 function relatorioHTML(){
  let docs=B().docs||[]
