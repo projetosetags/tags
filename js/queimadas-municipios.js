@@ -359,7 +359,7 @@ client.from('vw_queimadas_ranking_estadual').select('*').order('indice_final',{a
 ])
 if(error){console.error('Erro planos municipais:',error);return}
 if(erroRanking)console.error('Erro ranking municipal:',erroRanking)
-let lista=(data||[]).map(classificarMunicipioAtual)
+let lista=(window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]).map(classificarMunicipioAtual)
 let comPlano=lista.filter(i=>i.classificacaoAtual==='VERDE')
 let dilacao=lista.filter(i=>i.classificacaoAtual==='AMARELO')
 let semPlano=lista.filter(i=>i.classificacaoAtual==='VERMELHO')
@@ -947,7 +947,7 @@ let box=document.getElementById('painelMunicipiosOficio')
 if(!box)return
 let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*')
 if(error){console.error('Erro municípios ofício:',error);return}
-let lista=(data||[]).map(classificarMunicipioAtual)
+let lista=(window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]).map(classificarMunicipioAtual)
 let total=lista.length
 let planos=lista.filter(i=>i.classificacaoAtual==='VERDE').length
 let dilacoes=lista.filter(i=>i.classificacaoAtual==='AMARELO').length
@@ -963,7 +963,7 @@ let box=document.getElementById('painelMunicipiosSemResposta')
 if(!box)return
 let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*').order('municipio')
 if(error){console.error('Erro municípios sem resposta:',error);return}
-let lista=(data||[]).map(classificarMunicipioAtual).filter(i=>i.classificacaoAtual==='VERMELHO')
+let lista=(window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]).map(classificarMunicipioAtual).filter(i=>i.classificacaoAtual==='VERMELHO')
 box.innerHTML=lista.length?'<div class="heatmap-grid">'+lista.map(i=>`<div class="heat-vermelho"><div class="heat-municipio">${i.municipio||'-'}</div><div class="heat-info">Situação: SEM RESPOSTA<br>Ofício: ${i.nroficioenviadotcero||'-'}<br>Envio: ${formatarDataBR(i.dataenviodoc)}</div><div class="fonte-card">Fonte: Ofício Circular n.16/2026/GABPRES/TCERO</div></div>`).join('')+'</div>':'<div class="situacaoSemDados">Nenhum município sem resposta.</div>'
 }
 /*=========================================================
@@ -974,7 +974,7 @@ let box=document.getElementById('painelKPIsMunicipais')
 if(!box)return
 let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*')
 if(error){console.error('Erro KPIs municipais:',error);return}
-let lista=(data||[]).map(classificarMunicipioAtual)
+let lista=(window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]).map(classificarMunicipioAtual)
 let total=lista.length
 let planos=lista.filter(i=>i.classificacaoAtual==='VERDE').length
 let dilacoes=lista.filter(i=>i.classificacaoAtual==='AMARELO').length
@@ -989,7 +989,7 @@ let box=document.getElementById('painelPlanosApresentados')
 if(!box)return
 let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*').order('municipio')
 if(error){console.error('Erro planos apresentados:',error);return}
-let lista=(data||[]).map(classificarMunicipioAtual).filter(i=>i.classificacaoAtual==='VERDE')
+let lista=(window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]).map(classificarMunicipioAtual).filter(i=>i.classificacaoAtual==='VERDE')
 box.innerHTML=lista.length?'<table class="tabelaMiniMunicipios"><tr><th>Município</th><th>Recebimento</th></tr>'+lista.map(i=>`<tr><td>${i.municipio||'-'}</td><td>${i.recebimentoAtual?formatarDataBR(i.recebimentoAtual):'-'}</td></tr>`).join('')+'</table>':'<div class="situacaoSemDados">Nenhum plano apresentado.</div>'
 }
 /*=========================================================
@@ -1000,7 +1000,7 @@ let box=document.getElementById('painelDilacoesPrazo')
 if(!box)return
 let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*').order('municipio')
 if(error){console.error('Erro dilações de prazo:',error);return}
-let lista=(data||[]).map(classificarMunicipioAtual).filter(i=>i.classificacaoAtual==='AMARELO')
+let lista=(window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]).map(classificarMunicipioAtual).filter(i=>i.classificacaoAtual==='AMARELO')
 box.innerHTML=lista.length?'<table class="tabelaMiniMunicipios"><tr><th>Município</th><th>Recebimento</th></tr>'+lista.map(i=>`<tr><td>${i.municipio||'-'}</td><td>${i.recebimentoAtual?formatarDataBR(i.recebimentoAtual):'-'}</td></tr>`).join('')+'</table>':'<div class="situacaoSemDados">Nenhum município com dilação de prazo.</div>'
 }
 /*=========================================================
@@ -1016,7 +1016,7 @@ if(erroRanking)console.error('Erro ranking:',erroRanking)
 if(erroMunicipios)console.error('Erro municípios:',erroMunicipios)
 if(erroExec)console.error('Erro executivo:',erroExec)
 exec=exec||{}
-let listaMunicipios=(municipios||[]).map(classificarMunicipioAtual)
+let listaMunicipios=(window.aplicarDocumentosOficiaisMunicipios?.(municipios||[])||municipios||[]).map(classificarMunicipioAtual)
 let criticos=ranking.filter(i=>Number(i.indice_final||i.iriq||0)>=75).length
 let altos=ranking.filter(i=>{let v=Number(i.indice_final||i.iriq||0);return v>=50&&v<75}).length
 let moderados=ranking.filter(i=>{let v=Number(i.indice_final||i.iriq||0);return v>=25&&v<50}).length
@@ -1058,7 +1058,7 @@ console.error('Erro ao carregar tabela municipal:',error)
 box.innerHTML='<div class="alerta-vermelho">Erro ao carregar os municípios.</div>'
 return
 }
-let lista=(data||[]).map(i=>{
+let lista=(window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]).map(i=>{
 let plano=i.plano_acao===true||i.plano_acao==='true'||i.plano_acao===1||i.plano_acao==='1'
 let dilacao=i.dilacao_prazo===true||i.dilacao_prazo==='true'||i.dilacao_prazo===1||i.dilacao_prazo==='1'
 let classificacaoAtual=plano?'VERDE':dilacao?'AMARELO':'VERMELHO'
@@ -1092,7 +1092,7 @@ window.mapaMunicipalRO=L.map(box).setView([-10.9,-63.3],7)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(window.mapaMunicipalRO)
 let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*')
 if(error){console.error(error);return}
-let lista=data.map(classificarMunicipioAtual)
+let lista=(window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]).map(classificarMunicipioAtual)
 let situacao={}
 lista.forEach(i=>situacao[String(i.municipio||'').trim().toUpperCase()]=i)
 console.log('MAPA CLASSIFICAÇÃO:',lista.map(i=>({
@@ -1161,7 +1161,7 @@ let box=document.getElementById('painelEstatisticasMunicipais')
 if(!box)return
 let{data=[],error}=await client.from('vw_queimadas_municipios_resposta').select('*')
 if(error){console.error('Erro estatísticas municipais:',error);return}
-let lista=(data||[]).map(classificarMunicipioAtual)
+let lista=(window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]).map(classificarMunicipioAtual)
 let total=lista.length
 let planos=lista.filter(i=>i.classificacaoAtual==='VERDE').length
 let dilacoes=lista.filter(i=>i.classificacaoAtual==='AMARELO').length
@@ -1184,7 +1184,7 @@ console.error('Erro ao carregar municípios:',error)
 box.innerHTML='Erro ao carregar.'
 return
 }
-let lista=(data||[]).map(classificarMunicipioAtual)
+let lista=(window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]).map(classificarMunicipioAtual)
 let html='<div style="overflow-x:auto;width:100%">'
 html+='<table class="tabelaResumoMunicipios">'
 html+='<thead>'
@@ -1471,6 +1471,7 @@ console.log('Município selecionado:',municipio)
 let{data,error}=await client.from('vw_queimadas_municipios_resposta').select('*').eq('municipio',municipio).maybeSingle()
 if(error){console.error('Erro ao localizar município:',error);alert('Erro ao localizar o registro: '+error.message);return}
 if(!data){alert('Registro não encontrado para: '+municipio);return}
+data=(window.aplicarDocumentosOficiaisMunicipios?.([data])||[data])[0]||data
 fecharModalMunicipio()
 let registro=typeof classificarMunicipioAtual==='function'?classificarMunicipioAtual(data):data
 let situacaoAtual=registro.classificacaoAtual||''
@@ -1643,7 +1644,7 @@ if(btn){btn.disabled=false;btn.innerHTML='💾 SALVAR'}
 async function renderDistribuicaoRespostas(){
 const{data,error}=await client.from('vw_queimadas_municipios_resposta').select('*')
 if(error){console.error('Erro distribuição respostas:',error);return}
-let lista=(data||[]).map(classificarMunicipioAtual)
+let lista=(window.aplicarDocumentosOficiaisMunicipios?.(data||[])||data||[]).map(classificarMunicipioAtual)
 let verde=lista.filter(i=>i.classificacaoAtual==='VERDE').length
 let amarelo=lista.filter(i=>i.classificacaoAtual==='AMARELO').length
 let vermelho=lista.filter(i=>i.classificacaoAtual==='VERMELHO').length
