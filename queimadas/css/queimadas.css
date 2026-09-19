@@ -351,7 +351,7 @@ body{overflow-x:hidden}
 
 #painelCadastroEstado .tabelaEstado{
 width:100%;
-min-width:1840px;
+min-width:1640px;
 border-collapse:separate;
 border-spacing:0;
 table-layout:fixed;
@@ -390,15 +390,15 @@ overflow-wrap:anywhere
 #painelCadastroEstado .tabelaEstado th:last-child,#painelCadastroEstado .tabelaEstado td:last-child{border-right:0}
 
 #painelCadastroEstado .tabelaEstado th:nth-child(1),#painelCadastroEstado .tabelaEstado td:nth-child(1){width:180px}
-#painelCadastroEstado .tabelaEstado th:nth-child(2),#painelCadastroEstado .tabelaEstado td:nth-child(2){width:260px}
-#painelCadastroEstado .tabelaEstado th:nth-child(3),#painelCadastroEstado .tabelaEstado td:nth-child(3){width:105px;text-align:center}
+#painelCadastroEstado .tabelaEstado th:nth-child(2),#painelCadastroEstado .tabelaEstado td:nth-child(2){width:210px}
+#painelCadastroEstado .tabelaEstado th:nth-child(3),#painelCadastroEstado .tabelaEstado td:nth-child(3){width:82px;text-align:center}
 #painelCadastroEstado .tabelaEstado th:nth-child(4),#painelCadastroEstado .tabelaEstado td:nth-child(4){width:115px;text-align:center}
-#painelCadastroEstado .tabelaEstado th:nth-child(5),#painelCadastroEstado .tabelaEstado td:nth-child(5){width:110px;text-align:center}
-#painelCadastroEstado .tabelaEstado th:nth-child(6),#painelCadastroEstado .tabelaEstado td:nth-child(6){width:110px;text-align:center}
+#painelCadastroEstado .tabelaEstado th:nth-child(5),#painelCadastroEstado .tabelaEstado td:nth-child(5){width:82px;text-align:center}
+#painelCadastroEstado .tabelaEstado th:nth-child(6),#painelCadastroEstado .tabelaEstado td:nth-child(6){width:82px;text-align:center}
 #painelCadastroEstado .tabelaEstado th:nth-child(7),#painelCadastroEstado .tabelaEstado td:nth-child(7){width:190px}
 #painelCadastroEstado .tabelaEstado th:nth-child(8),#painelCadastroEstado .tabelaEstado td:nth-child(8){width:210px}
 #painelCadastroEstado .tabelaEstado th:nth-child(9),#painelCadastroEstado .tabelaEstado td:nth-child(9){width:500px;text-align:left}
-#painelCadastroEstado .tabelaEstado th:nth-child(10),#painelCadastroEstado .tabelaEstado td:nth-child(10){width:120px;text-align:center}
+#painelCadastroEstado .tabelaEstado th:nth-child(10),#painelCadastroEstado .tabelaEstado td:nth-child(10){width:56px;text-align:center}
 
 #painelCadastroEstado .estadoCellTexto,#painelCadastroEstado .estadoObsTexto,#painelCadastroEstado .estadoDocTexto{
 display:block;
@@ -418,7 +418,7 @@ overflow-wrap:anywhere
 #painelCadastroEstado .estadoObservacao .estadoObsTexto{font-size:11.5px;line-height:1.55}
 #painelCadastroEstado .estadoVazio{color:#94a3b8}
 #painelCadastroEstado .estadoAcao{vertical-align:top;text-align:center}
-#painelCadastroEstado .btnEditarEstadoTabela{width:92px;min-width:92px;height:30px;padding:4px 8px;font-size:10px;font-weight:900;white-space:nowrap}
+#painelCadastroEstado .btnEditarEstadoTabela{width:32px;min-width:32px;height:32px;padding:0;border-radius:8px;font-size:15px;font-weight:900;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
 #painelCadastroEstado .estadoTabelaErro{padding:14px;border:1px solid #fecaca;background:#fef2f2;color:#991b1b;border-radius:10px;font-weight:800}
 
 #painelCadastroEstado .btnEditarEstado{padding:2px 4px;font-size:10px;min-width:50px;height:22px}
