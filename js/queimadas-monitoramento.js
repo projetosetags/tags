@@ -149,7 +149,7 @@ preparar(btnPng,'🖼️','Exportar PNG da aba atual')
 =========================================================*/
 function carregarModulo3Fontes(){
 if(document.getElementById('script3Fontes'))return
-let s=document.createElement('script');s.id='script3Fontes';s.src='../js/queimadas-03fontes.js?v=20260906-1';s.defer=true;document.head.appendChild(s)
+let s=document.createElement('script');s.id='script3Fontes';s.src='../js/queimadas-03fontes.js?v=20260919-2';s.defer=true;document.head.appendChild(s)
 }
 
 function iniciarTudoComplementar(){
