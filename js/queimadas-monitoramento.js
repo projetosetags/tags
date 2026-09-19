@@ -39,7 +39,7 @@ function ajustarStatusRioMadeiraFontes(){
 try{
 const aba=document.getElementById('abaRioMadeira');if(!aba)return
 let aviso=document.getElementById('rmAvisoFonteSIPAM')
-const html='🌊 <b>RIO MADEIRA • BASE ATUALIZADA</b><br>Último nível disponível: <b>04/09/2026 • 4,02 m</b>. Série histórica de nível: <b>ANA/CPRM-REPO</b>. Precipitação: <b>GPM/NASA</b>. Análise e gráficos: <b>CENSIPAM/NUHIDRO CR-PV</b>.'
+const html='🌊 <b>RIO MADEIRA • BASE ATUALIZADA</b><br>Último nível disponível: <b>17/09/2026 • 3,64 m</b>. Série histórica de nível: <b>ANA/CPRM-REPO</b>. Precipitação: <b>GPM/NASA</b>. Análise e gráficos: <b>CENSIPAM/NUHIDRO CR-PV</b>.'
 if(!aviso){aviso=document.createElement('div');aviso.id='rmAvisoFonteSIPAM';aviso.style.cssText='margin:12px 0;padding:12px 14px;border-radius:10px;background:#eff6ff;border:1px solid #93c5fd;color:#1e3a8a;font-size:12px;font-weight:800;line-height:1.5';const titulo=aba.querySelector('.painelTitulo');if(titulo)titulo.insertAdjacentElement('afterend',aviso);else aba.prepend(aviso)}
 if(aviso.innerHTML!==html)aviso.innerHTML=html
 aba.querySelectorAll('.rioMadeiraFonte').forEach(el=>{if((el.textContent||'').includes('Série histórica')||(el.textContent||'').includes('Integração:')){const novo=(el.textContent||'').includes('Integração:')?'Integração: CENSIPAM/NUHIDRO CR-PV • Série histórica de nível: ANA/CPRM-REPO • Precipitação: GPM/NASA • Queimadas: PROTEGE/SEDAM + INPE • TCE-RO':'Série histórica de nível: ANA/CPRM-REPO • Análise e gráficos: CENSIPAM/NUHIDRO CR-PV • Estação 15400000 • Porto Velho';if(el.textContent!==novo)el.textContent=novo}})
