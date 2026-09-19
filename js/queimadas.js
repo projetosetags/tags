@@ -119,15 +119,21 @@ if(app)app.style.display='none'
 =========================================================*/
 function formatarDataBR(data){
 if(!data)return'-'
-let d=new Date(data)
-if(isNaN(d.getTime())){
 let txt=String(data).trim()
+if(/^\d{4}-\d{2}-\d{2}$/.test(txt)){
+let[a,m,d]=txt.split('-')
+return`${d}-${m}-${String(a).slice(-2)}`
+}
+if(/^\d{4}-\d{2}-\d{2}T/.test(txt)){
+let[a,m,d]=txt.slice(0,10).split('-')
+return`${d}-${m}-${String(a).slice(-2)}`
+}
 if(/^\d{2}\/\d{2}\/\d{4}$/.test(txt)){
 let[p,m,a]=txt.split('/')
 return`${p}-${m}-${String(a).slice(-2)}`
 }
-return txt
-}
+let d=new Date(data)
+if(isNaN(d.getTime()))return txt
 let dia=String(d.getDate()).padStart(2,'0')
 let mes=String(d.getMonth()+1).padStart(2,'0')
 let ano=String(d.getFullYear()).slice(-2)
@@ -3675,31 +3681,47 @@ box.innerHTML=`
 async function renderCadastroEstado(){
 let box=document.getElementById('painelCadastroEstado')
 if(!box)return
-let{data=[]}=await client.from('queimadas_estado_oficio').select('*').order('estado')
+let{data=[],error}=await client.from('queimadas_estado_oficio').select('*').order('estado')
+if(error){
+box.innerHTML='<div class="estadoTabelaErro">Não foi possível carregar o cadastro estadual.</div>'
+console.error(error)
+return
+}
+const cell=v=>String(v??'-')
+.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')
+const docCell=v=>{
+let t=String(v||'').trim()
+if(!t)return'<span class="estadoVazio">—</span>'
+return '<div class="estadoDocTexto">'+cell(t).replace(/\s*\/\s*/g,' /<wbr> ').replace(/\s+-\s+/g,'<br><span class="estadoDocSub">— </span>')+'</div>'
+}
+const obsCell=v=>{
+let t=String(v||'').trim()
+if(!t)return'<span class="estadoVazio">—</span>'
+return '<div class="estadoObsTexto">'+cell(t)
+.replace(/;\s*/g,';<br>')
+.replace(/\n+/g,'<br>')
++'</div>'
+}
 let html=`
+<div class="estadoTabelaToolbar">
+<div>
+<strong>CADASTRO DOS ÓRGÃOS ESTADUAIS</strong>
+<span>${data.length} órgão(s) • role horizontal disponível quando necessário</span>
+</div>
+<div class="estadoTabelaLegenda">↔ arraste horizontalmente para visualizar todas as colunas</div>
+</div>
+<div class="estadoTabelaScroll">
 <table class="tabelaEstado">
-<colgroup>
-<col style="width:8%">
-<col style="width:14%">
-<col style="width:5%">
-<col style="width:5%">
-<col style="width:4%">
-<col style="width:4%">
-<col style="width:5%">
-<col style="width:5%">
-<col style="width:40%">
-<col style="width:10%">
-</colgroup>
 <thead>
 <tr>
 <th>ÓRGÃO</th>
 <th>OFÍCIO TCE</th>
 <th>DATA ENVIO</th>
-<th>PÁG ENVIO</th>
-<th>DATA REC.1</th>
-<th>DATA REC.2</th>
-<th>DOC.1</th>
-<th>DOC.2</th>
+<th>PÁG. ENVIO</th>
+<th>DATA REC. 1</th>
+<th>DATA REC. 2</th>
+<th>DOC. 1</th>
+<th>DOC. 2</th>
 <th>OBSERVAÇÃO</th>
 <th>AÇÃO</th>
 </tr>
@@ -3708,21 +3730,21 @@ let html=`
 data.forEach(i=>{
 html+=`
 <tr>
-<td>${i.estado||'-'}</td>
-<td>${i.nroficioenviadotcero||'-'}</td>
-<td>${formatarDataBR(i.dataenviodoc)}</td>
-<td>${i.paginaenviodoc||'-'}</td>
-<td>${formatarDataBR(i.idatarecebimentodoc)}</td>
-<td>${formatarDataBR(i.iidatarecebimentodoc)}</td>
-<td>${i.inumerodocenviado||'-'}</td>
-<td>${i.iinumerodocenviado||'-'}</td>
-<td style="padding-right:20px;word-break:break-word;white-space:normal">${i.observacao||'-'}</td>
-<td style="min-width:90px;text-align:center">
-<button class="btnEditarMunicipio" style="width:80px" onclick="editarEstado(${i.id})">✏ EDITAR</button>
+<td class="estadoOrgao"><div class="estadoCellTexto">${cell(i.estado||'-')}</div></td>
+<td class="estadoOficio"><div class="estadoCellTexto">${cell(i.nroficioenviadotcero||'-')}</div></td>
+<td class="estadoData">${formatarDataBR(i.dataenviodoc)}</td>
+<td class="estadoPagina"><div class="estadoCellTexto estadoCellCentro">${cell(i.paginaenviodoc||'-')}</div></td>
+<td class="estadoData">${formatarDataBR(i.idatarecebimentodoc)}</td>
+<td class="estadoData">${formatarDataBR(i.iidatarecebimentodoc)}</td>
+<td class="estadoDocumento">${docCell(i.inumerodocenviado)}</td>
+<td class="estadoDocumento">${docCell(i.iinumerodocenviado)}</td>
+<td class="estadoObservacao">${obsCell(i.observacao)}</td>
+<td class="estadoAcao">
+<button class="btnEditarMunicipio btnEditarEstadoTabela" onclick="editarEstado(${i.id})">✏ EDITAR</button>
 </td>
 </tr>`
 })
-html+='</tbody></table>'
+html+='</tbody></table></div>'
 box.innerHTML=html
 }
 /*=========================================================
