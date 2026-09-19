@@ -3740,7 +3740,7 @@ html+=`
 <td class="estadoDocumento">${docCell(i.iinumerodocenviado)}</td>
 <td class="estadoObservacao">${obsCell(i.observacao)}</td>
 <td class="estadoAcao">
-<button class="btnEditarMunicipio btnEditarEstadoTabela" onclick="editarEstado(${i.id})">✏ EDITAR</button>
+<button class="btnEditarMunicipio btnEditarEstadoTabela" title="Editar registro" aria-label="Editar registro" onclick="editarEstado(${i.id})">✏️</button>
 </td>
 </tr>`
 })
