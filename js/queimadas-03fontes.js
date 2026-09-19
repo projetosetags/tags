@@ -12,7 +12,7 @@ s.defer=true
 if(cb)s.onload=cb
 document.head.appendChild(s)
 }
-carregar('https://cdn.jsdelivr.net/gh/projetosetags/tags@bb2b833bd89dd178362793aa935b2d75d6688e71/js/queimadas-03fontes.js','q3BaseEstavel',function(){
+carregar('../js/queimadas-03fontes-ui-v2.js?v=20260919-1','q3BaseEstavel',function(){
 carregar('../js/queimadas-municipios-timeline.js?v=20260906-2','qmtTimeline',function(){
 carregar('../js/queimadas-municipios-layout-v2.js?v=20260906-3','qmtLayoutV2',function(){
 carregar('../js/queimadas-mapa-municipios-v3.js?v=20260906-2','qmtMapaV3',function(){
@@ -30,7 +30,7 @@ carregar('../js/queimadas-municipios-timeline-v8.js?v=20260909-2','qmtTimelineV8
 carregar('../js/queimadas-mapa-municipios-v4.js?v=20260909-2','qmtMapaV4',function(){
 carregar('../js/queimadas-sincronizacao-global-v1.js?v=20260909-1','qSyncGlobalV1',function(){
 carregar('../js/queimadas-inteligencia-operacional-v1.js?v=20260909-1','qInteligenciaOperacionalV1',function(){
-carregar('../js/queimadas-3fontes-beta-v1.js?v=20260909-1','q3SipamBetaV1')
+/* CENSIPAM Beta integrado ao painel principal em queimadas-03fontes-ui-v2.js */
 })
 })
 })
