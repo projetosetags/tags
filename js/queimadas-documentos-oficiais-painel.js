@@ -6,6 +6,93 @@ Integra os documentos protocolizados em todos os painéis do projeto.
 function esc(v){return String(v??'').replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]))}
 function br(v){if(!v)return'—';const p=String(v).slice(0,10).split('-');return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:esc(v)}
 function base(){return window.QUEIMADAS_DOCUMENTOS_OFICIAIS_2026||{docs:[]}}
+let QDOC_CACHE=null
+function normalizar(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()}
+function docGenericoMunicipal(r){
+ const enriquecido=(base().docs||[]).find(d=>normalizar(d.id)===normalizar(r.numero_documento)&&normalizar(d.municipio)===normalizar(r.municipio))
+ if(enriquecido)return {...enriquecido,escopo:'MUNICÍPIO'}
+ return {
+  id:r.numero_documento||('MOV-'+r.id),
+  municipio:r.municipio||'Município não informado',
+  jurisdicionado:r.municipio?('Município de '+r.municipio):'Administração municipal',
+  subcategoria:r.tipo_evento||'Movimentação documental',
+  assunto:r.referencia||r.observacao||'Registro documental do acompanhamento municipal.',
+  processo:r.referencia||'PCe n. 00501/2026-TCE-RO',
+  data_documento:r.data_documento,
+  data_entrada:r.data_recebimento||r.data_envio||r.data_documento,
+  data_recebimento:r.data_recebimento,
+  documento_origem:r.referencia||r.tipo_evento||'Documento municipal',
+  orgao_origem:r.municipio?('Município de '+r.municipio):'Administração municipal',
+  tipo:r.tipo_evento||'DOCUMENTO',
+  tipo_evento:r.tipo_evento||'OUTRO',
+  paginas:r.pagina||'—',
+  situacao:r.situacao_resultante||r.tipo_evento||'REGISTRADO',
+  status:'REGISTRADO',
+  plano_recebido:['PLANO_ENVIADO','COMPLEMENTACAO'].includes(String(r.tipo_evento||'').toUpperCase()),
+  resumo:r.observacao||r.referencia||'Registro documental constante da base oficial do acompanhamento.',
+  procedimentos:[],elementos_tecnicos:[],acoes:[],cronograma:[],indicadores:[],areas_prioritarias:[],parcerias:[],recursos:[],monitoramento:[],
+  fonte:'Base oficial • movimentações municipais',
+  escopo:'MUNICÍPIO'
+ }
+}
+function estadoDocs(r){
+ const out=[]
+ const obs=r.observacao||''
+ const push=(id,data,pag,tipo,origem,situacao)=>{
+  if(!id||!String(id).trim())return
+  out.push({
+   id:String(id).trim(),
+   municipio:r.estado||'Órgão estadual',
+   jurisdicionado:r.estado||'Governo do Estado de Rondônia',
+   subcategoria:tipo,
+   assunto:obs||'Documento estadual relacionado ao acompanhamento das queimadas 2026.',
+   processo:/CEPCIF/i.test(r.estado||'')?'SEI 006691/2026':'PCe n. 00501/2026-TCE-RO',
+   data_documento:data,
+   data_entrada:data,
+   data_recebimento:data,
+   documento_origem:String(id).trim(),
+   orgao_origem:r.estado||'Governo do Estado de Rondônia',
+   tipo,
+   tipo_evento:tipo,
+   paginas:pag||'—',
+   situacao,
+   status:'REGISTRADO',
+   plano_recebido:false,
+   resumo:obs||'Registro documental estadual constante da base oficial do acompanhamento.',
+   procedimentos:[],elementos_tecnicos:[],acoes:[],cronograma:[],indicadores:[],areas_prioritarias:[],parcerias:[],recursos:[],monitoramento:[],
+   fonte:'Base oficial • órgãos estaduais',
+   escopo:'ESTADO'
+  })
+ }
+ push(r.inumerodocenviado,r.idatarecebimentodoc,r.ipaginarecebimentodoc,'DOCUMENTO RECEBIDO','ESTADO','DOCUMENTO ESTADUAL RECEBIDO')
+ push(r.iinumerodocenviado,r.iidatarecebimentodoc,r.iipaginarecebimentodoc,'DOCUMENTO RECEBIDO','ESTADO','DOCUMENTO ESTADUAL RECEBIDO')
+ push(r.nroficioenviadotcero,r.dataenviodoc,r.paginaenviodoc,'OFÍCIO TCE-RO','TCE-RO','OFÍCIO EXPEDIDO / REFERÊNCIA')
+ return out
+}
+async function carregarTodos(){
+ if(QDOC_CACHE)return QDOC_CACHE
+ const enriquecidos=base().docs||[]
+ if(!window.clientQueimadas){QDOC_CACHE=enriquecidos.map(d=>({...d,escopo:'MUNICÍPIO'}));return QDOC_CACHE}
+ try{
+  const [{data:mov,error:e1},{data:est,error:e2}]=await Promise.all([
+   window.clientQueimadas.from('queimadas_municipios_movimentacoes').select('*').order('data_recebimento',{ascending:false}),
+   window.clientQueimadas.from('queimadas_estado_oficio').select('*').order('estado',{ascending:true})
+  ])
+  if(e1)throw e1;if(e2)throw e2
+  const todos=[...(mov||[]).map(docGenericoMunicipal),...(est||[]).flatMap(estadoDocs)]
+  const vistos=new Set()
+  QDOC_CACHE=todos.filter(d=>{
+   const k=[normalizar(d.escopo),normalizar(d.municipio),normalizar(d.id),String(d.data_entrada||'').slice(0,10)].join('|')
+   if(vistos.has(k))return false
+   vistos.add(k);return true
+  }).sort((a,b)=>String(b.data_entrada||'').localeCompare(String(a.data_entrada||'')))
+  return QDOC_CACHE
+ }catch(e){
+  console.error('Documentos oficiais:',e)
+  QDOC_CACHE=enriquecidos.map(d=>({...d,escopo:'MUNICÍPIO'}))
+  return QDOC_CACHE
+ }
+}
 function lista(titulo,itens){
  if(!itens?.length)return''
  return `<div class="qdocBloco"><h4>${esc(titulo)}</h4><ul>${itens.map(x=>`<li>${esc(typeof x==='string'?x:(x.acao||x.item||''))}</li>`).join('')}</ul></div>`
@@ -69,26 +156,48 @@ function css(){
  @media(max-width:800px){.qdocKPIs{grid-template-columns:repeat(2,1fr)}.qdocMeta{grid-template-columns:1fr}.qdocFaixa{align-items:flex-start;flex-direction:column}.qdocRecurso{grid-template-columns:1fr}}
  `;document.head.appendChild(s)
 }
-function renderTela(){
- const docs=base().docs||[],sec=document.getElementById('abaDocumentosOficiais');if(!sec)return
- const mun=[...new Set(docs.map(d=>d.municipio))]
- sec.innerHTML=`<div class="qdocTopo"><div><h2>📚 DOCUMENTOS OFICIAIS • QUEIMADAS 2026</h2><p>Protocolos, planos, procedimentos, metas, indicadores, cronogramas e pontos de monitoramento incorporados ao projeto.</p></div><div style="font-size:8px;color:#64748b">Atualização documental: 18/09/2026</div></div>
- <div class="qdocKPIs"><div class="qdocKPI"><b>${docs.length}</b><span>Documentos incorporados</span></div><div class="qdocKPI"><b>${mun.length}</b><span>Municípios atualizados</span></div><div class="qdocKPI"><b>${docs.filter(d=>d.plano_recebido).length}</b><span>Planos recebidos</span></div><div class="qdocKPI"><b>${br(docs.map(d=>d.data_entrada).sort().at(-1))}</b><span>Última entrada</span></div></div>
- <div class="qdocFiltros"><button class="ativo" data-municipio="TODOS" onclick="qdocFiltrar('TODOS')">TODOS</button>${mun.map(m=>`<button data-municipio="${esc(m)}" onclick="qdocFiltrar(this.dataset.municipio)">${esc(m)}</button>`).join('')}</div>
- <div id="qdocLista" class="qdocGrid">${docs.map(d=>`<div class="qdocCardWrap" data-municipio="${esc(d.municipio)}">${card(d)}</div>`).join('')}</div>`
+async function renderTela(){
+ const docs=await carregarTodos(),sec=document.getElementById('abaDocumentosOficiais');if(!sec)return
+ const municipais=docs.filter(d=>d.escopo==='MUNICÍPIO')
+ const mun=[...new Set(municipais.map(d=>d.municipio).filter(Boolean))]
+ const orgaos=[...new Set(docs.filter(d=>d.escopo==='ESTADO').map(d=>d.municipio).filter(Boolean))]
+ const ultima=docs.map(d=>d.data_entrada).filter(Boolean).sort().at(-1)
+ sec.innerHTML=`<div class="qdocTopo"><div><h2>📚 DOCUMENTOS OFICIAIS • QUEIMADAS 2026</h2><p>Base documental completa: movimentações municipais, órgãos estaduais, planos, respostas, complementações e expedientes do TCE-RO.</p></div><div style="font-size:8px;color:#64748b">Atualização documental: 18/09/2026</div></div>
+ <div class="qdocKPIs"><div class="qdocKPI"><b>${docs.length}</b><span>Registros documentais</span></div><div class="qdocKPI"><b>${mun.length}</b><span>Municípios com registros</span></div><div class="qdocKPI"><b>${orgaos.length}</b><span>Órgãos estaduais</span></div><div class="qdocKPI"><b>${br(ultima)}</b><span>Última entrada</span></div></div>
+ <div class="qdocFiltros">
+  <button class="ativo" data-filtro="TODOS" onclick="qdocFiltrar('TODOS')">TODOS</button>
+  <button data-filtro="MUNICÍPIO" onclick="qdocFiltrar('MUNICÍPIO')">🏛️ MUNICÍPIOS</button>
+  <button data-filtro="ESTADO" onclick="qdocFiltrar('ESTADO')">🌎 ESTADO</button>
+  <input id="qdocBusca" type="text" placeholder="🔎 Buscar documento, órgão ou município..." oninput="qdocAplicarBusca()" style="min-width:260px;border:1px solid #cbd5e1;border-radius:999px;padding:7px 12px;font-size:9px">
+ </div>
+ <div style="font-size:8px;color:#64748b;margin:-5px 0 10px">“TODOS” agora exibe toda a base documental disponível no Supabase, e não apenas os documentos recentemente enriquecidos.</div>
+ <div id="qdocLista" class="qdocGrid">${docs.map(d=>`<div class="qdocCardWrap" data-escopo="${esc(d.escopo||'')}" data-busca="${esc(normalizar([d.id,d.municipio,d.documento_origem,d.orgao_origem,d.situacao,d.processo].join(' ')))}">${card(d)}</div>`).join('')}</div>`
 }
-function adicionarFaixas(){
- const docs=base().docs||[];if(!docs.length)return
+async function adicionarFaixas(){
+ const docs=await carregarTodos();if(!docs.length)return
  document.querySelectorAll('.abaQueimadas').forEach(a=>{
   if(a.id==='abaDocumentosOficiais'||a.querySelector('.qdocFaixa'))return
   const f=document.createElement('div');f.className='qdocFaixa'
-  f.innerHTML=`<div><strong>📚 BASE DOCUMENTAL ATUALIZADA • 18/09/2026</strong><span>${docs.length} documentos oficiais incorporados • Campo Novo de Rondônia: 06843/26 e 06844/26 • Porto Velho: 06916/26 • última entrada ${br(docs.map(d=>d.data_entrada).sort().at(-1))}</span></div><button onclick="abrirDocumentosQueimadasOficiais()">VER DOCUMENTOS</button>`
+  const est=docs.filter(d=>d.escopo==='ESTADO').length
+  const mun=new Set(docs.filter(d=>d.escopo==='MUNICÍPIO').map(d=>d.municipio)).size
+  f.innerHTML=`<div><strong>📚 BASE DOCUMENTAL COMPLETA • 18/09/2026</strong><span>${docs.length} registros documentais • ${mun} municípios • ${est} registros estaduais • última entrada ${br(docs.map(d=>d.data_entrada).filter(Boolean).sort().at(-1))}</span></div><button onclick="abrirDocumentosQueimadasOficiais()">VER DOCUMENTOS</button>`
   const titulo=a.querySelector('.painelTitulo');if(titulo)titulo.insertAdjacentElement('afterend',f);else a.prepend(f)
  })
 }
+let QDOC_FILTRO='TODOS'
 window.qdocFiltrar=function(nome){
- document.querySelectorAll('.qdocFiltros button').forEach(b=>b.classList.toggle('ativo',b.dataset.municipio===nome))
- document.querySelectorAll('#qdocLista .qdocCardWrap').forEach(c=>{c.style.display=(nome==='TODOS'||c.dataset.municipio===nome)?'block':'none'})
+ QDOC_FILTRO=nome
+ document.querySelectorAll('.qdocFiltros button').forEach(b=>b.classList.toggle('ativo',b.dataset.filtro===nome))
+ window.qdocAplicarBusca()
+}
+window.qdocAplicarBusca=function(){
+ const busca=normalizar(document.getElementById('qdocBusca')?.value||'')
+ document.querySelectorAll('#qdocLista .qdocCardWrap').forEach(c=>{
+  const escopo=c.dataset.escopo||''
+  const okEscopo=QDOC_FILTRO==='TODOS'||escopo===QDOC_FILTRO
+  const okBusca=!busca||(c.dataset.busca||'').includes(busca)
+  c.style.display=(okEscopo&&okBusca)?'block':'none'
+ })
 }
 window.abrirDocumentosQueimadasOficiais=function(){
  document.querySelectorAll('.abaQueimadas').forEach(a=>{a.style.display='none';a.classList.add('hidden')})
