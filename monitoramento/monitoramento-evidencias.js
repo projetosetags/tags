@@ -35,10 +35,28 @@ const validas=docs.filter(e=>e.status_validacao==='VALIDADA').length
 const rejeitadas=docs.filter(e=>e.status_validacao==='REJEITADA').length
 const pendentes=docs.length-validas-rejeitadas
 const temTexto=String(textoManual||'').trim().length>0
+const analise=window.MAPA_ANALISES[itemId]||{}
+const situacaoTecnica=String(analise.situacao||'').toUpperCase()
 let status='PENDENTE'
 if((temTexto||docs.length>0)&&validas===0)status='PARCIAL'
 if(validas>0&&(pendentes>0||rejeitadas>0))status='PARCIAL'
 if(validas>0&&pendentes===0&&rejeitadas===0)status='COMPLETA'
+
+// A suficiência da evidência deve respeitar também a conclusão técnica.
+// Um documento pode ser autêntico/validado e, ainda assim, ser insuficiente
+// para comprovar integralmente o produto pactuado.
+if(situacaoTecnica.includes('PARCIAL')||situacaoTecnica.includes('EM ANDAMENTO')){
+status=(temTexto||docs.length>0)?'PARCIAL':'PENDENTE'
+}
+if(situacaoTecnica.includes('PENDENTE')){
+status=(temTexto||docs.length>0)?'PARCIAL':'PENDENTE'
+}
+if(situacaoTecnica.includes('PRAZO FUTURO')&&!situacaoTecnica.includes('EM ANDAMENTO')){
+status=(temTexto||docs.length>0)?'PARCIAL':'PENDENTE'
+}
+if(situacaoTecnica.includes('COMPROVADO')&&!situacaoTecnica.includes('PARCIAL')&&validas>0&&pendentes===0&&rejeitadas===0){
+status='COMPLETA'
+}
 return{status,total:docs.length,validas,pendentes,rejeitadas}
 }
 
