@@ -2,7 +2,7 @@
 000 MONITORAMENTO-PDF.JS TEXTO PADRÃO DISCLAIMER
 =========================================================*/
 const TEXTO_DISCLAIMER_MONITORAMENTO=
-'As informações constantes neste painel, gráficos, indicadores e relatórios possuem caráter preliminar e meramente informativo, sendo baseadas nos dados declarados e apresentados até o presente momento pelos jurisdicionados envolvidos. Ressalta-se que tais informações ainda não passaram pela análise técnica de consistência documental, verificação de evidências, validação metodológica e conferência conclusiva pela equipe técnica de auditores designados.'
+'As informações constantes neste relatório refletem os documentos e evidências disponíveis no Monitoramento Inteligente na data de emissão. As análises técnicas registradas identificam o grau de suficiência documental do primeiro monitoramento e permanecem sujeitas à validação institucional, supervisão e eventual complementação de evidências antes da conclusão definitiva do processo.'
   
 async function gerarPDFMonitoramento(){
 const{jsPDF}=window.jspdf
@@ -41,7 +41,11 @@ pdf.setFontSize(11)
 pdf.setFont('helvetica','normal')
 pdf.text(`Data de emissão: ${dataAtual}`,14,y)
 y+=10
-let{data:monitoramentos,error:monitoramentoError}=await client.from('monitoramentos').select('*').order('titulo',{ascending:true})
+let monitoramentoQuery=client.from('monitoramentos').select('*').order('titulo',{ascending:true})
+if(window.MONITORAMENTO_ATUAL){
+monitoramentoQuery=monitoramentoQuery.eq('id',Number(window.MONITORAMENTO_ATUAL))
+}
+let{data:monitoramentos,error:monitoramentoError}=await monitoramentoQuery
 if(monitoramentoError){
 console.log(monitoramentoError)
 return
@@ -87,12 +91,13 @@ i.item||'-',
 i.subitem||'-',
 i.status||'-',
 `${Number(i.percentual||0)}%`,
+i.evidencia_status||'PENDENTE',
 i.criticidade||'-'
 ])
 })
 pdf.autoTable({
 startY:y,
-head:[['Item','Subitem','Status','%','Criticidade']],
+head:[['Item','Subitem','Status','%','Evidência','Criticidade']],
 body:body,
 theme:'grid',
 headStyles:{
@@ -144,11 +149,15 @@ pdf.addPage()
 y=20
 }
 pdf.setFillColor(220,252,231)
-if(a.situacao==='PARCIALMENTE EXECUTADA'){
+let situacaoTecnica=String(a.situacao||'').toUpperCase()
+if(situacaoTecnica.includes('PARCIAL')||situacaoTecnica.includes('EM ANDAMENTO')||situacaoTecnica.includes('RESSALVA')){
 pdf.setFillColor(254,249,195)
 }
-if(a.situacao==='NÃO EXECUTADA'){
+if(situacaoTecnica.includes('PENDENTE')){
 pdf.setFillColor(254,226,226)
+}
+if(situacaoTecnica.includes('PRAZO FUTURO')){
+pdf.setFillColor(224,242,254)
 }
 pdf.roundedRect(10,y-4,190,10,2,2,'F')
 pdf.setFont('helvetica','bold')
@@ -159,7 +168,25 @@ pdf.setFont('helvetica','normal')
 pdf.setFontSize(8)
 let analiseTexto=pdf.splitTextToSize(a.analise_tecnica||'-',180)
 pdf.text(analiseTexto,14,y)
-y+=analiseTexto.length*4+10
+y+=analiseTexto.length*4+5
+if(a.conclusao){
+pdf.setFont('helvetica','bold')
+pdf.text('CONCLUSÃO DA ANÁLISE:',14,y)
+y+=4
+pdf.setFont('helvetica','normal')
+let conclusaoItem=pdf.splitTextToSize(a.conclusao,180)
+pdf.text(conclusaoItem,14,y)
+y+=conclusaoItem.length*4+5
+}
+if(a.encaminhamento){
+pdf.setFont('helvetica','bold')
+pdf.text('ENCAMINHAMENTO:',14,y)
+y+=4
+pdf.setFont('helvetica','normal')
+let encaminhamentoItem=pdf.splitTextToSize(a.encaminhamento,180)
+pdf.text(encaminhamentoItem,14,y)
+y+=encaminhamentoItem.length*4+8
+}
 }
 let{data:evidencias}=await client.from('monitoramento_evidencias').select('*').eq('item_id',item.id)
 if(evidencias&&evidencias.length>0){
@@ -177,12 +204,13 @@ evidBody.push([
 e.tipo_evidencia||'-',
 e.numero_documento||'-',
 e.status_validacao||'-',
-e.confiabilidade||'-'
+e.confiabilidade||'-',
+e.descricao||'-'
 ])
 })
 pdf.autoTable({
 startY:y,
-head:[['Tipo','Documento','Validação','Confiabilidade']],
+head:[['Tipo','Documento','Validação','Conf.','Descrição']],
 body:evidBody,
 theme:'striped',
 styles:{
@@ -226,7 +254,7 @@ pdf.setFont('helvetica','normal')
 pdf.setFontSize(9)
 pdf.setFont('helvetica','normal')
 pdf.setFontSize(9)
-let conclusao='O presente relatório consolida as análises técnicas realizadas pela equipe de auditoria, considerando as evidências apresentadas, os resultados alcançados e os benefícios decorrentes das ações implementadas pelos gestores monitorados.'
+let conclusao='O presente relatório consolida o primeiro tratamento técnico das evidências disponíveis para o monitoramento selecionado. A classificação de cada subitem distingue evidência comprovada, comprovada com ressalva, parcialmente comprovada, pendente de complementação e etapas com prazo futuro, preservando a necessidade de validação institucional antes da conclusão definitiva.'
 let linhasConclusao=pdf.splitTextToSize(conclusao,176)
 pdf.text(linhasConclusao,14,y+16)
 pdf.setFontSize(8)
