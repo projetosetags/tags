@@ -1,4 +1,4 @@
-window.MM_CONFIG = {
+window.MM_CONFIG = {\n  backend: { url: "https://zvtzbiqfwhggysiuiuxh.supabase.co", key: "sb_publishable_6rUNIHwItIcgG_HLyTfOxA_bKACJEQt" },
   brand: {
     appName: "Momento Marcado",
     photographer: "Pingo de Gente Fotografia",
