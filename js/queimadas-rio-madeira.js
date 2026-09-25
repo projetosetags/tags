@@ -11,6 +11,35 @@ let RM_CURVA=[]
 let RM_GRAFICO_HISTORICO=null
 let RM_GRAFICO_EXTREMOS=null
 let RM_CARREGADO=false
+window.RM_ATUALIZACAO_LOCAL_20260924={
+arquivo:'15400000_Porto Velho_2025-2026_Prec_GPM2(2).xlsx',
+nivel_ultima_data:'2026-09-24',
+precipitacao_ultima_data:'2026-09-23',
+niveis:[
+{data:'2026-09-18',ciclo_hidrologico:'2025-2026',ano_inicio_ciclo:2025,mes:9,dia:18,dia_ciclo:354,nivel_cm:353,nivel_m:3.53},
+{data:'2026-09-19',ciclo_hidrologico:'2025-2026',ano_inicio_ciclo:2025,mes:9,dia:19,dia_ciclo:355,nivel_cm:341,nivel_m:3.41},
+{data:'2026-09-20',ciclo_hidrologico:'2025-2026',ano_inicio_ciclo:2025,mes:9,dia:20,dia_ciclo:356,nivel_cm:338,nivel_m:3.38},
+{data:'2026-09-21',ciclo_hidrologico:'2025-2026',ano_inicio_ciclo:2025,mes:9,dia:21,dia_ciclo:357,nivel_cm:332,nivel_m:3.32},
+{data:'2026-09-22',ciclo_hidrologico:'2025-2026',ano_inicio_ciclo:2025,mes:9,dia:22,dia_ciclo:358,nivel_cm:328,nivel_m:3.28},
+{data:'2026-09-23',ciclo_hidrologico:'2025-2026',ano_inicio_ciclo:2025,mes:9,dia:23,dia_ciclo:359,nivel_cm:329,nivel_m:3.29},
+{data:'2026-09-24',ciclo_hidrologico:'2025-2026',ano_inicio_ciclo:2025,mes:9,dia:24,dia_ciclo:360,nivel_cm:322,nivel_m:3.22}
+],
+precipitacao:[
+{data:'2026-09-18',beni:4.6632334838,mamore:1.259375,guapore:1.9633232016,abuna:3.7419475655,outros:2.0257918552,total_bacia:2.6177247395},
+{data:'2026-09-19',beni:1.4482150185,mamore:3.2646959459,guapore:4.6029381966,abuna:1.4868913858,outros:3.463800905,total_bacia:3.1562757451},
+{data:'2026-09-20',beni:0.0365203119,mamore:0.0483530405,guapore:0.4071935157,abuna:0.3460674157,outros:0.3058823529,total_bacia:0.1901138842},
+{data:'2026-09-21',beni:0.2515387772,mamore:0.4286317568,guapore:0.1482607227,abuna:0.6367041199,outros:1.4615384615,total_bacia:0.3101526533},
+{data:'2026-09-22',beni:4.8047599508,mamore:8.4143581081,guapore:6.6642688281,abuna:4.7782771536,outros:3.2778280543,total_bacia:6.4656530167},
+{data:'2026-09-23',beni:4.7488715634,mamore:0.7850506757,guapore:0.6825396825,abuna:1.1086142322,outros:0.850678733,total_bacia:1.9308214199}
+]
+}
+function rmMesclarAtualizacaoLocal(dados){
+ const local=window.RM_ATUALIZACAO_LOCAL_20260924?.niveis||[];
+ if(!local.length)return dados||[];
+ const mapa=new Map((dados||[]).map(x=>[rmDataISO(x.data),x]));
+ local.forEach(x=>mapa.set(x.data,{...(mapa.get(x.data)||{}),...x,fonte:'ANA/CPRM-REPO',arquivo_origem:window.RM_ATUALIZACAO_LOCAL_20260924.arquivo}));
+ return [...mapa.values()].sort((a,b)=>String(a.data).localeCompare(String(b.data)));
+}
 function rmCliente(){return window.clientPublic||window.client||window.supabaseClient||null}
 function rmNumero(v){if(v===null||v===undefined||v==='')return null;let n=Number(v);return Number.isFinite(n)?n:null}
 function rmCmParaMetros(v){let n=rmNumero(v);return n===null?null:n/100}
@@ -34,7 +63,7 @@ rmBuscarTodos(client,'vw_rio_madeira_ciclos','*','data_inicio'),
 rmBuscarTodos(client,'vw_rio_madeira_ranking_cheias','*','data'),
 rmBuscarTodos(client,'vw_rio_madeira_ranking_secas','*','data'),
 rmBuscarTodos(client,'vw_rio_madeira_curva_historica','*','dia_ciclo')]);
-RM_DADOS=r1;RM_CICLOS=r2;RM_CHEIAS=[...r3].sort((a,b)=>Number(b.nivel_cm||0)-Number(a.nivel_cm||0));RM_SECAS=[...r4].sort((a,b)=>Number(a.nivel_cm||0)-Number(b.nivel_cm||0));RM_CURVA=[...r5].sort((a,b)=>Number(a.dia_ciclo||0)-Number(b.dia_ciclo||0));RM_CARREGADO=true;
+RM_DADOS=rmMesclarAtualizacaoLocal(r1);RM_CICLOS=r2;RM_CHEIAS=[...r3].sort((a,b)=>Number(b.nivel_cm||0)-Number(a.nivel_cm||0));RM_SECAS=[...r4].sort((a,b)=>Number(a.nivel_cm||0)-Number(b.nivel_cm||0));RM_CURVA=[...r5].sort((a,b)=>Number(a.dia_ciclo||0)-Number(b.dia_ciclo||0));RM_CARREGADO=true;
 preencherFiltrosRioMadeira();renderKPIsRioMadeira();renderRankingRioMadeira();renderSituacaoRioMadeira();renderExtremosRioMadeira();renderGraficoRioMadeiraHistorico();renderGraficoRioMadeiraExtremos();renderTabelaRioMadeira();
 }catch(e){console.error('Erro Rio Madeira:',e);RM_CARREGADO=false;if(box)box.innerHTML=`<div class="alerta-vermelho"><b>Rio Madeira indisponível.</b><br>${rmEscaparHTML(e?.message||e)}</div>`}
 }
