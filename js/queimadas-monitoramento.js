@@ -39,7 +39,7 @@ function ajustarStatusRioMadeiraFontes(){
 try{
 const aba=document.getElementById('abaRioMadeira');if(!aba)return
 let aviso=document.getElementById('rmAvisoFonteSIPAM')
-const html='🌊 <b>RIO MADEIRA • BASE ATUALIZADA</b><br>Último nível disponível: <b>17/09/2026 • 3,64 m</b>. Série histórica de nível: <b>ANA/CPRM-REPO</b>. Precipitação: <b>GPM/NASA</b>. Análise e gráficos: <b>CENSIPAM/NUHIDRO CR-PV</b>.'
+const html='🌊 <b>RIO MADEIRA • BASE ATUALIZADA</b><br>Último nível disponível: <b>24/09/2026 • 3,22 m</b>. Série histórica de nível: <b>ANA/CPRM-REPO</b>. Precipitação: <b>GPM/NASA</b>. Análise e gráficos: <b>CENSIPAM/NUHIDRO CR-PV</b>.'
 if(!aviso){aviso=document.createElement('div');aviso.id='rmAvisoFonteSIPAM';aviso.style.cssText='margin:12px 0;padding:12px 14px;border-radius:10px;background:#eff6ff;border:1px solid #93c5fd;color:#1e3a8a;font-size:12px;font-weight:800;line-height:1.5';const titulo=aba.querySelector('.painelTitulo');if(titulo)titulo.insertAdjacentElement('afterend',aviso);else aba.prepend(aviso)}
 if(aviso.innerHTML!==html)aviso.innerHTML=html
 aba.querySelectorAll('.rioMadeiraFonte').forEach(el=>{if((el.textContent||'').includes('Série histórica')||(el.textContent||'').includes('Integração:')){const novo=(el.textContent||'').includes('Integração:')?'Integração: CENSIPAM/NUHIDRO CR-PV • Série histórica de nível: ANA/CPRM-REPO • Precipitação: GPM/NASA • Queimadas: PROTEGE/SEDAM + INPE • TCE-RO':'Série histórica de nível: ANA/CPRM-REPO • Análise e gráficos: CENSIPAM/NUHIDRO CR-PV • Estação 15400000 • Porto Velho';if(el.textContent!==novo)el.textContent=novo}})
@@ -80,7 +80,17 @@ const box=document.getElementById('painelRioMadeiraIntegracao');if(!box||!window
 try{
 const [{data:niveis,error:e1},{data:chuvas,error:e2}]=await Promise.all([window.clientPublic.from('rio_madeira_niveis').select('data,nivel_m,nivel_cm').order('data',{ascending:false}).limit(2),window.clientPublic.from('rio_madeira_precipitacao').select('data,total_bacia,beni,mamore,guapore,abuna,outros').order('data',{ascending:false}).limit(1)])
 if(e1)throw e1;if(e2)throw e2
-const atual=niveis?.[0],anterior=niveis?.[1],chuva=chuvas?.[0];let variacao=atual&&anterior?Number(atual.nivel_m)-Number(anterior.nivel_m):null
+let atual=niveis?.[0],anterior=niveis?.[1],chuva=chuvas?.[0];
+const local=window.RM_ATUALIZACAO_LOCAL_20260924;
+if(local?.niveis?.length){
+ const ln=[...local.niveis].sort((a,b)=>String(b.data).localeCompare(String(a.data)));
+ if(!atual||String(ln[0].data)>String(atual.data||'')){atual=ln[0];anterior=ln[1]||anterior}
+}
+if(local?.precipitacao?.length){
+ const lp=[...local.precipitacao].sort((a,b)=>String(b.data).localeCompare(String(a.data)))[0];
+ if(!chuva||String(lp.data)>String(chuva.data||''))chuva=lp
+}
+let variacao=atual&&anterior?Number(atual.nivel_m)-Number(anterior.nivel_m):null
 let focos='—';try{if(window.clientQueimadas){const{count,error}=await window.clientQueimadas.from('queimadas_focos_inpe').select('*',{count:'exact',head:true}).gte('data','2026-01-01');if(!error&&Number.isFinite(count))focos=Number(count).toLocaleString('pt-BR')}}catch(_){ }
 const tendencia=variacao===null?'SEM COMPARAÇÃO':variacao<0?`QUEDA ${fmtBR(Math.abs(variacao),2)} m/24h`:variacao>0?`ALTA ${fmtBR(variacao,2)} m/24h`:'ESTÁVEL 24h'
 box.innerHTML=`<div class="rioMadeiraIntegracaoFluxo"><div><strong>PRECIPITAÇÃO</strong><span>🌧️</span><b>${fmtBR(chuva?.total_bacia,2)} mm</b><small>${dataCurta(chuva?.data)} • média da bacia</small></div><div class="rmSetaFluxo">→</div><div><strong>RIO MADEIRA</strong><span>🌊</span><b>${fmtBR(atual?.nivel_m,2)} m</b><small>${dataCurta(atual?.data)} • Estação 15400000</small></div><div class="rmSetaFluxo">→</div><div><strong>ESTIAGEM</strong><span>☀️</span><b>${tendencia}</b><small>variação do nível</small></div><div class="rmSetaFluxo">→</div><div><strong>QUEIMADAS</strong><span>🔥</span><b>${focos} focos</b><small>Rondônia • 2026</small></div><div class="rmSetaFluxo">→</div><div><strong>RISCO</strong><span>🚨</span><b>MONITORAMENTO INTEGRADO</b><small>ver IRIQ e situação estadual</small></div></div><div class="rioMadeiraFonte">Integração: CENSIPAM/NUHIDRO CR-PV • Série histórica de nível: ANA/CPRM-REPO • Precipitação: GPM/NASA • Queimadas: PROTEGE/SEDAM + INPE • TCE-RO</div>`
