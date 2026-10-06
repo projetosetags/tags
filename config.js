@@ -194,3 +194,20 @@ style.textContent=`
 `
 document.head.appendChild(style)
 })()
+
+/*=========================================================
+QUEIMADAS • CARREGAR RIO MADEIRA V2
+=========================================================*/
+;(function carregarRioMadeiraV2(){
+function carregar(){
+if(!/\/queimadas\/(?:index\.html)?$/i.test(location.pathname))return
+if(document.getElementById('scriptRioMadeiraV2'))return
+const s=document.createElement('script')
+s.id='scriptRioMadeiraV2'
+s.src='../js/queimadas-rio-madeira-painel-v2.js?v=20261006-1'
+s.defer=true
+document.head.appendChild(s)
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(carregar,700),{once:true})
+else setTimeout(carregar,700)
+})()
