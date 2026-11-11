@@ -7,6 +7,8 @@ function esc(v){return String(v??'').replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&l
 function br(v){if(!v)return'—';const p=String(v).slice(0,10).split('-');return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:esc(v)}
 function base(){return window.QUEIMADAS_DOCUMENTOS_OFICIAIS_2026||{docs:[]}}
 let QDOC_CACHE=null
+let cadastroEstadual=[]
+let cadastroEstadualDisponivel=false
 function normalizar(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim()}
 function docGenericoMunicipal(r){
  const enriquecido=(base().docs||[]).find(d=>normalizar(d.id)===normalizar(r.numero_documento)&&normalizar(d.municipio)===normalizar(r.municipio))
@@ -110,7 +112,9 @@ async function carregarTodos(){
    if(municipais.error)console.error('Documentos municipais:',municipais.error)
    if(estaduais.error)console.error('Documentos estaduais:',estaduais.error)
    const mov=municipais.error?locais:(municipais.data||[]).map(docGenericoMunicipal)
-   const est=estaduais.error?[]:(estaduais.data||[]).flatMap(estadoDocs)
+   cadastroEstadualDisponivel=!estaduais.error
+   cadastroEstadual=estaduais.data||[]
+   const est=cadastroEstadual.flatMap(estadoDocs)
    QDOC_CACHE=ordenarDocumentos([...mov,...est,...referenciasTagSedam])
    return QDOC_CACHE
   }catch(error){
@@ -183,6 +187,22 @@ function css(){
  .qdocTabelaWrap{overflow:auto}.qdocTabela{width:100%;border-collapse:collapse;font-size:8px}.qdocTabela th,.qdocTabela td{border:1px solid #e2e8f0;padding:6px;text-align:left;vertical-align:top}.qdocTabela th{background:#f8fafc;color:#334155}
  .qdocRecurso{display:grid;grid-template-columns:1.1fr .9fr 1.5fr;gap:8px;border-bottom:1px solid #eef2f7;padding:5px 0;font-size:8px}.qdocRecurso span{font-family:monospace}.qdocRecurso small{font-size:8px;color:#64748b}
  .qdocRodape{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:9px;color:#94a3b8;font-size:7.5px}
+ .estadoCronoWrap{overflow:auto;margin:14px 0}
+ .estadoCronoTabela{width:100%;border-collapse:collapse;font-size:14px;line-height:1.45}
+ .estadoCronoTabela th,.estadoCronoTabela td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid #d5e3dc;overflow-wrap:anywhere}
+ .estadoCronoTabela thead th{background:#143f35;color:#fff}
+ .estadoCronoTabela .estadoCronoOrgao th{background:#e5f2eb;color:#173f32}
+ .estadoCronoTabela td:first-child{min-width:100px}
+ .estadoCronoTabela td small{display:block;color:#475e55}
+ .estadoCronoTabela td a{color:#145b83;text-decoration:underline}
+ .estadoCronoRotulo{display:none}
+ @media(max-width:740px){
+  .estadoCronoTabela,.estadoCronoTabela tbody,.estadoCronoTabela tr,.estadoCronoTabela td,.estadoCronoTabela .estadoCronoOrgao th{display:block;width:100%;box-sizing:border-box}
+  .estadoCronoTabela thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .estadoCronoTabela td{border:0;padding:6px 12px}
+  .estadoCronoTabela tr{border-bottom:1px solid #d5e3dc;padding-bottom:8px}
+  .estadoCronoRotulo{display:block;font-size:12px;color:#365c4f;font-weight:700}
+ }
  @media(max-width:800px){.qdocKPIs{grid-template-columns:repeat(2,1fr)}.qdocMeta{grid-template-columns:1fr}.qdocFaixa{align-items:flex-start;flex-direction:column}.qdocRecurso{grid-template-columns:1fr}}
  `;document.head.appendChild(s)
 }
@@ -203,6 +223,52 @@ async function renderTela(){
  <div style="font-size:8px;color:#64748b;margin:-5px 0 10px">Os registros do TAG SEDAM são referências do PCe 04340/25.</div>
  <div id="qdocLista" class="qdocGrid">${docs.map(d=>`<div class="qdocCardWrap" data-escopo="${esc(d.escopo||'')}" data-busca="${esc(normalizar([d.id,d.municipio,d.documento_origem,d.orgao_origem,d.situacao,d.processo].join(' ')))}">${card(d)}</div>`).join('')}</div>`
 }
+async function renderCronologiaEstado(){
+ const host=document.getElementById('estadoCronologia')
+ if(!host)return
+ const docs=(await carregarTodos()).filter(d=>d.escopo==='ESTADO')
+ const grupos=new Map()
+ for(const registro of cadastroEstadual){
+  const nome=registro.estado?.trim()||'Órgão estadual'
+  grupos.set(normalizar(nome),{nome,docs:[]})
+ }
+ for(const doc of docs){
+  const nome=doc.municipio?.trim()||'Órgão estadual'
+  const chave=normalizar(nome)
+  if(!grupos.has(chave))grupos.set(chave,{nome,docs:[]})
+  grupos.get(chave).docs.push(doc)
+ }
+ const cabecalhos=['Data','Descrição','Documento / evidência','Processo / referência','Situação']
+ const linhas=[...grupos.values()].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')).map(grupo=>{
+  const ordem=grupo.docs.sort((a,b)=>(a.data_entrada||a.data_documento||'9999').localeCompare(b.data_entrada||b.data_documento||'9999'))
+  const eventos=ordem.map(d=>{
+   const enviado=d.tipo==='OFÍCIO TCE-RO'
+   const data=d.data_entrada||d.data_documento
+   const tipoData=enviado?'Envio':d.data_entrada?'Entrada':data?'Data do ato':''
+   const evidencia=d.arquivo
+    ? `<a href="../documentos/sedam-08352-26/${esc(d.arquivo)}" target="_blank" rel="noopener">${esc(d.id)} · Abrir PDF</a>`
+    : esc(d.id)
+   const campos=[
+    `<strong>${br(data)}</strong><small>${tipoData}</small>`,
+    `<strong>${esc(d.subcategoria)}</strong><div>${esc(d.resumo)}</div>`,
+    `${evidencia}<small>${esc(d.documento_origem===d.id?'':d.documento_origem)}${d.paginas&&d.paginas!=='—'?'<br>Páginas: '+esc(d.paginas):''}</small>`,
+    esc(d.processo),esc(d.situacao)
+   ]
+   return '<tr>'+campos.map((valor,i)=>`<td><span class="estadoCronoRotulo">${cabecalhos[i]}</span>${valor}</td>`).join('')+'</tr>'
+  }).join('')
+  return `<tbody><tr class="estadoCronoOrgao"><th colspan="5" scope="rowgroup">${esc(grupo.nome)}</th></tr>
+   ${eventos||'<tr><td colspan="5">Nenhum expediente documental registrado.</td></tr>'}</tbody>`
+ }).join('')
+ host.innerHTML=`${cadastroEstadualDisponivel?'':'<p>Cadastro estadual indisponível. Exibindo as referências documentais disponíveis.</p>'}
+ <div class="estadoCronoWrap"><table class="estadoCronoTabela" aria-label="Cronologia dos expedientes por órgão">
+ <thead><tr>${cabecalhos.map(rotulo=>`<th scope="col">${rotulo}</th>`).join('')}</tr></thead>
+ ${linhas}</table></div>`
+}
+window.renderCronologiaEstado=renderCronologiaEstado
+document.addEventListener('queimadas:estado-atualizado',()=>{
+ QDOC_CACHE=null
+ renderCronologiaEstado()
+})
 async function adicionarFaixas(){
  const docs=await carregarTodos();if(!docs.length)return
  document.querySelectorAll('.abaQueimadas').forEach(a=>{
@@ -247,7 +313,7 @@ function montar(){
   const sec=document.createElement('section');sec.id='abaDocumentosOficiais';sec.className='abaQueimadas hidden';sec.style.display='none'
   const app=document.querySelector('.layoutPrincipal');if(app)app.appendChild(sec)
  }
- renderTela();adicionarFaixas()
+ renderTela();adicionarFaixas();renderCronologiaEstado()
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(montar,450),{once:true})
 else setTimeout(montar,450)
