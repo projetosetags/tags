@@ -309,7 +309,7 @@ if(window.MT_LIBS[chave])return window.MT_LIBS[chave]
 window.MT_LIBS[chave]=new Promise((resolve,reject)=>{const existente=[...document.scripts].find(s=>s.src===src);if(existente){if((chave==='docx'&&window.htmlDocx)||(chave==='pdf'&&window.html2pdf))return resolve();existente.addEventListener('load',resolve,{once:true});existente.addEventListener('error',reject,{once:true});return}const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=reject;document.head.appendChild(s)})
 return window.MT_LIBS[chave]
 }
-async function mtGarantirLibs(){await Promise.all([mtLoadScript('https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html-docx.js','docx'),mtLoadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js','pdf')])}
+async function mtGarantirLibs(){await mtLoadScript('https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js','docx')}
 async function mtGarantirRelatorio(){const box=document.getElementById('previewRelatorio');if(!box?.querySelector('.relatorio-oficial-v2'))await gerarRelatorioCompleto()}
 
 /*=========================================================
@@ -330,9 +330,42 @@ window.gerarPlanoMonitoramentoWord=async()=>{await gerarRelatorioCompleto();awai
 016 EXPORTAÇÃO PDF A4
 =========================================================*/
 async function gerarPDFMonitoramento(){
-await mtGarantirRelatorio();try{await mtGarantirLibs()}catch(e){console.error(e);alert('Não foi possível carregar o gerador PDF. Use Imprimir > Salvar como PDF.');return}
-const elemento=document.getElementById('previewRelatorio');if(!window.html2pdf||!elemento)return
-await window.html2pdf().set({margin:[7,7,9,7],filename:`RELATORIO_MONITORAMENTO_TAGS_${mtOrigemAtual()}_${new Date().toISOString().slice(0,10)}.pdf`,image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.rel-ficha-v2']}}).from(elemento).save()
+ const elemento=document.getElementById('previewRelatorio')
+ if(!elemento?.querySelector('article'))await mtGarantirRelatorio()
+ if(!elemento?.querySelector('article')){
+  alert('Gere o relatório antes de exportar o PDF.')
+  return
+ }
+ document.getElementById('impressaoRelatorioPDF')?.remove()
+ const frame=document.createElement('iframe')
+ frame.id='impressaoRelatorioPDF'
+ frame.title='Relatório de Monitoramento para impressão'
+ frame.style.cssText='position:fixed;width:0;height:0;border:0;right:0;bottom:0'
+ const estilos=[...document.querySelectorAll('link[rel="stylesheet"]')]
+  .filter(link=>/monitoramento(?:-v2)?\.css/.test(link.href))
+  .map(link=>'<link rel="stylesheet" href="'+mtEsc(link.href)+'">').join('')
+ const copia=elemento.cloneNode(true)
+ copia.querySelectorAll('details').forEach(d=>{d.open=true})
+ frame.addEventListener('load',()=>{
+  const janela=frame.contentWindow
+  janela.addEventListener('afterprint',()=>frame.remove(),{once:true})
+  janela.focus()
+  janela.print()
+ },{once:true})
+ frame.srcdoc=`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+  <title>Relatório de Monitoramento</title>${estilos}
+  <style>
+   @page{size:A4;margin:14mm 15mm}
+   html,body{margin:0!important;padding:0!important;background:#fff!important;color:#111!important}
+   body *{visibility:visible!important}
+   article.relatorio-oficial-v2{width:auto!important;max-width:none!important;padding:0!important;margin:0!important;box-shadow:none!important;page-break-after:auto!important;overflow:visible!important}
+   article+article{break-before:page}
+   .rel-ficha-v2{break-inside:auto!important}
+   thead{display:table-header-group}
+   h2,h3,.rel-subtitle-v2,.rel-ficha-title-v2{break-after:avoid}
+   *{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  </style></head><body>${copia.innerHTML}</body></html>`
+ document.body.appendChild(frame)
 }
 window.gerarPDFMonitoramento=gerarPDFMonitoramento
 
