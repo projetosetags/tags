@@ -188,20 +188,27 @@ function css(){
  .qdocRecurso{display:grid;grid-template-columns:1.1fr .9fr 1.5fr;gap:8px;border-bottom:1px solid #eef2f7;padding:5px 0;font-size:8px}.qdocRecurso span{font-family:monospace}.qdocRecurso small{font-size:8px;color:#64748b}
  .qdocRodape{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:9px;color:#94a3b8;font-size:7.5px}
  .estadoCronoWrap{overflow:auto;margin:14px 0}
- .estadoCronoTabela{width:100%;border-collapse:collapse;font-size:14px;line-height:1.45}
- .estadoCronoTabela th,.estadoCronoTabela td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid #d5e3dc;overflow-wrap:anywhere}
+ .estadoCronoTabela{width:100%;table-layout:fixed;border-collapse:collapse;font-size:11px;line-height:1.35}
+ .estadoCronoTabela th,.estadoCronoTabela td{padding:6px 8px;text-align:left;vertical-align:top;border-bottom:1px solid #d5e3dc;overflow-wrap:break-word}
  .estadoCronoTabela thead th{background:#143f35;color:#fff}
  .estadoCronoTabela .estadoCronoOrgao th{background:#e5f2eb;color:#173f32}
- .estadoCronoTabela td:first-child{min-width:100px}
+ .estadoCronoTabela thead th:nth-child(1){width:11%}
+ .estadoCronoTabela thead th:nth-child(2){width:40%}
+ .estadoCronoTabela thead th:nth-child(3){width:23%}
+ .estadoCronoTabela thead th:nth-child(4){width:13%}
+ .estadoCronoTabela thead th:nth-child(5){width:13%}
+ .estadoCronoTabela td:first-child strong{white-space:nowrap}
+ .estadoCronoTabela td small{font-size:10px}
+ .estadoCronoTabela tbody tr:not(.estadoCronoOrgao):hover{background:#f4f9f6}
  .estadoCronoTabela td small{display:block;color:#475e55}
  .estadoCronoTabela td a{color:#145b83;text-decoration:underline}
  .estadoCronoRotulo{display:none}
  @media(max-width:740px){
   .estadoCronoTabela,.estadoCronoTabela tbody,.estadoCronoTabela tr,.estadoCronoTabela td,.estadoCronoTabela .estadoCronoOrgao th{display:block;width:100%;box-sizing:border-box}
   .estadoCronoTabela thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
-  .estadoCronoTabela td{border:0;padding:6px 12px}
+  .estadoCronoTabela td{border:0;padding:4px 8px}
   .estadoCronoTabela tr{border-bottom:1px solid #d5e3dc;padding-bottom:8px}
-  .estadoCronoRotulo{display:block;font-size:12px;color:#365c4f;font-weight:700}
+  .estadoCronoRotulo{display:block;font-size:10px;color:#365c4f;font-weight:700}
  }
  @media(max-width:800px){.qdocKPIs{grid-template-columns:repeat(2,1fr)}.qdocMeta{grid-template-columns:1fr}.qdocFaixa{align-items:flex-start;flex-direction:column}.qdocRecurso{grid-template-columns:1fr}}
  `;document.head.appendChild(s)
