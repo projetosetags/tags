@@ -3414,10 +3414,9 @@ if(typeof renderIndicadoresEstrategicos==='function')await renderIndicadoresEstr
 }
 if(nome==='estado'){
 document.getElementById('abaEstado')?.classList.remove('hidden')
-if(typeof renderKPIsEstado==='function')await renderKPIsEstado()
-if(typeof renderCadastroEstado==='function')await renderCadastroEstado()
-if(typeof renderIndicadoresEstado==='function')await renderIndicadoresEstado()
-if(typeof renderFormularioEstado==='function')renderFormularioEstado()
+renderFormularioEstado()
+await Promise.all([renderKPIsEstado(),renderCadastroEstado()])
+window.renderCEPCIFEstado?.()
 }
 if(nome==='executivomunicipal'){
 document.getElementById('abaExecutivoMunicipal')?.classList.remove('hidden')
@@ -3662,106 +3661,75 @@ periodo
 async function renderKPIsEstado(){
 let box=document.getElementById('painelKPIsEstado')
 if(!box)return
-let{data=[]}=await client.from('queimadas_estado_oficio').select('*')
-let total=data.length
-let respondidos=data.filter(x=>x.idatarecebimentodoc||x.iidatarecebimentodoc).length
-let pendentes=total-respondidos
-let percentual=total?((respondidos/total)*100).toFixed(1):0
-box.innerHTML=`
-<div class="chap-grid">
-<div class="chap-card"><div class="chap-num">${total}</div><div class="chap-label">ÓRGÃOS</div></div>
-<div class="chap-card"><div class="chap-num">${respondidos}</div><div class="chap-label">RESPONDERAM</div></div>
-<div class="chap-card"><div class="chap-num">${pendentes}</div><div class="chap-label">PENDENTES</div></div>
-<div class="chap-card"><div class="chap-num">${percentual}%</div><div class="chap-label">RESPOSTA</div></div>
-</div>`
-}
-/*=========================================================
-058 QUEIMADAS FUNCTION RENDERCADASTROESTADO
-=========================================================*/
-async function renderCadastroEstado(){
-let box=document.getElementById('painelCadastroEstado')
-if(!box)return
-let{data=[],error}=await client.from('queimadas_estado_oficio').select('*').order('estado')
+const {data,error}=await client.from('queimadas_estado_oficio').select('*')
 if(error){
-box.innerHTML='<div class="estadoTabelaErro">Não foi possível carregar o cadastro estadual.</div>'
-console.error(error)
-return
+  box.textContent='Não foi possível carregar os indicadores estaduais.'
+  return
 }
-const cell=v=>String(v??'-')
-.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')
-const docCell=v=>{
-let t=String(v||'').trim()
-if(!t)return'<span class="estadoVazio">—</span>'
-return '<div class="estadoDocTexto">'+cell(t).replace(/\s*\/\s*/g,' /<wbr> ').replace(/\s+-\s+/g,'<br><span class="estadoDocSub">— </span>')+'</div>'
+const total=data.length
+const respondidos=data.filter(registro=>registro.idatarecebimentodoc||registro.iidatarecebimentodoc).length
+const percentual=total?new Intl.NumberFormat('pt-BR',{maximumFractionDigits:1}).format(respondidos/total*100):'0'
+const indicadores=[
+  [total,'Registros de órgãos'],
+  [respondidos,'Com resposta registrada'],
+  [total-respondidos,'Sem resposta registrada'],
+  [percentual+'%','Taxa de resposta']
+]
+box.innerHTML='<div class="estadoKpis">'+indicadores.map(([valor,rotulo])=>
+  `<div><strong>${valor}</strong><span>${rotulo}</span></div>`
+).join('')+'</div>'
 }
-const obsCell=v=>{
-let t=String(v||'').trim()
-if(!t)return'<span class="estadoVazio">—</span>'
-return '<div class="estadoObsTexto">'+cell(t)
-.replace(/;\s*/g,';<br>')
-.replace(/\n+/g,'<br>')
-+'</div>'
-}
-let html=`
-<div class="estadoTabelaToolbar">
-<div>
-<strong>CADASTRO DOS ÓRGÃOS ESTADUAIS</strong>
-<span>${data.length} órgão(s) • role horizontal disponível quando necessário</span>
-</div>
-<div class="estadoTabelaLegenda">↔ arraste horizontalmente para visualizar todas as colunas</div>
-</div>
-<div class="estadoTabelaScroll">
-<table class="tabelaEstado">
-<thead>
-<tr>
-<th>ÓRGÃO</th>
-<th>OFÍCIO TCE</th>
-<th>DATA ENVIO</th>
-<th>PÁG. ENVIO</th>
-<th>DATA REC. 1</th>
-<th>DATA REC. 2</th>
-<th>DOC. 1</th>
-<th>DOC. 2</th>
-<th>OBSERVAÇÃO</th>
-<th>AÇÃO</th>
-</tr>
-</thead>
-<tbody>`
-data.forEach(i=>{
-html+=`
-<tr>
-<td class="estadoOrgao"><div class="estadoCellTexto">${cell(i.estado||'-')}</div></td>
-<td class="estadoOficio"><div class="estadoCellTexto">${cell(i.nroficioenviadotcero||'-')}</div></td>
-<td class="estadoData">${formatarDataBR(i.dataenviodoc)}</td>
-<td class="estadoPagina"><div class="estadoCellTexto estadoCellCentro">${cell(i.paginaenviodoc||'-')}</div></td>
-<td class="estadoData">${formatarDataBR(i.idatarecebimentodoc)}</td>
-<td class="estadoData">${formatarDataBR(i.iidatarecebimentodoc)}</td>
-<td class="estadoDocumento">${docCell(i.inumerodocenviado)}</td>
-<td class="estadoDocumento">${docCell(i.iinumerodocenviado)}</td>
-<td class="estadoObservacao">${obsCell(i.observacao)}</td>
-<td class="estadoAcao">
-<button class="btnEditarMunicipio btnEditarEstadoTabela" title="Editar registro" aria-label="Editar registro" onclick="editarEstado(${i.id})">✏️</button>
-</td>
-</tr>`
-})
-html+='</tbody></table></div>'
-box.innerHTML=html
-}
-/*=========================================================
-059 QUEIMADAS FUNCTION RENDERINDICADORESESTADO
-=========================================================*/
-async function renderIndicadoresEstado(){
-let box=document.getElementById('painelIndicadoresEstado')
-if(!box)return
-let{data=[]}=await client.from('queimadas_estado_oficio').select('*')
-box.innerHTML=data.map(i=>{
-let status=(i.idatarecebimentodoc||i.iidatarecebimentodoc)?'🟢 RESPONDIDO':'🔴 PENDENTE'
-return`
-<div style="padding:10px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center">
-<b>${i.estado||'-'}</b>
-<span>${status}</span>
-</div>`
-}).join('')
+async function renderCadastroEstado(){
+  const box=document.getElementById('painelCadastroEstado')
+  if(!box)return
+  const {data,error}=await client.from('queimadas_estado_oficio').select('*').order('estado')
+  if(error){
+    box.textContent='Não foi possível carregar os expedientes estaduais.'
+    return
+  }
+  if(!data.length){
+    box.textContent='Nenhum expediente estadual cadastrado.'
+    return
+  }
+  const esc=valor=>String(valor??'').replace(/[&<>"']/g,caractere=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[caractere]))
+  const grupos=new Map()
+  for(const registro of data){
+    const orgao=registro.estado?.trim()||'Órgão sem identificação'
+    if(!grupos.has(orgao))grupos.set(orgao,[])
+    grupos.get(orgao).push(registro)
+  }
+  const renderRegistro=registro=>{
+    const expedientes=[
+      {data:registro.dataenviodoc, titulo:'Envio do TCE-RO', documento:registro.nroficioenviadotcero, pagina:registro.paginaenviodoc},
+      {data:registro.idatarecebimentodoc, titulo:'Recebimento', documento:registro.inumerodocenviado},
+      {data:registro.iidatarecebimentodoc, titulo:'Recebimento', documento:registro.iinumerodocenviado}
+    ].filter(evento=>evento.data||evento.documento||evento.pagina)
+     .sort((a,b)=>String(a.data||'9999').localeCompare(String(b.data||'9999')))
+    const respondeu=registro.idatarecebimentodoc||registro.iidatarecebimentodoc
+    const eventos=expedientes.map(evento=>`<li>
+      <span class="estadoDataEvento">${evento.data?esc(formatarDataBR(evento.data)):'Sem data'}</span>
+      <div><strong>${evento.titulo}</strong><div>${esc(evento.documento||'Documento não informado')}</div>
+      ${evento.pagina?`<small>Página(s) de envio: ${esc(evento.pagina)}</small>`:''}</div>
+    </li>`).join('')
+    return `<div class="estadoRegistro">
+      <span class="estadoSituacao ${respondeu?'comResposta':''}">${respondeu?'Com resposta registrada':'Sem resposta registrada'}</span>
+      ${eventos?`<ol class="estadoEventos">${eventos}</ol>`:'<p>Nenhum expediente informado.</p>'}
+      ${registro.observacao?`<p class="estadoObservacaoRegistro"><strong>Observações</strong><br>${esc(registro.observacao)}</p>`:''}
+      <button type="button" class="estadoEditar" data-estado-id="${esc(registro.id)}">Editar registro</button>
+    </div>`
+  }
+  box.innerHTML=[...grupos].sort(([a],[b])=>a.localeCompare(b,'pt-BR')).map(([orgao,registros])=>{
+    const respostas=registros.filter(registro=>registro.idatarecebimentodoc||registro.iidatarecebimentodoc).length
+    const situacao=respostas===0?'Sem resposta registrada':respostas===registros.length?'Com resposta registrada':`${respostas} de ${registros.length} com resposta`
+    return `<details class="estadoOrgaoCard"><summary><strong>${esc(orgao)}</strong>
+      <span class="estadoSituacao ${respostas?'comResposta':''}">${situacao}</span>
+      </summary>${registros.sort((a,b)=>String(a.dataenviodoc||'9999').localeCompare(String(b.dataenviodoc||'9999'))).map(renderRegistro).join('')}</details>`
+  }).join('')
+  box.querySelectorAll('[data-estado-id]').forEach(botao=>{
+    botao.addEventListener('click',()=>editarEstado(botao.dataset.estadoId))
+  })
 }
 let estadoEditando=null
 /*=========================================================
@@ -3791,7 +3759,7 @@ return
 }
 await renderKPIsEstado()
 await renderCadastroEstado()
-await renderIndicadoresEstado()
+
 ;['estadoNome','estadoOficio','estadoDataEnvio','estadoPaginaEnvio','estadoDataRec1','estadoDataRec2','estadoDoc1','estadoDoc2','estadoObservacao'].forEach(id=>{
 let el=document.getElementById(id)
 if(el)el.value=''
@@ -3805,13 +3773,13 @@ alert('Registro salvo com sucesso.')
 061 QUEIMADAS FUNCTION EDITARESTADO
 =========================================================*/
 async function editarEstado(id){
-estadoEditando=id
 let{data}=await client
 .from('queimadas_estado_oficio')
 .select('*')
 .eq('id',id)
 .single()
 if(!data)return
+estadoEditando=id
 document.getElementById('estadoNome').value=data.estado||''
 document.getElementById('estadoOficio').value=data.nroficioenviadotcero||''
 document.getElementById('estadoDataEnvio').value=data.dataenviodoc||''
@@ -3823,6 +3791,12 @@ document.getElementById('estadoDoc2').value=data.iinumerodocenviado||''
 document.getElementById('estadoObservacao').value=data.observacao||''
 document.getElementById('btnSalvarEstado').innerHTML='💾 ATUALIZAR'
 document.getElementById('btnExcluirEstado').style.display='block'
+const cadastro=document.getElementById('estadoCadastro')
+if(cadastro){
+  cadastro.open=true
+  document.getElementById('estadoNome').focus({preventScroll:true})
+  cadastro.scrollIntoView({block:'start'})
+}
 }
 /*=========================================================
 062 QUEIMADAS FUNCTION RENDERFORMULARIOESTADO
@@ -3832,15 +3806,15 @@ let box=document.getElementById('painelFormularioEstado')
 if(!box)return
 box.innerHTML=`
 <div class="gridCadastroEstado">
-<input id="estadoNome" placeholder="Órgão Estadual">
-<input id="estadoOficio" placeholder="Ofício TCE-RO">
-<input id="estadoDataEnvio" type="date">
-<input id="estadoPaginaEnvio" placeholder="Página Envio">
-<input id="estadoDataRec1" type="date">
-<input id="estadoDataRec2" type="date">
-<input id="estadoDoc1" placeholder="Documento 1">
-<input id="estadoDoc2" placeholder="Documento 2">
-<textarea id="estadoObservacao" placeholder="Observação"></textarea>
+<label>Órgão estadual<input id="estadoNome" placeholder="Órgão Estadual"></label>
+<label>Ofício TCE-RO<input id="estadoOficio" placeholder="Ofício TCE-RO"></label>
+<label>Data do envio<input id="estadoDataEnvio" type="date"></label>
+<label>Página do envio<input id="estadoPaginaEnvio" placeholder="Página Envio"></label>
+<label>Data do primeiro recebimento<input id="estadoDataRec1" type="date"></label>
+<label>Data do segundo recebimento<input id="estadoDataRec2" type="date"></label>
+<label>Primeiro documento recebido<input id="estadoDoc1" placeholder="Documento 1"></label>
+<label>Segundo documento recebido<input id="estadoDoc2" placeholder="Documento 2"></label>
+<label>Observações<textarea id="estadoObservacao" placeholder="Observação"></textarea></label>
 <div style="display:flex;gap:10px">
 <button id="btnSalvarEstado" onclick="salvarEstado()">💾 SALVAR</button>
 <button id="btnExcluirEstado" onclick="excluirEstado()" style="display:none;background:#dc2626">🗑 EXCLUIR</button>
@@ -3870,7 +3844,7 @@ document.getElementById('btnSalvarEstado').innerHTML='💾 SALVAR'
 document.getElementById('btnExcluirEstado').style.display='none'
 await renderKPIsEstado()
 await renderCadastroEstado()
-await renderIndicadoresEstado()
+
 alert('Registro excluído com sucesso.')
 }
 /*=========================================================

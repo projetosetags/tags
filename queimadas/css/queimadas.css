@@ -1141,3 +1141,98 @@ font-size:34px;
 }
 }
 
+
+/* Monitoramento estadual */
+#abaEstado {
+  max-width: 1280px;
+  margin-inline: auto;
+  color: #17352f;
+  font-size: 15px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+#abaEstado .estadoHero {
+  padding: clamp(18px, 4vw, 34px);
+  background: #143f35;
+  color: #fff;
+  border-radius: 18px;
+}
+#abaEstado h2 {margin: 0 0 8px; font-size: clamp(20px, 3vw, 28px);}
+#abaEstado p {margin: 0 0 12px;}
+#abaEstado .estadoHero nav {display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;}
+#abaEstado .estadoHero a {
+  color: #fff;
+  border: 1px solid #8aafa3;
+  padding: 7px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+#abaEstado a:focus-visible, #abaEstado button:focus-visible, #abaEstado summary:focus-visible {
+  outline: 3px solid #1678bc;
+  outline-offset: 3px;
+}
+#abaEstado .estadoKpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 175px), 1fr));
+  gap: 12px;
+  margin-block: 16px;
+}
+#abaEstado .estadoKpis > div, #abaEstado .estadoSecao {
+  background: #fff;
+  border: 1px solid #d1e2da;
+  border-radius: 14px;
+  padding: clamp(14px, 2.8vw, 24px);
+}
+#abaEstado .estadoKpis strong {display: block; font-size: 28px; color: #145b46;}
+#abaEstado .estadoKpis span {color: #3b554b;}
+#abaEstado .estadoSecao {margin-block: 16px; min-width: 0;}
+#abaEstado [id] {scroll-margin-top: 18px;}
+#abaEstado summary {cursor: pointer;}
+#abaEstado .estadoOrgaoCard {
+  border: 1px solid #d1e2da;
+  border-radius: 10px;
+  margin-top: 8px;
+}
+#abaEstado .estadoOrgaoCard summary {padding: 12px 14px;}
+#abaEstado .estadoSituacao {
+  display: inline-block;
+  margin: 3px 6px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #fff1d5;
+  color: #6c4109;
+  font-size: 13px;
+}
+#abaEstado .estadoSituacao.comResposta {background: #e5f5eb; color: #1c5637;}
+#abaEstado .estadoRegistro {padding: 12px 14px; border-top: 1px solid #d1e2da;}
+#abaEstado .estadoEventos {list-style: none; padding: 0; margin: 10px 0;}
+#abaEstado .estadoEventos li {
+  display: grid;
+  grid-template-columns: 7.2rem minmax(0, 1fr);
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e0ebe6;
+}
+#abaEstado .estadoDataEvento {color: #135d48; font-weight: 700; font-variant-numeric: tabular-nums;}
+#abaEstado .estadoObservacaoRegistro {white-space: pre-line;}
+#abaEstado .estadoEditar {
+  color: #174f3e;
+  background: #eef7f2;
+  border: 1px solid #a8cbbd;
+  border-radius: 7px;
+  padding: 7px 11px;
+  cursor: pointer;
+}
+#abaEstado #estadoCadastro summary {font-weight: 700;}
+#abaEstado .gridCadastroEstado {
+  margin-top: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+#abaEstado .gridCadastroEstado label {display: grid; gap: 4px; min-width: 0;}
+#abaEstado .gridCadastroEstado label:has(textarea), #abaEstado .gridCadastroEstado > div {grid-column: 1/-1;}
+#abaEstado .cep-grid {grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));}
+#abaEstado .cep-linha > * {min-width: 0;}
+@media(max-width: 520px) {
+  #abaEstado .estadoEventos li {grid-template-columns: 1fr; gap: 2px;}
+  #abaEstado .estadoOrgaoCard summary .estadoSituacao {display: table; margin-left: 0;}
+}

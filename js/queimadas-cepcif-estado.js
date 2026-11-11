@@ -38,12 +38,20 @@ async function renderCEPCIFEstado(){
   const o=orgao?.[0]||{}
   const m=mon||[]
   const marco=(marcos||[])[0]
+  const expedientes=[
+   [o.idatarecebimentodoc,'Casa Civil / COGCLIMA','Doc. 06947/26 • Ofício nº 6391/2026/CASA CIVIL-COGCLIMA • SEI 006691/2026'],
+   [o.iidatarecebimentodoc,'CBMRO','Doc. 06985/26 • Ofício nº 19368/2026/CBM-GABCMD • SEI 006714/2026'],
+   ['2026-09-18','Presidência do TCE-RO','Despacho SEI 1116561 • Remessa aos Relatores Temáticos do Desenvolvimento Sustentável, SEPEPP e SGCE'],
+   [o.dataenviodoc,'TCE-RO',o.nroficioenviadotcero||'Ofício nº 942/2026/GABPRES/TCERO'],
+   ['2026-09-18','TCE-RO','Comprovante de envio às 12h04 • Resposta ao CBMRO e CEPCIF/COGCLIMA'],
+   ['2026-09-22','CEPCIF','11ª reunião prevista às 9h • Sala de Situação da Operação Verde Rondônia • Centro de Treinamento Operacional do CBMRO, Porto Velho']
+  ].sort(([a],[b])=>String(a||'9999').localeCompare(String(b||'9999')))
   box.innerHTML=`
   <div class="cep-grid">
    <div class="cep-kpi"><small>ÓRGÃO ESTADUAL</small><b>CEPCIF</b></div>
    <div class="cep-kpi"><small>PROCESSO PRINCIPAL</small><b>SEI 006691/2026</b></div>
-   <div class="cep-kpi"><small>REUNIÃO</small><b>22/09/2026 • 9h</b></div>
-   <div class="cep-kpi"><small>SITUAÇÃO</small><b>${esc(marco?.status||'AGENDADO')}</b></div>
+   <div class="cep-kpi"><small>REUNIÃO PREVISTA</small><b>22/09/2026 • 9h</b></div>
+   <div class="cep-kpi"><small>SITUAÇÃO</small><b>${esc(marco?.status||'Sem atualização registrada')}</b></div>
   </div>
   <div class="cep-box">
    <h3>🏛️ Comitê Estadual de Prevenção e Combate a Incêndios Florestais</h3>
@@ -54,12 +62,13 @@ async function renderCEPCIFEstado(){
    <div class="cep-linha"><strong>11ª Reunião</strong><span>22/09/2026, às 9h • Sala de Situação da Operação Verde Rondônia • Centro de Treinamento Operacional do CBMRO • Porto Velho</span></div>
   </div>
   <div class="cep-box">
-   <h3>📑 Documentação vinculada</h3>
-   <div class="cep-linha"><strong>Doc. 06947/26</strong><span>Ofício nº 6391/2026/CASA CIVIL-COGCLIMA • recebido em ${dt(o.idatarecebimentodoc)} • Processo SEI 006691/2026</span></div>
-   <div class="cep-linha"><strong>Doc. 06985/26</strong><span>Ofício nº 19368/2026/CBM-GABCMD • recebido em ${dt(o.iidatarecebimentodoc)} • Processo relacionado SEI 006714/2026</span></div>
-   <div class="cep-linha"><strong>Resposta TCE-RO</strong><span>${esc(o.nroficioenviadotcero||'Ofício nº 942/2026/GABPRES/TCERO')} • ${dt(o.dataenviodoc)}</span></div>
-   <div class="cep-linha"><strong>Despacho da Presidência</strong><span>SEI nº 1116561 • 18/09/2026 • remessa aos Relatores Temáticos do Desenvolvimento Sustentável, SEPEPP e SGCE</span></div>
-   <div class="cep-linha"><strong>Comprovante de envio</strong><span>18/09/2026 às 12:04 • resposta enviada ao CBMRO e CEPCIF/COGCLIMA</span></div>
+   <h3>Cronologia dos expedientes</h3>
+   <ol class="estadoEventos">
+   ${expedientes.map(([data,orgao,documento])=>`<li>
+    <span class="estadoDataEvento">${data?esc(dt(data)):'Sem data'}</span>
+    <div><strong>${esc(orgao)}</strong><div>${esc(documento)}</div></div>
+   </li>`).join('')}
+   </ol>
   </div>
   <div class="cep-box">
    <h3>📌 Pauta prévia da 11ª Reunião</h3>

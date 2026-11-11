@@ -7,7 +7,7 @@
 <title>QUEIMADAS 2026 | Monitoramento Inteligente</title>
 <link rel="icon" href="data:,">
 <link rel="manifest" href="../manifest.json">
-<link rel="stylesheet" href="css/queimadas.css?v=20260919-2">
+<link rel="stylesheet" href="css/queimadas.css?v=20261111-1">
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -20,7 +20,7 @@
 <script src="../config.js"></script>
 <script src="../js/municipios-ro.js"></script>
 <script src="../js/queimadas-documentos-oficiais-2026.js?v=20260918-1"></script>
-<script src="../js/queimadas.js?v=20260919-2"></script>
+<script src="../js/queimadas.js?v=20261111-1"></script>
 <script src="../js/queimadasRT.js?v=20260905-1"></script>
 <script src="../js/queimadas-monitoramento.js?v=20260925-1"></script>
 <script src="../js/queimadas-municipios.js?v=20260905-1"></script>
@@ -28,7 +28,7 @@
 <script src="../js/queimadas-tempo-real.js?v=20260905-1"></script>
 <script src="../js/queimadas-rio-madeira.js?v=20260925-1"></script>
 <script src="../js/queimadas-documentos-oficiais-painel.js?v=20260918-3"></script>
-<script src="../js/queimadas-cepcif-estado.js?v=20260918-2"></script>
+<script src="../js/queimadas-cepcif-estado.js?v=20261111-1"></script>
 </head>
 <body>
 <div id="login-queimadas" class="loginQueimadasOverlay">
@@ -187,25 +187,31 @@ Atualizar
 003 ESTADO
 =========================================================-->
 <section id="abaEstado" class="abaQueimadas hidden">
-<div class="painelTitulo">MONITORAMENTO ESTADUAL • ÓRGÃOS E GOVERNANÇA</div>
-<div id="painelKPIsEstado"></div>
-<div data-sedam-documentos="queimadas"></div>
-<div class="cardExecutivo cardDestaque">
-<h2>🏛️ CEPCIF • COMITÊ ESTADUAL DE PREVENÇÃO E COMBATE A INCÊNDIOS FLORESTAIS</h2>
-<div id="painelCEPCIFEstado"></div>
-</div>
-<div class="cardExecutivo">
-<h2>CADASTRO ESTADUAL</h2>
-<div id="painelCadastroEstado"></div>
-</div>
-<div class="cardExecutivo">
-<h2>CADASTRAR ÓRGÃO ESTADUAL</h2>
-<div id="painelFormularioEstado"></div>
-</div>
-<div class="cardExecutivo">
-<h2>INDICADORES ESTADUAIS</h2>
-<div id="painelIndicadoresEstado"></div>
-</div>
+<header class="estadoHero">
+  <h2>Monitoramento estadual</h2>
+  <p>Respostas dos órgãos de Rondônia, cronologia dos expedientes e documentos de governança.</p>
+  <nav aria-label="Seções do monitoramento estadual">
+    <a href="#estadoOrgaos">Órgãos e expedientes</a>
+    <a href="#estadoCEPCIF">CEPCIF</a>
+    <a href="#estadoSEDAM">SEDAM</a>
+    <a href="#estadoCadastro">Cadastro</a>
+  </nav>
+</header>
+<div id="painelKPIsEstado" aria-live="polite"></div>
+<section id="estadoOrgaos" class="estadoSecao">
+  <h2>Órgãos e expedientes</h2>
+  <p>Órgãos em ordem alfabética. Abra um registro para consultar os expedientes do mais antigo ao mais recente.</p>
+  <div id="painelCadastroEstado"></div>
+</section>
+<section id="estadoCEPCIF" class="estadoSecao">
+  <h2>CEPCIF</h2>
+  <div id="painelCEPCIFEstado"></div>
+</section>
+<div id="estadoSEDAM" data-sedam-documentos="queimadas"></div>
+<details id="estadoCadastro" class="estadoSecao">
+  <summary>Cadastrar ou editar órgão estadual</summary>
+  <div id="painelFormularioEstado"></div>
+</details>
 </section>
 <!--=========================================================
 002 MUNICÍPIOS
@@ -1055,6 +1061,6 @@ console.error(e)
 </script>
 -->
 </div>
-<script src="../js/sedam-documentos-20261110.js?v=20261110-1"></script>
+<script src="../js/sedam-documentos-20261110.js?v=20261111-1"></script>
 </body>
 </html>
