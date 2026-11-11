@@ -69,29 +69,58 @@ function estadoDocs(r){
  push(r.nroficioenviadotcero,r.dataenviodoc,r.paginaenviodoc,'OFÍCIO TCE-RO','TCE-RO','OFÍCIO EXPEDIDO / REFERÊNCIA')
  return out
 }
+const referenciasTagSedam=[
+ {
+  escopo:'ESTADO',id:'08352/26',municipio:'SEDAM',orgao_origem:'SEDAM',
+  processo:'PCe 04340/25 • TAG SEDAM',subcategoria:'Petição protocolada',
+  documento_origem:'Ofício nº 9687/2026/SEDAM-GERCON e anexos',
+  data_documento:'2026-10-28',data_entrada:'2026-10-29',paginas:'3 (ofício)',
+  situacao:'PROPOSTA EM ANÁLISE',fonte:'Referência do TAG SEDAM • Recibo de protocolo 08352/26',
+  resumo:'Proposta de alteração do item 3.1 do TAG (ação 45), sobre integração institucional, monitoramento ambiental e prevenção de ilícitos. Protocolada no processo do TAG SEDAM e exibida aqui pela relação temática com Queimadas.',
+  arquivo:'01_sei_77936332_oficio_9687.pdf'
+ },
+ {
+  escopo:'ESTADO',id:'2059374',municipio:'SEDAM',orgao_origem:'TCE-RO',
+  processo:'PCe 04340/25 • TAG SEDAM',subcategoria:'Despacho do relator',
+  documento_origem:'Despacho relativo ao Documento 08352/26',
+  data_documento:'2026-11-04',paginas:'1',situacao:'ENCAMINHADO PARA ANÁLISE',
+  fonte:'Referência do TAG SEDAM • Despacho de 04/11/2026',
+  resumo:'Encaminhamento à SGCE/CECEX-09 para juntada ao processo do TAG SEDAM e análise da proposta de alteração do item 3.1. A proposta permanece pendente de apreciação.',
+  arquivo:'06_despacho.pdf'
+ }
+]
+function ordenarDocumentos(docs){
+ const vistos=new Set()
+ return docs.filter(d=>{
+   const k=[normalizar(d.escopo),normalizar(d.municipio),normalizar(d.id),String(d.data_entrada||d.data_documento||'').slice(0,10)].join('|')
+   if(vistos.has(k))return false
+   vistos.add(k)
+   return true
+ }).sort((a,b)=>String(b.data_entrada||b.data_documento||'').localeCompare(String(a.data_entrada||a.data_documento||'')))
+}
 async function carregarTodos(){
  if(QDOC_CACHE)return QDOC_CACHE
- const enriquecidos=base().docs||[]
- if(!window.clientQueimadas){QDOC_CACHE=enriquecidos.map(d=>({...d,escopo:'MUNICÍPIO'}));return QDOC_CACHE}
- try{
-  const [{data:mov,error:e1},{data:est,error:e2}]=await Promise.all([
-   window.clientQueimadas.from('queimadas_municipios_movimentacoes').select('*').order('data_recebimento',{ascending:false}),
-   window.clientQueimadas.from('queimadas_estado_oficio').select('*').order('estado',{ascending:true})
-  ])
-  if(e1)throw e1;if(e2)throw e2
-  const todos=[...(mov||[]).map(docGenericoMunicipal),...(est||[]).flatMap(estadoDocs)]
-  const vistos=new Set()
-  QDOC_CACHE=todos.filter(d=>{
-   const k=[normalizar(d.escopo),normalizar(d.municipio),normalizar(d.id),String(d.data_entrada||'').slice(0,10)].join('|')
-   if(vistos.has(k))return false
-   vistos.add(k);return true
-  }).sort((a,b)=>String(b.data_entrada||'').localeCompare(String(a.data_entrada||'')))
-  return QDOC_CACHE
- }catch(e){
-  console.error('Documentos oficiais:',e)
-  QDOC_CACHE=enriquecidos.map(d=>({...d,escopo:'MUNICÍPIO'}))
-  return QDOC_CACHE
+ const locais=(base().docs||[]).map(d=>({...d,escopo:'MUNICÍPIO'}))
+ if(window.clientQueimadas){
+  try{
+   const [municipais,estaduais]=await Promise.all([
+    window.clientQueimadas.from('queimadas_municipios_movimentacoes').select('*').order('data_recebimento',{ascending:false}),
+    window.clientQueimadas.from('queimadas_estado_oficio').select('*').order('estado',{ascending:true})
+   ])
+   if(municipais.error)console.error('Documentos municipais:',municipais.error)
+   if(estaduais.error)console.error('Documentos estaduais:',estaduais.error)
+   const mov=municipais.error?locais:(municipais.data||[]).map(docGenericoMunicipal)
+   const est=estaduais.error?[]:(estaduais.data||[]).flatMap(estadoDocs)
+   QDOC_CACHE=ordenarDocumentos([...mov,...est,...referenciasTagSedam])
+   return QDOC_CACHE
+  }catch(error){
+   console.error('Documentos oficiais:',error)
+  }
  }
+ return ordenarDocumentos([...locais,...referenciasTagSedam])
+}
+function dataMaisRecente(docs,campo){
+ return docs.map(d=>d[campo]).filter(Boolean).sort().at(-1)
 }
 function lista(titulo,itens){
  if(!itens?.length)return''
@@ -134,6 +163,7 @@ function card(d){
  ${lista('RISCOS DE EXECUÇÃO',d.riscos_execucao)}
  ${lista('RESPONSÁVEIS IDENTIFICADOS NO PLANO',d.responsaveis)}
  </details>
+ ${d.arquivo?`<p><a href="../documentos/sedam-08352-26/${esc(d.arquivo)}" target="_blank" rel="noopener">Abrir PDF original</a></p>`:''}
  <div class="qdocRodape"><span>${esc(d.fonte)}</span>${d.id_origem?`<span>ID origem: ${esc(d.id_origem)}${d.crc?' • CRC '+esc(d.crc):''}</span>`:''}</div>
  </article>`
 }
@@ -161,8 +191,8 @@ async function renderTela(){
  const municipais=docs.filter(d=>d.escopo==='MUNICÍPIO')
  const mun=[...new Set(municipais.map(d=>d.municipio).filter(Boolean))]
  const orgaos=[...new Set(docs.filter(d=>d.escopo==='ESTADO').map(d=>d.municipio).filter(Boolean))]
- const ultima=docs.map(d=>d.data_entrada).filter(Boolean).sort().at(-1)
- sec.innerHTML=`<div class="qdocTopo"><div><h2>📚 DOCUMENTOS OFICIAIS • QUEIMADAS 2026</h2><p>Base documental completa: movimentações municipais, órgãos estaduais, planos, respostas, complementações e expedientes do TCE-RO.</p></div><div style="font-size:8px;color:#64748b">Atualização documental: 18/09/2026</div></div>
+ const ultima=dataMaisRecente(docs,'data_entrada')
+ sec.innerHTML=`<div class="qdocTopo"><div><h2>📚 DOCUMENTOS OFICIAIS • QUEIMADAS 2026</h2><p>Documentos disponíveis no painel, incluindo movimentações municipais, expedientes estaduais e referências do TAG SEDAM.</p></div><div style="font-size:8px;color:#64748b">Data mais recente de documento: ${br(dataMaisRecente(docs,'data_documento'))}</div></div>
  <div class="qdocKPIs"><div class="qdocKPI"><b>${docs.length}</b><span>Registros documentais</span></div><div class="qdocKPI"><b>${mun.length}</b><span>Municípios com registros</span></div><div class="qdocKPI"><b>${orgaos.length}</b><span>Órgãos estaduais</span></div><div class="qdocKPI"><b>${br(ultima)}</b><span>Última entrada</span></div></div>
  <div class="qdocFiltros">
   <button class="ativo" data-filtro="TODOS" onclick="qdocFiltrar('TODOS')">TODOS</button>
@@ -170,7 +200,7 @@ async function renderTela(){
   <button data-filtro="ESTADO" onclick="qdocFiltrar('ESTADO')">🌎 ESTADO</button>
   <input id="qdocBusca" type="text" placeholder="🔎 Buscar documento, órgão ou município..." oninput="qdocAplicarBusca()" style="min-width:260px;border:1px solid #cbd5e1;border-radius:999px;padding:7px 12px;font-size:9px">
  </div>
- <div style="font-size:8px;color:#64748b;margin:-5px 0 10px">“TODOS” agora exibe toda a base documental disponível no Supabase, e não apenas os documentos recentemente enriquecidos.</div>
+ <div style="font-size:8px;color:#64748b;margin:-5px 0 10px">Os registros do TAG SEDAM são referências do PCe 04340/25.</div>
  <div id="qdocLista" class="qdocGrid">${docs.map(d=>`<div class="qdocCardWrap" data-escopo="${esc(d.escopo||'')}" data-busca="${esc(normalizar([d.id,d.municipio,d.documento_origem,d.orgao_origem,d.situacao,d.processo].join(' ')))}">${card(d)}</div>`).join('')}</div>`
 }
 async function adicionarFaixas(){
@@ -180,7 +210,7 @@ async function adicionarFaixas(){
   const f=document.createElement('div');f.className='qdocFaixa'
   const est=docs.filter(d=>d.escopo==='ESTADO').length
   const mun=new Set(docs.filter(d=>d.escopo==='MUNICÍPIO').map(d=>d.municipio)).size
-  f.innerHTML=`<div><strong>📚 BASE DOCUMENTAL COMPLETA • 18/09/2026</strong><span>${docs.length} registros documentais • ${mun} municípios • ${est} registros estaduais • última entrada ${br(docs.map(d=>d.data_entrada).filter(Boolean).sort().at(-1))}</span></div><button onclick="abrirDocumentosQueimadasOficiais()">VER DOCUMENTOS</button>`
+  f.innerHTML=`<div><strong>📚 BASE DOCUMENTAL DO PAINEL</strong><span>${docs.length} registros documentais • ${mun} municípios • ${est} registros estaduais • última entrada registrada ${br(dataMaisRecente(docs,'data_entrada'))} • data mais recente de documento ${br(dataMaisRecente(docs,'data_documento'))}</span></div><button onclick="abrirDocumentosQueimadasOficiais()">VER DOCUMENTOS</button>`
   const titulo=a.querySelector('.painelTitulo');if(titulo)titulo.insertAdjacentElement('afterend',f);else a.prepend(f)
  })
 }
