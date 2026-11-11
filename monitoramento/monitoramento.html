@@ -552,6 +552,13 @@ accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx"
 <div id="listaAnalises"></div>
 </section>
 <section id="tela-relatorios" class="tela-monitoramento hidden">
+<div class="mt-fonte-aviso">
+  <label for="loteRT"><strong>Importar lote documental SEDAM e SEPAT</strong></label>
+  <input id="loteRT" type="file" accept=".json,application/json">
+  <button id="consultarLoteRT" type="button" class="btn-padrao">Consultar matrizes e referências do lote</button>
+  <p id="loteRTAviso" role="status"></p>
+</div>
+
 
 <div class="relatorio-actions">
 
@@ -950,7 +957,8 @@ style="margin-top:18px;">
 <script src="monitoramento-executivo.js"></script>
 <script src="monitoramento-central.js"></script>
 <script src="monitoramento-beneficios.js"></script>
-<script src="monitoramento-integracao.js"></script>
+<script src="monitoramento-integracao.js?v=20261111-1"></script>
+<script src="monitoramento-lote-rt.js?v=20261111-1"></script>
 <script src="monitoramento-queimadas-documentos.js?v=20260918-1"></script>
 <script src="monitoramento-cepcif.js?v=20260918-2"></script>
 
