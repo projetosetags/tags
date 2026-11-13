@@ -20,12 +20,13 @@
 <script src="../config.js"></script>
 <script src="../js/municipios-ro.js"></script>
 <script src="../js/queimadas-documentos-oficiais-2026.js?v=20260918-1"></script>
-<script src="../js/queimadas.js?v=20261111-1"></script>
-<script src="../js/queimadasRT.js?v=20260905-1"></script>
-<script src="../js/queimadas-monitoramento.js?v=20260925-1"></script>
-<script src="../js/queimadas-municipios.js?v=20260905-1"></script>
+<script src="../js/queimadas-satelites.js?v=20261113-1"></script>
+<script src="../js/queimadas.js?v=20261113-1"></script>
+<script src="../js/queimadasRT.js?v=20261113-1"></script>
+<script src="../js/queimadas-monitoramento.js?v=20261113-1"></script>
+<script src="../js/queimadas-municipios.js?v=20261113-1"></script>
 <script src="../js/queimadas-mapas.js?v=20260905-1"></script>
-<script src="../js/queimadas-tempo-real.js?v=20260905-1"></script>
+<script src="../js/queimadas-tempo-real.js?v=20261113-1"></script>
 <script src="../js/queimadas-rio-madeira.js?v=20260925-1"></script>
 <script src="../js/queimadas-documentos-oficiais-painel.js?v=20261111-4"></script>
 <script src="../js/queimadas-cepcif-estado.js?v=20261111-1"></script>
@@ -127,6 +128,14 @@ Fonte: OpenStreetMap • PROTEGE/SEDAM • INPE • Base Municipal RO
 <h2>Ranking Estadual por IRIQ Ambiental • TCERO • INPE • PRODES • MAPBIOMAS • CHAPT</h2>
 <div id="painelMunicipiosPrioritarios"></div>
 </div>
+<div class="cardExecutivo" id="painelProdesAnual">
+<h2>Desmatamento anual · PRODES / INPE</h2>
+<label for="anoProdes">Ano PRODES</label>
+<select id="anoProdes">
+<option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option>
+</select>
+<div id="resultadoProdes" aria-live="polite"></div>
+</div>
 <div class="exec-duplo">
 <div id="cardFocosCalor" class="cardExecutivo">
 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
@@ -164,6 +173,16 @@ onclick="carregarFocosPeriodo()"
 >
 Atualizar
 </button>
+</div>
+<div class="fonte-card">
+<label for="filtroSateliteFocos"><strong>Satélite dos focos</strong></label>
+<select id="filtroSateliteFocos">
+<option value="AQUA">AQUA (referência do painel)</option>
+<option value="NOAA20">NOAA-20</option>
+<option value="NOAA21">NOAA-21</option>
+<option value="SNPP">Suomi NPP</option>
+</select>
+<p>Uma plataforma por consulta. As detecções podem incluir mais de uma passagem do mesmo satélite.</p>
 </div>
 <div id="painelFocosCalor"></div>
 </div>

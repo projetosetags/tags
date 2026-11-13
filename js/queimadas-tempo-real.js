@@ -18,7 +18,7 @@ let dataInicial=`${ano}-01-01`
 let{data:ultimoFoco,error:erroUltimoFoco}=await client
 .schema('queimadas')
 .from('queimadas_focos_inpe')
-.select('data_foco')
+.select('data_foco').eq('satelite',focosSatelite())
 .eq('uf','RO')
 .gte('data_foco',dataInicial)
 .order('data_foco',{ascending:false})
@@ -170,7 +170,7 @@ let todos=[]
 let inicio=0
 let limite=1000
 while(true){
-let{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('id',{ascending:true}).range(inicio,inicio+limite-1)
+let{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('satelite',focosSatelite()).eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('id',{ascending:true}).range(inicio,inicio+limite-1)
 if(error){
 console.error('002 Erro ao buscar focos:',error)
 return{data:[],error}
@@ -347,25 +347,19 @@ box.style.opacity='.45'
 box.style.transition='opacity .25s ease'
 }
 let ano=new Date().getFullYear()
-let{data=[],error}=await client
-.from('vw_queimadas_focos_mensal')
-.select('mes,focos')
-.eq('ano',ano)
-.order('mes',{ascending:true})
+const satelite=focosSatelite()
+const {data=[],error}=await buscarTodosFocosINPE(`${ano}-01-01`,`${ano}-12-31`)
+if(satelite!==focosSatelite())return
+if(box)box.style.opacity=''
 if(error){
-console.error('Erro ao carregar evolução mensal:',error)
-if(box){
-box.innerHTML=`<div class="alerta-vermelho">Erro ao carregar a evolução mensal.<br>${error.message||''}</div>`
+ if(box)box.insertAdjacentHTML('afterbegin','<p>Não foi possível consultar a série mensal por satélite.</p>')
+ return
 }
-return
+const valores=Array(12).fill(0)
+for(const foco of data){
+ const mes=Number(String(foco.data_foco).slice(5,7))
+ if(mes>=1&&mes<=12)valores[mes-1]++
 }
-let valores=Array(12).fill(0)
-data.forEach(item=>{
-let mes=Number(item.mes)
-if(mes>=1&&mes<=12){
-valores[mes-1]=Number(item.focos||0)
-}
-})
 if(graficoTempoReal){
 graficoTempoReal.destroy()
 graficoTempoReal=null
@@ -686,7 +680,7 @@ let registros=[]
 let inicio=0
 let limite=1000
 while(true){
-let{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('uf','RO').ilike('municipio',municipio).gte('data_foco',inicioAno).lte('data_foco',fimAno).order('data_hora',{ascending:false}).range(inicio,inicio+limite-1)
+let{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('satelite',focosSatelite()).eq('uf','RO').ilike('municipio',municipio).gte('data_foco',inicioAno).lte('data_foco',fimAno).order('data_hora',{ascending:false}).range(inicio,inicio+limite-1)
 if(error){
 console.error('Erro tempo real municipal:',error)
 return
@@ -733,7 +727,7 @@ let risco=null
 let posicao='-'
 let focosHeatmap=0
 try{
-let{count,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*',{count:'exact',head:true}).eq('uf','RO').gte('data_foco','2026-01-01').lte('data_foco','2026-12-31')
+let{count,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*',{count:'exact',head:true}).eq('satelite',focosSatelite()).eq('uf','RO').gte('data_foco','2026-01-01').lte('data_foco','2026-12-31')
 if(!error)totalRO=Number(count||0)
 }catch(e){
 console.error('Erro total RO:',e)

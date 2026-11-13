@@ -252,10 +252,10 @@ let[
 {data:rankingFocos=[],error:erroRankingFocos},
 {data:rankingIRIQ=[],error:erroRankingIRIQ}
 ]=await Promise.all([
-client.from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).gte('data_foco',dataInicial).lte('data_foco',dataFinal),
+client.from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).eq('satelite',focosSatelite()).eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal),
 client.from('vw_queimadas_municipios_resposta').select('*'),
 client.from('vw_queimadas_executivo').select('*').maybeSingle(),
-client.from('vw_queimadas_ranking_focos_atual').select('municipio,focos').order('focos',{ascending:false}).limit(5),
+focosRankingAno(5),
 client.from('queimadas_heatmap').select('municipio,iriq,risco,classificacao,focos').order('iriq',{ascending:false}).limit(5)
 ])
 if(erroFocos)console.error('RT Sumário - focos:',erroFocos)
@@ -337,7 +337,7 @@ doc.text(linhasGeral,15,y)
 y+=linhasGeral.length*3.5+4
 /* INDICADORES PRINCIPAIS */
 let indicadores=[
-{titulo:'FOCOS 2026',valor:focos.toLocaleString('pt-BR'),cor:[220,38,38]},
+{titulo:'FOCOS '+focosSatelite(),valor:focos.toLocaleString('pt-BR'),cor:[220,38,38]},
 {titulo:'COM PLANO',valor:String(comPlano),cor:[22,163,74]},
 {titulo:'DILAÇÃO',valor:String(dilacao),cor:[202,138,4]},
 {titulo:'SEM RESPOSTA',valor:String(semResposta),cor:[220,38,38]},
@@ -630,14 +630,14 @@ async function rtMunicipiosCriticos(doc){
 rtCabecalhoPagina(doc,'11. MUNICÍPIOS DE MAIOR CRITICIDADE')
 let[{data:heat=[]},{data:rankingFocos=[]}]=await Promise.all([
 client.from('queimadas_heatmap').select('*'),
-client.from('vw_queimadas_ranking_focos_atual').select('municipio,focos')
+focosRankingAno()
 ])
 let focosPorMunicipio={}
 rankingFocos.forEach(i=>{focosPorMunicipio[rtNormalizarNome(i.municipio)]=Number(i.focos||0)})
 let top=[...heat].sort((a,b)=>Number(b.risco||0)-Number(a.risco||0)).slice(0,10)
 let y=43
 y=rtTexto(doc,'A priorização dos municípios considera a combinação entre criticidade, risco integrado, histórico ambiental, capacidade institucional e intensidade recente dos focos de calor.',y,9)
-doc.autoTable({startY:y+4,head:[['POS','MUNICÍPIO','IRIQ','RISCO','CLASSIFICAÇÃO','FOCOS 2026']],body:top.map((m,i)=>[i+1,m.municipio||'-',Number(m.iriq||0).toFixed(2),m.risco||'-',m.classificacao||'-',focosPorMunicipio[rtNormalizarNome(m.municipio)]??Number(m.focos||0)]),styles:{fontSize:8,font:'helvetica',cellPadding:2.2,textColor:[51,65,85]},headStyles:{fillColor:[127,29,29],textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,250,252]},margin:{left:15,right:15}})
+doc.autoTable({startY:y+4,head:[['POS','MUNICÍPIO','IRIQ','RISCO','CLASSIFICAÇÃO','FOCOS '+focosSatelite()]],body:top.map((m,i)=>[i+1,m.municipio||'-',Number(m.iriq||0).toFixed(2),m.risco||'-',m.classificacao||'-',focosPorMunicipio[rtNormalizarNome(m.municipio)]??Number(m.focos||0)]),styles:{fontSize:8,font:'helvetica',cellPadding:2.2,textColor:[51,65,85]},headStyles:{fillColor:[127,29,29],textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,250,252]},margin:{left:15,right:15}})
 let finalY=(doc.lastAutoTable?.finalY||170)+10
 rtTexto(doc,'Os municípios classificados nas faixas de maior criticidade demandam intensificação das ações de prevenção, fiscalização, resposta operacional e acompanhamento da execução dos respectivos planos de ação.',finalY,9)
 rtFonte(doc,'Fonte: Heatmap Estadual • IRIQ • INPE Programa Queimadas • TCE-RO')

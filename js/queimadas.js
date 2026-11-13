@@ -758,7 +758,7 @@ BUSCAR A ÚLTIMA DATA REAL DISPONÍVEL NO INPE
 ---------------------------------------------------------*/
 let{data:ultimoFoco,error:erroUltimoFoco}=await client
 .from('queimadas_focos_inpe')
-.select('data_foco')
+.select('data_foco').eq('satelite',focosSatelite())
 .eq('uf','RO')
 .gte('data_foco',dataInicial)
 .order('data_foco',{ascending:false})
@@ -800,7 +800,7 @@ client
 
 client
 .from('queimadas_focos_inpe')
-.select('id',{count:'exact',head:true})
+.select('id',{count:'exact',head:true}).eq('satelite',focosSatelite())
 .eq('uf','RO')
 .gte('data_foco',dataInicial)
 .lte('data_foco',dataFinal)
@@ -847,7 +847,7 @@ ${Number(totalFocosINPE||0).toLocaleString('pt-BR')}
 </div>
 
 <div class="kpiTitulo">
-🔥 FOCOS DE CALOR
+🔥 FOCOS DE CALOR · ${focosSatelite()}
 </div>
 
 <div style="margin-top:6px;font-size:11px;font-weight:800;color:#64748b">
@@ -3907,15 +3907,13 @@ box.innerHTML=`
 async function renderTopFocosSituacao(){
 let box=document.getElementById('painelTopFocosSituacao')
 if(!box)return
-let{data=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
-.order('focos',{ascending:false})
+const {data,error}=await focosRankingAno()
+if(error){box.textContent='Não foi possível consultar o ranking por satélite.';return}
 box.innerHTML=`
 <div class="cardExecutivo">
 <h2>🔥 TOP 10 FOCOS DE CALOR</h2>
 <div style="font-size:12px;margin-bottom:10px">
-Fonte: INPE • Ranking Estadual
+Fonte: INPE • ${focosSatelite()} • ano atual
 </div>
 ${data.slice(0,10).map((i,idx)=>`
 <div style="display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid #eee">
@@ -4042,10 +4040,10 @@ let tamanho=1000
 while(true){
 let{data=[],error}=await client
 .from('queimadas_focos_inpe')
-.select('*')
+.select('*').eq('satelite',focosSatelite()).eq('uf','RO')
 .gte('data_foco',dataInicial)
 .lte('data_foco',dataFinal)
-.order('data_foco',{ascending:true})
+.order('id',{ascending:true})
 .range(inicio,inicio+tamanho-1)
 if(error)throw error
 todos.push(...data)

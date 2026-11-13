@@ -543,7 +543,9 @@ return
 let inicioISO=formatarDataISOFocos(dataInicial)
 let finalISO=formatarDataISOFocos(dataFinal)
 box.innerHTML='<div style="padding:30px;text-align:center;font-weight:900">🔥 Carregando focos oficiais do INPE...</div>'
+const satelite=focosSatelite()
 let resultado=await buscarTodosFocosINPE(inicioISO,finalISO)
+if(satelite!==focosSatelite())return
 if(resultado.error){
 console.error('Erro ao consultar focos do INPE:',resultado.error)
 box.innerHTML=`<div class="alerta-vermelho">Erro ao consultar os focos do INPE.<br>${resultado.error.message||''}</div>`
@@ -577,7 +579,7 @@ box.innerHTML=`
 <div class="focoResumoCard">
 <div class="focoIcon">🔥</div>
 <div class="focoValor">${total.toLocaleString('pt-BR')}</div>
-<div class="focoTitulo">FOCOS DE CALOR</div>
+<div class="focoTitulo">FOCOS DE CALOR · ${satelite}</div>
 <div style="font-size:11px;color:#64748b;font-weight:800;margin-top:5px">${tituloPeriodo}</div>
 </div>
 <div class="focoResumoCard">
@@ -631,7 +633,7 @@ let todos=[]
 let inicio=0
 let tamanhoPagina=1000
 while(true){
-let{data,error}=await client.from('queimadas_focos_inpe').select('municipio,data_foco,created_at').gte('data_foco',inicioISO).lte('data_foco',finalISO).order('id',{ascending:true}).range(inicio,inicio+tamanhoPagina-1)
+let{data,error}=await client.from('queimadas_focos_inpe').select('municipio,data_foco,created_at').eq('satelite',focosSatelite()).eq('uf','RO').gte('data_foco',inicioISO).lte('data_foco',finalISO).order('id',{ascending:true}).range(inicio,inicio+tamanhoPagina-1)
 if(error)return{data:[],error}
 let pagina=data||[]
 todos.push(...pagina)
@@ -690,12 +692,8 @@ await renderPainelFocosINPE()
 async function renderGraficoTopFocos(){
 let canvas=document.getElementById('graficoTopFocosExecutivo')||document.getElementById('graficoTopFocosRelatorio')
 if(!canvas)return
-let {data:ranking=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
-let top10=[...(ranking||[])]
-.sort((a,b)=>Number(b.focos||0)-Number(a.focos||0))
-.slice(0,10)
+const {data,error}=await focosRankingAno(10)
+const top10=error?[]:data
 if(window.chartTopFocos){
 window.chartTopFocos.destroy()
 }
@@ -704,7 +702,7 @@ type:'bar',
 data:{
 labels:top10.map(i=>i.municipio||'-'),
 datasets:[{
-label:'Focos de Calor',
+label:'Focos de calor · '+focosSatelite(),
 data:top10.map(i=>Number(i.focos||0))
 }]
 },
@@ -872,18 +870,17 @@ let dataInicial=`${ano}-01-01`
 let dataFinal=`${ano}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`
 let[
 {data:executivo,error:erroExecutivo},
-{count:totalFocos,error:erroFocos},
-{data:ranking=[],error:erroRanking}
+{data:focos,error:erroFocos}
 ]=await Promise.all([
 client.from('vw_queimadas_executivo').select('*').maybeSingle(),
-client.from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).gte('data_foco',dataInicial).lte('data_foco',dataFinal),
-client.from('vw_queimadas_ranking_focos_atual').select('municipio,focos').order('focos',{ascending:false}).limit(10)
+buscarTodosFocosINPE(dataInicial,dataFinal)
 ])
 if(erroExecutivo)console.error('Erro ao carregar situação estadual:',erroExecutivo)
 if(erroFocos)console.error('Erro ao carregar focos INPE:',erroFocos)
-if(erroRanking)console.error('Erro ao carregar ranking de focos:',erroRanking)
+const ranking=focosRanking(focos||[]).slice(0,10)
+const totalFocos=erroFocos?null:(focos||[]).length
 executivo=executivo||{}
-let focosTotal=Number(totalFocos||0)
+let focosTotal=totalFocos===null?'Indisponível':totalFocos.toLocaleString('pt-BR')
 let criticos=Number(executivo.municipios_criticos||0)
 let prioritarios=Number(executivo.municipios_prioritarios||0)
 let iriq=Number(executivo.iriq_estadual||0)
@@ -901,7 +898,7 @@ cor='#f97316'
 faixa='MODERADO'
 cor='#ca8a04'
 }
-box.innerHTML=`<div class="situacaoKPIGrid"><div class="situacaoKPI"><strong>${focosTotal.toLocaleString('pt-BR')}</strong><span>🔥 FOCOS EM ${ano}</span></div><div class="situacaoKPI"><strong>${desmatamento.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🌳 DESMATAMENTO</span></div><div class="situacaoKPI"><strong>${areaQueimada.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🔥 ÁREA QUEIMADA</span></div><div class="situacaoKPI"><strong>${criticos}</strong><span>🚨 CRÍTICOS</span></div><div class="situacaoKPI"><strong>${prioritarios}</strong><span>⚠️ PRIORITÁRIOS</span></div><div class="situacaoKPI"><strong style="color:${cor}">${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong><span>IRIQ • ${faixa}</span></div></div><div class="situacaoPeriodo">Dados de focos: 01/01/${ano} até ${hoje.toLocaleDateString('pt-BR')}</div><div class="situacaoRanking"><h3>🔥 TOP 10 MUNICÍPIOS POR FOCOS DE CALOR</h3>${ranking.length?ranking.map((item,indice)=>`<div class="situacaoRankingLinha">
+box.innerHTML=`<div class="situacaoKPIGrid"><div class="situacaoKPI"><strong>${focosTotal}</strong><span>🔥 FOCOS ${focosSatelite()} EM ${ano}</span></div><div class="situacaoKPI"><strong>${desmatamento.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🌳 DESMATAMENTO</span></div><div class="situacaoKPI"><strong>${areaQueimada.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🔥 ÁREA QUEIMADA</span></div><div class="situacaoKPI"><strong>${criticos}</strong><span>🚨 CRÍTICOS</span></div><div class="situacaoKPI"><strong>${prioritarios}</strong><span>⚠️ PRIORITÁRIOS</span></div><div class="situacaoKPI"><strong style="color:${cor}">${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong><span>IRIQ • ${faixa}</span></div></div><div class="situacaoPeriodo">Dados de focos: 01/01/${ano} até ${hoje.toLocaleDateString('pt-BR')}</div><div class="situacaoRanking"><h3>🔥 TOP 10 MUNICÍPIOS POR FOCOS DE CALOR</h3>${ranking.length?ranking.map((item,indice)=>`<div class="situacaoRankingLinha">
 <span>
 <b>${indice+1}º</b>
 <div>${item.municipio}</div>
