@@ -18,7 +18,7 @@ let dataInicial=`${ano}-01-01`
 let{data:ultimoFoco,error:erroUltimoFoco}=await client
 .schema('queimadas')
 .from('queimadas_focos_inpe')
-.select('data_foco').eq('satelite',focosSatelite())
+.select('data_foco').in('satelite',focosSateliteVariantes())
 .eq('uf','RO')
 .gte('data_foco',dataInicial)
 .order('data_foco',{ascending:false})
@@ -170,7 +170,7 @@ let todos=[]
 let inicio=0
 let limite=1000
 while(true){
-let{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('satelite',focosSatelite()).eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('id',{ascending:true}).range(inicio,inicio+limite-1)
+let{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').in('satelite',focosSateliteVariantes()).eq('uf','RO').gte('data_foco',dataInicial).lte('data_foco',dataFinal).order('id',{ascending:true}).range(inicio,inicio+limite-1)
 if(error){
 console.error('002 Erro ao buscar focos:',error)
 return{data:[],error}
@@ -680,7 +680,7 @@ let registros=[]
 let inicio=0
 let limite=1000
 while(true){
-let{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').eq('satelite',focosSatelite()).eq('uf','RO').ilike('municipio',municipio).gte('data_foco',inicioAno).lte('data_foco',fimAno).order('data_hora',{ascending:false}).range(inicio,inicio+limite-1)
+let{data,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*').in('satelite',focosSateliteVariantes()).eq('uf','RO').ilike('municipio',municipio).gte('data_foco',inicioAno).lte('data_foco',fimAno).order('data_hora',{ascending:false}).range(inicio,inicio+limite-1)
 if(error){
 console.error('Erro tempo real municipal:',error)
 return
@@ -727,7 +727,7 @@ let risco=null
 let posicao='-'
 let focosHeatmap=0
 try{
-let{count,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*',{count:'exact',head:true}).eq('satelite',focosSatelite()).eq('uf','RO').gte('data_foco','2026-01-01').lte('data_foco','2026-12-31')
+let{count,error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('*',{count:'exact',head:true}).in('satelite',focosSateliteVariantes()).eq('uf','RO').gte('data_foco','2026-01-01').lte('data_foco','2026-12-31')
 if(!error)totalRO=Number(count||0)
 }catch(e){
 console.error('Erro total RO:',e)

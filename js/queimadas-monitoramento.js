@@ -91,9 +91,9 @@ if(local?.precipitacao?.length){
  if(!chuva||String(lp.data)>String(chuva.data||''))chuva=lp
 }
 let variacao=atual&&anterior?Number(atual.nivel_m)-Number(anterior.nivel_m):null
-let focos='—';try{if(window.clientQueimadas){const{count,error}=await window.clientQueimadas.from('queimadas_focos_inpe').select('*',{count:'exact',head:true}).eq('satelite',focosSatelite()).eq('uf','RO').gte('data','2026-01-01');if(!error&&Number.isFinite(count))focos=Number(count).toLocaleString('pt-BR')}}catch(_){ }
+let focos='—';try{if(window.clientQueimadas){const{count,error}=await window.clientQueimadas.schema('queimadas').from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).in('satelite',focosSateliteVariantes()).eq('uf','RO').gte('data_foco','2026-01-01');if(!error&&Number.isFinite(count))focos=Number(count).toLocaleString('pt-BR')}}catch(_){ }
 const tendencia=variacao===null?'SEM COMPARAÇÃO':variacao<0?`QUEDA ${fmtBR(Math.abs(variacao),2)} m/24h`:variacao>0?`ALTA ${fmtBR(variacao,2)} m/24h`:'ESTÁVEL 24h'
-box.innerHTML=`<div class="rioMadeiraIntegracaoFluxo"><div><strong>PRECIPITAÇÃO</strong><span>🌧️</span><b>${fmtBR(chuva?.total_bacia,2)} mm</b><small>${dataCurta(chuva?.data)} • média da bacia</small></div><div class="rmSetaFluxo">→</div><div><strong>RIO MADEIRA</strong><span>🌊</span><b>${fmtBR(atual?.nivel_m,2)} m</b><small>${dataCurta(atual?.data)} • Estação 15400000</small></div><div class="rmSetaFluxo">→</div><div><strong>ESTIAGEM</strong><span>☀️</span><b>${tendencia}</b><small>variação do nível</small></div><div class="rmSetaFluxo">→</div><div><strong>QUEIMADAS</strong><span>🔥</span><b>${focos} focos</b><small>Rondônia • 2026</small></div><div class="rmSetaFluxo">→</div><div><strong>RISCO</strong><span>🚨</span><b>MONITORAMENTO INTEGRADO</b><small>ver IRIQ e situação estadual</small></div></div><div class="rioMadeiraFonte">Integração: CENSIPAM/NUHIDRO CR-PV • Série histórica de nível: ANA/CPRM-REPO • Precipitação: GPM/NASA • Queimadas: PROTEGE/SEDAM + INPE • TCE-RO</div>`
+box.innerHTML=`<div class="rioMadeiraIntegracaoFluxo"><div><strong>PRECIPITAÇÃO</strong><span>🌧️</span><b>${fmtBR(chuva?.total_bacia,2)} mm</b><small>${dataCurta(chuva?.data)} • média da bacia</small></div><div class="rmSetaFluxo">→</div><div><strong>RIO MADEIRA</strong><span>🌊</span><b>${fmtBR(atual?.nivel_m,2)} m</b><small>${dataCurta(atual?.data)} • Estação 15400000</small></div><div class="rmSetaFluxo">→</div><div><strong>ESTIAGEM</strong><span>☀️</span><b>${tendencia}</b><small>variação do nível</small></div><div class="rmSetaFluxo">→</div><div><strong>QUEIMADAS</strong><span>🔥</span><b>${focos} focos</b><small>${focosSateliteRotulo()} • Rondônia • 2026</small></div><div class="rmSetaFluxo">→</div><div><strong>RISCO</strong><span>🚨</span><b>MONITORAMENTO INTEGRADO</b><small>ver IRIQ e situação estadual</small></div></div><div class="rioMadeiraFonte">Integração: CENSIPAM/NUHIDRO CR-PV • Série histórica de nível: ANA/CPRM-REPO • Precipitação: GPM/NASA • Queimadas: PROTEGE/SEDAM + INPE • TCE-RO</div>`
 }catch(error){console.warn('209 Integração hidroclimática:',error)}
 }
 
@@ -159,7 +159,7 @@ preparar(btnPng,'🖼️','Exportar PNG da aba atual')
 =========================================================*/
 function carregarModulo3Fontes(){
 if(document.getElementById('script3Fontes'))return
-let s=document.createElement('script');s.id='script3Fontes';s.src='../js/queimadas-03fontes.js?v=20260919-2';s.defer=true;document.head.appendChild(s)
+let s=document.createElement('script');s.id='script3Fontes';s.src='../js/queimadas-03fontes.js?v=20261113-2';s.defer=true;document.head.appendChild(s)
 }
 
 function iniciarTudoComplementar(){

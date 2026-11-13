@@ -544,6 +544,7 @@ let inicioISO=formatarDataISOFocos(dataInicial)
 let finalISO=formatarDataISOFocos(dataFinal)
 box.innerHTML='<div style="padding:30px;text-align:center;font-weight:900">🔥 Carregando focos oficiais do INPE...</div>'
 const satelite=focosSatelite()
+const sateliteRotulo=focosSateliteRotulo()
 let resultado=await buscarTodosFocosINPE(inicioISO,finalISO)
 if(satelite!==focosSatelite())return
 if(resultado.error){
@@ -579,7 +580,7 @@ box.innerHTML=`
 <div class="focoResumoCard">
 <div class="focoIcon">🔥</div>
 <div class="focoValor">${total.toLocaleString('pt-BR')}</div>
-<div class="focoTitulo">FOCOS DE CALOR · ${satelite}</div>
+<div class="focoTitulo">FOCOS DE CALOR · ${sateliteRotulo}</div>
 <div style="font-size:11px;color:#64748b;font-weight:800;margin-top:5px">${tituloPeriodo}</div>
 </div>
 <div class="focoResumoCard">
@@ -633,7 +634,7 @@ let todos=[]
 let inicio=0
 let tamanhoPagina=1000
 while(true){
-let{data,error}=await client.from('queimadas_focos_inpe').select('municipio,data_foco,created_at').eq('satelite',focosSatelite()).eq('uf','RO').gte('data_foco',inicioISO).lte('data_foco',finalISO).order('id',{ascending:true}).range(inicio,inicio+tamanhoPagina-1)
+let{data,error}=await client.from('queimadas_focos_inpe').select('municipio,data_foco,created_at').in('satelite',focosSateliteVariantes()).eq('uf','RO').gte('data_foco',inicioISO).lte('data_foco',finalISO).order('id',{ascending:true}).range(inicio,inicio+tamanhoPagina-1)
 if(error)return{data:[],error}
 let pagina=data||[]
 todos.push(...pagina)
@@ -702,7 +703,7 @@ type:'bar',
 data:{
 labels:top10.map(i=>i.municipio||'-'),
 datasets:[{
-label:'Focos de calor · '+focosSatelite(),
+label:'Focos de calor · '+focosSateliteRotulo(),
 data:top10.map(i=>Number(i.focos||0))
 }]
 },
@@ -723,18 +724,23 @@ legend:{display:false}
 async function renderGraficoFocosHistorico(){
 let canvas=document.getElementById('graficoFocosHistorico')||document.getElementById('graficoEvolucaoMensalRelatorio')
 if(!canvas)return
-let {data=[]}=await client
-.from('queimadas_focos_historico')
-.select('*')
-.order('ano')
-.order('mes')
+let todos=[],inicio=0,limite=1000
+while(true){
+let{data=[],error}=await client.schema('queimadas').from('queimadas_focos_inpe').select('data_foco').in('satelite',focosSateliteVariantes()).eq('uf','RO').order('data_foco').range(inicio,inicio+limite-1)
+if(error){console.error('Erro na série mensal por satélite:',error);todos=[];break}
+todos.push(...data)
+if(data.length<limite)break
+inicio+=limite
+}
 if(window.chartFocosHistorico){
 window.chartFocosHistorico.destroy()
 }
 let agrupado={}
-;(data||[]).forEach(i=>{
-let chave=`${String(i.mes||1).padStart(2,'0')}/${i.ano||''}`
-agrupado[chave]=(agrupado[chave]||0)+Number(i.focos||0)
+todos.forEach(i=>{
+let data=String(i.data_foco||'').slice(0,10)
+if(data.length<7)return
+let chave=`${data.slice(5,7)}/${data.slice(0,4)}`
+agrupado[chave]=(agrupado[chave]||0)+1
 })
 let labels=Object.keys(agrupado)
 let valores=Object.values(agrupado)
@@ -743,7 +749,7 @@ type:'line',
 data:{
 labels:labels,
 datasets:[{
-label:'Focos de Calor',
+label:'Focos de Calor · '+focosSateliteRotulo(),
 data:valores,
 fill:false
 }]
@@ -831,16 +837,17 @@ Fonte: INPE • PRODES • MAPBIOMAS • SEDAM • CBMRO • vw_queimadas_execut
 async function renderIndicadoresPresidente(){
 let box=document.getElementById('painelIndicadoresPresidente')
 if(!box)return
-let {data,error}=await client
+let [{data,error},{count:totalFocos,error:erroFocos}]=await Promise.all([client
 .from('vw_queimadas_executivo')
 .select('*')
-.single()
+.single(),client.schema('queimadas').from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).in('satelite',focosSateliteVariantes()).eq('uf','RO').gte('data_foco',`${new Date().getFullYear()}-01-01`)]);
 if(error||!data)return
+if(erroFocos)console.error('Erro ao consultar focos por satélite:',erroFocos)
 box.innerHTML=`
 <div class="chap-grid">
 <div class="chap-card">
-<div class="chap-num">${Number(data.focos_estado||0).toLocaleString('pt-BR')}</div>
-<div class="chap-label">FOCOS DE CALOR</div>
+<div class="chap-num">${Number(totalFocos||0).toLocaleString('pt-BR')}</div>
+<div class="chap-label">FOCOS • ${focosSateliteRotulo()}</div>
 </div>
 <div class="chap-card">
 <div class="chap-num">${Number(data.desmatamento_estado_ha||0).toLocaleString('pt-BR',{maximumFractionDigits:0})}</div>
@@ -898,7 +905,7 @@ cor='#f97316'
 faixa='MODERADO'
 cor='#ca8a04'
 }
-box.innerHTML=`<div class="situacaoKPIGrid"><div class="situacaoKPI"><strong>${focosTotal}</strong><span>🔥 FOCOS ${focosSatelite()} EM ${ano}</span></div><div class="situacaoKPI"><strong>${desmatamento.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🌳 DESMATAMENTO</span></div><div class="situacaoKPI"><strong>${areaQueimada.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🔥 ÁREA QUEIMADA</span></div><div class="situacaoKPI"><strong>${criticos}</strong><span>🚨 CRÍTICOS</span></div><div class="situacaoKPI"><strong>${prioritarios}</strong><span>⚠️ PRIORITÁRIOS</span></div><div class="situacaoKPI"><strong style="color:${cor}">${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong><span>IRIQ • ${faixa}</span></div></div><div class="situacaoPeriodo">Dados de focos: 01/01/${ano} até ${hoje.toLocaleDateString('pt-BR')}</div><div class="situacaoRanking"><h3>🔥 TOP 10 MUNICÍPIOS POR FOCOS DE CALOR</h3>${ranking.length?ranking.map((item,indice)=>`<div class="situacaoRankingLinha">
+box.innerHTML=`<div class="situacaoKPIGrid"><div class="situacaoKPI"><strong>${focosTotal}</strong><span>🔥 FOCOS ${focosSateliteRotulo()} EM ${ano}</span></div><div class="situacaoKPI"><strong>${desmatamento.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🌳 DESMATAMENTO</span></div><div class="situacaoKPI"><strong>${areaQueimada.toLocaleString('pt-BR',{maximumFractionDigits:0})}</strong><span>🔥 ÁREA QUEIMADA</span></div><div class="situacaoKPI"><strong>${criticos}</strong><span>🚨 CRÍTICOS</span></div><div class="situacaoKPI"><strong>${prioritarios}</strong><span>⚠️ PRIORITÁRIOS</span></div><div class="situacaoKPI"><strong style="color:${cor}">${iriq.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong><span>IRIQ • ${faixa}</span></div></div><div class="situacaoPeriodo">Dados de focos: 01/01/${ano} até ${hoje.toLocaleDateString('pt-BR')}</div><div class="situacaoRanking"><h3>🔥 TOP 10 MUNICÍPIOS POR FOCOS DE CALOR</h3>${ranking.length?ranking.map((item,indice)=>`<div class="situacaoRankingLinha">
 <span>
 <b>${indice+1}º</b>
 <div>${item.municipio}</div>
@@ -1004,14 +1011,16 @@ box.innerHTML=lista.length?'<table class="tabelaMiniMunicipios"><tr><th>Municíp
 130 QUEIMADAS FUNCTION RENDERDASHBOARDPRESIDENTE
 =========================================================*/
 async function renderDashboardPresidente(){
-let[{data:ranking=[],error:erroRanking},{data:municipios=[],error:erroMunicipios},{data:exec,error:erroExec}]=await Promise.all([
+let[{data:ranking=[],error:erroRanking},{data:municipios=[],error:erroMunicipios},{data:exec,error:erroExec},{count:totalFocos,error:erroFocos}]=await Promise.all([
 client.from('vw_queimadas_ranking_estadual').select('*'),
 client.from('vw_queimadas_municipios_resposta').select('*'),
-client.from('vw_queimadas_executivo').select('*').single()
+client.from('vw_queimadas_executivo').select('*').single(),
+client.schema('queimadas').from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).in('satelite',focosSateliteVariantes()).eq('uf','RO').gte('data_foco',`${new Date().getFullYear()}-01-01`)
 ])
 if(erroRanking)console.error('Erro ranking:',erroRanking)
 if(erroMunicipios)console.error('Erro municípios:',erroMunicipios)
 if(erroExec)console.error('Erro executivo:',erroExec)
+if(erroFocos)console.error('Erro focos satélite:',erroFocos)
 exec=exec||{}
 let listaMunicipios=(window.aplicarDocumentosOficiaisMunicipios?.(municipios||[])||municipios||[]).map(classificarMunicipioAtual)
 let criticos=ranking.filter(i=>Number(i.indice_final||i.iriq||0)>=75).length
@@ -1022,7 +1031,7 @@ let comPlano=listaMunicipios.filter(i=>i.classificacaoAtual==='VERDE').length
 let dilacao=listaMunicipios.filter(i=>i.classificacaoAtual==='AMARELO').length
 let semResposta=listaMunicipios.filter(i=>i.classificacaoAtual==='VERMELHO').length
 let resumo=document.getElementById('painelResumoExecutivoGeral')
-if(resumo)resumo.innerHTML=`<div class="kpiGrid"><div class="kpiCard"><div class="kpiNumero">${Number(exec.focos_estado||0).toLocaleString('pt-BR')}</div><div class="kpiTitulo">🔥 FOCOS DE CALOR</div></div><div class="kpiCard"><div class="kpiNumero">${Number(exec.iriq_estadual||0).toFixed(2)}</div><div class="kpiTitulo">🤖 IRIQ ESTADUAL</div></div><div class="kpiCard"><div class="kpiNumero">${criticos}</div><div class="kpiTitulo">🚨 CRÍTICOS</div></div><div class="kpiCard"><div class="kpiNumero">${listaMunicipios.length}</div><div class="kpiTitulo">🏛 MUNICÍPIOS</div></div></div>`
+if(resumo)resumo.innerHTML=`<div class="kpiGrid"><div class="kpiCard"><div class="kpiNumero">${Number(totalFocos||0).toLocaleString('pt-BR')}</div><div class="kpiTitulo">🔥 FOCOS · ${focosSateliteRotulo()}</div></div><div class="kpiCard"><div class="kpiNumero">${Number(exec.iriq_estadual||0).toFixed(2)}</div><div class="kpiTitulo">🤖 IRIQ ESTADUAL</div></div><div class="kpiCard"><div class="kpiNumero">${criticos}</div><div class="kpiTitulo">🚨 CRÍTICOS</div></div><div class="kpiCard"><div class="kpiNumero">${listaMunicipios.length}</div><div class="kpiTitulo">🏛 MUNICÍPIOS</div></div></div>`
 let top=document.getElementById('painelTopCriticosGeral')
 if(top)top.innerHTML=[...(ranking||[])].sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0)).slice(0,10).map((i,idx)=>`<div class="linha-ranking"><span>${idx+1}º ${i.municipio}</span><b>${Number(i.indice_final||i.iriq||0).toFixed(2)}</b></div>`).join('')
 let distribuicao=document.getElementById('painelDistribuicaoRisco')

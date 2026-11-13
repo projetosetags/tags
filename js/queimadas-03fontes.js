@@ -12,7 +12,7 @@ s.defer=true
 if(cb)s.onload=cb
 document.head.appendChild(s)
 }
-carregar('../js/queimadas-03fontes-ui-v2.js?v=20260919-1','q3BaseEstavel',function(){
+carregar('../js/queimadas-03fontes-ui-v2.js?v=20261113-2','q3BaseEstavel',function(){
 carregar('../js/queimadas-municipios-timeline.js?v=20260906-2','qmtTimeline',function(){
 carregar('../js/queimadas-municipios-layout-v2.js?v=20260906-3','qmtLayoutV2',function(){
 carregar('../js/queimadas-mapa-municipios-v3.js?v=20260906-2','qmtMapaV3',function(){

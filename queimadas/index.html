@@ -20,13 +20,13 @@
 <script src="../config.js"></script>
 <script src="../js/municipios-ro.js"></script>
 <script src="../js/queimadas-documentos-oficiais-2026.js?v=20260918-1"></script>
-<script src="../js/queimadas-satelites.js?v=20261113-2"></script>
-<script src="../js/queimadas.js?v=20261113-1"></script>
-<script src="../js/queimadasRT.js?v=20261113-1"></script>
-<script src="../js/queimadas-monitoramento.js?v=20261113-1"></script>
-<script src="../js/queimadas-municipios.js?v=20261113-1"></script>
+<script src="../js/queimadas-satelites.js?v=20261113-3"></script>
+<script src="../js/queimadas.js?v=20261113-2"></script>
+<script src="../js/queimadasRT.js?v=20261113-2"></script>
+<script src="../js/queimadas-monitoramento.js?v=20261113-2"></script>
+<script src="../js/queimadas-municipios.js?v=20261113-2"></script>
 <script src="../js/queimadas-mapas.js?v=20260905-1"></script>
-<script src="../js/queimadas-tempo-real.js?v=20261113-1"></script>
+<script src="../js/queimadas-tempo-real.js?v=20261113-2"></script>
 <script src="../js/queimadas-rio-madeira.js?v=20260925-1"></script>
 <script src="../js/queimadas-documentos-oficiais-painel.js?v=20261111-4"></script>
 <script src="../js/queimadas-cepcif-estado.js?v=20261111-1"></script>
@@ -75,6 +75,20 @@
 <button id="btnImprimirPainel" class="btnAbaQueimadas btnPdfQueimadas" onclick="imprimirAbaAtualQueimadas()">🖨️ PDF ABA</button>
 <button id="btnExportarPNG" class="btnAbaQueimadas btnPdfQueimadas" onclick="exportarAbaPNG()">📸 PNG SLIDE</button>
 </nav>
+<div class="fonte-card" id="seletorSateliteGlobal" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0;padding:12px 16px">
+<label for="filtroSateliteFocos"><strong>🛰️ Satélite dos focos de calor em todas as abas</strong></label>
+<select id="filtroSateliteFocos" aria-label="Escolha o satélite para consultar focos de calor" style="min-width:190px">
+<option value="NOAA20" selected>NOAA-20 · principal</option>
+<option value="NOAA21">NOAA-21</option>
+<option value="AQUA">AQUA</option>
+<option value="SNPP">Suomi-NPP (SNPP)</option>
+<option value="TERRA">TERRA</option>
+<option value="GOES19">GOES-19</option>
+<option value="METOPB">METOP-B</option>
+<option value="METOPC">METOP-C</option>
+</select>
+<span style="font-size:12px;color:#475569">Os totais e gráficos de focos são recalculados por plataforma; a escolha fica salva neste navegador.</span>
+</div>
 <!--=========================================================
 001 EXECUTIVO
 =========================================================-->
@@ -189,15 +203,6 @@ onclick="carregarFocosPeriodo()"
 >
 Atualizar
 </button>
-</div>
-<div class="fonte-card">
-<label for="filtroSateliteFocos"><strong>Satélite dos focos</strong></label>
-<select id="filtroSateliteFocos">
-<option value="NOAA20" selected>NOAA-20 (principal)</option>
-<option value="NOAA21">NOAA-21</option>
-<option value="AQUA">AQUA</option>
-</select>
-<p>Uma plataforma por consulta. As detecções podem incluir mais de uma passagem do mesmo satélite.</p>
 </div>
 <div id="painelFocosCalor"></div>
 </div>
