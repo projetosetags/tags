@@ -1,6 +1,6 @@
 function focosSatelite(){
  const valor=document.getElementById('filtroSateliteFocos')?.value
- return ['AQUA','NOAA20','NOAA21','SNPP'].includes(valor)?valor:'AQUA'
+ return ['NOAA20','NOAA21','AQUA'].includes(valor)?valor:'NOAA20'
 }
 function focosRanking(registros){
  const grupos=new Map()

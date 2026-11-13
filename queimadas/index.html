@@ -20,7 +20,7 @@
 <script src="../config.js"></script>
 <script src="../js/municipios-ro.js"></script>
 <script src="../js/queimadas-documentos-oficiais-2026.js?v=20260918-1"></script>
-<script src="../js/queimadas-satelites.js?v=20261113-1"></script>
+<script src="../js/queimadas-satelites.js?v=20261113-2"></script>
 <script src="../js/queimadas.js?v=20261113-1"></script>
 <script src="../js/queimadasRT.js?v=20261113-1"></script>
 <script src="../js/queimadas-monitoramento.js?v=20261113-1"></script>
@@ -121,22 +121,20 @@ Fonte: OpenStreetMap • PROTEGE/SEDAM • INPE • Base Municipal RO
 </div>
 </div>
 <section class="cardExecutivo" id="iriqConferencia">
-<h2>IRIQ · Conferência metodológica de 13/11/2026</h2>
-<p><strong>IRIQ-4C-2026-11-v1 · Proposta com homologação institucional pendente</strong></p>
-<p><strong>IRIQ = 30% Risco Municipal + 10% IPT + 35% Área Queimada Normalizada + 25% Desmatamento Normalizado.</strong> Os quatro componentes são expressos de 0 a 100 pontos.</p>
-<p>Base conferida no RT: 52 municípios no HeatMap e 52 valores municipais em cada fonte ambiental (MapBiomas e PRODES). IPT verificado em 5 municípios e associação à Matriz 5×5 em 10. A série anual 2021–2025 não estava preenchida nas duas fontes.</p>
+<h2>IRIQ municipal · valores registrados no RT</h2>
+<p>Valores do IRIQ já registrados para os municípios abaixo, reproduzidos conforme a pontuação armazenada.</p>
 <div style="overflow-x:auto">
 <table style="width:100%;text-align:left">
-<caption>Resultados experimentais registrados no RT · 4 de 52 municípios</caption>
-<thead><tr><th scope="col">Município</th><th scope="col">Pontuação armazenada</th><th scope="col">IRIQ experimental</th></tr></thead>
+<caption>IRIQ registrado no RT · municípios com pontuação informada</caption>
+<thead><tr><th scope="col">Município</th><th scope="col">IRIQ</th></tr></thead>
 <tbody>
-<tr><td>Porto Velho</td><td>75,25</td><td>100,00</td></tr>
-<tr><td>Nova Mamoré</td><td>43,02</td><td>55,04</td></tr>
-<tr><td>Candeias do Jamari</td><td>41,06</td><td>49,51</td></tr>
-<tr><td>Buritis</td><td>28,98</td><td>34,42</td></tr>
+<tr><td>Porto Velho</td><td>75,25</td></tr>
+<tr><td>Nova Mamoré</td><td>43,02</td></tr>
+<tr><td>Candeias do Jamari</td><td>41,06</td></tr>
+<tr><td>Buritis</td><td>28,98</td></tr>
 </tbody></table>
 </div>
-<p class="fonte-card">Fonte: RT IRIQ Consolidado dos 52 Municípios, de 13/11/2026. A conferência experimental usa os totais disponíveis nas fontes ambientais, cujo período ainda requer comprovação. O mapa abaixo apresenta os valores armazenados.</p>
+<p class="fonte-card">Fonte: RT IRIQ Consolidado dos 52 Municípios, de 13/11/2026. O mapa abaixo apresenta os valores armazenados na base do projeto.</p>
 </section>
 <div id="cardIRIQHeatmap" class="cardExecutivo">
 <h2>HEATMAP ESTADUAL · PONTUAÇÕES ARMAZENADAS</h2>
@@ -195,10 +193,9 @@ Atualizar
 <div class="fonte-card">
 <label for="filtroSateliteFocos"><strong>Satélite dos focos</strong></label>
 <select id="filtroSateliteFocos">
-<option value="AQUA">AQUA (referência do painel)</option>
-<option value="NOAA20">NOAA-20</option>
+<option value="NOAA20" selected>NOAA-20 (principal)</option>
 <option value="NOAA21">NOAA-21</option>
-<option value="SNPP">Suomi NPP</option>
+<option value="AQUA">AQUA</option>
 </select>
 <p>Uma plataforma por consulta. As detecções podem incluir mais de uma passagem do mesmo satélite.</p>
 </div>
