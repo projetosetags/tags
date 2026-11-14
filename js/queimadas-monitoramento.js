@@ -102,14 +102,12 @@ box.innerHTML=`<div class="rioMadeiraIntegracaoFluxo"><div><strong>PRECIPITAÇÃ
 =========================================================*/
 function atualizarComplementosAbaAtual(){
 normalizarRotulosFontesQueimadas()
-const aba=document.getElementById('abaRioMadeira')
-if(aba&&!aba.classList.contains('hidden')){ajustarStatusRioMadeiraFontes();atualizarIntegracaoHidroclimatica()}
 }
 function iniciarMonitoramentoComplementar(){
 normalizarRotulosFontesQueimadas()
-setTimeout(instalarEixoDataRioMadeira,1200)
+// A versão V3 do painel Rio Madeira atualiza fontes, tabelas, gráficos e dados.
+// As rotinas antigas foram retiradas daqui para não sobrescrever os dados novos com datas fixas.
 setInterval(atualizarComplementosAbaAtual,300000)
-document.addEventListener('click',e=>{if(e.target?.id==='btnAbaRioMadeira')setTimeout(()=>{ajustarStatusRioMadeiraFontes();instalarEixoDataRioMadeira();atualizarIntegracaoHidroclimatica()},600)})
 }
 
 /*=========================================================
