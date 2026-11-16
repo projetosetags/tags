@@ -26,4 +26,20 @@ function download(){let data=JSON.stringify(save(),null,2);let b=new Blob([data]
 function importer(){el('file').click()}function loadFile(inp){if(!inp.files[0])return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(x.project!=='TAG SEPAT 2026')throw Error('Arquivo não pertence à TAG SEPAT');answers=x.answers||{};for(const f of ['entrevistador','dat','local','base'])el(f).value=x[f]||'';save();render()}catch(e){alert('Não foi possível importar: '+e.message)}};r.readAsText(inp.files[0])}
 function printAll(){save();el('allPrint').innerHTML='<div class="card"><h1>TAG SEPAT — Entrevista técnica</h1><p>Márcio Fábio Alves da Silva Júnior · Coordenador Técnico da SEPAT</p><p>Entrevistador: '+esc(el('entrevistador').value)+' | Data: '+esc(el('dat').value)+'</p><p>PCe 02469/2022 · 04328/2025 · Acórdãos 00133/24 e 00171/25</p></div>'+Q.map(q=>{const a=answers[q.id]||{};return '<div class="card"><h3>'+esc(q.id)+' · '+esc(q.title)+'</h3><p>'+esc(q.question)+'</p><p><b>Situação:</b> '+esc(a.status)+'</p><p><b>Resposta:</b> '+esc(a.response)+'</p><p><b>Evidências:</b> '+esc(a.evidence)+'</p><p><b>Documento SEI:</b> '+esc(a.sei)+'</p><p><b>Responsável:</b> '+esc(a.responsible)+' | <b>Prazo:</b> '+esc(a.deadline)+'</p><p><b>Pendências:</b> '+esc(a.obstacle)+'</p><p><b>Providências:</b> '+esc(a.action)+'</p></div>'}).join('');window.print()}
 for(const f of ['entrevistador','dat','local','base'])el(f).addEventListener('change',save);render();
+
+const API="https://zvtzbiqfwhggysiuiuxh.supabase.co/functions/v1/sepat-entrevista-api";
+const TOKEN=decodeURIComponent(location.hash.slice(1).replace(/^acesso=/,""));
+let remoteReady=false,remoteTimer=null;
+const saveLocal=save;
+save=function(){const data=saveLocal();if(remoteReady){clearTimeout(remoteTimer);remoteTimer=setTimeout(()=>sync(data,"Rascunho"),900)}return data};
+async function request(action,extra={}){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token:TOKEN,action,...extra})});const data=await r.json();if(!r.ok)throw Error(data.error||"Falha na conexão");return data}
+async function sync(data,estado){try{const r=await request("save",{dados:data,estado});el("status").textContent="Sincronizado na TAG SEPAT • "+new Date().toLocaleTimeString("pt-BR")}catch(e){el("status").textContent="Falha de sincronização: "+e.message+". Exporte JSON para cópia de segurança."}}
+async function begin(){el("questionCard").style.display="none";el("status").textContent="Validando acesso individual...";
+if(!TOKEN){el("status").textContent="Acesse pelo link individual recebido. O endereço sem código não permite gravar respostas.";return}
+try{const r=await request("load");if(r.perfil!=="respondente")throw Error("Este link é somente para consulta.");
+const d=r.dados||{};answers=d.answers||{};for(const f of ["entrevistador","dat","local","base"])el(f).value=d[f]||"";remoteReady=true;el("questionCard").style.display="block";render();el("status").textContent="Acesso de "+r.pessoa+" validado. Registro centralizado habilitado.";
+const buttons=document.querySelector(".card.no-print .buttons:last-child");
+if(buttons){const b=document.createElement("button");b.className="btn";b.textContent="Concluir e enviar";b.onclick=async()=>{if(!confirm("Concluir e enviar as respostas atuais para consulta do TCE-RO?"))return;clearTimeout(remoteTimer);await sync(saveLocal(),"Concluída")};buttons.appendChild(b)}
+}catch(e){el("status").textContent="Acesso não autorizado: "+e.message;el("steps").innerHTML="";}}
+begin();
 </script></body></html>
