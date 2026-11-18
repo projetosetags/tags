@@ -10,9 +10,11 @@
     const aviso=document.createElement('aside');
     aviso.id='iriqAvisoProvisorio';
     aviso.setAttribute('role','status');
-    aviso.style.cssText='position:sticky;top:0;z-index:10020;background:#fff7ed;color:#7c2d12;border-bottom:2px solid #ea580c;padding:9px 14px;font:600 13px/1.45 system-ui,sans-serif;text-align:center;box-shadow:0 2px 7px #00000015';
-    aviso.innerHTML='⚠️ <strong>IRIQ DOS 52 MUNICÍPIOS — CENÁRIO PRELIMINAR NÃO HOMOLOGADO</strong> · Fórmula: R 30% + IPT 10% + AQ 35% + DES 25%. Notas de IPT e risco ainda utilizam aproximações onde faltam evidências. Não utilizar isoladamente para decisões de fiscalização. <small style="white-space:nowrap">Versão '+VERSAO+'</small>';
-    document.body.prepend(aviso);
+    aviso.style.cssText='display:block;position:static;z-index:auto;background:transparent;color:#64748b;border:0;border-top:1px solid #e2e8f0;padding:5px 10px;margin:0;font:400 11px/1.45 system-ui,sans-serif;text-align:center;box-shadow:none;opacity:.90';
+    aviso.innerHTML='<span aria-label="Nota metodológica">Nota metodológica:</span> IRIQ em cenário preliminar de triagem, ainda não homologado; componentes com estimativas sujeitos a validação. <small>Versão '+VERSAO+'</small>';
+    const principal=document.getElementById('abaExecutivo')||document.querySelector('main');
+    if(principal)principal.appendChild(aviso);
+    else document.body.appendChild(aviso);
   }
   async function atualizarQuadro(){
     const sec=document.getElementById('iriqConferencia');
