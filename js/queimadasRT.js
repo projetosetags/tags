@@ -134,7 +134,7 @@ let doc=new jsPDF('p','mm','a4',true)
 await rtCapa(doc)
 doc.addPage()
 await rtSumarioVisual(doc)
-if(typeof window.iriqAdicionarPaginaPDF==='function')await window.iriqAdicionarPaginaPDF(doc,null)
+if(typeof window.iriqAdicionarPaginaPDF==='function'){try{await window.iriqAdicionarPaginaPDF(doc,null)}catch(e){console.warn('IRIQ: página complementar não pôde ser adicionada',e)}}
 doc.addPage()
 await rtIntroducao(doc)
 doc.addPage()
