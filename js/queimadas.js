@@ -4643,6 +4643,7 @@ doc.setTextColor(17,24,39)
 doc.text('Fontes: INPE • PRODES • MapBiomas • SEDAM • CBMRO • Municípios de Rondônia • IRIQ • TCE-RO',5,292)
 doc.setFontSize(5.8)
 doc.text('PÁGINA 1 DE 1',205,292,{align:'right'})
+if(typeof window.iriqAdicionarPaginaPDF==='function')await window.iriqAdicionarPaginaPDF(doc,null)
 doc.save('Sumario_Executivo_Queimadas_2026_MFN.pdf')
 }
 /*=========================================================
@@ -4880,6 +4881,7 @@ doc.setDrawColor(203,213,225);doc.setLineWidth(.3);doc.line(7,288,203,288)
 doc.setFont('helvetica','normal');doc.setFontSize(5.3);textoPreto()
 doc.text('Fontes: INPE • IRIQ • Heatmap Estadual • Municípios de Rondônia • TCE-RO',7,292)
 doc.setFont('helvetica','bold');doc.text('PÁGINA 1 DE 1',203,292,{align:'right'})
+if(typeof window.iriqAdicionarPaginaPDF==='function')await window.iriqAdicionarPaginaPDF(doc,municipio)
 doc.save(`Sumario_Executivo_Municipal_${municipio.replace(/\s+/g,'_')}_${ano}.pdf`)
 }
 /*=========================================================
