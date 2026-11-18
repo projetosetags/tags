@@ -511,7 +511,7 @@ rtCabecalhoPagina(doc,'3. METODOLOGIA')
 let y=45
 y=rtTexto(doc,'A metodologia empregada combina monitoramento contínuo de bases institucionais, informações oficiais provenientes dos órgãos públicos, análise territorial, indicadores ambientais e ferramentas destinadas à classificação, priorização e acompanhamento dos riscos. A avaliação possui caráter multidimensional, buscando integrar aspectos territoriais, ambientais, institucionais, operacionais e de governança.',y,9)
 y+=5
-y=rtTexto(doc,'O Índice de Pressão Territorial – IPT é utilizado para mensurar comparativamente a pressão territorial associada às queimadas e apoiar a identificação dos municípios que demandam maior atenção. O Índice de Risco Integrado de Queimadas – IRIQ complementa essa avaliação mediante a hierarquização territorial dos riscos, contribuindo para a definição das prioridades de acompanhamento.',y,9)
+y=rtTexto(doc,'O Índice de Priorização Territorial – IPT (denominação metodológica proposta) é utilizado para mensurar comparativamente a pressão territorial associada às queimadas e apoiar a identificação dos municípios que demandam maior atenção. O Índice de Risco Integrado de Queimadas – IRIQ complementa essa avaliação mediante a hierarquização territorial dos riscos, contribuindo para a definição das prioridades de acompanhamento.',y,9)
 y+=5
 y=rtTexto(doc,'O CHAP constitui instrumento de análise da competência organizacional a partir de quatro dimensões: Conhecimento, Habilidade, Atitude e Propósito. O Conhecimento considera o domínio técnico, normativo e institucional necessário à execução das ações; a Habilidade examina a capacidade de transformar conhecimento em atuação efetiva; a Atitude observa iniciativa, comprometimento, tempestividade e capacidade de mobilização; e o Propósito avalia o alinhamento das ações e decisões aos objetivos e resultados pretendidos.',y,9)
 y+=5
@@ -574,9 +574,9 @@ rtFonte(doc,'Fonte: Heatmap Estadual • TCE-RO • INPE • bases ambientais e 
 310 RT IRIQ
 =========================================================*/
 async function rtIRIQ(doc){
-rtCabecalhoPagina(doc,'7. IRIQ ESTADUAL')
+rtCabecalhoPagina(doc,'7. IRIQ ESTADUAL — CENÁRIO NÃO HOMOLOGADO')
 let y=43
-y=rtTexto(doc,'O Índice de Risco Integrado de Queimadas - IRIQ constitui indicador composto utilizado para apoiar a priorização territorial das ações preventivas, de fiscalização, preparação e resposta.',y,9)
+y=rtTexto(doc,'O Índice de Risco Integrado de Queimadas - IRIQ utiliza Risco Municipal (30%), IPT (10%), Área Queimada Normalizada (35%) e Desmatamento Normalizado (25%). Os resultados numéricos apresentados correspondem a cenário preliminar de triagem, NÃO HOMOLOGADO, e não podem fundamentar isoladamente decisões de fiscalização.',y,9)
 let img=rtAdicionarImagem(doc,'painelMunicipiosPrioritarios',10,y+5,190,205)
 if(!img)rtAdicionarImagem(doc,'painelSalaSituacaoEstadual',10,y+5,190,205)
 rtFonte(doc,'Fonte: IRIQ • TCE-RO • INPE • indicadores ambientais e históricos')
@@ -587,7 +587,7 @@ rtFonte(doc,'Fonte: IRIQ • TCE-RO • INPE • indicadores ambientais e histó
 async function rtIPT(doc){
 rtCabecalhoPagina(doc,'8. IPT — ÍNDICE DE PRESSÃO TERRITORIAL')
 let y=43
-y=rtTexto(doc,'O Índice de Pressão Territorial – IPT constitui instrumento de apoio à análise comparativa da pressão exercida sobre o território em relação às queimadas e aos incêndios florestais. Sua aplicação permite organizar e interpretar informações territoriais e ambientais de forma integrada, contribuindo para identificar municípios que apresentam maior concentração de fatores associados à ocorrência, propagação ou impacto desses eventos.',y,9)
+y=rtTexto(doc,'O Índice de Priorização Territorial – IPT (denominação metodológica proposta) constitui instrumento de apoio à análise comparativa da pressão exercida sobre o território em relação às queimadas e aos incêndios florestais. Sua aplicação permite organizar e interpretar informações territoriais e ambientais de forma integrada, contribuindo para identificar municípios que apresentam maior concentração de fatores associados à ocorrência, propagação ou impacto desses eventos.',y,9)
 y+=5
 y=rtTexto(doc,'O índice é utilizado como ferramenta de priorização territorial, permitindo comparar os municípios sob uma referência comum e direcionar a atenção do controle externo para localidades que apresentam maior pressão relativa. Dessa forma, o IPT não deve ser interpretado isoladamente como indicação da ocorrência de um incêndio, mas como indicador destinado a revelar diferenças de pressão entre os territórios analisados e apoiar a definição das prioridades de acompanhamento.',y,9)
 y+=5
@@ -974,7 +974,7 @@ rtFonte(doc,'Referências institucionais e bases utilizadas no monitoramento')
 =========================================================*/
 async function rtSiglas(doc){
 rtCabecalhoPagina(doc,'18. SIGLAS E ABREVIATURAS')
-let siglas=[['CBMRO','Corpo de Bombeiros Militar do Estado de Rondônia'],['CHAP','Conhecimento, Habilidade, Atitude e Propósito'],['INPE','Instituto Nacional de Pesquisas Espaciais'],['IPT','Índice de Pressão Territorial'],['IRIQ','Índice de Risco Integrado de Queimadas'],['M-RAIG','Metodologia de Referência para Avaliação Integrada de Governança'],['ODS','Objetivos de Desenvolvimento Sustentável'],['PCe','Processo de Controle Externo'],['PRODES','Projeto de Monitoramento do Desmatamento na Amazônia Legal por Satélite'],['SEDAM','Secretaria de Estado do Desenvolvimento Ambiental'],['TCE-RO','Tribunal de Contas do Estado de Rondônia'],['TI','Terra Indígena'],['UC','Unidade de Conservação']]
+let siglas=[['CBMRO','Corpo de Bombeiros Militar do Estado de Rondônia'],['CHAP','Conhecimento, Habilidade, Atitude e Propósito'],['INPE','Instituto Nacional de Pesquisas Espaciais'],['IPT','Índice de Priorização Territorial (proposto)'],['IRIQ','Índice de Risco Integrado de Queimadas'],['M-RAIG','Metodologia de Referência para Avaliação Integrada de Governança'],['ODS','Objetivos de Desenvolvimento Sustentável'],['PCe','Processo de Controle Externo'],['PRODES','Projeto de Monitoramento do Desmatamento na Amazônia Legal por Satélite'],['SEDAM','Secretaria de Estado do Desenvolvimento Ambiental'],['TCE-RO','Tribunal de Contas do Estado de Rondônia'],['TI','Terra Indígena'],['UC','Unidade de Conservação']]
 doc.autoTable({startY:42,head:[['SIGLA','DESCRIÇÃO']],body:siglas,styles:{fontSize:9,cellPadding:3,textColor:[51,65,85]},headStyles:{fillColor:[15,23,42],textColor:[255,255,255]},alternateRowStyles:{fillColor:[248,250,252]},margin:{left:15,right:15}})
 }
 /*=========================================================
@@ -1103,7 +1103,7 @@ html+='<h2>3. METODOLOGIA</h2><p>Foram utilizados IPT, IRIQ, Heatmap Estadual, M
 html+='<h2>4. SITUAÇÃO ESTADUAL</h2>'+imagemWord('painelSalaSituacaoEstadual')+'<div class="fonte">Fonte: INPE • PRODES • MapBiomas • IRIQ/TCE-RO</div>'
 html+='<h2>5. ANÁLISE MUNICIPAL</h2><p>Acompanhamento dos 52 municípios quanto à situação dos planos de ação e atendimento ao Ofício Circular n.16/2026/GABPRES/TCERO.</p>'+imagemWord('painelKPIsMunicipais')+imagemWord('painelEstatisticasMunicipais')+'<div class="fonte">Fonte: Municípios de Rondônia • TCE-RO</div>'
 html+='<h2>6. HEATMAP ESTADUAL</h2>'+imagemWord('painelIRIQHeatmapUnificado')+'<p>O Heatmap permite visualizar territorialmente os diferentes níveis de criticidade.</p>'
-html+='<h2>7. IRIQ ESTADUAL</h2>'+imagemWord('painelMunicipiosPrioritarios')+'<p>O IRIQ subsidia a priorização territorial das ações de controle, prevenção e resposta.</p>'
+html+='<h2>7. IRIQ ESTADUAL — CENÁRIO NÃO HOMOLOGADO</h2>'+imagemWord('painelMunicipiosPrioritarios')+'<p>O IRIQ subsidia a priorização territorial das ações de controle, prevenção e resposta.</p>'
 html+='<h2>8. IPT — ÍNDICE DE PRESSÃO TERRITORIAL</h2>'+imagemWord('painelIPT')+'<p>O IPT representa a pressão territorial associada às queimadas e incêndios florestais e subsidia a comparação e a priorização dos municípios monitorados.</p>'
 html+='<h2>9. CHAP / M-RAIG — COMPETÊNCIA ORGANIZACIONAL</h2>'+imagemWord('painelTopIAIPT')+'<p>O CHAP, no âmbito da metodologia M-RAIG do TCE-RO, é utilizado para análise estruturada da competência organizacional, considerando Conhecimento, Habilidade, Atitude e Propósito. Sua aplicação é distinta do IPT, que possui natureza territorial.</p>'
 html+='<h2>10. MATRIZ DE RISCO 5X5</h2>'+imagemWord('painelMatriz5x5')+'<p>A matriz combina probabilidade e impacto potencial para classificar os eventos monitorados.</p>'
