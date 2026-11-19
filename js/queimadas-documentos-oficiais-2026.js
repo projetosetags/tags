@@ -1,6 +1,6 @@
 /*=========================================================
 QUEIMADAS 2026 • DOCUMENTOS OFICIAIS INCORPORADOS
-Atualização: 18/09/2026
+Atualização: 19/11/2026
 Fonte: documentos protocolizados no TCE-RO enviados pelo usuário.
 Este arquivo concentra os metadados, a síntese técnica e os campos
 de acompanhamento que alimentam Queimadas e Monitoramento Inteligente.
@@ -177,6 +177,12 @@ processo:'SEI 022.002712/2026-52 / acompanhamento de queimadas 2026',
 data_documento:'2026-08-11',
 data_entrada:'2026-09-15',
 data_recebimento:'2026-09-15',
+protocolo_pce:'06916/26',
+protocolo_regularizacao:'06934/26',
+data_regularizacao:'2026-09-16',
+data_juntada_sgce:'2026-09-16',
+certidao_pendencia:'Em 16/09/2026, às 07:39, foi certificada a ausência de requerimento, ofício ou petição de encaminhamento; a pendência foi regularizada pelo protocolo 06934/26.',
+encaminhamento:'Em 16/09/2026, às 09:43, a certidão registrou a juntada da documentação ao Doc. 06916/26 e o encaminhamento à Secretaria-Geral de Controle Externo (SGCE).',
 documento_origem:'Plano de Trabalho n. 1/2026/SEMA-DMQA - Plano Municipal de Prevenção a Queimadas Urbanas 2026',
 orgao_origem:'Secretaria Municipal de Meio Ambiente e Desenvolvimento Sustentável - SEMA / DMQA',
 tipo:'PLANO AJUSTADO',
@@ -185,10 +191,11 @@ paginas:'1-18',
 situacao:'PLANO AJUSTADO RECEBIDO',
 status:'RECEBIDO',
 plano_recebido:true,
-resumo:'Plano municipal de Porto Velho voltado à prevenção de queimadas urbanas e periurbanas, educação ambiental, mobilização social, monitoramento, fiscalização, brigada municipal e avaliação, abrangendo sede, distritos e comunidades, com intensificação durante a estiagem.',
+resumo:'Plano municipal de Porto Velho voltado à prevenção de queimadas urbanas e periurbanas, educação ambiental, mobilização social, monitoramento, fiscalização, brigada municipal e avaliação, abrangendo sede, distritos e comunidades, com intensificação durante a estiagem. Protocolado no Doc. 06916/26 em 15/09/2026; após certificação de pendência formal, regularizado pelo protocolo 06934/26 em 16/09/2026, juntado aos autos e encaminhado à SGCE.',
 procedimentos:[
 'Registrar o documento como versão ajustada do Plano de Ação e Medidas Preventivas às Queimadas 2026.',
-'Manter Porto Velho classificado como município com Plano apresentado e complementar o histórico documental com a entrada de 15/09/2026.',
+'Manter Porto Velho classificado como município com Plano apresentado; registrar o protocolo de 15/09/2026 e a regularização/juntada documentada em 16/09/2026.',
+'Preservar a trilha de auditoria: certidão de pendência às 07:39; regularização pelo protocolo 06934/26; juntada e encaminhamento à SGCE certificados às 09:43 de 16/09/2026.',
 'Desdobrar os cinco eixos do plano em itens de acompanhamento: educação; mobilização/articulação; denúncias/fiscalização; brigada; monitoramento/avaliação.',
 'Confrontar metas declaradas, cronograma e recursos com evidências de execução e dados oficiais de focos de calor.',
 'Priorizar verificação dos distritos e regiões historicamente mais afetados e das ações previstas para julho, agosto e setembro.',
@@ -268,19 +275,36 @@ fonte:'Documento TCE-RO n. 06916/26'
 }
 ];
 
-const movimentacoes=docs.map(d=>({
-municipio:d.municipio,
-tipo_evento:d.tipo_evento,
-data_documento:d.data_documento,
-data_recebimento:d.data_recebimento,
-data_envio:null,
-numero_documento:d.id,
-pagina:d.paginas,
-situacao_resultante:d.situacao,
-referencia:[d.documento_origem,d.processo].filter(Boolean).join(' • '),
-observacao:d.resumo,
-fonte_local:true
-}));
+const movimentacoes=docs.flatMap(d=>{
+ const registro={
+  municipio:d.municipio,
+  tipo_evento:d.tipo_evento,
+  data_documento:d.data_documento,
+  data_recebimento:d.data_recebimento,
+  data_envio:null,
+  numero_documento:d.id,
+  pagina:d.paginas,
+  situacao_resultante:d.situacao,
+  referencia:[d.documento_origem,d.processo].filter(Boolean).join(' • '),
+  observacao:d.resumo,
+  fonte_local:true
+ };
+ const eventos=[registro];
+ if(d.protocolo_regularizacao){eventos.push({
+  municipio:d.municipio,
+  tipo_evento:'REGULARIZACAO_FORMAL',
+  data_documento:d.data_regularizacao,
+  data_recebimento:d.data_regularizacao,
+  data_envio:null,
+  numero_documento:d.protocolo_regularizacao,
+  pagina:'18',
+  situacao_resultante:'PENDÊNCIA REGULARIZADA; DOCUMENTO JUNTADO E ENCAMINHADO À SGCE',
+  referencia:`Regularização do Doc. ${d.id}`,
+  observacao:[d.certidao_pendencia,d.encaminhamento].filter(Boolean).join(' '),
+  fonte_local:true
+ });}
+ return eventos;
+});
 
 const municipios=[
 {municipio:'Campo Novo de Rondônia',classificacao_cor:'VERDE',classificacao:'PLANO RECEBIDO',classificacao_ia:'PLANO RECEBIDO',plano_acao:true,dilacao_prazo:false,sem_resposta:false,lnumerodocenviado:'06843/26',ldatarecebimentodoc:'2026-09-14',lpaginarecebimentodoc:'1-4',llnumerodocenviado:'06844/26',lldatarecebimentodoc:'2026-09-14',llpaginarecebimentodoc:'1-38',ultimo_documento:'06844/26',ultimo_documento_data:'2026-09-14',ultimo_documento_pagina:'1-38'},
@@ -305,7 +329,7 @@ window.aplicarDocumentosOficiaisMunicipios=function(lista){
 }
 
 window.QUEIMADAS_DOCUMENTOS_OFICIAIS_2026={
-atualizado_em:'2026-09-18T15:44:00-03:00',
+atualizado_em:'2026-11-19',
 docs,
 movimentacoes,
 municipios
