@@ -39,48 +39,23 @@ async function dados(){
  if(cache)return cache;
  if(loading)return loading;
  loading=(async()=>{
-   let rows=null,estado=null,origem='Supabase';
-   const c=window.clientQueimadas;
-   try{
-    if(c&&typeof c.from==='function'){
-      const [a,b]=await Promise.all([
-        c.from('vw_iriq_componentes_municipio').select('*').order('iriq',{ascending:false}),
-        c.from('vw_iriq_componentes_estado').select('*').maybeSingle()
-      ]);
-      if(!a.error&&Array.isArray(a.data)&&a.data.length===52){
-        rows=a.data;estado=b.error?null:b.data;
-      }else console.warn('IRIQ radar: usando cópia verificada; visão inacessível',a.error,b.error);
-    }
-   }catch(e){console.warn('IRIQ radar: fallback JSON',e)}
-   if(!rows){
-     origem='Cópia consolidada 18/11/2026';
-     const r=await fetch('data/iriq-cenario-20261118.json?v=20261118-1',{cache:'no-store'});
-     if(!r.ok)throw Error('Sem dados de IRIQ: '+r.status);
-     const j=await r.json();
-     rows=j.municipios;
-     if(!Array.isArray(rows)||rows.length!==52)throw Error('O arquivo não contém os 52 municípios');
-   }
+   const origem='Base local do projeto — cenário 18/11/2026';
+   const r=await fetch('data/iriq-cenario-20261118.json?v=20261119-3',{cache:'no-store'});
+   if(!r.ok)throw Error('Sem dados de referência do IRIQ: '+r.status);
+   const j=await r.json();
+   const rows=j.municipios;
+   if(!Array.isArray(rows)||rows.length!==52)throw Error('O arquivo de referência não contém os 52 municípios');
    const municipios=rows.map(normalizarRegisto).sort((a,b)=>b.iriq-a.iriq);
-   let geral;
-   if(estado){
-     geral=normalizarRegisto({municipio:'Rondônia (média de 52 municípios)',
-       risco_municipal:estado.risco_medio,ipt:estado.ipt_medio,area_queimada:estado.aq_media,
-       desmatamento:estado.des_medio,iriq:estado.iriq_medio,
-       focos:estado.focos_base_cenario});
-     // Evitar erro de arredondamento da média: usa médias das parcelas originais quando disponíveis.
-     geral.pontos=[num(estado.contrib_risco),num(estado.contrib_ipt),num(estado.contrib_aq),num(estado.contrib_des)];
-     const s=geral.pontos.reduce((v,x)=>v+x,0);
-     geral.percentuais=geral.pontos.map(v=>s?100*v/s:0);
-   }else{
-     const media=k=>municipios.reduce((s,m)=>s+m[k],0)/municipios.length;
-     const vals=LABELS.map((_,i)=>municipios.reduce((s,m)=>s+m.valores[i],0)/municipios.length);
-     const pontos=LABELS.map((_,i)=>municipios.reduce((s,m)=>s+m.pontos[i],0)/municipios.length);
-     const sum=pontos.reduce((a,b)=>a+b,0);
-     geral={municipio:'Rondônia (média de 52 municípios)',valores:vals,pontos,
-       percentuais:pontos.map(v=>sum?100*v/sum:0),iriq:media('iriq'),
-       focos:municipios.reduce((s,m)=>s+m.focos,0),
-       status:'SIMULACAO_NAO_HOMOLOGADA',versao:'IRIQ-4C-2026-11-v2-TRIAGEM'};
-   }
+   const media=k=>municipios.reduce((s,m)=>s+num(m[k]),0)/municipios.length;
+   const vals=LABELS.map((_,i)=>municipios.reduce((s,m)=>s+m.valores[i],0)/municipios.length);
+   const pontos=LABELS.map((_,i)=>municipios.reduce((s,m)=>s+m.pontos[i],0)/municipios.length);
+   const soma=pontos.reduce((a,b)=>a+b,0);
+   const geral={municipio:'Rondônia (média de 52 municípios)',valores:vals,pontos,
+     percentuais:pontos.map(v=>soma?100*v/soma:0),iriq:media('iriq'),
+     iriq_original:null,iriq_cenario:media('iriq_cenario'),
+     fator_calibracao:media('fator_calibracao'),referencia_confirmada_rt:false,
+     focos:municipios.reduce((s,m)=>s+m.focos,0),
+     status:'SIMULACAO_NAO_HOMOLOGADA',versao:'IRIQ-4C-2026-11-v2-TRIAGEM'};
    cache={municipios,geral,origem};
    return cache;
  })();
