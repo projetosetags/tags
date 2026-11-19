@@ -4,10 +4,7 @@
 async function renderTopCriticos(){
 let box=document.getElementById('painelTopCriticos')
 if(!box)return
-let{data=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
-.order('indice_final',{ascending:false})
+let{data=[]}=await carregarIRIQBaseMunicipal()
 let lista=data.filter(i=>Number(i.indice_final||i.iriq||0)>=75).slice(0,10)
 let html=`<div class="cardExecutivo"><h2>🚨 MUNICÍPIOS CRÍTICOS</h2>`
 if(!lista.length){
@@ -87,9 +84,7 @@ Fonte: Índice de Priorização Territorial — IPT • TCE-RO
 async function renderAlertas(){
 let box=document.getElementById('painelAlertas')
 if(!box)return
-let{data=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 let lista=[...(data||[])]
 .sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0))
 .slice(0,5)
@@ -133,9 +128,7 @@ Fonte: MAPBIOMAS (2021-2025) • PRODES (2021-2025) • Atualizado em ${hoje}
 104 QUEIMADAS FUNCTION CALCULARIRIQMUNICIPAL
 =========================================================*/
 async function calcularIRIQMunicipal(){
-let{data:ranking=[],error}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
+let{data:ranking=[],error}=await carregarIRIQBaseMunicipal()
 
 if(error){
 console.error('Erro ao carregar ranking estadual para consolidação do IRIQ:',error)
@@ -195,7 +188,7 @@ onConflict:'municipio'
 async function renderMunicipiosSemEvidencias(){
 let box=document.getElementById('painelSemEvidencias')
 if(!box)return
-let{data:municipios=[]}=await client.from('vw_queimadas_ranking_estadual').select('municipio')
+let{data:municipios=[]}=await carregarIRIQBaseMunicipal()
 let{data:evidencias=[]}=await client.from('queimadas_evidencias').select('municipio')
 let lista=municipios.filter(m=>!evidencias.some(e=>normalizarMunicipio(e.municipio)===normalizarMunicipio(m.municipio))).slice(0,10)
 box.innerHTML=lista.map(i=>`
@@ -250,10 +243,7 @@ async function renderRankingIRIQ(){
 let box=document.getElementById('painelTopMunicipios')
 if(!box)return
 
-let{data=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
-.order('indice_final',{ascending:false})
+let{data=[]}=await carregarIRIQBaseMunicipal()
 
 box.innerHTML=`
 <div class="fonte-card">
@@ -279,9 +269,7 @@ Fonte: IRIQ Ambiental • MAPBIOMAS • PRODES • CHAPT
 108 QUEIMADAS FUNCTION CALCULARPOPULACAOEXPOSTA
 =========================================================*/
 async function calcularPopulacaoExposta(){
-let{data=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 let total=0
 data.forEach(m=>{
 let score=Number(m.indice_final||m.iriq||0)
@@ -297,9 +285,7 @@ return Math.round(total)
 109 QUEIMADAS FUNCTION CALCULARAREARISCO
 =========================================================*/
 async function calcularAreaRisco(){
-let{data=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 let total=0
 data.forEach(m=>{
 let score=Number(m.indice_final||m.iriq||0)
@@ -315,9 +301,7 @@ return total.toFixed(0)
 110 QUEIMADAS FUNCTION CALCULARIRIQ
 =========================================================*/
 async function calcularIRIQ(){
-let{data:heat=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
+let{data:heat=[]}=await carregarIRIQBaseMunicipal()
 if(!heat.length)return'0.0'
 let soma=0
 heat.forEach(i=>{
@@ -355,7 +339,7 @@ let box=document.getElementById('painelPlanosMunicipais')
 if(!box)return
 let[{data=[],error},{data:ranking=[],error:erroRanking}]=await Promise.all([
 client.from('vw_queimadas_municipios_resposta').select('*').order('municipio'),
-client.from('vw_queimadas_ranking_estadual').select('*').order('indice_final',{ascending:false})
+carregarIRIQBaseMunicipal()
 ])
 if(error){console.error('Erro planos municipais:',error);return}
 if(erroRanking)console.error('Erro ranking municipal:',erroRanking)
@@ -374,7 +358,7 @@ if(!window.mapaQueimadasRO)return
 let resp=await fetch('./assets/geojson/municipios-ro.geojson')
 if(!resp.ok)return
 let geojson=await resp.json()
-let{data:ranking=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
+let{data:ranking=[]}=await carregarIRIQBaseMunicipal()
 function obterMunicipio(nome){
 return ranking.find(m=>normalizarMunicipio(m.municipio)===normalizarMunicipio(nome))
 }
@@ -1012,7 +996,7 @@ box.innerHTML=lista.length?'<table class="tabelaMiniMunicipios"><tr><th>Municíp
 =========================================================*/
 async function renderDashboardPresidente(){
 let[{data:ranking=[],error:erroRanking},{data:municipios=[],error:erroMunicipios},{data:exec,error:erroExec},{count:totalFocos,error:erroFocos}]=await Promise.all([
-client.from('vw_queimadas_ranking_estadual').select('*'),
+carregarIRIQBaseMunicipal(),
 client.from('vw_queimadas_municipios_resposta').select('*'),
 client.from('vw_queimadas_executivo').select('*').single(),
 client.schema('queimadas').from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).in('satelite',focosSateliteVariantes()).eq('uf','RO').gte('data_foco',`${new Date().getFullYear()}-01-01`)

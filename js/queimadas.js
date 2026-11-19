@@ -1214,7 +1214,7 @@ async function renderMunicipiosPrioritarios(){
 let box=document.getElementById('painelMunicipiosPrioritarios')
 if(!box)return
 let[{data:ranking=[]},{data:mapbiomas=[]},{data:prodes=[]}]=await Promise.all([
-client.from('vw_queimadas_ranking_estadual').select('*'),
+carregarIRIQBaseMunicipal(),
 client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
 ])
@@ -1264,7 +1264,7 @@ box.innerHTML=html
 async function renderHeatMapExecutivo(){
 let box=document.getElementById('painelHeatMapExecutivo')
 if(!box)return
-let{data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 let critico=data.filter(i=>Number(i.indice_final||i.iriq||0)>=75).length
 let alto=data.filter(i=>Number(i.indice_final||i.iriq||0)>=50&&Number(i.indice_final||i.iriq||0)<75).length
 let moderado=data.filter(i=>Number(i.indice_final||i.iriq||0)>=25&&Number(i.indice_final||i.iriq||0)<50).length
@@ -1389,7 +1389,7 @@ let[
 {data:mapbiomas=[]},
 {data:prodes=[]}
 ]=await Promise.all([
-client.from('vw_queimadas_ranking_estadual').select('*'),
+carregarIRIQBaseMunicipal(),
 client.from('queimadas_ipt').select('*'),
 client.from('queimadas_monitoramento').select('*'),
 client.from('queimadas_mapbiomas').select('*'),
@@ -1473,7 +1473,7 @@ let[
 {data:prodes=[]}
 ]=await Promise.all([
 client.from('vw_queimadas_executivo').select('*').single(),
-client.from('vw_queimadas_ranking_estadual').select('*'),
+carregarIRIQBaseMunicipal(),
 client.from('queimadas_ipt').select('*'),
 client.from('queimadas_riscos').select('*'),
 client.from('queimadas_monitoramento').select('*'),
@@ -1731,7 +1731,7 @@ box.innerHTML=`
 async function renderSituacaoEstrategica(){
 let box=document.getElementById('painelSalaSituacaoEstadual')
 if(!box)return
-let{data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 let criticos=data.filter(i=>Number(i.indice_final||i.iriq||0)>=75).length
 let alto=data.filter(i=>Number(i.indice_final||i.iriq||0)>=50&&Number(i.indice_final||i.iriq||0)<75).length
 let moderado=data.filter(i=>Number(i.indice_final||i.iriq||0)>=25&&Number(i.indice_final||i.iriq||0)<50).length
@@ -1870,7 +1870,7 @@ if(!box)return
 let[{data:evidencias=[]},{data:riscos=[]},{data:heat=[]}]=await Promise.all([
 client.from('queimadas_evidencias').select('*'),
 client.from('queimadas_riscos').select('*'),
-client.from('vw_queimadas_ranking_estadual').select('*')
+carregarIRIQBaseMunicipal()
 ])
 let semEvidencia=evidencias.filter(i=>!i.evidencia||String(i.evidencia).trim()==='').length
 let riscosSemTratamento=riscos.filter(i=>!i.tratamento||String(i.tratamento).trim()==='').length
@@ -1923,7 +1923,7 @@ mapa.setView([-10.9,-63.3],7)
 },500)
 window.camadasControleExecutivo=L.control.layers({},{},{collapsed:false}).addTo(mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap'}).addTo(mapa)
-let{data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 let geo=await fetch('./assets/geojson/municipios-ro.geojson')
 if(geo.ok){
 let geojson=await geo.json()
@@ -2034,7 +2034,7 @@ box.innerHTML=`
 async function renderGraficoFocosCalor(){
 let canvas=document.getElementById('graficoFocosCalor')
 if(!canvas)return
-let{data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 let ranking=[...data].sort((a,b)=>Number(b.area_queimada_ha||b.area_queimada||0)-Number(a.area_queimada_ha||a.area_queimada||0)).slice(0,15)
 let labels=ranking.map(i=>i.municipio||'-')
 let valores=ranking.map(i=>Number(i.area_queimada_ha||i.area_queimada||0))
@@ -2089,7 +2089,7 @@ let[
 {data:municipios=[]},
 resultadoFocos
 ]=await Promise.all([
-client.from('vw_queimadas_ranking_estadual').select('*'),
+carregarIRIQBaseMunicipal(),
 client.from('queimadas_acoes_sedam').select('*'),
 client.from('queimadas_acoes_cbm').select('*'),
 client.from('queimadas_monitoramento').select('*'),
@@ -2305,7 +2305,7 @@ if(typeof renderIndicadoresGovernanca==='function')await renderIndicadoresGovern
 async function iaPreverRiscos(){
 let box=document.getElementById('painelIARiscos')
 if(!box)return
-let{data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 let top=[...data]
 .sort((a,b)=>Number(b.indice_final||b.iriq||0)-Number(a.indice_final||a.iriq||0))
 .slice(0,5)
@@ -2336,7 +2336,7 @@ acao:'MONITORAMENTO DE ROTINA'
 }
 }
 box.innerHTML=`
-<div style="display:grid;grid-template-columns:repeat(5,minmax(190px,1fr));gap:12px">
+<div style="margin:0 0 10px;padding:8px 11px;background:#eff6ff;border-left:4px solid #2563eb;border-radius:6px;font-size:12px;color:#1e3a8a"><strong>IRIQ = pontuação de criticidade de 0 a 100.</strong> O valor não representa probabilidade de ocorrência de queimada. Classificação e providências apoiam a priorização e exigem leitura conjunta das evidências, metas, matriz e situação operacional.</div><div style="display:grid;grid-template-columns:repeat(5,minmax(190px,1fr));gap:12px">
 ${top.map((i,idx)=>{
 let iriq=Number(i.indice_final||i.iriq||0)
 let c=classificar(iriq)
@@ -2463,7 +2463,7 @@ font-weight:900;
 color:#0f172a">
 Nota metodológica:
 </strong>
-a predição apresentada constitui instrumento de priorização e inteligência analítica. Não representa previsão determinística da ocorrência de incêndio ou queimada. Os resultados devem ser interpretados conjuntamente com os registros de focos de calor, condições ambientais, histórico territorial, exposição, vulnerabilidade, capacidade de resposta municipal e demais evidências disponíveis no sistema de monitoramento.
+a pontuação IRIQ apresentada constitui instrumento de priorização e inteligência analítica; ela não é uma probabilidade percentual de ocorrência. Não representa previsão determinística da ocorrência de incêndio ou queimada. Os resultados devem ser interpretados conjuntamente com os registros de focos de calor, condições ambientais, histórico territorial, exposição, vulnerabilidade, capacidade de resposta municipal e demais evidências disponíveis no sistema de monitoramento.
 </div>`
 }
 /*=========================================================
@@ -2608,7 +2608,7 @@ o nível de resposta não deve ser definido exclusivamente pelo IRIQ. A decisão
 async function iaGerarRelatorio(){
 let box=document.getElementById('painelIARelatorio')
 if(!box)return
-let{data=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 let criticos=data.filter(i=>Number(i.indice_final||i.iriq||0)>=75).length
 let alto=data.filter(i=>Number(i.indice_final||i.iriq||0)>=50&&Number(i.indice_final||i.iriq||0)<75).length
 let areaQueimada=data.reduce((s,i)=>s+Number(i.area_queimada_ha||i.area_queimada||0),0)
@@ -2631,9 +2631,7 @@ async function iaSugerirAcoes(){
 let box=document.getElementById('painelIASugestoes')
 if(!box)return
 
-let{data=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 
 let top=[...data]
 .sort((a,b)=>
@@ -3884,9 +3882,7 @@ box.innerHTML=`
 async function renderSituacaoOperacional(){
 let box=document.getElementById('painelSituacaoOperacional')
 if(!box)return
-let{data=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 let critico=data.filter(i=>Number(i.indice_final||i.iriq||0)>=75).length
 let alto=data.filter(i=>Number(i.indice_final||i.iriq||0)>=50&&Number(i.indice_final||i.iriq||0)<75).length
 let moderado=data.filter(i=>Number(i.indice_final||i.iriq||0)>=25&&Number(i.indice_final||i.iriq||0)<50).length
@@ -3929,7 +3925,7 @@ ${data.slice(0,10).map((i,idx)=>`
 async function renderIndicadoresGovernanca(){
 let box=document.getElementById('painelIndicadoresGovernanca')
 if(!box)return
-let {data:ranking=[]}=await client.from('vw_queimadas_ranking_estadual').select('*')
+let {data:ranking=[]}=await carregarIRIQBaseMunicipal()
 let criticos=ranking.filter(i=>Number(i.indice_final||i.iriq||0)>=75).length
 let altos=ranking.filter(i=>{
 let v=Number(i.indice_final||i.iriq||0)
@@ -3983,9 +3979,7 @@ alert('Importação concluída.')
 072 QUEIMADAS FUNCTION RECALCULARHEATMAP
 =========================================================*/
 async function recalcularHeatmap(){
-let{data=[]}=await client
-.from('vw_queimadas_ranking_estadual')
-.select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 for(let item of data){
 let iriq=Number(item.indice_final||item.iriq||0)
 let classificacao='BAIXO'
@@ -4061,7 +4055,7 @@ let[
 ]=await Promise.all([
 buscarTodosFocosEstado(dataInicial,dataFinal),
 client.from('vw_queimadas_municipios_resposta').select('*'),
-client.from('vw_queimadas_ranking_estadual').select('*'),
+carregarIRIQBaseMunicipal(),
 client.from('queimadas_mapbiomas').select('*'),
 client.from('queimadas_prodes').select('*')
 ])
@@ -4664,7 +4658,7 @@ if(resultadoFocos.error){console.error('Erro ao carregar focos para o PDF munici
 let focosRO=resultadoFocos.data||[]
 let[{data:cadastros=[],error:erroCadastro},{data:heatmaps=[],error:erroHeatmap}]=await Promise.all([
 client.from('vw_queimadas_municipios_resposta').select('*'),
-client.from('queimadas_heatmap').select('*')
+carregarIRIQBaseMunicipal()
 ])
 if(erroCadastro)console.error('Sumário municipal cadastro:',erroCadastro)
 if(erroHeatmap)console.error('Sumário municipal IRIQ:',erroHeatmap)

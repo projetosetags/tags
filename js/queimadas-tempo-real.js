@@ -577,7 +577,7 @@ async function renderRankingIRIQTempoReal(){
 let box=document.getElementById('painelTempoRealRankingIRIQ')
 if(!box)return
 box.innerHTML='<div style="padding:30px;text-align:center;font-weight:900">🤖 Carregando ranking IRIQ...</div>'
-let{data=[],error}=await client.from('vw_queimadas_irig_ambiental').select('*')
+let{data=[],error}=await carregarIRIQBaseMunicipal()
 if(error){
 console.error('Erro ao carregar ranking IRIQ:',error)
 box.innerHTML=`<div class="alerta-vermelho">Erro ao carregar o ranking IRIQ.<br>${error.message||''}</div>`
@@ -733,7 +733,7 @@ if(!error)totalRO=Number(count||0)
 console.error('Erro total RO:',e)
 }
 try{
-let{data,error}=await client.schema('queimadas').from('queimadas_heatmap').select('municipio,iriq,risco,classificacao,focos')
+let{data,error}=await carregarIRIQBaseMunicipal()
 if(!error&&Array.isArray(data)){
 let ranking=[...data].sort((a,b)=>Number(b.iriq||0)-Number(a.iriq||0))
 let nome=normalizarMunicipio(municipio)

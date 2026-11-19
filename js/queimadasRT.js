@@ -257,7 +257,7 @@ client.from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).in('s
 client.from('vw_queimadas_municipios_resposta').select('*'),
 client.from('vw_queimadas_executivo').select('*').maybeSingle(),
 focosRankingAno(5),
-client.from('queimadas_heatmap').select('municipio,iriq,risco,classificacao,focos').order('iriq',{ascending:false}).limit(5)
+carregarIRIQBaseMunicipal()
 ])
 if(erroFocos)console.error('RT Sumário - focos:',erroFocos)
 if(erroMunicipios)console.error('RT Sumário - municípios:',erroMunicipios)
@@ -630,7 +630,7 @@ rtFonte(doc,'Fonte: Matriz de Risco 5x5 • TCE-RO')
 async function rtMunicipiosCriticos(doc){
 rtCabecalhoPagina(doc,'11. MUNICÍPIOS DE MAIOR CRITICIDADE')
 let[{data:heat=[]},{data:rankingFocos=[]}]=await Promise.all([
-client.from('queimadas_heatmap').select('*'),
+carregarIRIQBaseMunicipal(),
 focosRankingAno()
 ])
 let focosPorMunicipio={}
@@ -647,7 +647,7 @@ rtFonte(doc,'Fonte: Heatmap Estadual • IRIQ • INPE Programa Queimadas • TC
 315 TOP 10 RISCOS PDF
 =========================================================*/
 async function adicionarTop10RiscosPDF(doc){
-let{data=[]}=await client.from('queimadas_heatmap').select('*')
+let{data=[]}=await carregarIRIQBaseMunicipal()
 let lista=[...(data||[])].sort((a,b)=>Number(b.risco||0)-Number(a.risco||0)).slice(0,10)
 doc.addPage()
 rtCabecalhoPagina(doc,'TOP 10 MUNICÍPIOS DE MAIOR RISCO')
@@ -709,7 +709,7 @@ rtFonte(doc,'Fonte: SEDAM • CBMRO • documentos dos autos • Sistema de Moni
 =========================================================*/
 async function rtConclusoes(doc){
 rtCabecalhoPagina(doc,'14. CONCLUSÕES')
-let{data:rankingIRIQ=[],error}=await client.from('queimadas_heatmap').select('municipio,iriq').order('iriq',{ascending:false}).limit(5)
+let{data:rankingIRIQ=[],error}=await carregarIRIQBaseMunicipal()
 if(error)console.error('Erro ao consultar Top 5 IRIQ:',error)
 let top5=(rankingIRIQ||[]).filter(i=>Number.isFinite(Number(i.iriq)))
 let mediaTop5=top5.length?top5.reduce((s,i)=>s+Number(i.iriq||0),0)/top5.length:0
