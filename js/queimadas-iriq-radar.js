@@ -68,7 +68,7 @@ function cardHTML(prefix,titulo,temSeletor){
  (temSeletor?'<label style="display:block;margin:10px 0">Município: <select id="'+prefix+'-seletor" aria-label="Selecionar município no radar" style="padding:9px;max-width:100%;min-width:220px;border:1px solid #cbd5e1;border-radius:6px"></select></label>':'')+
  '<div class="iriqRadarGrade" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:16px;align-items:start">'+
  '<div><h3 style="font-size:15px">Radar: intensidade dos indicadores</h3><div style="position:relative;height:300px"><canvas id="'+prefix+'-radar" role="img" aria-label="Radar dos quatro indicadores do IRIQ"></canvas></div></div>'+
- '<div><h3 style="font-size:15px">Como os componentes se repartem no total?</h3><div style="position:relative;height:245px"><canvas id="'+prefix+'-barras" role="img" aria-label="Barras com percentuais de contribuição do IRIQ"></canvas></div>'+
+ '<div><h3 style="font-size:15px">Ranking de Criticidade — pontos proporcionais</h3><div style="position:relative;height:245px"><canvas id="'+prefix+'-barras" role="img" aria-label="Ranking decrescente dos componentes por pontos proporcionais"></canvas></div>'+
  '<div id="'+prefix+'-legenda" style="font-size:13px;margin-top:7px"></div></div></div>'+
  '<div id="'+prefix+'-contexto" style="background:#f8fafc;padding:10px;border-radius:8px;font-size:12px;margin-top:13px"></div>'+
  '<details style="margin-top:10px;padding:10px 12px;border:1px solid #dbeafe;border-radius:8px;background:#f8fafc;color:#334155;font-size:12px;line-height:1.55">'+
@@ -112,17 +112,18 @@ function chartRadar(prefix,atual,geral){
  charts[prefix+'radar']=new Chart(target,{type:'radar',data:{labels:LABELS,datasets},
  options:{responsive:true,maintainAspectRatio:false,animation:false,
  plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>c.dataset.label+': '+fmt(c.raw)+'/100'}},datalabels:{display:false}},
- scales:{r:{beginAtZero:true,min:0,max:100,ticks:{stepSize:20,display:true,backdropColor:'transparent'},pointLabels:{font:{size:12}}}}}});
+ scales:{r:{beginAtZero:true,min:0,max:100,ticks:{stepSize:20,display:true,backdropColor:'transparent'},pointLabels:{color:'#111827',font:{size:12}}}}}});
 }
 function chartBarras(prefix,atual){
  const target=document.getElementById(prefix+'-barras');
  if(!target||!window.Chart)return;
  if(charts[prefix+'barras'])charts[prefix+'barras'].destroy();
+ const ranking=LABELS.map((nome,i)=>({nome,pontos:num(atual.pontos[i]),cor:COLORS[i]})).sort((a,b)=>b.pontos-a.pontos);
  charts[prefix+'barras']=new Chart(target,{type:'bar',
- data:{labels:LABELS,datasets:[{label:'Participação no IRIQ (%)',data:atual.percentuais,backgroundColor:COLORS,borderRadius:5}]},
+ data:{labels:ranking.map(x=>x.nome),datasets:[{label:'Pontos proporcionais',data:ranking.map(x=>x.pontos),backgroundColor:ranking.map(x=>x.cor),borderRadius:5}]},
  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:false,
- plugins:{legend:{display:false},datalabels:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)+'% do IRIQ'}}},
- scales:{x:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}},y:{ticks:{font:{size:12}}}}}});
+ plugins:{legend:{display:false},datalabels:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)+' pontos proporcionais'}}},
+ scales:{x:{beginAtZero:true,min:0,max:35,ticks:{stepSize:5,callback:v=>v+' pts'}},y:{ticks:{font:{size:12},color:'#111827'}}}}});
 }
 function origemRisco(atual){
  if(atual.origem_r==='MATRIZ_5X5'){
