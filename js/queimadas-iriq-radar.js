@@ -96,7 +96,7 @@ function cardHTML(prefix,titulo,temSeletor){
  '<p><strong>Estimativas:</strong> na base de cenário de 18/11/2026, 10 dos 52 municípios estão marcados como MATRIZ_5X5; 41 usam PROXY_QUINTIS_FOCOS, convertendo posição relativa em quintis para 20, 40, 60, 80 ou 100; e 1 usa HEATMAP_HISTORICO_NAO_RECONCILIADO. Os três tipos continuam em cenário não homologado. O proxy por focos mede posição relativa nessa base, não risco absoluto, e não deve ser tratado como matriz validada.</p>'+
  '<p><strong>Distinção:</strong> este Risco Municipal não é o Risco de Fogo do INPE. O índice do INPE considera principalmente precipitação acumulada nos 120 dias anteriores, além de temperatura máxima, umidade relativa mínima, vegetação e ocorrência de focos. Consulte a <a href="https://data.inpe.br/queimadas/faq/" target="_blank" rel="noopener">metodologia oficial do Programa Queimadas</a>.</p>'+
  '<p><strong>IRIQ:</strong> IRIQ = 0,30×R + 0,10×IPT + 0,35×AQ + 0,25×DES. Neste cenário, IPT é escalado em relação ao teto de 20; AQ e DES são normalizados pelo maior valor municipal da base do cenário. Portanto, 100 em um componente significa máximo relativo da base/período usado, e não 100% de chance ou severidade.</p>'+
- '<p><strong>Porto Velho:</strong> o cenário marca R=100 porque a nota da matriz registrada é 25/25; IPT=100 porque a nota bruta é 20/20; AQ e DES=100 porque Porto Velho tem os maiores valores usados na normalização do cenário. A soma ponderada exploratória chega a 100, mas o valor registrado no RT é 75,25. O cenário não substitui esse valor.</p>'+
+ '<p><strong>Porto Velho:</strong> o cenário marca R=100 porque a nota da matriz registrada é 25/25; a mesma linha também traz risco_original=90, divergência que precisa ser reconciliada. IPT=100 porque a nota bruta é 20/20; AQ e DES=100 porque Porto Velho tem os maiores valores usados na normalização do cenário. A soma ponderada exploratória chega a 100, mas o valor registrado no RT é 75,25. O cenário não substitui esse valor.</p>'+
  '<p><strong>Como aumentar a precisão:</strong> substituir proxies por matrizes municipais documentadas, com probabilidade, impacto, período, evidência e responsável; reconciliar o heatmap histórico; validar os períodos e denominadores de AQ/DES e a base do IPT; depois recalcular e homologar. Não se deve reduzir as notas por um fator arbitrário, pois isso esconderia a incerteza sem corrigir a origem.</p></div></details>'+
  '</section>';
 }
@@ -143,7 +143,11 @@ function chartBarras(prefix,atual){
  scales:{x:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}},y:{ticks:{font:{size:12}}}}}});
 }
 function origemRisco(atual){
- if(atual.origem_r==='MATRIZ_5X5')return 'Matriz 5×5; nota bruta '+(atual.risco_maximo_5x5==null?'não informada':fmt(atual.risco_maximo_5x5)+'/25')+'; escala mostrada '+fmt(atual.valores[0])+'/100.';
+ if(atual.origem_r==='MATRIZ_5X5'){
+  let texto='Matriz 5×5; nota bruta '+(atual.risco_maximo_5x5==null?'não informada':fmt(atual.risco_maximo_5x5)+'/25')+'; escala mostrada '+fmt(atual.valores[0])+'/100.';
+  if(atual.risco_original!=null&&Math.abs(atual.risco_original-atual.valores[0])>0.01)texto+=' Divergência a reconciliar: risco_original='+fmt(atual.risco_original)+' e nota normalizada='+fmt(atual.valores[0])+'.';
+  return texto;
+ }
  if(atual.origem_r==='PROXY_QUINTIS_FOCOS')return 'estimativa por quintis de focos (posição relativa; não é probabilidade nem matriz validada).';
  if(atual.origem_r==='HEATMAP_HISTORICO_NAO_RECONCILIADO')return 'heatmap histórico ainda não reconciliado; nota não validada.';
  return atual.origem_r?'fonte '+atual.origem_r+'; validação pendente.':'origem do risco não informada nesta linha.';
