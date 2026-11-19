@@ -19,7 +19,12 @@ function normalizarRegisto(x){
  const pontos=vals.map((v,i)=>v*WEIGHTS[i]);
  const soma=pontos.reduce((s,v)=>s+v,0);
  return {municipio:x.municipio||'',valores:vals,pontos,percentuais:pontos.map(v=>soma>0?100*v/soma:0),
- iriq:num(x.iriq??x.iriq_provisorio),focos:num(x.focos),
+ iriq:num(x.iriq_original??x.iriq_armazenado??x.iriq??x.iriq_provisorio),
+ iriq_original:x.iriq_original==null?null:num(x.iriq_original),
+ iriq_cenario:num(x.iriq_provisorio??x.iriq),
+ risco_maximo_5x5:x.risco_maximo_5x5==null?null:num(x.risco_maximo_5x5),
+ risco_original:x.risco_original==null?null:num(x.risco_original),
+ focos:num(x.focos),
  origem_ipt:x.origem_ipt||'',origem_r:x.origem_r||'',
  status:x.status_validacao||'SIMULACAO_NAO_HOMOLOGADA',
  versao:x.versao_metodo||'IRIQ-4C-2026-11-v2-TRIAGEM'};
@@ -78,13 +83,20 @@ async function dados(){
 function cardHTML(prefix,titulo,temSeletor){
  return '<section class="cardExecutivo iriqRadarBloco" id="'+prefix+'-bloco" style="margin:14px 0;padding:18px;border:1px solid #dbeafe;border-radius:13px;background:#fff">'+
  '<h2 style="margin:0 0 5px;color:#164e63">📡 '+titulo+'</h2>'+
- '<p style="font-size:13px;color:#475569">Quatro indicadores oficiais da fórmula: R 30% + IPT 10% + AQ 35% + DES 25%. O radar mostra intensidade (0–100); as barras mostram a participação real de cada indicador na pontuação. <strong>Simulação não homologada.</strong></p>'+
+ '<p style="font-size:13px;color:#475569">Componentes usados na fórmula definida: R 30% + IPT 10% + AQ 35% + DES 25%. O radar mostra índices normalizados do cenário; as barras mostram a parcela ponderada estimada. <strong>Não homologado: não substitui a pontuação armazenada no RT.</strong></p>'+
  (temSeletor?'<label style="display:block;margin:10px 0">Município: <select id="'+prefix+'-seletor" aria-label="Selecionar município no radar" style="padding:9px;max-width:100%;min-width:220px;border:1px solid #cbd5e1;border-radius:6px"></select></label>':'')+
  '<div class="iriqRadarGrade" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:16px;align-items:start">'+
  '<div><h3 style="font-size:15px">Radar: intensidade dos indicadores</h3><div style="position:relative;height:300px"><canvas id="'+prefix+'-radar" role="img" aria-label="Radar dos quatro indicadores do IRIQ"></canvas></div></div>'+
  '<div><h3 style="font-size:15px">Quanto cada indicador contribui para o IRIQ?</h3><div style="position:relative;height:245px"><canvas id="'+prefix+'-barras" role="img" aria-label="Barras com percentuais de contribuição do IRIQ"></canvas></div>'+
  '<div id="'+prefix+'-legenda" style="font-size:13px;margin-top:7px"></div></div></div>'+
  '<div id="'+prefix+'-contexto" style="background:#f8fafc;padding:10px;border-radius:8px;font-size:12px;margin-top:13px"></div>'+
+ '<details style="margin-top:10px;padding:10px 12px;border:1px solid #dbeafe;border-radius:8px;background:#f8fafc;color:#334155;font-size:12px;line-height:1.55">'+
+ '<summary style="cursor:pointer;font-weight:700;color:#164e63">Como usar e calcular o Risco Municipal</summary>'+
+ '<div style="margin-top:8px"><p><strong>Escala:</strong> quando existe matriz municipal 5×5, a nota bruta de risco (probabilidade × impacto, máximo 25) é convertida para 0–100 por R = 100 × nota/25. Assim, 25/25 vira 100/100. Isso é uma pontuação de matriz, não probabilidade de queimadas.</p>'+
+ '<p><strong>Estimativas:</strong> na base de cenário de 18/11/2026, 10 dos 52 municípios estão marcados como MATRIZ_5X5; 41 usam PROXY_QUINTIS_FOCOS, convertendo posição relativa em quintis para 20, 40, 60, 80 ou 100; e 1 usa HEATMAP_HISTORICO_NAO_RECONCILIADO. Os três tipos continuam em cenário não homologado. O proxy por focos mede posição relativa nessa base, não risco absoluto, e não deve ser tratado como matriz validada.</p>'+
+ '<p><strong>IRIQ:</strong> IRIQ = 0,30×R + 0,10×IPT + 0,35×AQ + 0,25×DES. Neste cenário, IPT é escalado em relação ao teto de 20; AQ e DES são normalizados pelo maior valor municipal da base do cenário. Portanto, 100 em um componente significa máximo relativo da base/período usado, e não 100% de chance ou severidade.</p>'+
+ '<p><strong>Porto Velho:</strong> o cenário marca R=100 porque a nota da matriz registrada é 25/25; IPT=100 porque a nota bruta é 20/20; AQ e DES=100 porque Porto Velho tem os maiores valores usados na normalização do cenário. A soma ponderada exploratória chega a 100, mas o valor registrado no RT é 75,25. O cenário não substitui esse valor.</p>'+
+ '<p><strong>Como aumentar a precisão:</strong> substituir proxies por matrizes municipais documentadas, com probabilidade, impacto, período, evidência e responsável; reconciliar o heatmap histórico; validar os períodos e denominadores de AQ/DES e a base do IPT; depois recalcular e homologar. Não se deve reduzir as notas por um fator arbitrário, pois isso esconderia a incerteza sem corrigir a origem.</p></div></details>'+
  '</section>';
 }
 function mount(){
@@ -129,6 +141,12 @@ function chartBarras(prefix,atual){
  plugins:{legend:{display:false},datalabels:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)+'% do IRIQ'}}},
  scales:{x:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}},y:{ticks:{font:{size:12}}}}}});
 }
+function origemRisco(atual){
+ if(atual.origem_r==='MATRIZ_5X5')return 'Matriz 5×5; nota bruta '+(atual.risco_maximo_5x5==null?'não informada':fmt(atual.risco_maximo_5x5)+'/25')+'; escala mostrada '+fmt(atual.valores[0])+'/100.';
+ if(atual.origem_r==='PROXY_QUINTIS_FOCOS')return 'estimativa por quintis de focos (posição relativa; não é probabilidade nem matriz validada).';
+ if(atual.origem_r==='HEATMAP_HISTORICO_NAO_RECONCILIADO')return 'heatmap histórico ainda não reconciliado; nota não validada.';
+ return atual.origem_r?'fonte '+atual.origem_r+'; validação pendente.':'origem do risco não informada nesta linha.';
+}
 function draw(prefix,atual,geral){
  const div=document.getElementById(prefix+'-bloco');
  if(!div)return;
@@ -136,17 +154,19 @@ function draw(prefix,atual,geral){
  chartRadar(prefix,atual,geral);
  chartBarras(prefix,atual);
  const legend=document.getElementById(prefix+'-legenda');
- if(legend)legend.innerHTML='<strong>IRIQ: '+fmt(atual.iriq)+' pontos · '+esc(atual.municipio)+'</strong>'+
- '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;margin-top:7px;font-size:12px"><thead><tr><th style="text-align:left">Indicador</th><th>Nota /100</th><th>Peso</th><th>Pontos</th><th>% do IRIQ</th></tr></thead><tbody>'+
+ if(legend)legend.innerHTML='<strong>IRIQ registrado no RT: '+fmt(atual.iriq)+' pontos · '+esc(atual.municipio)+'</strong>'+
+ '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;margin-top:7px;font-size:12px"><thead><tr><th style="text-align:left">Indicador</th><th>Nota /100</th><th>Peso</th><th>Pontos estimados</th><th>% do cenário</th></tr></thead><tbody>'+
  LABELS.map((nome,i)=>'<tr style="border-top:1px solid #e2e8f0"><td style="padding:4px"><span style="color:'+COLORS[i]+'">■</span> '+nome+'</td><td style="text-align:center">'+fmt(atual.valores[i])+'</td><td style="text-align:center">'+fmt(WEIGHTS[i]*100)+'%</td><td style="text-align:center">'+fmt(atual.pontos[i])+'</td><td style="text-align:center"><strong>'+fmt(atual.percentuais[i])+'%</strong></td></tr>').join('')+
  '</tbody></table></div>';
  const contexto=document.getElementById(prefix+'-contexto');
  const maior=atual.percentuais.indexOf(Math.max(...atual.percentuais));
- if(contexto)contexto.innerHTML='<strong>Maior contribuição:</strong> '+esc(LABELS[maior])+' ('+fmt(atual.percentuais[maior])+'% do IRIQ). '+
+ if(contexto)contexto.innerHTML='<strong>Maior parcela ponderada do cenário:</strong> '+esc(LABELS[maior])+' ('+fmt(atual.percentuais[maior])+'% da soma estimada). '+
  '<strong>Focos de calor:</strong> '+new Intl.NumberFormat('pt-BR').format(atual.focos)+' registros no conjunto de dados do cenário, <em>indicador contextual, NÃO integra diretamente o IRIQ e NÃO representa contagem em tempo real</em>. '+
  '<br><strong>Rastreabilidade:</strong> '+esc(atual.versao||geral.versao||'IRIQ-4C')+' · '+esc(atual.status||'SIMULACAO_NAO_HOMOLOGADA')+
- (atual.origem_ipt?'<br>IPT: '+esc(atual.origem_ipt)+' · Risco: '+esc(atual.origem_r):'')+
- '<br><small>A média estadual não é soma de IRIQs municipais; é a média aritmética dos 52 índices. Percentual = parcela ponderada ÷ soma das quatro parcelas × 100.</small>';
+ (atual.origem_ipt?'<br>IPT: '+esc(atual.origem_ipt):'')+
+ '<br><strong>Origem do Risco Municipal:</strong> '+esc(origemRisco(atual))+
+ (atual.iriq_original!=null?'<br><strong>RT:</strong> valor armazenado '+fmt(atual.iriq_original)+'; os componentes e parcelas acima pertencem ao cenário de triagem e não decompõem nem substituem esse registro.':'')+
+ '<br><small>A média estadual não é soma de IRIQs municipais; é a média aritmética dos 52 índices. Percentual do cenário = parcela ponderada ÷ soma das quatro parcelas estimadas × 100.</small>';
 }
 let attached=false;
 async function iniciar(){

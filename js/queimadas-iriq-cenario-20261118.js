@@ -33,7 +33,7 @@
   }
   document.addEventListener('DOMContentLoaded',()=>{
     avisar();
-    atualizarQuadro();
+    // Preserva a pontuação armazenada no RT; o cenário 4C não a substitui.
   });
   window.iriqCenarioVersao=VERSAO;
 })();
