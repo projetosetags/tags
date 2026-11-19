@@ -5,6 +5,33 @@
   'use strict';
   const VERSAO='IRIQ-4C-2026-11-v2-TRIAGEM';
   function fmt(v){const n=Number(v);return Number.isFinite(n)?n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';}
+  function renderProporcional(){
+    const host=document.getElementById('iriqProporcionalTabela');
+    const resumo=document.getElementById('iriqProporcionalResumo');
+    if(!host||!resumo)return;
+    fetch('data/iriq-cenario-20261118.json?v=20261119-2',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Dados indisponíveis');return r.json()}).then(j=>{
+      const pesos=[0.30,0.10,0.35,0.25], chaves=['r100','ipt100','aq100','des100'];
+      const confirmados={'Porto Velho':75.25,'Nova Mamoré':43.02,'Candeias do Jamari':41.06,'Buritis':28.98};
+      const nfmt=v=>Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+      const rows=(j.municipios||[]).map(x=>{
+        const bruto=chaves.map(k=>Number(x[k])||0),s=bruto.reduce((a,v,i)=>a+v*pesos[i],0);
+        const ref=Number(x.iriq_original),k=s>0?ref/s:1,nota=bruto.map(v=>v*k),pontos=nota.map((v,i)=>v*pesos[i]);
+        const rt=Object.prototype.hasOwnProperty.call(confirmados,x.municipio)&&Math.abs(confirmados[x.municipio]-ref)<0.005;
+        return {municipio:x.municipio,ref,k,nota,pontos,total:pontos.reduce((a,v)=>a+v,0),rt};
+      }).sort((a,b)=>b.ref-a.ref);
+      const somaRef=rows.reduce((a,x)=>a+x.ref,0),media=somaRef/(rows.length||1);
+      const somaComp=[0,1,2,3].map(i=>rows.reduce((a,x)=>a+x.pontos[i],0));
+      const nomes=['Risco municipal','IPT','Queimadas / área queimada','Desmatamento'];
+      resumo.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin:10px 0">'+
+       '<div style="padding:10px;background:#eff6ff;border-radius:8px"><strong>Soma da base municipal</strong><br>'+nfmt(somaRef)+' pontos-município</div>'+
+       '<div style="padding:10px;background:#f0fdf4;border-radius:8px"><strong>Média estadual (52)</strong><br>'+nfmt(media)+' / 100</div>'+
+       '<div style="padding:10px;background:#fff7ed;border-radius:8px"><strong>Municípios calculados</strong><br>'+rows.length+'</div></div>'+
+       '<div style="font-size:12px;color:#475569">Soma por indicador = parcela ponderada acumulada dos municípios. Cada coluna de parcelas é parte do total de '+nfmt(somaRef)+' pontos-município.</div>'+
+       '<div style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0">'+somaComp.map((v,i)=>'<span style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 8px"><strong>'+nomes[i]+':</strong> '+nfmt(v)+' ('+nfmt(somaRef?v/somaRef*100:0)+'%)</span>').join('')+'</div>';
+      host.innerHTML='<div style="overflow:auto;max-height:620px"><table style="width:100%;min-width:1050px;border-collapse:collapse;font-size:12px"><caption style="text-align:left;padding:7px">Nota ajustada / pontos ponderados. Base de cenário atualizada em '+(j.data_atualizacao||'—')+'.</caption><thead><tr style="position:sticky;top:0;background:#e2e8f0"><th>Município</th><th>IRIQ-base</th><th>Fator K</th><th>Risco municipal<br><small>nota / pontos</small></th><th>IPT<br><small>nota / pontos</small></th><th>Queimadas / AQ<br><small>nota / pontos</small></th><th>Desmatamento<br><small>nota / pontos</small></th><th>Total</th><th>Referência</th></tr></thead><tbody>'+rows.map(x=>'<tr style="border-top:1px solid #e2e8f0"><td>'+x.municipio+'</td><td>'+nfmt(x.ref)+'</td><td>'+nfmt(x.k*100)+'%</td>'+x.nota.map((v,i)=>'<td>'+nfmt(v)+' <small>/ '+nfmt(x.pontos[i])+' pts</small></td>').join('')+'<td><strong>'+nfmt(x.total)+'</strong></td><td>'+(x.rt?'RT confirmado':'Base provisória')+'</td></tr>').join('')+
+       '<tr style="position:sticky;bottom:0;background:#f1f5f9;font-weight:700;border-top:2px solid #94a3b8"><td>SOMATÓRIO ESTADUAL</td><td>'+nfmt(somaRef)+'</td><td>—</td>'+somaComp.map(v=>'<td>— / '+nfmt(v)+' pts</td>').join('')+'<td>'+nfmt(somaComp.reduce((a,v)=>a+v,0))+'</td><td>Não homologado</td></tr></tbody></table></div>';
+    }).catch(e=>{resumo.textContent='Não foi possível carregar a distribuição proporcional: '+e.message;});
+  }
   function avisar(){
     if(document.getElementById('iriqAvisoProvisorio'))return;
     const aviso=document.createElement('aside');
@@ -33,7 +60,8 @@
   }
   document.addEventListener('DOMContentLoaded',()=>{
     avisar();
-    // Preserva a pontuação armazenada no RT; o cenário 4C não a substitui.
+    renderProporcional();
+    // A tabela proporcional é uma decomposição da base do projeto; não substitui o RT.
   });
   window.iriqCenarioVersao=VERSAO;
 })();
