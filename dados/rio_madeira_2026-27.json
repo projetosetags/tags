@@ -23,7 +23,7 @@
   "levels": {
     "period": {
       "start": "2026-10-01",
-      "end": "2026-11-13",
+      "end": "2026-11-24",
       "records": 44
     },
     "data": [
@@ -466,13 +466,123 @@
         "dia_ciclo": 44,
         "nivel_cm": 392,
         "nivel_m": 3.92
+      },
+      {
+        "data": "2026-11-14",
+        "ciclo_hidrologico": "2026-2027",
+        "ano_inicio_ciclo": 2026,
+        "mes": 11,
+        "dia": 14,
+        "dia_ciclo": 45,
+        "nivel_cm": 380,
+        "nivel_m": 3.8
+      },
+      {
+        "data": "2026-11-15",
+        "ciclo_hidrologico": "2026-2027",
+        "ano_inicio_ciclo": 2026,
+        "mes": 11,
+        "dia": 15,
+        "dia_ciclo": 46,
+        "nivel_cm": 364,
+        "nivel_m": 3.64
+      },
+      {
+        "data": "2026-11-16",
+        "ciclo_hidrologico": "2026-2027",
+        "ano_inicio_ciclo": 2026,
+        "mes": 11,
+        "dia": 16,
+        "dia_ciclo": 47,
+        "nivel_cm": 368.8,
+        "nivel_m": 3.688
+      },
+      {
+        "data": "2026-11-17",
+        "ciclo_hidrologico": "2026-2027",
+        "ano_inicio_ciclo": 2026,
+        "mes": 11,
+        "dia": 17,
+        "dia_ciclo": 48,
+        "nivel_cm": 349,
+        "nivel_m": 3.49
+      },
+      {
+        "data": "2026-11-18",
+        "ciclo_hidrologico": "2026-2027",
+        "ano_inicio_ciclo": 2026,
+        "mes": 11,
+        "dia": 18,
+        "dia_ciclo": 49,
+        "nivel_cm": 357,
+        "nivel_m": 3.57
+      },
+      {
+        "data": "2026-11-19",
+        "ciclo_hidrologico": "2026-2027",
+        "ano_inicio_ciclo": 2026,
+        "mes": 11,
+        "dia": 19,
+        "dia_ciclo": 50,
+        "nivel_cm": 359,
+        "nivel_m": 3.59
+      },
+      {
+        "data": "2026-11-20",
+        "ciclo_hidrologico": "2026-2027",
+        "ano_inicio_ciclo": 2026,
+        "mes": 11,
+        "dia": 20,
+        "dia_ciclo": 51,
+        "nivel_cm": 366,
+        "nivel_m": 3.66
+      },
+      {
+        "data": "2026-11-21",
+        "ciclo_hidrologico": "2026-2027",
+        "ano_inicio_ciclo": 2026,
+        "mes": 11,
+        "dia": 21,
+        "dia_ciclo": 52,
+        "nivel_cm": 387,
+        "nivel_m": 3.87
+      },
+      {
+        "data": "2026-11-22",
+        "ciclo_hidrologico": "2026-2027",
+        "ano_inicio_ciclo": 2026,
+        "mes": 11,
+        "dia": 22,
+        "dia_ciclo": 53,
+        "nivel_cm": 402,
+        "nivel_m": 4.02
+      },
+      {
+        "data": "2026-11-23",
+        "ciclo_hidrologico": "2026-2027",
+        "ano_inicio_ciclo": 2026,
+        "mes": 11,
+        "dia": 23,
+        "dia_ciclo": 54,
+        "nivel_cm": 393,
+        "nivel_m": 3.93
+      },
+      {
+        "data": "2026-11-24",
+        "ciclo_hidrologico": "2026-2027",
+        "ano_inicio_ciclo": 2026,
+        "mes": 11,
+        "dia": 24,
+        "dia_ciclo": 55,
+        "nivel_cm": 353,
+        "nivel_m": 3.53
       }
     ]
   },
   "precipitation": {
     "period": {
       "start": "2026-10-01",
-      "end": "2026-11-12",
+      "end": "2026-11-23",
       "records": 43
     },
     "data": [
@@ -905,6 +1015,116 @@
         "abuna_mm": 2.076779026,
         "outros_mm": 3.294117647,
         "total_bacia_mm": 4.358977465
+      },
+      {
+        "data": "2026-11-13",
+        "ciclo_hidrologico": "2026-2027",
+        "beni_mm": 11.71522364,
+        "mamore_mm": 6.00802365,
+        "guapore_mm": 2.89361702,
+        "abuna_mm": 4.76404494,
+        "outros_mm": 4.41176471,
+        "total_bacia_mm": 6.49285195
+      },
+      {
+        "data": "2026-11-14",
+        "ciclo_hidrologico": "2026-2027",
+        "beni_mm": 2.39720968,
+        "mamore_mm": 1.82728041,
+        "guapore_mm": 0.99493414,
+        "abuna_mm": 2.1423221,
+        "outros_mm": 3.33031674,
+        "total_bacia_mm": 1.7473952
+      },
+      {
+        "data": "2026-11-15",
+        "ciclo_hidrologico": "2026-2027",
+        "beni_mm": 7.49938449,
+        "mamore_mm": 10.95439189,
+        "guapore_mm": 3.1408308,
+        "abuna_mm": 3.52808989,
+        "outros_mm": 3.0678733,
+        "total_bacia_mm": 6.67991277
+      },
+      {
+        "data": "2026-11-16",
+        "ciclo_hidrologico": "2026-2027",
+        "beni_mm": 1.44727124,
+        "mamore_mm": 1.25337838,
+        "guapore_mm": 2.95406957,
+        "abuna_mm": 0.53558052,
+        "outros_mm": 1.86425339,
+        "total_bacia_mm": 1.91385995
+      },
+      {
+        "data": "2026-11-17",
+        "ciclo_hidrologico": "2026-2027",
+        "beni_mm": 0.64546574,
+        "mamore_mm": 0.33826014,
+        "guapore_mm": 0.4822695,
+        "abuna_mm": 0.50187266,
+        "outros_mm": 0.16289593,
+        "total_bacia_mm": 0.48122123
+      },
+      {
+        "data": "2026-11-18",
+        "ciclo_hidrologico": "2026-2027",
+        "beni_mm": 1.49363972,
+        "mamore_mm": 0.61359797,
+        "guapore_mm": 1.53292806,
+        "abuna_mm": 0.55430712,
+        "outros_mm": 1.42533937,
+        "total_bacia_mm": 1.22304337
+      },
+      {
+        "data": "2026-11-19",
+        "ciclo_hidrologico": "2026-2027",
+        "beni_mm": 0.59622487,
+        "mamore_mm": 1.15202703,
+        "guapore_mm": 0.64201283,
+        "abuna_mm": 2.44194757,
+        "outros_mm": 0.85972851,
+        "total_bacia_mm": 0.838866
+      },
+      {
+        "data": "2026-11-20",
+        "ciclo_hidrologico": "2026-2027",
+        "beni_mm": 2.12966762,
+        "mamore_mm": 1.19636824,
+        "guapore_mm": 0.5447484,
+        "abuna_mm": 0.29588015,
+        "outros_mm": 3.39819005,
+        "total_bacia_mm": 1.26799128
+      },
+      {
+        "data": "2026-11-21",
+        "ciclo_hidrologico": "2026-2027",
+        "beni_mm": 4.30857612,
+        "mamore_mm": 2.17356419,
+        "guapore_mm": 1.07193516,
+        "abuna_mm": 3.02247191,
+        "outros_mm": 1.97737557,
+        "total_bacia_mm": 2.43094257
+      },
+      {
+        "data": "2026-11-22",
+        "ciclo_hidrologico": "2026-2027",
+        "beni_mm": 1.0738613,
+        "mamore_mm": 0.20734797,
+        "guapore_mm": 0.14589666,
+        "abuna_mm": 1.1423221,
+        "outros_mm": 0.97737557,
+        "total_bacia_mm": 0.49200388
+      },
+      {
+        "data": "2026-11-23",
+        "ciclo_hidrologico": "2026-2027",
+        "beni_mm": 3.2375872,
+        "mamore_mm": 7.42989865,
+        "guapore_mm": 0.7382641,
+        "abuna_mm": 2.46441948,
+        "outros_mm": 1.9321267,
+        "total_bacia_mm": 3.48376545
       }
     ]
   }
