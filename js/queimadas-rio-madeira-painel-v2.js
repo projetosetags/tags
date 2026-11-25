@@ -13,7 +13,7 @@ const RM3={
 };
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-const num=v=>{const n=Number(v);return Number.isFinite(n)?n:null};
+const num=v=>{if(v==null||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null};
 const br=v=>{if(!v)return'—';const p=String(v).slice(0,10).split('-');return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:String(v)};
 const fmt=(v,d=2)=>{const n=num(v);return n===null?'—':n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})};
 const client=()=>window.clientPublic||window.client||window.supabaseClient||null;
@@ -98,7 +98,7 @@ function preencherFiltros(){
 
 function renderToolbar(){
   const aba=document.getElementById('abaRioMadeira');if(!aba)return;
-  let bar=document.getElementById('rm3Toolbar');if(!bar){bar=document.createElement('div');bar.id='rm3Toolbar';bar.className='rm3-toolbar';aba.querySelector('.painelTitulo')?.insertAdjacentElement('afterend',bar)}
+  let bar=document.getElementById('rm3Toolbar');if(!bar){bar=document.createElement('div');bar.id='rm3Toolbar';bar.className='rm3-toolbar';(aba.querySelector('.painelTitulo')||aba.firstElementChild)?.insertAdjacentElement('afterend',bar);if(!bar.isConnected)aba.prepend(bar)}
   const u=[...RM3.dados].filter(x=>x.data).sort((a,b)=>String(b.data).localeCompare(String(a.data)))[0];
   const ch=[...RM3.chuvas].sort((a,b)=>String(b.data).localeCompare(String(a.data)))[0];
   bar.innerHTML=`<div><b>🌊 BASE HIDROLÓGICA SINCRONIZADA</b><div class="rm3-status"><span class="rm3-pill">Nível: ${br(u?.data)} • ${fmt(u?.nivel_m,2)} m</span><span class="rm3-pill">Chuva GPM2: até ${br(ch?.data)}</span><span class="rm3-pill">${RM3.ciclos.length} ciclos históricos</span><span class="rm3-pill">${RM3.dados.length.toLocaleString('pt-BR')} registros</span></div></div><button type="button" onclick="carregarRioMadeira(true)">↻ ATUALIZAR PAINEL</button>`;
@@ -184,7 +184,7 @@ function renderPrecipitacao(){
   <div class="rm3-chuva-grid"><div class="rm3-chuva-card"><span>Última chuva diária · bacia</span><b>${fmt(u.total_bacia,2)} mm</b><small>${br(u.data)}</small></div><div class="rm3-chuva-card"><span>Acumulado · 7 dias</span><b>${fmt(soma(ult7,'total_bacia'),2)} mm</b><small>${br(ult7[0]?.data)} a ${br(u.data)} · ${ult7.length} dias com dado</small></div><div class="rm3-chuva-card"><span>Acumulado · 30 dias</span><b>${fmt(soma(ult30,'total_bacia'),2)} mm</b><small>${br(ult30[0]?.data)} a ${br(u.data)} · ${ult30.length} dias com dado</small></div><div class="rm3-chuva-card"><span>Dias com chuva · 30 dias</span><b>${chuva30} de ${ult30.length}</b><small>limiar ≥ 0,1 mm/dia</small></div><div class="rm3-chuva-card"><span>Maior chuva diária disponível</span><b>${fmt(max.total_bacia,2)} mm</b><small>${br(max.data)} · nesta série</small></div></div>
   <div class="rm3-chart-grid"><div class="rm3-chart-card"><div class="rm3-chart-title">Precipitação média diária na bacia · mm</div><div class="rm3-chart"><canvas id="rm3GraficoChuva"></canvas></div></div><div class="rm3-chart-card"><div class="rm3-chart-title">Acumulado por sub-bacia · últimos 30 dias · mm</div><div class="rm3-chart-short"><canvas id="rm3GraficoBacias"></canvas></div></div></div>
   <div class="rm3-wrap"><table class="rm3-table"><caption style="text-align:left;padding:8px;color:#475569;font-weight:800">Últimos ${Math.min(60,rows.length)} registros diários disponíveis • unidade: mm/dia</caption><thead><tr><th>DATA</th><th>BENI</th><th>MAMORÉ</th><th>GUAPORÉ</th><th>ABUNÃ</th><th>OUTROS</th><th>MÉDIA BACIA</th></tr></thead><tbody>${rows.slice(-60).reverse().map(x=>`<tr><td>${br(x.data)}</td><td>${fmt(x.beni,2)}</td><td>${fmt(x.mamore,2)}</td><td>${fmt(x.guapore,2)}</td><td>${fmt(x.abuna,2)}</td><td>${fmt(x.outros,2)}</td><td><b>${fmt(x.total_bacia,2)}</b></td></tr>`).join('')}</tbody></table></div>
-  <div class="rm3-aviso">Série atualizada pela planilha GPM2: chuva observada de 01/10/2026 a 12/11/2026. A janela configurada na planilha vai até 16/11, mas esses dias não têm precipitação preenchida; não foram extrapolados. O acumulado usa dias corridos distintos, e não contagem de linhas.</div>`;
+  <div class="rm3-aviso">Série GPM2 disponível até ${br(u.data)}. Dias sem registro não foram extrapolados. O acumulado usa dias corridos distintos, e não contagem de linhas.</div>`;
   const cv=document.getElementById('rm3GraficoChuva');if(cv&&typeof Chart!=='undefined'){if(RM3.graficoChuva)RM3.graficoChuva.destroy();RM3.graficoChuva=new Chart(cv,{type:'bar',data:{labels:graficoRows.map(x=>br(x.data).slice(0,5)),datasets:[{label:'Chuva média na bacia (mm/dia)',data:graficoRows.map(x=>num(x.total_bacia)),backgroundColor:'rgba(2,132,199,.62)',borderColor:'#0369a1',borderWidth:1,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{datalabels:{display:false},legend:{display:false},tooltip:{callbacks:{title:items=>{const x=graficoRows[items[0]?.dataIndex];return x?br(x.data):''},label:ctx=>`${fmt(ctx.parsed.y,2)} mm/dia`}}},scales:{x:{ticks:{maxTicksLimit:16,maxRotation:0}},y:{beginAtZero:true,title:{display:true,text:'mm/dia'}}}}})}
   const cb=document.getElementById('rm3GraficoBacias');if(cb&&typeof Chart!=='undefined'){if(RM3.graficoBacias)RM3.graficoBacias.destroy();const b=ult30,keys=['beni','mamore','guapore','abuna','outros'],names=['Beni','Mamoré','Guaporé','Abunã','Outras áreas'];RM3.graficoBacias=new Chart(cb,{type:'bar',data:{labels:names,datasets:[{label:'Acumulado (mm)',data:keys.map(k=>soma(b,k)),backgroundColor:['#0284c7','#14b8a6','#6366f1','#f59e0b','#64748b'],borderRadius:6}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{datalabels:{display:false},legend:{display:false},tooltip:{callbacks:{label:ctx=>`${fmt(ctx.parsed.x,2)} mm`}}},scales:{x:{beginAtZero:true,title:{display:true,text:'mm acumulados'}},y:{ticks:{font:{size:10}}}}}})}
 }
@@ -195,7 +195,7 @@ async function renderIntegracao(){
   const v=u&&a?Number(u.nivel_m)-Number(a.nivel_m):null;
   let focos='—';try{if(window.clientQueimadas){const{count,error}=await window.clientQueimadas.schema('queimadas').from('queimadas_focos_inpe').select('id',{count:'exact',head:true}).in('satelite',focosSateliteVariantes()).eq('uf','RO').gte('data_foco','2026-01-01');if(!error&&Number.isFinite(count))focos=Number(count).toLocaleString('pt-BR')}}catch(_){ }
   const tendencia=v===null?'SEM COMPARAÇÃO':v<0?`QUEDA ${fmt(Math.abs(v),2)} m`:v>0?`ALTA ${fmt(v,2)} m`:'ESTÁVEL';
-  box.innerHTML=`<div class="rioMadeiraIntegracaoFluxo"><div><strong>PRECIPITAÇÃO</strong><span>🌧️</span><b>${fmt(ch?.total_bacia,2)} mm</b><small>${br(ch?.data)} • média da bacia</small></div><div class="rioMadeiraSeta">→</div><div><strong>RIO MADEIRA</strong><span>🌊</span><b>${fmt(u?.nivel_m,2)} m</b><small>${br(u?.data)} • Estação 15400000</small></div><div class="rioMadeiraSeta">→</div><div><strong>TENDÊNCIA</strong><span>☀️</span><b>${tendencia}</b><small>último intervalo</small></div><div class="rioMadeiraSeta">→</div><div><strong>QUEIMADAS · ${focosSateliteRotulo()}</strong><span>🔥</span><b>${focos} focos</b><small>Rondônia • 2026</small></div><div class="rioMadeiraSeta">→</div><div><strong>RISCO</strong><span>🚨</span><b>MONITORAMENTO INTEGRADO</b><small>hidrologia + focos</small></div></div>`;
+  box.innerHTML=`<div class="rioMadeiraIntegracaoFluxo"><div><strong>PRECIPITAÇÃO</strong><span>🌧️</span><b>${fmt(ch?.total_bacia,2)} mm</b><small>${br(ch?.data)} • média da bacia</small></div><div class="rioMadeiraSeta">→</div><div><strong>RIO MADEIRA</strong><span>🌊</span><b>${fmt(u?.nivel_m,2)} m</b><small>${br(u?.data)} • Estação 15400000</small></div><div class="rioMadeiraSeta">→</div><div><strong>TENDÊNCIA</strong><span>☀️</span><b>${tendencia}</b><small>último intervalo</small></div><div class="rioMadeiraSeta">→</div><div><strong>QUEIMADAS · ${(typeof focosSateliteRotulo==='function'?focosSateliteRotulo():'satélite de referência')}</strong><span>🔥</span><b>${focos} focos</b><small>Rondônia • 2026</small></div><div class="rioMadeiraSeta">→</div><div><strong>RISCO</strong><span>🚨</span><b>MONITORAMENTO INTEGRADO</b><small>hidrologia + focos</small></div></div>`;
 }
 
 function renderFontes(){
@@ -207,25 +207,25 @@ function renderFontes(){
 }
 
 async function carregarArquivoFonteLocal(){
-  try{const r=await fetch('../dados/rio_madeira_2026-27.json?v=20261114-1',{cache:'no-store'});if(!r.ok)throw new Error(`HTTP ${r.status}`);const j=await r.json();if(!j?.levels?.data||!j?.precipitation?.data)return null;return j}catch(e){console.warn('Arquivo local Rio Madeira não carregado:',e);return null}
+  try{const r=await fetch('../dados/rio_madeira_2026-27.json?v=20261125-2',{cache:'no-store'});if(!r.ok)throw new Error(`HTTP ${r.status}`);const j=await r.json();if(!j?.levels?.data||!j?.precipitation?.data)return null;return j}catch(e){console.warn('Arquivo local Rio Madeira não carregado:',e);return null}
 }
 function mesclarNivelFonte(base,fonte){const m=new Map((base||[]).map(x=>[`${x.estacao_id||1}|${String(x.data).slice(0,10)}`,x]));(fonte||[]).forEach(x=>m.set(`1|${x.data}`,{...(m.get(`1|${x.data}`)||{}),...x,estacao_id:1,fonte:'ANA/CPRM-REPO',arquivo_origem:'15400000_Porto Velho_2026-2027_Prec_GPM2 2.xlsx'}));return[...m.values()].sort((a,b)=>String(a.data).localeCompare(String(b.data)))}
 function mesclarChuvaFonte(base,fonte){const m=new Map((base||[]).map(x=>[String(x.data).slice(0,10),x]));(fonte||[]).forEach(x=>m.set(x.data,{...(m.get(x.data)||{}),data:x.data,ciclo_hidrologico:x.ciclo_hidrologico,beni:x.beni_mm,mamore:x.mamore_mm,guapore:x.guapore_mm,abuna:x.abuna_mm,outros:x.outros_mm,total_bacia:x.total_bacia_mm,unidade:'mm',fonte:'GPM/NASA',observacao:'CENSIPAM/NUHIDRO CR-PV • planilha 15400000_Porto Velho_2026-2027_Prec_GPM2 2.xlsx'}));return[...m.values()].sort((a,b)=>String(a.data).localeCompare(String(b.data)))}
 
 async function renderTudo(){
   RM3.periodoChuva=window.RM_CHUVA_PERIODO||RM3.periodoChuva;
-  preencherFiltros();renderToolbar();renderKPIs();renderRanking();renderSituacao();renderExtremos();renderGraficoHistorico();renderGraficoExtremos();renderTabela();renderPrecipitacao();await renderIntegracao();renderFontes();
+  const erros=[];for(const fn of [preencherFiltros,renderToolbar,renderKPIs,renderRanking,renderSituacao,renderExtremos,renderGraficoHistorico,renderGraficoExtremos,renderTabela,renderPrecipitacao,renderFontes]){try{fn()}catch(e){erros.push(fn.name);console.error(fn.name,e)}}try{if(typeof window.rmInteligencia==='function')await window.rmInteligencia(RM3.dados,RM3.chuvas)}catch(e){console.error('IAH',e);erros.push('IAH')}try{await renderIntegracao()}catch(e){console.error(e);erros.push('integração')}if(erros.length)console.warn('Componentes parciais',erros);
 }
 
 async function carregar(forcar=false){
   css();const c=client(),box=document.getElementById('painelRioMadeiraSituacao');
-  if(!c){if(box)box.innerHTML='<div class="rm3-erro">Cliente Supabase não encontrado.</div>';return}
+  
   if(RM3.carregando)return;
   if(RM3.carregado&&!forcar){await renderTudo();return}
   RM3.carregando=true;if(box)box.innerHTML='<div class="rm3-loading">🌊 Atualizando níveis, ciclos, extremos, precipitação e referências históricas...</div>';
   try{
     const fonteLocalPromise=carregarArquivoFonteLocal();
-    const[r1,r2,r3,r4,r5,r6,fonteLocal]=await Promise.all([
+    const resultados=await Promise.allSettled([
       todos('rio_madeira_niveis','estacao_id,data,ciclo_hidrologico,ano_inicio_ciclo,mes,dia,dia_ciclo,nivel_cm,nivel_m,fonte,arquivo_origem','data'),
       todos('vw_rio_madeira_ciclos','*','data_inicio'),
       todos('vw_rio_madeira_ranking_cheias','*','data'),
@@ -234,14 +234,16 @@ async function carregar(forcar=false){
       todos('rio_madeira_precipitacao','data,ciclo_hidrologico,beni,mamore,guapore,abuna,outros,total_bacia,unidade,fonte,observacao','data'),
       fonteLocalPromise
     ]);
+    const [r1,r2,r3,r4,r5,r6,fonteLocal]=resultados.map((x,i)=>x.status==='fulfilled'?x.value:(i===6?null:[]));
+    resultados.forEach((x,i)=>{if(x.status==='rejected')console.warn('Fonte Rio Madeira '+i,x.reason)});
     const niveisDaEstacao=r1.filter(x=>x.estacao_id==null||Number(x.estacao_id)===1);
-    RM3.dados=mesclarNivelFonte(niveisDaEstacao,fonteLocal?.levels?.data);RM3.ciclos=r2;RM3.cheias=[...r3].sort((a,b)=>Number(b.nivel_cm||0)-Number(a.nivel_cm||0));RM3.secas=[...r4].sort((a,b)=>Number(a.nivel_cm||0)-Number(b.nivel_cm||0));RM3.curva=[...r5].sort((a,b)=>Number(a.dia_ciclo||0)-Number(b.dia_ciclo||0));RM3.chuvas=mesclarChuvaFonte(r6,fonteLocal?.precipitation?.data);RM3.arquivoDados=fonteLocal;RM3.carregado=true;sincronizarGlobais();await renderTudo();
+    RM3.dados=mesclarNivelFonte(fonteLocal?.levels?.data||[],niveisDaEstacao);RM3.ciclos=r2;RM3.cheias=[...r3].sort((a,b)=>Number(b.nivel_cm||0)-Number(a.nivel_cm||0));RM3.secas=[...r4].sort((a,b)=>Number(a.nivel_cm||0)-Number(b.nivel_cm||0));RM3.curva=[...r5].sort((a,b)=>Number(a.dia_ciclo||0)-Number(b.dia_ciclo||0));RM3.chuvas=mesclarChuvaFonte(r6,fonteLocal?.precipitation?.data);RM3.arquivoDados=fonteLocal;if(!RM3.dados.length)throw new Error('Nenhum nível disponível nas fontes; tente atualizar.');if(!RM3.ciclos.length){const groups=new Map();for(const x of RM3.dados){if(num(x.nivel_cm)==null)continue;let a=groups.get(x.ciclo_hidrologico)||[];a.push(x);groups.set(x.ciclo_hidrologico,a)}RM3.ciclos=[...groups].map(([c,a])=>({ciclo_hidrologico:c,data_inicio:a[0].data,minimo_cm:Math.min(...a.map(x=>Number(x.nivel_cm))),maximo_cm:Math.max(...a.map(x=>Number(x.nivel_cm)))}))}else if(!RM3.ciclos.some(x=>x.ciclo_hidrologico===RM3.dados.at(-1).ciclo_hidrologico))RM3.ciclos.push({ciclo_hidrologico:RM3.dados.at(-1).ciclo_hidrologico});RM3.carregado=true;sincronizarGlobais();await renderTudo();
   }catch(e){console.error('Rio Madeira V3:',e);RM3.carregado=false;sincronizarGlobais();if(box)box.innerHTML=`<div class="rm3-erro"><b>Rio Madeira indisponível.</b><br>${esc(e?.message||e)}</div>`}
   finally{RM3.carregando=false}
 }
 
 window.carregarRioMadeira=carregar;
-window.alterarCicloRioMadeira=()=>{renderSituacao();renderGraficoHistorico();renderTabela()};
+window.alterarCicloRioMadeira=()=>{for(const fn of [renderSituacao,renderGraficoHistorico,renderTabela])try{fn()}catch(e){console.error(e)}};
 window.renderGraficoRioMadeiraComparacao=renderGraficoHistorico;
 window.renderTabelaRioMadeira=renderTabela;
 window.renderKPIsRioMadeira=renderKPIs;
