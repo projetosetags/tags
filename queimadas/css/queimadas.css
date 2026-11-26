@@ -1259,3 +1259,11 @@ font-size:34px;
 #rm3InundacaoResultado{font-weight:700}
 @media(max-width:950px){#abaRioMadeira .rioMadeiraKPIGrid,#abaRioMadeira .rm3-chuva-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#abaRioMadeira .rioMadeiraRankingGrid,#abaRioMadeira .exec-duplo{grid-template-columns:minmax(0,1fr)}#rm3InundacaoPVH .rm3-inundacao-controles{grid-template-columns:minmax(0,1fr)}#rm3InundacaoMapa{height:clamp(350px,55vh,600px)!important}}
 @media(max-width:480px){#abaRioMadeira .rioMadeiraGraficoBox{height:300px}#rm3InundacaoPVH .rm3-inundacao-controles label,#rm3InundacaoCota,#rm3InundacaoRua,#rm3InundacaoBuscar{font-size:24px!important}#rm3InundacaoPVH{padding:10px!important}}
+
+#rm3InundacaoPVH #rm3LivreLabel[hidden]{display:none}
+#rm3Modo,#rm3Livre,#rm3Aplicar,#rm3ListarRuas,#rm3ExportarRuas{font:900 24px/1.2 system-ui,Arial,sans-serif;min-height:54px;padding:10px;border-radius:10px;border:1px solid #93c5fd;max-width:100%;box-sizing:border-box}
+#rm3Aplicar,#rm3ListarRuas,#rm3ExportarRuas{background:#075985;color:white;cursor:pointer;margin:6px 0}
+#rm3InundacaoPVH button:disabled{opacity:.5;cursor:default}
+#rm3Cenario{padding:12px;background:#fff7ed;border:1px solid #fdba74;border-radius:10px;font-weight:800}
+#rm3ListaRuas h4{font-size:20px;margin:8px 0}
+@media(max-width:950px){#rm3ListarRuas,#rm3ExportarRuas{width:100%;font-size:20px}}
