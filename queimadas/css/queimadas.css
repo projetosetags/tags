@@ -1236,3 +1236,26 @@ font-size:34px;
   #abaEstado .estadoEventos li {grid-template-columns: 1fr; gap: 2px;}
   #abaEstado .estadoOrgaoCard summary .estadoSituacao {display: table; margin-left: 0;}
 }
+
+/* Rio Madeira — layout adaptativo 2026-11-26 */
+.layoutPrincipal{width:100%;max-width:none!important;padding:clamp(8px,1.2vw,24px);box-sizing:border-box}
+#abaRioMadeira{width:100%;max-width:none!important;min-width:0}
+#abaRioMadeira .cardExecutivo,#abaRioMadeira .rioMadeiraGraficoBox,#abaRioMadeira .rm3-chart-card{min-width:0;max-width:none!important;box-sizing:border-box}
+#abaRioMadeira .rioMadeiraKPIGrid,#abaRioMadeira .rm3-chuva-grid{grid-template-columns:repeat(5,minmax(0,1fr));width:100%}
+#abaRioMadeira .rioMadeiraRankingGrid,#abaRioMadeira .exec-duplo{grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+#abaRioMadeira .rioMadeiraKPIValor{font-family:system-ui,Arial,sans-serif;font-weight:900;font-size:clamp(26px,3vw,48px);font-variant-numeric:tabular-nums}
+#abaRioMadeira .rioMadeiraGraficoBox{height:clamp(320px,48vh,650px)}
+#abaRioMadeira .rioMadeiraGraficoBox canvas{max-height:100%!important}
+#rm3InundacaoPVH{width:100%;max-width:none!important;box-sizing:border-box;overflow:hidden}
+#rm3InundacaoPVH h3{font-size:clamp(22px,2vw,34px);font-weight:900}
+#rm3InundacaoPVH p{font-size:13px;line-height:1.5}
+#rm3InundacaoNivel{display:flex;flex-direction:column;gap:4px;background:#fff;border:1px solid #bae6fd;padding:14px;border-radius:12px}
+#rm3InundacaoNivel strong{font:900 clamp(32px,4vw,56px)/1.1 system-ui,Arial,sans-serif;color:#075985;font-variant-numeric:tabular-nums}
+#rm3InundacaoPVH .rm3-inundacao-controles{display:grid;grid-template-columns:minmax(190px,1fr) minmax(0,2fr) auto;gap:14px;align-items:end}
+#rm3InundacaoPVH .rm3-inundacao-controles label{display:flex;flex-direction:column;gap:6px;font:900 24px/1.2 system-ui,Arial,sans-serif;color:#0c4a6e;min-width:0}
+#rm3InundacaoCota,#rm3InundacaoRua,#rm3InundacaoBuscar{font:900 24px/1.2 system-ui,Arial,sans-serif!important;min-height:56px;padding:10px 14px;border:1px solid #93c5fd;border-radius:10px;box-sizing:border-box;width:100%;min-width:0;background:#fff;color:#0f172a}
+#rm3InundacaoBuscar{background:#075985;color:#fff;cursor:pointer}
+#rm3InundacaoMapa{width:100%;height:clamp(420px,65vh,900px)!important}
+#rm3InundacaoResultado{font-weight:700}
+@media(max-width:950px){#abaRioMadeira .rioMadeiraKPIGrid,#abaRioMadeira .rm3-chuva-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#abaRioMadeira .rioMadeiraRankingGrid,#abaRioMadeira .exec-duplo{grid-template-columns:minmax(0,1fr)}#rm3InundacaoPVH .rm3-inundacao-controles{grid-template-columns:minmax(0,1fr)}#rm3InundacaoMapa{height:clamp(350px,55vh,600px)!important}}
+@media(max-width:480px){#abaRioMadeira .rioMadeiraGraficoBox{height:300px}#rm3InundacaoPVH .rm3-inundacao-controles label,#rm3InundacaoCota,#rm3InundacaoRua,#rm3InundacaoBuscar{font-size:24px!important}#rm3InundacaoPVH{padding:10px!important}}
