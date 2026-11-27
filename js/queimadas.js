@@ -589,8 +589,8 @@ if(!box)return
 
 let[
 {data:monitoramento=[]},
-{data:mapbiomas=[]},
-{data:prodes=[]}
+{data:mapbiomas,error:erroMapbiomas},
+{data:prodes,error:erroProdes}
 ]=await Promise.all([
 client.from('queimadas_monitoramento').select('*'),
 client.from('queimadas_mapbiomas').select('*'),
@@ -607,11 +607,15 @@ let concluidos=monitoramento.filter(i=>
 Number(i.percentual||0)>=100
 ).length
 
-let areaQueimada=mapbiomas.reduce((s,i)=>
-s+Number(i.area_queimada||i.area||0),0)
-
-let areaDesmatada=prodes.reduce((s,i)=>
-s+Number(i.area_desmatada||i.area||0),0)
+function somarAreaTDM(dados,erro,campo){
+ if(erro||!Array.isArray(dados)||!dados.length)return null
+ const valores=dados.map(i=>i[campo])
+ if(valores.some(v=>v===null||v===undefined||String(v).trim()===''||!Number.isFinite(Number(v))))return null
+ return valores.reduce((s,v)=>s+Number(v),0)
+}
+let areaQueimada=somarAreaTDM(mapbiomas,erroMapbiomas,'area_queimada_hectares')
+let areaDesmatada=somarAreaTDM(prodes,erroProdes,'desmatamento_hectares')
+const exibirAreaTDM=v=>v===null?'Dados indisponíveis':v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+' ha'
 
 box.innerHTML=`
 <div class="tdm-compact">
@@ -627,8 +631,8 @@ box.innerHTML=`
  </div></div>
  <div class="tdm-conector" aria-hidden="true">↓</div>
  <div class="tdm-etapa"><div class="tdm-etapa-titulo">03 · IMPACTOS MONITORADOS E BENEFÍCIOS ESPERADOS</div><div class="tdm-grid tdm-grid-2">
- <div class="tdm-bloco tdm-impacto"><b>Indicadores ambientais</b><div class="tdm-impactos"><div><span>🔥 Área queimada</span><strong>${formatarNumero(areaQueimada)} ha</strong></div><div><span>🌳 Área desmatada</span><strong>${formatarNumero(areaDesmatada)} ha</strong></div></div></div>
- <div class="tdm-bloco tdm-beneficio"><b>🌎 BENEFÍCIOS ESPERADOS</b><div class="tdm-beneficios"><span>✓ Proteção ambiental</span><span>✓ Conservação da biodiversidade</span><span>✓ Redução das emissões</span><span>✓ Melhoria da qualidade do ar</span><span>✓ Segurança da população</span><span>✓ Fortalecimento da governança</span></div></div>
+ <div class="tdm-bloco tdm-impacto"><b>Indicadores ambientais · 2021–2025</b><div class="tdm-impactos"><div><span>🔥 Área queimada · MapBiomas</span><strong>${exibirAreaTDM(areaQueimada)}</strong></div><div><span>🌳 Área desmatada · PRODES</span><strong>${exibirAreaTDM(areaDesmatada)}</strong></div></div><small>Totais históricos da base municipal. Não medem, isoladamente, o efeito das ações de 2026.</small></div>
+ <div class="tdm-bloco tdm-beneficio"><b>🌎 BENEFÍCIOS ESPERADOS</b><div class="tdm-beneficios"><span>• Proteção ambiental</span><span>• Conservação da biodiversidade</span><span>• Redução das emissões</span><span>• Melhoria da qualidade do ar</span><span>• Segurança da população</span><span>• Fortalecimento da governança</span></div><small>Resultados pretendidos; efetividade a demonstrar por indicadores e evidências.</small></div>
  </div></div>
  <div class="fontePainel"><b>Fonte metodológica:</b> Theory of Change (UNDP); OECD Public Governance; Banco Mundial; Referencial de Avaliação de Políticas Públicas do TCU.</div>
 </div>`
