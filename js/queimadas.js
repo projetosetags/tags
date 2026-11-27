@@ -1068,38 +1068,20 @@ box.innerHTML=html
 /*=========================================================
 014 QUEIMADAS FUNCTION RENDEREXECUCAOFISICA
 =========================================================*/
-async function renderExecucaoFisica(){
-let box=document.getElementById('painelExecucaoFisica')
-if(!box)return
-let{data=[]}=await client.from('queimadas_monitoramento').select('*')
-let total=data.length
-let soma=data.reduce((s,i)=>s+Number(i.percentual||0),0)
-let media=total?Math.round(soma/total):0
-let concluidos=data.filter(i=>Number(i.percentual||0)>=100).length
-box.innerHTML=`
-<div class="impacto-box">
-<div class="impacto-score">${media}%</div>
-<div class="impacto-label">EXECUÇÃO FÍSICA MÉDIA</div>
-<div style="margin-top:10px">${formatarNumero(concluidos)} ações concluídas de ${formatarNumero(total)}</div>
-</div>`
-}
+async function renderExecucaoFisica(){const b=document.getElementById('painelExecucaoFisica');if(!b)return;b.innerHTML=monCards2026([['17.154','Ações preventivas OVR'],['662','Ocorrências de combate'],['37/52','Planos registrados no TCE'],['3/3','Participação no workshop prioritário']])+'<p>Percentual global de execução física: <b>não aferido</b>. Necessária vinculação de cada produto à meta e ao cronograma formal.</p><div class="fonte-card">Fonte: relatório CEPCIF de 27/10, cadastro municipal e registros do workshop de 19/08.</div>'}
 /*=========================================================
 015 QUEIMADAS FUNCTION RENDEREXECUCAOFINANCEIRA
 =========================================================*/
-async function renderExecucaoFinanceira(){
-let box=document.getElementById('painelExecucaoFinanceira')
-if(!box)return
-let{data=[]}=await client.from('queimadas_monitoramento').select('*')
-let total=data.reduce((s,i)=>s+Number(i.valor_executado||i.valor||0),0)
-let planejado=data.reduce((s,i)=>s+Number(i.valor_planejado||0),0)
-let perc=planejado>0?((total/planejado)*100):0
-box.innerHTML=`
-<div class="impacto-box">
-<div class="impacto-score">R$ ${total.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-<div class="impacto-label">EXECUÇÃO FINANCEIRA</div>
-<div style="margin-top:10px">${perc.toFixed(1)}% do valor planejado</div>
-</div>`
-}
+
+const mon2026 = {
+sedam:{titulo:'SEDAM',indicadores:[['52','Municípios relacionados no portal de planos'],['~15 min','Latência de alertas informada em 27/10']],acoes:['Plano Multinível de Prevenção aos Incêndios Florestais apresentado em fevereiro.','Apoio municipal e workshop de 19/08; relação nominal dos 52 municípios publicada em 01/09.','Geoportal e Protege demonstrados em 27/10; integração com Censipam.'],fonte:'Portal Sedam, publicação de 01/09/2026; relatório da 13ª reunião do CEPCIF, 27/10/2026. Relação nominal não comprova execução dos planos.'},
+cbm:{titulo:'CBMRO',indicadores:[['15','Bases destacadas'],['18','Unidades fixas'],['17.154','Ações preventivas'],['41.619','Público alcançado'],['662','Ocorrências de combate'],['1.246','Focos confirmados/atendidos']],acoes:['Operação Verde Rondônia iniciada em 01/06; prorrogação informada até 31/12/2026.','270 integrantes empregados diariamente, incluindo forças parceiras, conforme relato de 27/10.','Monitoramento integrado e apoio operacional nas áreas críticas.'],fonte:'Relatório da 13ª reunião do CEPCIF, 27/10/2026; indicadores das 15 bases, 31/05 a 26/10/2026.'},
+tce:{titulo:'TCE-RO',indicadores:[['52','Municípios acompanhados'],['43','Manifestações/dilações'],['37','Planos registrados'],['9','Sem resposta registrada'],['3','Municípios no workshop']],acoes:['Reunião técnica em 09/06 e participação no CEPCIF em 02/07 e 27/10.','Workshop de 19/08: Porto Velho, Candeias do Jamari e Nova Mamoré.','Ofícios circulares 16/2026/GABPRES/TCERO e 27/2026/SGCE/TCERO; acompanhamento do PCe 00501/2026.'],fonte:'Registros institucionais de 2026 e consolidação documental de 26/11/2026; recebimento não comprova implementação.'}
+};
+function monCards2026(items){return '<div class="chap-grid">'+items.map(([v,l])=>'<div class="chap-card"><div class="chap-num">'+v+'</div><div class="chap-label">'+l+'</div></div>').join('')+'</div>'}
+function monInstitucional2026(id,key){const box=document.getElementById(id);if(!box)return;const x=mon2026[key];box.innerHTML=monCards2026(x.indicadores)+'<ul style="padding-left:20px;line-height:1.55">'+x.acoes.map(a=>'<li>'+a+'</li>').join('')+'</ul><div class="fonte-card">'+x.fonte+'</div>'}
+function monFinanceiro2026(id){const box=document.getElementById(id);if(!box)return;box.innerHTML=monCards2026([['—','Dotação / valor planejado'],['—','Empenhado'],['—','Liquidado'],['—','Pago'],['—','Percentual de execução']])+'<p><b>Não informado na base atual.</b> Necessária conciliação por órgão, ação orçamentária, exercício e estágio da despesa.</p><p><b>R$ 4.434.200,00</b> em multas informadas pelas bases da OVR (31/05 a 26/10). Não representam despesa executada nem arrecadação comprovada.</p><div class="fonte-card">Fonte: relatório da 13ª reunião do CEPCIF; dados financeiros dependem de registros orçamentários oficiais.</div>'}
+async function renderExecucaoFinanceira(){monFinanceiro2026('painelExecucaoFinanceira')}
 /*=========================================================
 016 QUEIMADAS FUNCTION RENDERMUNICIPIOSPRIORITARIOS
 =========================================================*/
@@ -1195,25 +1177,7 @@ box.innerHTML=`
 /*=========================================================
 019 QUEIMADAS FUNCTION RENDERMONITORAMENTO4D
 =========================================================*/
-async function renderMonitoramento4D(){
-let box=document.getElementById('painelMonitoramento4D')
-if(!box)return
-let{data=[]}=await client.from('queimadas_monitoramento_4d').select('*')
-let html=''
-data.forEach(i=>{
-html+=`
-<div class="monitor4d-card">
-<div><b>${i.municipio||i.orgao||'-'}</b></div>
-<div class="monitor4d-grid">
-<div class="monitor4d-kpi execucao">Execução<br>${Number(i.execucao||0).toFixed(0)}%</div>
-<div class="monitor4d-kpi resultado">Resultado<br>${Number(i.resultado||0).toFixed(0)}%</div>
-<div class="monitor4d-kpi impacto">Impacto<br>${Number(i.impacto||0).toFixed(0)}%</div>
-<div class="monitor4d-kpi risco">Risco<br>${Number(i.risco||0).toFixed(0)}%</div>
-</div>
-</div>`
-})
-box.innerHTML=html
-}
+async function renderMonitoramento4D(){const b=document.getElementById('painelMonitoramento4D');if(!b)return;b.innerHTML='<div class="monitor4d-grid"><div class="monitor4d-kpi execucao">Execução<br><b>662</b><br>ocorrências de combate</div><div class="monitor4d-kpi resultado">Resultado<br><b>37/52</b><br>planos registrados no TCE</div><div class="monitor4d-kpi impacto">Impacto<br><b>Não aferido</b><br>efeito causal não demonstrado</div><div class="monitor4d-kpi risco">Risco<br><b>9/52</b><br>sem resposta ao TCE</div></div><p>Indicadores descritivos de acompanhamento; não constituem pontuação 4D nem índice de risco ambiental.</p><div class="fonte-card">Fonte: relatório CEPCIF de 27/10 e cadastro municipal de 26/11.</div>'}
 /*=========================================================
 020 QUEIMADAS FUNCTION RENDERPOTIFAVANCADO
 =========================================================*/
@@ -1661,41 +1625,11 @@ box.innerHTML=html
 /*=========================================================
 032 QUEIMADAS FUNCTION RENDERGOVERNANCA
 =========================================================*/
-async function renderGovernanca(){
-let box=document.getElementById('painelGovernanca')
-if(!box)return
-let{data=[]}=await client.from('queimadas_monitoramento').select('*')
-let total=data.length
-let concluidos=data.filter(i=>Number(i.percentual||0)>=100).length
-let andamento=data.filter(i=>Number(i.percentual||0)>0&&Number(i.percentual||0)<100).length
-let pendentes=data.filter(i=>Number(i.percentual||0)<=0).length
-let execucao=total?Math.round((concluidos/total)*100):0
-box.innerHTML=`
-<div class="chap-grid">
-<div class="chap-card"><div class="chap-num">${formatarNumero(total)}</div><div class="chap-label">AÇÕES</div></div>
-<div class="chap-card"><div class="chap-num">${concluidos}</div><div class="chap-label">CONCLUÍDAS</div></div>
-<div class="chap-card"><div class="chap-num">${andamento}</div><div class="chap-label">EM ANDAMENTO</div></div>
-<div class="chap-card"><div class="chap-num">${pendentes}</div><div class="chap-label">PENDENTES</div></div>
-<div class="chap-card"><div class="chap-num">${execucao}%</div><div class="chap-label">GOVERNANÇA</div></div>
-</div>`
-}
+async function renderGovernanca(){const b=document.getElementById('painelGovernanca');if(!b)return;b.innerHTML=monCards2026([['13ª','Reunião CEPCIF documentada'],['27/10','Data do relatório'],['82,7%','Manifestação municipal']])+'<p>Articulação Sedam, CBMRO, Censipam e demais órgãos; acompanhamento pelo TCERO. Convocação extraordinária de 21/08 documentada, sem presumir presença ou deliberações.</p><div class="fonte-card">Fonte: relatório CEPCIF de 27/10; Ofício 17152/2026/CBM-CEDEC; cadastro municipal.</div>'}
 /*=========================================================
 033 QUEIMADAS FUNCTION RENDEREXECUCAOORCAMENTARIA
 =========================================================*/
-async function renderExecucaoOrcamentaria(){
-let box=document.getElementById('painelOrcamento')
-if(!box)return
-let{data=[]}=await client.from('queimadas_monitoramento').select('*')
-let planejado=data.reduce((s,i)=>s+Number(i.valor_planejado||0),0)
-let executado=data.reduce((s,i)=>s+Number(i.valor_executado||i.valor||0),0)
-let percentual=planejado>0?((executado/planejado)*100):0
-box.innerHTML=`
-<div class="impacto-box">
-<div class="impacto-score">${percentual.toFixed(1)}%</div>
-<div class="impacto-label">EXECUÇÃO ORÇAMENTÁRIA</div>
-<div style="margin-top:8px">R$ ${executado.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-</div>`
-}
+async function renderExecucaoOrcamentaria(){monFinanceiro2026('painelOrcamento')}
 /*=========================================================
 034 QUEIMADAS FUNCTION RENDERCEPCIF
 =========================================================*/
@@ -1738,22 +1672,7 @@ Plano Operacional de Temporada de Incêndios Florestais.<br><br>
 /*=========================================================
 036 QUEIMADAS FUNCTION RENDEREVIDENCIAS
 =========================================================*/
-async function renderEvidencias(){
-let box=document.getElementById('painelEvidencias')
-if(!box)return
-let{data=[]}=await client.from('queimadas_evidencias').select('*').order('created_at',{ascending:false})
-let html=''
-data.forEach(i=>{
-html+=`
-<div class="monitor4d-card">
-<b>${i.municipio||i.orgao||'-'}</b><br>
-${i.descricao||'-'}<br>
-Status: ${i.status||'-'}<br>
-Data: ${formatarDataBR(i.created_at)}
-</div>`
-})
-box.innerHTML=html
-}
+async function renderEvidencias(){const b=document.getElementById('painelEvidencias');if(!b)return;const {data,error}=await client.from('queimadas_evidencias').select('*').order('created_at',{ascending:false});const refs=[['09/06/2026','Ata de reunião técnica no TCERO','Prevenção, georreferenciamento e articulação.'],['19/08/2026','Workshop técnico','Três municípios prioritários; dez práticas discutidas.'],['20/08/2026','Ofício 17152/2026/CBM-CEDEC','Convocação da reunião extraordinária de 21/08; não comprova realização.'],['01/09/2026','Portal Sedam — planos municipais','Relação nominal de 52 municípios; suficiência e execução não aferidas.'],['27/10/2026','Relatório da 13ª reunião do CEPCIF','Monitoramento Sedam/Censipam e balanço das 15 bases da OVR.'],['26/11/2026','Consolidação documental municipal','37 planos, 5 respostas com plano pendente, 1 dilação, 9 sem resposta.']];b.innerHTML=refs.map(([d,t,s])=>'<div class="monitor4d-card"><b>'+d+' · '+t+'</b><br>'+s+'</div>').join('')+'<p>Referências documentais consolidadas; não equivalem à juntada individual de arquivos.</p>';if(error)b.insertAdjacentText('beforeend',' Consulta ao cadastro de evidências indisponível.');else if(data?.length){const list=document.createElement('div');data.forEach(i=>{const el=document.createElement('p');el.textContent=(i.municipio||'Registro')+' — '+(i.descricao||'')+' — '+(i.status||'');list.appendChild(el)});b.appendChild(list)}}
 /*=========================================================
 037 QUEIMADAS FUNCTION RENDERAUDITORIACONCOMITANTE
 =========================================================*/
@@ -1876,51 +1795,15 @@ padding:[5,5]
 /*=========================================================
 039 QUEIMADAS FUNCTION RENDERACOESSEDAM
 =========================================================*/
-async function renderAcoesSedam(){
-let box=document.getElementById('painelAcoesSedam')
-if(!box)return
-let{data=[]}=await client.from('queimadas_monitoramento').select('*').eq('origem','Sedam')
-let concluidas=data.filter(i=>Number(i.percentual||0)>=100).length
-let execucao=data.length?Math.round(data.reduce((s,i)=>s+Number(i.percentual||0),0)/data.length):0
-box.innerHTML=`
-<div class="impacto-box">
-<div class="impacto-score">${data.length}</div>
-<div class="impacto-label">AÇÕES SEDAM</div>
-<div>${concluidas} concluídas • ${execucao}% execução</div>
-</div>`
-}
+async function renderAcoesSedam(){monInstitucional2026('painelAcoesSedam','sedam')}
 /*=========================================================
 040 QUEIMADAS FUNCTION RENDERACOESCBM
 =========================================================*/
-async function renderAcoesCBM(){
-let box=document.getElementById('painelAcoesCBM')
-if(!box)return
-let{data=[]}=await client.from('queimadas_monitoramento').select('*').eq('origem','CBMRO')
-let concluidas=data.filter(i=>Number(i.percentual||0)>=100).length
-let execucao=data.length?Math.round(data.reduce((s,i)=>s+Number(i.percentual||0),0)/data.length):0
-box.innerHTML=`
-<div class="impacto-box">
-<div class="impacto-score">${data.length}</div>
-<div class="impacto-label">AÇÕES CBMRO</div>
-<div>${concluidas} concluídas • ${execucao}% execução</div>
-</div>`
-}
+async function renderAcoesCBM(){monInstitucional2026('painelAcoesCBM','cbm')}
 /*=========================================================
 041 QUEIMADAS FUNCTION RENDERACOESTCERO
 =========================================================*/
-async function renderAcoesTCERO(){
-let box=document.getElementById('painelAcoesTCERO')
-if(!box)return
-let{data=[]}=await client.from('queimadas_monitoramento').select('*').eq('origem','TCERO')
-let concluidas=data.filter(i=>Number(i.percentual||0)>=100).length
-let execucao=data.length?Math.round(data.reduce((s,i)=>s+Number(i.percentual||0),0)/data.length):0
-box.innerHTML=`
-<div class="impacto-box">
-<div class="impacto-score">${data.length}</div>
-<div class="impacto-label">AÇÕES TCERO</div>
-<div>${concluidas} concluídas • ${execucao}% execução</div>
-</div>`
-}
+async function renderAcoesTCERO(){monInstitucional2026('painelAcoesTCERO','tce')}
 /*=========================================================
 042 QUEIMADAS FUNCTION RENDERGRAFICOFOCOSCALOR
 =========================================================*/
