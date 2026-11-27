@@ -614,135 +614,24 @@ let areaDesmatada=prodes.reduce((s,i)=>
 s+Number(i.area_desmatada||i.area||0),0)
 
 box.innerHTML=`
-
-<div class="cadeia-card">
-
-<div class="cadeia-item">
-TEORIA DA MUDANÇA — QUEIMADAS E DESMATAMENTO
-</div>
-
-<div class="cadeia-flow">
-
-<div class="cadeia-box tdm-problema">
-
-🚨<br>
-
-<b>PROBLEMA</b><br>
-
-Queimadas<br>
-
-Desmatamento
-
-</div>
-
-<div class="cadeia-seta">➜</div>
-
-<div class="cadeia-box tdm-causa">
-
-🔎<br>
-
-<b>CAUSAS</b><br>
-
-Pressão Antrópica<br>
-
-Uso Irregular do Solo<br>
-
-Mudanças Climáticas
-
-</div>
-
-<div class="cadeia-seta">➜</div>
-
-<div class="cadeia-box tdm-acao">
-
-⚙️<br>
-
-<b>${formatarNumero(total)}</b><br>
-
-Ações Planejadas
-
-</div>
-
-<div class="cadeia-seta">➜</div>
-
-<div class="cadeia-box tdm-produto">
-
-📦<br>
-
-<b>${formatarNumero(executadas)}</b><br>
-
-Ações Executadas
-
-</div>
-
-<div class="cadeia-seta">➜</div>
-
-<div class="cadeia-box tdm-resultado">
-
-📈<br>
-
-<b>${formatarNumero(concluidos)}</b><br>
-
-Ações Concluídas
-
-</div>
-
-<div class="cadeia-seta">➜</div>
-
-<div class="cadeia-box tdm-impacto">
-
-🔥<br>
-
-<b>${formatarNumero(areaQueimada)} ha</b><br>
-
-Área Queimada
-
-<hr style="margin:10px 0;border:none;border-top:1px solid rgba(0,0,0,.12)">
-
-🌳<br>
-
-<b>${formatarNumero(areaDesmatada)} ha</b><br>
-
-Área Desmatada
-
-</div>
-
-<div class="cadeia-seta">➜</div>
-
-<div class="cadeia-box tdm-beneficio">
-
-🌎<br>
-
-<b>BENEFÍCIOS</b><br><br>
-
-✔ Proteção Ambiental<br>
-
-✔ Conservação da Biodiversidade<br>
-
-✔ Redução das Emissões Atmosféricas<br>
-
-✔ Melhoria da Qualidade do Ar<br>
-
-✔ Maior Segurança da População<br>
-
-✔ Fortalecimento da Governança
-
-</div>
-
-</div>
-
-<div class="fontePainel">
-
-<b>Fonte metodológica:</b>
-
-Theory of Change (UNDP); OECD Public Governance; Banco Mundial; Referencial de Avaliação de Políticas Públicas do TCU.
-
-</div>
-
-</div>
-
-`
-
+<div class="tdm-compact">
+ <div class="tdm-etapa"><div class="tdm-etapa-titulo">01 · DIAGNÓSTICO</div><div class="tdm-grid tdm-grid-2">
+ <div class="tdm-bloco tdm-problema"><span class="tdm-icone">🚨</span><b>PROBLEMA</b><span>Queimadas e desmatamento</span></div>
+ <div class="tdm-bloco tdm-causa"><span class="tdm-icone">🔎</span><b>CAUSAS</b><span>Pressão antrópica · Uso irregular do solo · Mudanças climáticas</span></div>
+ </div></div>
+ <div class="tdm-conector" aria-hidden="true">↓</div>
+ <div class="tdm-etapa"><div class="tdm-etapa-titulo">02 · INTERVENÇÃO E ACOMPANHAMENTO</div><div class="tdm-grid tdm-grid-3">
+ <div class="tdm-bloco tdm-acao"><span>⚙️ Ações planejadas</span><strong>${formatarNumero(total)}</strong></div>
+ <div class="tdm-bloco tdm-produto"><span>📦 Ações executadas</span><strong>${formatarNumero(executadas)}</strong><small>Com execução registrada acima de 0%</small></div>
+ <div class="tdm-bloco tdm-resultado"><span>📈 Ações concluídas</span><strong>${formatarNumero(concluidos)}</strong></div>
+ </div></div>
+ <div class="tdm-conector" aria-hidden="true">↓</div>
+ <div class="tdm-etapa"><div class="tdm-etapa-titulo">03 · IMPACTOS MONITORADOS E BENEFÍCIOS ESPERADOS</div><div class="tdm-grid tdm-grid-2">
+ <div class="tdm-bloco tdm-impacto"><b>Indicadores ambientais</b><div class="tdm-impactos"><div><span>🔥 Área queimada</span><strong>${formatarNumero(areaQueimada)} ha</strong></div><div><span>🌳 Área desmatada</span><strong>${formatarNumero(areaDesmatada)} ha</strong></div></div></div>
+ <div class="tdm-bloco tdm-beneficio"><b>🌎 BENEFÍCIOS ESPERADOS</b><div class="tdm-beneficios"><span>✓ Proteção ambiental</span><span>✓ Conservação da biodiversidade</span><span>✓ Redução das emissões</span><span>✓ Melhoria da qualidade do ar</span><span>✓ Segurança da população</span><span>✓ Fortalecimento da governança</span></div></div>
+ </div></div>
+ <div class="fontePainel"><b>Fonte metodológica:</b> Theory of Change (UNDP); OECD Public Governance; Banco Mundial; Referencial de Avaliação de Políticas Públicas do TCU.</div>
+</div>`
 }
 
 /*=========================================================
