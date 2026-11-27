@@ -1267,3 +1267,21 @@ font-size:34px;
 #rm3Cenario{padding:12px;background:#fff7ed;border:1px solid #fdba74;border-radius:10px;font-weight:800}
 #rm3ListaRuas h4{font-size:20px;margin:8px 0}
 @media(max-width:950px){#rm3ListarRuas,#rm3ExportarRuas{width:100%;font-size:20px}}
+
+/* Teoria da mudança — fluxo compacto, isolado dos demais painéis */
+#painelTeoriaMudanca .tdm-compact{width:100%;box-sizing:border-box;padding:10px 0}
+#painelTeoriaMudanca .tdm-etapa-titulo{font-size:12px;letter-spacing:.05em;font-weight:900;color:#334155;margin:0 0 8px}
+#painelTeoriaMudanca .tdm-grid{display:grid;gap:10px;align-items:stretch}
+#painelTeoriaMudanca .tdm-grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+#painelTeoriaMudanca .tdm-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+#painelTeoriaMudanca .tdm-bloco{min-width:0;padding:14px;border-radius:12px;display:flex;flex-direction:column;gap:6px;justify-content:center;text-align:center;color:#0f172a;font-size:14px;line-height:1.4;border:1px solid rgba(15,23,42,.08);box-shadow:0 2px 5px rgba(15,23,42,.05);overflow-wrap:anywhere}
+#painelTeoriaMudanca .tdm-bloco strong{font-size:clamp(20px,2.2vw,32px);font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums}
+#painelTeoriaMudanca .tdm-bloco small{font-size:11px;color:#334155}
+#painelTeoriaMudanca .tdm-icone{font-size:20px}
+#painelTeoriaMudanca .tdm-produto{background:#cffafe}
+#painelTeoriaMudanca .tdm-conector{text-align:center;color:#64748b;font-size:20px;line-height:1.15;padding:3px;font-weight:900}
+#painelTeoriaMudanca .tdm-impactos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#painelTeoriaMudanca .tdm-impactos>div{display:flex;flex-direction:column;gap:5px;padding:8px;background:rgba(255,255,255,.45);border-radius:8px}
+#painelTeoriaMudanca .tdm-beneficios{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 10px;text-align:left;font-size:12px}
+@media(max-width:700px){#painelTeoriaMudanca .tdm-grid-2,#painelTeoriaMudanca .tdm-grid-3{grid-template-columns:minmax(0,1fr)}#painelTeoriaMudanca .tdm-bloco{padding:12px}#painelTeoriaMudanca .tdm-beneficios{grid-template-columns:1fr}}
+@media(max-width:380px){#painelTeoriaMudanca .tdm-impactos{grid-template-columns:1fr}}
